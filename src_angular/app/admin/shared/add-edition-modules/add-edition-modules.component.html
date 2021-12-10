@@ -1,0 +1,185 @@
+<form class="form">
+        <!-- <input id="ModuleDisplayName" class="form-control" type="text" name="ModuleDisplayName" [(ngModel)]="ModuleName"
+            required placeholder="{{'ModuleName' | localize}}" (keydown.enter)="ModuleName?.length > 0 && AddModule()"> -->
+        <div class="form-group row">
+            <div class="col-lg-10 col-md-9 col-sm-8">
+                <p-autoComplete [(ngModel)]="Module"
+                                id="ModuleDisplayName"
+                                [suggestions]="filteredPageModuleList"
+                                (completeMethod)="searchModule($event)"
+                                (onSelect)="AddModule()"
+                                field="displayName"
+                                placeholder="{{'ModuleName' | localize}}"
+                                [minLength]="1"
+                                name="ModuleDisplayName"
+                                inputStyleClass="form-control"
+                                styleClass="width-percent-100"
+                                [showEmptyMessage]="true"
+                                [forceSelection]="true">
+                </p-autoComplete>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4">
+                <button class="btn btn-primary"  [ngClass]="Module?.displayName?.length > 1 ? '':'disableHyperlink'"
+                    (click)="Module?.displayName?.length > 0 && AddModule()" type="button">
+                        <span *ngIf="isModuleEdit">{{ 'Edit' | localize}}</span>
+                        <span *ngIf="!isModuleEdit">{{ 'Add' | localize}}</span>
+                    </button>
+            </div>
+        </div>
+    <div class="row">
+        <div class="col-sm-7">
+            <label *ngIf="ModulesList?.length > 0" class="mt-4"><b>{{ 'ModuleList' | localize }}</b></label>
+            <ol *ngIf="ModulesList?.length > 0" class="fa-ul">
+                <li *ngFor="let module of ModulesList; let i=index" class="mb-2">
+                    <!-- <i class="fa-li fa fa-file" aria-hidden="true"></i> -->
+                    <b class="text-success" (click)="module.SubModuleList?.length > 0 && CollapseList(i)">{{i+1}}.
+                        &nbsp;
+                        <i class="fa fa-angle-right cursor" *ngIf="module.SubModuleList?.length > 0"></i>&nbsp;
+                        {{module.ModuleName}}
+                    </b>
+                    <span class="text-danger text-10 ml-2 cursor" (click)="DispAddSubModule(i)"
+                        *ngIf="!module.CanAddSubModule && module.SubModuleList?.length == 0">
+                        <i class="fa fa-plus text-10 color-green" aria-hidden="true"></i>
+                        <u class="color-green">{{ 'AddSubModule' | localize }}</u>
+                    </span>
+                    <span class="ml-3 cursor" (click)="EditModule(i)"
+                    tooltip="{{'Edit' | localize}}" *ngIf="false">
+                    <i class="fa fa-edit text-10" aria-hidden="true"></i>
+                </span>
+                    <span class="ml-2 cursor" (click)="RemoveModule(i)"
+                    tooltip="{{'Remove' | localize}}">
+                        <i class="fa fa-times-circle text-10 text-danger" aria-hidden="true"></i>
+                        <!-- <u>{{ 'Remove' | localize }}</u> -->
+                    </span>
+                    <span class="input-group ml-5" *ngIf="module.CanAddSubModule && module.SubModuleList?.length == 0"
+                        style="width:90%;">
+                        <!-- <p-autoComplete class="form-control" name="SubModuleDisplayName{{i}}"  [(ngModel)]="module.SubModule" [suggestions]="module.filteredSubModuleList" 
+                            (completeMethod)="searchSubModule($event,module.PageModuleId,i)" field="displayName" [forceSelection]="true"
+                            (onSelect)="AddSubModule(i)" id="SubModuleDisplayName{{i}}"></p-autoComplete>
+                        <span class="input-group-text ml-rev-2 height-25"
+                            [ngClass]="module.SubModule?.displayName?.length > 0 ? '':'disableHyperlink'"
+                            (click)="module.SubModule?.displayName?.length > 0 && AddSubModule(i)">
+                            {{ 'Add' | localize}}
+                        </span> -->
+                        <div class="form-group row">
+                            <div class="col-lg-10 col-md-9 col-sm-8">
+                                <p-autoComplete [(ngModel)]="module.SubModule"
+                                                id="SubModuleDisplayName{{i}}"
+                                                [suggestions]="module.filteredSubModuleList"
+                                                (completeMethod)="searchSubModule($event,module.PageModuleId,i)"
+                                                (onSelect)="AddSubModule(i)"
+                                                field="displayName"
+                                                placeholder="{{'SubModuleName' | localize}}"
+                                                [minLength]="1"
+                                                [forceSelection]="true"
+                                                name="SubModuleDisplayName{{i}}"
+                                                inputStyleClass="form-control"
+                                                styleClass="width-percent-100"
+                                                [showEmptyMessage]="true">
+                                </p-autoComplete>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-4">
+                                <button class="btn btn-primary" [ngClass]="module.SubModule?.displayName?.length > 0 ? '':'disableHyperlink'"
+                                    (click)="module.SubModule?.displayName?.length > 0 && AddSubModule(i)" type="button">
+                                    <span *ngIf="isSubModuleEdit">{{ 'Edit' | localize}}</span>
+                                    <span *ngIf="!isSubModuleEdit">{{ 'Add' | localize}}</span>
+                                    </button>
+                            </div>
+                        </div>
+
+                    </span>
+                    <ul *ngIf="module.SubModuleList?.length > 0 && module.Collapse==false" class="fa-ul mt-2">
+                        <li *ngFor="let subModule of module.SubModuleList; let j=index">
+                            <i class="fa-li fa fa-square text-8"></i> &nbsp;
+                            {{subModule.ModuleName}}
+                            <span class="ml-3 cursor" (click)="EditSubModule(i,j)" 
+                            tooltip="{{'Edit' | localize}}" *ngIf="false">
+                                <i class="fa fa-edit text-success text-10" aria-hidden="true"></i>
+                            </span>
+                            <span class="ml-3 cursor" (click)="RemoveSubModule(i,j)" 
+                            tooltip="{{'Remove' | localize}}">
+                                <!-- <u>{{ 'Remove' | localize }}</u> -->
+                                <i class="fa fa-window-close text-success text-10" aria-hidden="true"></i>
+                            </span>
+                        </li>
+                        <li>
+                            <span class="text-danger text-10 cursor" (click)="DispAddSubModule(i)"
+                                *ngIf="!module.CanAddSubModule && module.SubModuleList?.length > 0">
+                                <i class="fa fa-plus text-10 color-green" aria-hidden="true"></i>
+                                <u class="color-green">{{'AddMore' | localize }}</u>
+                            </span>
+                            <span class="input-group" *ngIf="module.CanAddSubModule && module.SubModuleList?.length > 0"
+                                style="width: 90%;">
+                                <!-- <p-autoComplete class="form-control" name="ModuleDisplayName"  [(ngModel)]="module.SubModule" [suggestions]="module.filteredSubModuleList" 
+                                    (completeMethod)="searchSubModule($event,module.PageModuleId,i)" field="displayName" [forceSelection]="true"
+                                    (onSelect)="AddSubModule(i)"  id="SubModuleDisplayName{{i}}"></p-autoComplete>
+                                <span class="input-group-text ml-rev-2 height-25"
+                                    [ngClass]="module.SubModule?.displayName?.length > 0 ? '':'disableHyperlink'"
+                                    (click)="module.SubModule?.displayName?.length > 0 && AddSubModule(i)">
+                                    <span *ngIf="isSubModuleEdit">{{ 'Edit' | localize}}</span>
+                                    <span *ngIf="!isSubModuleEdit">{{ 'Add' | localize}}</span>
+                                </span> -->
+                                <div class="form-group row">
+                                    <div class="col-lg-10 col-md-9 col-sm-8">
+                                        <p-autoComplete [(ngModel)]="module.SubModule"
+                                                        id="SubModuleDisplayName{{i}}"
+                                                        [suggestions]="module.filteredSubModuleList"
+                                                        (completeMethod)="searchSubModule($event,module.PageModuleId,i)"
+                                                        (onSelect)="AddSubModule(i)"
+                                                        field="displayName"
+                                                        placeholder="{{'SubModuleName' | localize}}"
+                                                        [minLength]="1"
+                                                        [forceSelection]="true"
+                                                        name="SubModuleDisplayName{{i}}"
+                                                        inputStyleClass="form-control"
+                                                        styleClass="width-percent-100"
+                                                        [showEmptyMessage]="true">
+                                        </p-autoComplete>
+                                    </div>
+                                    <div class="col-lg-2 col-md-3 col-sm-4">
+                                        <button class="btn btn-primary" [ngClass]="module.SubModule?.displayName?.length > 0 ? '':'disableHyperlink'"
+                                            (click)="module.SubModule?.displayName?.length > 0 && AddSubModule(i)" type="button">
+                                            <span *ngIf="isSubModuleEdit">{{ 'Edit' | localize}}</span>
+                                            <span *ngIf="!isSubModuleEdit">{{ 'Add' | localize}}</span>
+                                            </button>
+                                    </div>
+                                </div>
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        <div class="col-sm-5">
+            <label *ngIf="DependEditionData?.length > 0" class="mt-4"><b>{{ 'DependentEdition' | localize }}</b></label>
+            <ul *ngIf="DependEditionData?.length > 0" class="fa-ul">
+                <li *ngFor="let depModule of DependEditionData; let k=index" class="mb-2">
+                    <b class="text-danger"
+                                (click)="depModule.moduleData?.length > 0 && CollapseDependEdition(k)">
+                                &nbsp;
+                                <i class="fa fa-angle-right cursor" *ngIf="depModule.moduleData?.length > 0"></i>&nbsp;
+                                {{depModule.displayName}}
+                            </b>
+                    <ol *ngIf="depModule.moduleData?.length > 0 && depModule.Collapse==false" class="fa-ul">
+                        <li *ngFor="let module of depModule.moduleData; let i=index" class="mb-2">
+                            <b class="text-success"
+                                (click)="module.subModuleList?.length > 0 && CollapseDependEdition(k,i)">{{i+1}}.
+                                &nbsp;
+                                <i class="fa fa-angle-right cursor" *ngIf="module.subModuleList?.length > 0"></i>&nbsp;
+                                {{module.moduleName}}
+                            </b>
+                            <ul *ngIf="module.subModuleList?.length > 0 && module.Collapse==false" class="fa-ul mt-2">
+                                <li *ngFor="let subModule of module.subModuleList; let j=index">
+                                    <i class="fa-li fa fa-square text-8"></i> &nbsp;
+                                    {{subModule.subModuleName}}
+                                </li>
+                                <li>
+                                </li>
+                            </ul>
+                        </li>
+                    </ol>
+                </li>
+            </ul>
+        </div>
+    </div>
+</form>

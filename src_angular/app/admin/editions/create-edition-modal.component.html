@@ -1,0 +1,238 @@
+<div appBsModal #createUpdateModal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createUpdateModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #editionForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <span *ngIf="!isEdit">{{"CreateNewEdition" | localize}}</span>
+                        <span *ngIf="isEdit">{{l("EditEdition")}}: {{edition.edition.displayName}}</span>
+                    </h5>
+                    <button type="button" class="close" (click)="Reset()" [attr.aria-label]="l('Close')"
+                        [disabled]="saving">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <tabset #staticTabs>
+                        <tab heading="{{'EditionProperties' | localize}}" class="p-5">
+                            <div class="form-group">
+                                <label for="product">{{"Product" | localize}} *</label>
+                                <select class="form-control" [(ngModel)]="ProductId" required
+                                    name="product" id="product"  #productNameSelect="ngModel"
+                                    (ngModelChange)="getEditions();getFreeEditions();resetEditionIds()" [disabled]="isEdit">
+                                    <option disabled>{{ "Select" | localize}}</option>
+                                    <option *ngFor="let product of ProductList" [value]="product.id">
+                                        {{product.productName}}</option>
+                                </select>
+                                <validation-messages [formCtrl]="productNameSelect"></validation-messages>
+                            </div>
+                            <div class="form-group">
+                                <label for="EditionDisplayName">{{"EditionName" | localize}} *</label>
+                                <input id="EditionDisplayName" #editionNameInput="ngModel" class="form-control"
+                                    type="text" name="EditionDisplayName" [(ngModel)]="edition.edition.displayName"
+                                    required maxlength="64">
+                                <validation-messages [formCtrl]="editionNameInput"></validation-messages>
+                            </div>
+                            <fieldset [disabled]="isEdit" class="checkbox-list" *ngIf="ProductId > 0">
+                                <label for="EnhancedEdition" class="checkbox">
+                                    <input id="EnhancedEdition" type="checkbox" [(ngModel)]="IsDependent"
+                                        (ngModelChange)="getEditions()" name="EnahnceCheck" />
+                                    <span></span>
+                                    {{"DependentEdition" | localize}}
+                                    <div *ngIf="IsDependent">*</div>
+                                </label>
+                            </fieldset>
+                            <div class="form-group mt-2" *ngIf="IsDependent">
+                                <select class="form-control" [(ngModel)]="DependantEditionID" [required]="IsDependent"
+                                    name="ParentEditions" (ngModelChange)="getEditionModulesData(DependantEditionID,false)"
+                                    #depEditionName="ngModel" [disabled]="isEdit">
+                                    <option disabled>{{ "Select" | localize}}</option>
+                                    <option *ngFor="let edition of EditionList" [value]="edition.id">
+                                        {{edition.displayName}}</option>
+                                </select>
+                                <validation-messages [formCtrl]="depEditionName"></validation-messages>
+                            </div>
+                            <label>{{"SubscriptionPrice" | localize}}</label>
+                                <fieldset class="radio-inline">
+                                    <!-- [disabled]="isEdit" -->
+                                <label for="EditEdition_IsFree" class="radio">
+                                    <input id="EditEdition_IsFree" name="SubscriptionPrice" [(ngModel)]="isFree"
+                                        (ngModelChange)="resetPrices($event)" [value]="true" type="radio">
+                                    <span></span>
+                                    {{"Free" | localize}}
+                                </label>
+                                <label for="EditEdition_IsPaid" class="radio">
+                                    <input id="EditEdition_IsPaid" name="SubscriptionPrice" [(ngModel)]="isFree"
+                                        [value]="false" type="radio" (ngModelChange)="resetPrices($event)"
+                                       >
+                                    <span></span>
+                                    {{"Paid" | localize}}
+                                </label>
+                            </fieldset>
+                        </tab>
+                        <tab heading="{{'Modules' | localize}}" class="p-5">
+                            <feature-tree #featureTree hidden></feature-tree>
+                            <app-add-edition-modules #editionModules></app-add-edition-modules>
+                        </tab>
+                        <tab heading="{{'Pricing' | localize}}" class="p-5" *ngIf="!isFree">
+                            <div class="row" *ngIf="false">
+                                <div class="col-md-6" *ngFor="let item of pricingTypes;let i=index">
+                                    <div class="form-group">
+                                        <label for="{{item.PricingTypeName}}">{{item.PricingTypeName |
+                                            localize}}</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend"><span
+                                                    class="input-group-text">{{appSession.application.currencySign}}</span>
+                                            </div>
+                                            <input [ngModelOptions]="{standalone: true}" type="text"
+                                                name="{{item.PricingTypeName}}" id="{{item.PricingTypeName}}"
+                                                class="form-control" autocomplete="new-password" [required]="!isFree"
+                                                [(ngModel)]="item.DiscountedPrice" [textMask]="{mask: currencyMask}" />
+                                        </div>
+                                        <!-- <validation-messages [formCtrl]="annualPriceInput"></validation-messages> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 m-3">
+                                <p-table [value]="pricingTypes" responsiveLayout="scroll" styleClass="p-datatable-sm">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>{{ 'PriceType' | localize}}</th>
+                                            <th>{{ 'ActualPrice' | localize}}</th>
+                                            <th>{{ 'Discount' | localize}} (%)</th>
+                                            <th>{{ 'DiscountedPrice' | localize}}</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-item>
+                                        <tr>
+                                            <td>{{item.PricingTypeName | localize}}&nbsp;({{item.NoOfDays}}
+                                                {{'Days' | localize}})</td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend"><span
+                                                            class="input-group-text">{{appSession.application.currencySign}}</span>
+                                                    </div>
+                                                    <input type="text" class="form-control"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        [(ngModel)]="item.ActualPrice" autocomplete="new-password"
+                                                        [required]="!isFree"
+                                                        [ngClass]="(item.ActualPrice==null || item.ActualPrice <=0) && priceFormInvalid ? 'field-required':''"
+                                                        (blur)="ActualPriceInput(item)"
+                                                        (keydown.enter)="ActualPriceInput(item)"
+                                                        (keypress)="IsNumericWithDot($event,item.ActualPrice,2)" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" style="width: 60%;"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="item.DiscountPercentage" autocomplete="new-password"
+                                                    [required]="!isFree"
+                                                    [ngClass]="(item.DiscountPercentage==null || item.DiscountPercentage < 0 || item.DiscountPercentage >100) && priceFormInvalid ? 'field-required':''"
+                                                    (blur)="DiscountPercentageInput(item)"
+                                                    (keydown.enter)="DiscountPercentageInput(item)"
+                                                    (keypress)="IsNumericWithDot($event,item.DiscountPercentage,2)" />
+                                            </td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend"><span
+                                                            class="input-group-text">{{appSession.application.currencySign}}</span>
+                                                    </div>
+                                                    <input type="text" class="form-control"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        [(ngModel)]="item.DiscountedPrice" autocomplete="new-password"
+                                                        [required]="!isFree"
+                                                        [ngClass]="(item.DiscountedPrice==null || item.DiscountedPrice <=0) && priceFormInvalid ? 'field-required':''"
+                                                        (blur)="DicountedPriceInput(item)"
+                                                        (keydown.enter)="DicountedPriceInput(item)"
+                                                        (keypress)="IsNumericWithDot($event,item.DiscountedPrice,2)" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div [hidden]="isFree" class="paid-features">
+                                <div class="form-group">
+                                    <label for="EditionDisplayName">{{"Approach" | localize}} *</label>
+                                    <select class="form-control" [(ngModel)]="ApproachId" required
+                                        name="approach" id="approach"  #approachNameSelect="ngModel">
+                                        <option *ngFor="let approach of ApproachList" [value]="approach.id">
+                                            {{approach.approachName}}</option>
+                                    </select>
+                                    <validation-messages [formCtrl]="approachNameSelect"></validation-messages>
+                                </div>
+                                <div class="checkbox-list">
+                                    <label for="EditEdition_IsTrialActive" class="checkbox">
+                                        <input id="EditEdition_IsTrialActive" type="checkbox" name="isTrialActive"
+                                            [(ngModel)]="isTrialActive" />
+                                        <span></span>
+                                        {{"IsTrialActive" | localize}}
+                                    </label>
+                                </div>
+                                <div class="form-group trial-day-count" *ngIf="isTrialActive">
+                                    <label for="TrialDayCount">{{"TrialDayCount" | localize}}</label>
+                                    <input #trialDayCountInput="ngModel" class="form-control" type="number"
+                                        name="TrialDayCount" id="TrialDayCount" [required]="isTrialActive"
+                                        [(ngModel)]="edition.edition.trialDayCount"
+                                        [ngClass]="{'edited':edition.edition.trialDayCount}">
+                                    <validation-messages [formCtrl]="trialDayCountInput"></validation-messages>
+                                </div>
+                                <div class="checkbox-list">
+                                    <label for="EditEdition_IsWaitingDayActive" class="checkbox">
+                                        <input id="EditEdition_IsWaitingDayActive" type="checkbox"
+                                            name="IsWaitingDayActive" [(ngModel)]="isWaitingDayActive" />
+                                        <span></span>
+                                        {{"WaitAfterSubscriptionExpireDate" | localize}}
+                                    </label>
+                                </div>
+                                <div class="form-group waiting-day-after-expire" *ngIf="isWaitingDayActive">
+                                    <label for="WaitingDayAfterExpire">{{"WaitingDayAfterExpire" | localize}}</label>
+                                    <input #waitingDayAfterExpireInput="ngModel" class="form-control" type="number"
+                                        name="WaitingDayAfterExpire" id="WaitingDayAfterExpire"
+                                        [required]="isWaitingDayActive"
+                                        [(ngModel)]="edition.edition.waitingDayAfterExpire"
+                                        [ngClass]="{'edited':edition.edition.waitingDayAfterExpire}">
+                                    <validation-messages [formCtrl]="waitingDayAfterExpireInput"></validation-messages>
+                                </div>
+                                <label>{{"WhatWillDoneAfterSubscriptionExpiry" | localize}}</label>
+                                <div class="radio-inline">
+                                    <label for="EditEdition_ExpireAction_DeactiveUser" class="radio">
+                                        <input id="EditEdition_ExpireAction_DeactiveUser" name="ExpireAction"
+                                            [(ngModel)]="expireAction" [value]="expireActionEnum.DeactiveTenant"
+                                            (ngModelChange)="removeExpiringEdition($event)" type="radio">
+                                        <span></span>
+                                        {{"DeactiveTenant" | localize}}
+                                    </label>
+                                    <label for="EditEdition_ExpireAction_AssignEdition" class="radio">
+                                        <input id="EditEdition_ExpireAction_AssignEdition" name="ExpireAction"
+                                            [(ngModel)]="expireAction" [value]="expireActionEnum.AssignToAnotherEdition"
+                                            type="radio" (ngModelChange)="getFreeEditions()">
+                                        <span></span>
+                                        {{"AssignToAnotherEdition" | localize}}
+                                    </label>
+                                </div>
+                                <div class="form-group edition-list"
+                                    *ngIf="expireAction == expireActionEnum.AssignToAnotherEdition">
+                                    <select name="expiringEdition" class="form-control"
+                                        [(ngModel)]="edition.edition.expiringEditionId"
+                                        [attr.min]="expireAction == expireActionEnum.AssignToAnotherEdition ? 1:0">
+                                        <option *ngFor="let expiringEdition of FreeEditionList"
+                                            [value]="expiringEdition.id">{{expiringEdition.displayName}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
+                        (click)="Reset()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!editionForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

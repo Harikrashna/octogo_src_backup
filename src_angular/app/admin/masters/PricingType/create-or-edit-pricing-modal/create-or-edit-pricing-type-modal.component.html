@@ -1,0 +1,48 @@
+<div bsModal #modal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #personForm="ngForm" novalidate (ngSubmit)="save(personForm)">
+                <div class="modal-header">
+                    <h4 class="modal-title" *ngIf="!editpricingType.inPricingTypeId">
+                        <span>{{"CreateNewPricingTypeDialog" | localize}}</span>
+                    </h4>
+                    <h4 class="modal-title" *ngIf="editpricingType.inPricingTypeId">
+                        <span>{{"EditPricingTypeDialog" | localize}} : {{currentTypeName}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close(personForm)" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input class="form-control" #pricingTypeId type="hidden" name="pricingTypeId"
+                            [(ngModel)]="editpricingType.inPricingTypeId">                        
+                    </div>                  
+                    <div class="form-group">
+                        <label>{{"VcTypeName" | localize}} <span class="text-danger" id="req"
+                                >*</span></label>
+                        <input class="form-control" #typeNameInput type="text" name="pricingType"
+                            [(ngModel)]="editpricingType. vcTypeName" required pattern="^[^-\s][\w\s-]+$" maxlength="50">
+                        <validation-messages [formCtrl]="typeNameInput"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <label>{{"InNoOfDays" | localize}}<span class="text-danger" id="req"
+                               >*</span></label>
+                        <input class="form-control" (keypress)="IsNumeric($event)" #noOfDaysInput="ngModel" type="text"
+                            name="noOfDays" [(ngModel)]="editpricingType.inNoOfDays" required maxlength="4">
+                        <validation-messages [formCtrl]="noOfDaysInput"></validation-messages>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-secondary" (click)="close(personForm)">{{"Cancel" |
+                        localize}}</button>
+                    <button type="submit"  class="btn btn-primary" [disabled]="!personForm.form.valid" 
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot' | localize)"><i class="fa fa-save"></i>
+                        <span>{{"Save" | localize}}</span></button>                        
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

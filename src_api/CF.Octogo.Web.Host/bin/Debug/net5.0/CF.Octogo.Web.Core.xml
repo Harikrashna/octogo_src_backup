@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CF.Octogo.Web.Core</name>
+    </assembly>
+    <members>
+        <member name="M:CF.Octogo.Web.Authentication.JwtBearer.IJwtSecurityStampHandler.Validate(System.Security.Claims.ClaimsPrincipal)">
+            <summary>
+            Returns true when claimsPrincipal contains a valid security stamp
+            </summary>
+            <param name="claimsPrincipal"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Web.Authentication.JwtBearer.IJwtSecurityStampHandler.SetSecurityStampCacheItem(System.Nullable{System.Int32},System.Int64,System.String)">
+            <summary>
+            Sets a cache item for given user with the given  securityStamp value
+            </summary>
+            <param name="tenantId"></param>
+            <param name="userId"></param>
+            <param name="securityStamp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Web.Authentication.JwtBearer.IJwtSecurityStampHandler.RemoveSecurityStampCacheItem(System.Nullable{System.Int32},System.Int64)">
+            <summary>
+            Removes the security stamp item from cache for the given user
+            </summary>
+            <param name="tenantId"></param>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Web.Chat.SignalR.ChatHub.#ctor(CF.Octogo.Chat.IChatMessageManager,Abp.Localization.ILocalizationManager,Castle.Windsor.IWindsorContainer,Abp.RealTime.IOnlineClientManager{CF.Octogo.Chat.ChatChannel},Abp.RealTime.IOnlineClientInfoProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CF.Octogo.Web.Chat.SignalR.ChatHub"/> class.
+            </summary>
+        </member>
+        <member name="P:CF.Octogo.Web.Chat.SignalR.SignalRChatCommunicator.Logger">
+            <summary>
+            Reference to the logger.
+            </summary>
+        </member>
+        <member name="T:CF.Octogo.Web.Helpers.CurrentDirectoryHelpers">
+            <summary>
+            https://github.com/aspnet/AspNetCore.Docs/blob/master/aspnetcore/host-and-deploy/aspnet-core-module/samples_snapshot/2.x/CurrentDirectoryHelpers.cs
+            </summary>
+        </member>
+        <member name="M:CF.Octogo.Web.Swagger.SwaggerExtensions.InjectBaseUrl(Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIOptions,System.String)">
+            <summary>
+            Injects ABP base URI into the index.html page
+            </summary>
+            <param name="options"></param>
+            <param name="pathBase">base path (URL) to application API</param>
+        </member>
+        <member name="M:CF.Octogo.Web.Swagger.SwaggerExtensions.CustomDefaultSchemaIdSelector(Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions)">
+            <summary>
+            https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/752#issuecomment-467817189
+            When Swashbuckle.AspNetCore 5.0 is released, we can remove it.
+            </summary>
+            <param name="options"></param>
+        </member>
+    </members>
+</doc>

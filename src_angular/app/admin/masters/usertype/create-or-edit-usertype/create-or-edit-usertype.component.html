@@ -1,0 +1,46 @@
+<div appBsModal #createOrEditUserType="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditUserType" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #UserTypeForm="ngForm" novalidate (ngSubmit)="save(UserTypeForm)"
+                autocomplete="new-password">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="createUserType.inUserTypeID">{{"EditUserType" | localize}} :
+                            {{currentUserTypeName}}</span>
+                        <span *ngIf="!createUserType.inUserTypeID">{{"CreateNewUserType" | localize}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close(UserTypeForm)" [attr.aria-label]="l('Close')"
+                        [disabled]="saving">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input class="form-control" #UserTypeId type="hidden" name="UserTypeId"
+                            [(ngModel)]="createUserType.inUserTypeID" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label>{{"UserTypeName" | localize}}*</label>
+                        <input id="UserTypeName" (keydown)="validations($event)" #UserTypeNameInput="ngModel"
+                            class="form-control" type="text" name="UserTypeName"
+                            [(ngModel)]="createUserType.vcUserTypeName" required maxlength="100">
+                        <validation-messages [formCtrl]="UserTypeNameInput"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <label>{{"Description" | localize}} </label>
+                        <input id="Description" class="form-control" type="text" name="Description"
+                            [(ngModel)]="createUserType.vcDescription" maxlength="250">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
+                        (click)="close(UserTypeForm)">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!UserTypeForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

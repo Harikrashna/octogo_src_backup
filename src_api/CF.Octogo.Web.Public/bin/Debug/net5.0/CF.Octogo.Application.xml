@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CF.Octogo.Application</name>
+    </assembly>
+    <members>
+        <member name="T:CF.Octogo.Auditing.AuditLogAndUser">
+            <summary>
+            A helper class to store an <see cref="P:CF.Octogo.Auditing.AuditLogAndUser.AuditLog"/> and a <see cref="P:CF.Octogo.Auditing.AuditLogAndUser.User"/> object.
+            </summary>
+        </member>
+        <member name="T:CF.Octogo.Auditing.EntityChangeAndUser">
+            <summary>
+            A helper class to store an <see cref="P:CF.Octogo.Auditing.EntityChangeAndUser.EntityChange"/> and a <see cref="P:CF.Octogo.Auditing.EntityChangeAndUser.User"/> object.
+            </summary>
+        </member>
+        <member name="F:CF.Octogo.Auditing.ExpiredAuditLogDeleterWorker.IsEnabled">
+            <summary>
+            Set this const field to true if you want to enable ExpiredAuditLogDeleterWorker.
+            Be careful, If you enable this, all expired logs will be permanently deleted.
+            </summary>
+        </member>
+        <member name="M:CF.Octogo.Authorization.Permissions.PermissionManagerExtensions.GetPermissionsFromNamesByValidating(Abp.Authorization.IPermissionManager,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Gets all permissions by names.
+            Throws <see cref="T:Abp.Runtime.Validation.AbpValidationException"/> if can not find any of the permission names.
+            </summary>
+        </member>
+        <member name="T:CF.Octogo.Authorization.Roles.RoleAppService">
+            <summary>
+            Application service that is used by 'role management' page.
+            </summary>
+        </member>
+        <member name="M:CF.Octogo.Authorization.Users.Delegation.UserDelegationAppService.GetActiveUserDelegations">
+            <summary>
+            Returns active user delegations for current user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:CF.Octogo.Authorization.Users.Importing.Dto.ImportUserDto.AssignedRoleNames">
+            <summary>
+            comma separated list
+            </summary>
+        </member>
+        <member name="P:CF.Octogo.Authorization.Users.Importing.Dto.ImportUserDto.Exception">
+            <summary>
+            Can be set when reading data from excel or when importing user
+            </summary>
+        </member>
+        <member name="T:CF.Octogo.DashboardCustomization.Dto.DashboardOutput">
+            <summary>
+            This class stores filtered dashboard information by user
+            </summary>
+        </member>
+        <member name="P:CF.Octogo.Editions.MoveTenantsToAnotherEditionJobArgs.SourceEditionId">
+            <summary>
+            Id of the source edition to move tenants from
+            </summary>
+        </member>
+        <member name="P:CF.Octogo.Editions.MoveTenantsToAnotherEditionJobArgs.TargetEditionId">
+            <summary>
+            Id of the target edition for tenants to move
+            </summary>
+        </member>
+        <member name="P:CF.Octogo.Editions.MoveTenantsToAnotherEditionJobArgs.User">
+            <summary>
+            Identifier of the user who starts move operation
+            </summary>
+        </member>
+        <member name="T:CF.Octogo.OctogoApplicationModule">
+            <summary>
+            Application layer module of the application.
+            </summary>
+        </member>
+        <member name="T:CF.Octogo.OctogoAppServiceBase">
+            <summary>
+            Derive your application services from this class.
+            </summary>
+        </member>
+    </members>
+</doc>

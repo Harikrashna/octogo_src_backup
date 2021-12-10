@@ -1,0 +1,24 @@
+.text-10{
+   font-size: 10px;
+} 
+.text-8{
+    font-size: 8px;
+ } 
+.mt-8{
+    margin-top: 8px;
+}
+.disableHyperlink{
+    cursor: not-allowed;
+}
+.ml-rev-2{
+    margin-left: -2px;
+}
+.height-25{
+    height: 25px;
+}
+.color-green{
+    color: green;
+}
+.cursor{
+    cursor: pointer;
+}

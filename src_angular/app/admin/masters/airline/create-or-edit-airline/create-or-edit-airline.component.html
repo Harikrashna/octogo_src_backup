@@ -1,0 +1,37 @@
+<div appBsModal #createOrEditAirline="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="createOrEditAirline" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #AirlineForm="ngForm" novalidate (ngSubmit)="save(AirlineForm)" autocomplete="new-password">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="createAirline.inAirlineID">{{"EditAirline" | localize}} :
+                            {{currentAirlineName}}</span>
+                        <span *ngIf="!createAirline.inAirlineID">{{"CreateNewAirline" | localize}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close(AirlineForm)" [attr.aria-label]="l('Close')" [disabled]="saving">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input class="form-control" #AirlineId type="hidden" name="AirlineId" [(ngModel)]="createAirline.inAirlineID" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label>{{"AirlineName" | localize}}*</label>
+                        <input id="AirlineName" (keydown)="validations($event)" #AirlineNameInput="ngModel" class="form-control" type="text" name="AirlineName" [(ngModel)]="createAirline.vcAirlineName" required maxlength="100">
+                        <validation-messages [formCtrl]="AirlineNameInput"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <label>{{"Description" | localize}} </label>
+                        <input id="Description" class="form-control" type="text" name="Description" [(ngModel)]="createAirline.vcDescription" maxlength="250">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold" (click)="close(AirlineForm)">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!AirlineForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

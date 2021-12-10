@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\common.props"></Import>
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+    <RootNamespace>CF.Octogo</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="GraphQL" Version="3.1.3" />
+    <PackageReference Include="GraphQL.NewtonsoftJson" Version="3.1.3" />
+    <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="4.3.0" />
+    <PackageReference Include="GraphQL.Server.Transports.AspNetCore.NewtonsoftJson" Version="4.3.0" />
+    <PackageReference Include="GraphQL.Server.Ui.Playground" Version="4.3.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CF.Octogo.Application.Shared\CF.Octogo.Application.Shared.csproj" />
+    <ProjectReference Include="..\CF.Octogo.Core\CF.Octogo.Core.csproj" />
+  </ItemGroup>
+</Project>

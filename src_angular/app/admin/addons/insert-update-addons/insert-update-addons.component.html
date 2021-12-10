@@ -1,0 +1,196 @@
+<div appBsModal #createUpdateModal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createUpdateModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #addonForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <span *ngIf="!isEdit">{{"CreatingNewAddon" | localize}}</span>
+                        <span *ngIf="isEdit">{{l("EditingAddon")}}: {{AddonName}} </span>
+                    </h5>
+                    <button type="button" class="close" (click)="Reset()" [attr.aria-label]="l('Close')"
+                        [disabled]="saving">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <tabset #staticTabs>
+                        <tab heading="{{'AddonProperties' | localize}}" class="p-5">
+                            <div class="form-group">
+                                <label for="product">{{"Product" | localize}} *</label>
+                                <select class="form-control" [(ngModel)]="ProductId" required name="product"
+                                    id="product" #productNameSelect="ngModel" [disabled]="isEdit">
+                                    <option disabled>{{ "Select" | localize}}</option>
+                                    <option *ngFor="let product of ProductList" [value]="product.id">
+                                        {{product.productName}}</option>
+                                </select>
+                                <validation-messages [formCtrl]="productNameSelect"></validation-messages>
+                            </div>
+                            <div class="form-group" *ngIf="isStandAlone && !isEdit">
+                                <label for="AddonDisplayName">{{"AddonName" | localize}} *</label>
+                                <p-autoComplete [(ngModel)]="SelectedAddon" id="AddonDisplayName" class="pl-0"
+                                    [suggestions]="filteredPageModuleList" (completeMethod)="SearchAddonModule($event)"
+                                    (onSelect)="AddAddonModule()" field="displayName" [forceSelection]="true"
+                                    placeholder="{{'AddonName' | localize}}" [minLength]="1" name="AddonDisplayName"
+                                    inputStyleClass="form-control" styleClass="width-percent-100"
+                                    [showEmptyMessage]="true" required #AddonName="ngModel" [disabled]="isEdit">
+                                </p-autoComplete>
+                                <validation-messages [formCtrl]="AddonName"></validation-messages>
+                            </div>
+                            <div class="form-group" *ngIf="isEdit">
+                                <div class="form-group" *ngIf="!isStandAlone">
+                                    <label for="FromEditionDisplayName">{{"FromTheEdition" | localize}} *</label>
+                                    <input id="FromEditionDisplayName" class="form-control"
+                                        type="text" name="FromEditionDisplayName" [(ngModel)]="FromEditionName"
+                                        [attr.disabled]="true">
+                                </div>
+                                <div class="form-group" *ngIf="!isStandAlone">
+                                    <label for="ForEditionDisplayName">{{"ForTheEdition" | localize}} *</label>
+                                    <input id="ForEditionDisplayName" class="form-control"
+                                        type="text" name="ForEditionDisplayName" [(ngModel)]="ForEditionName"
+                                        [attr.disabled]="true">
+                                </div>
+                                <div class="form-group">
+                                    <label for="addonDisplayName">{{"AddonName" | localize}} *</label>
+                                    <input id="addonDisplayName" class="form-control"
+                                        type="text" name="addonDisplayName" [(ngModel)]="AddonName"
+                                        [attr.disabled]="true">
+                                </div>
+                            </div>
+                            <label>{{"SubscriptionPrice" | localize}}</label>
+                            <fieldset class="radio-inline">
+                            <!-- [disabled]="AddonDataForEdit?.addonId > 0 && !AddonDataForEdit?.isFree" -->
+                                <label for="IsFree" class="radio">
+                                    <input id="IsFree" name="AddonPrice" [(ngModel)]="isFree"
+                                        (ngModelChange)="resetPrices($event)" [value]="true" type="radio">
+                                    <span></span>
+                                    {{"Free" | localize}}
+                                </label>
+                                <label for="IsPaid" class="radio">
+                                    <input id="IsPaid" name="AddonPrice" [(ngModel)]="isFree" [value]="false"
+                                        type="radio" (ngModelChange)="resetPrices($event)">
+                                    <span></span>
+                                    {{"Paid" | localize}}
+                                </label>
+                            </fieldset>
+                        </tab>
+                        <tab heading="{{'AddonDetails' | localize}}" class="p-5">
+                            <div *ngIf="AddonModuleDetails?.moduleId > 0">
+                                        <p-panel header="{{'ModuleName' | localize}} : {{AddonModuleDetails.moduleName}}" [toggleable]="true" [collapsed]="false">
+                                            <ul *ngIf="AddonModuleDetails.subModuleList?.length > 0">
+                                                <li *ngFor="let subModule of AddonModuleDetails.subModuleList">
+                                                    {{subModule.moduleName}}
+                                                </li>
+                                            </ul>
+                                            <div
+                                                *ngIf="AddonModuleDetails.subModuleList== null || AddonModuleDetails.subModuleList?.length == 0">
+                                                {{'SubModuleNotExist' | localize}}
+                                            </div>
+                                        </p-panel>
+                            </div>
+                            <div *ngIf="AddonModuleDetails == null || AddonModuleDetails == undefined" class="primeng-no-data text-danger">
+                                {{'NoData' | localize}}
+                            </div>
+                        </tab>
+                        <tab heading="{{'Pricing' | localize}}" class="p-5" *ngIf="!isFree">
+                            <div class="row" *ngIf="false">
+                                <div class="col-md-6" *ngFor="let item of pricingTypes;let i=index">
+                                    <div class="form-group">
+                                        <label for="{{item.PricingTypeName}}">{{item.PricingTypeName |
+                                            localize}}</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend"><span
+                                                    class="input-group-text">{{appSession.application.currencySign}}</span>
+                                            </div>
+                                            <input [ngModelOptions]="{standalone: true}" type="text"
+                                                name="{{item.PricingTypeName}}" id="{{item.PricingTypeName}}"
+                                                class="form-control" autocomplete="new-password" [required]="!isFree"
+                                                [(ngModel)]="item.DiscountedPrice" [textMask]="{mask: currencyMask}" />
+                                        </div>
+                                        <!-- <validation-messages [formCtrl]="annualPriceInput"></validation-messages> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 m-3">
+                                <p-table [value]="pricingTypes" responsiveLayout="scroll" styleClass="p-datatable-sm">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>{{ 'PriceType' | localize}}</th>
+                                            <th>{{ 'ActualPrice' | localize}}</th>
+                                            <th>{{ 'Discount' | localize}} (%)</th>
+                                            <th>{{ 'DiscountedPrice' | localize}}</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-item>
+                                        <tr>
+                                            <td>{{item.PricingTypeName | localize}}&nbsp;({{item.NoOfDays}}
+                                                {{'Days' | localize}})</td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend"><span
+                                                            class="input-group-text">{{appSession.application.currencySign}}</span>
+                                                    </div>
+                                                    <input type="text" class="form-control"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        [(ngModel)]="item.ActualPrice" autocomplete="new-password"
+                                                        [required]="!isFree"
+                                                        [ngClass]="(item.ActualPrice==null || item.ActualPrice <=0) && priceFormInvalid ? 'field-required':''"
+                                                        (blur)="ActualPriceInput(item)"
+                                                        (keydown.enter)="ActualPriceInput(item)"
+                                                        (keypress)="IsNumericWithDot($event,item.ActualPrice,2)" />
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" style="width: 60%;"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    [(ngModel)]="item.DiscountPercentage" autocomplete="new-password"
+                                                    [required]="!isFree"
+                                                    [ngClass]="(item.DiscountPercentage==null || item.DiscountPercentage < 0 || item.DiscountPercentage >100) && priceFormInvalid ? 'field-required':''"
+                                                    (blur)="DiscountPercentageInput(item)"
+                                                    (keydown.enter)="DiscountPercentageInput(item)"
+                                                    (keypress)="IsNumericWithDot($event,item.DiscountPercentage,2)" />
+                                            </td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend"><span
+                                                            class="input-group-text">{{appSession.application.currencySign}}</span>
+                                                    </div>
+                                                    <input type="text" class="form-control"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        [(ngModel)]="item.DiscountedPrice" autocomplete="new-password"
+                                                        [required]="!isFree"
+                                                        [ngClass]="(item.DiscountedPrice==null || item.DiscountedPrice <=0) && priceFormInvalid ? 'field-required':''"
+                                                        (blur)="DicountedPriceInput(item)"
+                                                        (keydown.enter)="DicountedPriceInput(item)"
+                                                        (keypress)="IsNumericWithDot($event,item.DiscountedPrice,2)" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                            <div [hidden]="isFree" class="paid-features">
+                                <div class="form-group">
+                                    <label for="EditionDisplayName">{{"Approach" | localize}} *</label>
+                                    <select class="form-control" [(ngModel)]="ApproachId" required name="approach"
+                                        id="approach" #approachNameSelect="ngModel">
+                                        <option *ngFor="let approach of ApproachList" [value]="approach.id">
+                                            {{approach.approachName}}</option>
+                                    </select>
+                                    <validation-messages [formCtrl]="approachNameSelect"></validation-messages>
+                                </div>
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
+                        (click)="Reset()">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!addonForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,748 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Web.Core\\CF.Octogo.Web.Core.csproj": {}
+  },
+  "projects": {
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
+      "version": "10.4.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj",
+        "projectName": "CF.Octogo.Application.Shared",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Abp.Web.Common": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "System.ComponentModel.Annotations": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application\\CF.Octogo.Application.csproj": {
+      "version": "10.4.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application\\CF.Octogo.Application.csproj",
+        "projectName": "CF.Octogo.Application",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application\\CF.Octogo.Application.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj"
+              },
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj"
+              },
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj"
+              },
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Abp.EntityFrameworkCore.EFPlus": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "NPOI": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.2, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
+      "version": "10.4.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj",
+        "projectName": "CF.Octogo.Core.Shared",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Abp": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.Zero.Common": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
+      "version": "10.4.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj",
+        "projectName": "CF.Octogo.Core",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Abp.AspNetZeroCore": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.MailKit": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.Zero.Ldap": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Castle.Windsor.MsDependencyInjection": {
+              "target": "Package",
+              "version": "[3.4.0, )"
+            },
+            "Microsoft.Extensions.Configuration.AzureKeyVault": {
+              "target": "Package",
+              "version": "[3.1.17, )"
+            },
+            "Microsoft.Extensions.Configuration.EnvironmentVariables": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.UserSecrets": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "PayPalCheckoutSdk": {
+              "target": "Package",
+              "version": "[1.0.3, )"
+            },
+            "PayPalHttp": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "Stripe.net": {
+              "target": "Package",
+              "version": "[39.59.0, )"
+            },
+            "TimeZoneConverter": {
+              "target": "Package",
+              "version": "[3.5.0, )"
+            },
+            "Twilio": {
+              "target": "Package",
+              "version": "[5.64.0, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj",
+        "projectName": "CF.Octogo.Data",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.FileExtensions": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj": {
+      "version": "10.4.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
+        "projectName": "CF.Octogo.EntityFrameworkCore",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.8, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.GraphQL\\CF.Octogo.GraphQL.csproj": {
+      "version": "10.4.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.GraphQL\\CF.Octogo.GraphQL.csproj",
+        "projectName": "CF.Octogo.GraphQL",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.GraphQL\\CF.Octogo.GraphQL.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.GraphQL\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj"
+              },
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "GraphQL": {
+              "target": "Package",
+              "version": "[3.1.3, )"
+            },
+            "GraphQL.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[3.1.3, )"
+            },
+            "GraphQL.Server.Transports.AspNetCore": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "GraphQL.Server.Transports.AspNetCore.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "GraphQL.Server.Ui.Playground": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Web.Core\\CF.Octogo.Web.Core.csproj": {
+      "version": "10.4.0",
+      "restore": {
+        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Web.Core\\CF.Octogo.Web.Core.csproj",
+        "projectName": "CF.Octogo.Web.Core",
+        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Web.Core\\CF.Octogo.Web.Core.csproj",
+        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
+        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Web.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application\\CF.Octogo.Application.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application\\CF.Octogo.Application.csproj"
+              },
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj"
+              },
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.GraphQL\\CF.Octogo.GraphQL.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.GraphQL\\CF.Octogo.GraphQL.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Abp.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.AspNetZeroCore.Web": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Abp.HangFire.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.RedisCache": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Abp.ZeroCore.IdentityServer4.vNext": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            },
+            "Hangfire.SqlServer": {
+              "target": "Package",
+              "version": "[1.7.24, )"
+            },
+            "IdentityServer4.AccessTokenValidation": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
+            "Microsoft.AspNetCore.DataProtection.Abstractions": {
+              "target": "Package",
+              "version": "[5.0.8, )"
+            },
+            "Owl.reCAPTCHA": {
+              "target": "Package",
+              "version": "[0.4.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.1.4, )"
+            },
+            "Swashbuckle.AspNetCore.Newtonsoft": {
+              "target": "Package",
+              "version": "[6.1.4, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.2, )"
+            },
+            "System.Diagnostics.PerformanceCounter": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
+            "System.Net.Http": {
+              "target": "Package",
+              "version": "[4.3.4, )"
+            },
+            "System.Security.Cryptography.Pkcs": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            },
+            "System.ValueTuple": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

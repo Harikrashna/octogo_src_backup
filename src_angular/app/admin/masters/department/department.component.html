@@ -1,0 +1,105 @@
+<div [@routerTransition]>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'Department' | localize" [description]="'DepartmentHeaderInfo' | localize">
+            <div role="actions">
+                <button *ngIf="'Pages.Administration.Department.CreateDepartment' | permission" (click)="createDepartment()"
+                    class="btn btn-primary"><i class="fa fa-plus"></i> {{"CreateNewDepartment" | localize}}</button>
+            </div>
+        </sub-header>
+        <div [class]="containerClass">
+            <div class="card card-custom gutter-b">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="primeng-datatable-container">
+                            <div class="form-group m-form__group align-items-center">
+                                <div class="input-group">
+                                    <input [(ngModel)]="filterText" name="filterText" autoFocus
+                                        class="form-control m-input" [placeholder]="l('SearchWithThreeDot')"
+                                        type="text">
+                                    <div class="input-group-append">
+                                        <button (click)=getallDepartmentList() class="btn btn-primary" type="submit"><i
+                                                class="flaticon-search-1" [attr.aria-label]="l('Search')"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
+                                <p-table #dt [value]="Department" #dataTable sortMode="multiple"
+                                    (onLazyLoad)="getallDepartmentList($event)" [value]="primengTableHelper.records"
+                                    [globalFilterFields]="['Department']"
+                                    rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false"
+                                    [lazy]="true"  ScrollWidth="100%"
+                                    [responsive]="primengTableHelper.isResponsive"
+                                    [resizableColumns]="primengTableHelper.resizableColumns">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th scope="col">{{'Actions' | localize}}</th>
+                                            <th  pSortableColumn="DepartmentName">
+                                                {{'DepartmentName' | localize}}
+                                                <p-sortIcon field="DepartmentName"></p-sortIcon>
+                                            </th>
+                                            <th  pSortableColumn="Description">
+                                                {{'Description' | localize}}
+                                                <p-sortIcon field="Description"></p-sortIcon>
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-Department="$implicit" let-i="rowIndex">
+                                        <tr>
+                                            <td
+                                                [hidden]="!((['Pages.Administration.Department.Edit', 'Pages.Administration.Department.Delete'] | permissionAny) )">
+                                                <div class="btn-group" dropdown placement="bottom left">
+                                                    <button id="dropdownButton" type="button"
+                                                        class="btn btn-primary btn-sm dropdown-toggle" dropdownToggle
+                                                        aria-controls="dropdownMenu">
+                                                        <i class="fa fa-cog"></i><span class="caret"></span>
+                                                        {{"Actions" | localize}}
+                                                    </button>
+                                                    <ul id="dropdownMenu" class="dropdown-menu" role="menu"
+                                                        *dropdownMenu aria-labelledby="dropdownButton">
+                                                        <li *ngIf="'Pages.Administration.Department.Edit' | permission" role="menuitem">
+                                                            <a class="dropdown-item" href="javascript:;"
+                                                            (click)="createOrEditDepartment.show(Department.inDepartmentID)">{{'Edit'|localize}}</a>
+                                                        </li>
+                                                        <li *ngIf="!Department.isStatic && 'Pages.Administration.Department.Delete' | permission" role="menuitem">
+                                                            <a class="dropdown-item" href="javascript:;"
+                                                                (click)="deleteDepartment(Department)">{{'Delete' |
+                                                                localize}}</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td >
+                                                <span class="p-column-title"> {{'DepartmentName' | localize}}</span>
+                                                {{Department.vcDepartmentName }}
+                                            </td>
+                                            <td >
+                                                <span class="p-column-title"> {{'Description' | localize}}</span>
+                                                {{Department.vcDescription }}
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                                <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
+                                    {{'NoData' | localize}}
+                                </div>
+                                <div class="primeng-paging-container">
+                                    <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage" #paginator
+                                        (onPageChange)="getallDepartmentList($event)"
+                                        [totalRecords]="primengTableHelper.totalRecordsCount"
+                                        [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                                        [showCurrentPageReport]="true"
+                                        [currentPageReportTemplate]="'TotalRecordsCount' | localize:primengTableHelper.totalRecordsCount">
+                                    </p-paginator>
+                                    
+                                </div>
+                                <div class="ui-table-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-create-or-edit-department (modalSave)="getallDepartmentList()" [Department]="Department" #createOrEditDepartment>
+    </app-create-or-edit-department>
