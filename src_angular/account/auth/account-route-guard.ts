@@ -26,7 +26,6 @@ export class AccountRouteGuard implements CanActivate {
     }
 
     selectBestRoute(): string {
-
         if (this._permissionChecker.isGranted('Pages.Administration.Host.Dashboard')) {
             return '/app/admin/hostDashboard';
         }
@@ -34,7 +33,10 @@ export class AccountRouteGuard implements CanActivate {
         if (this._permissionChecker.isGranted('Pages.Tenant.Dashboard')) {
             return '/app/main/dashboard';
         }
-
+        // Added By : Hari Krashna (only for Signed Up User)
+        if (this._permissionChecker.isGranted('Pages.isdefaultRegisterUser')) {
+            return '/app/registered-user';
+        }
         return '/app/notifications';
     }
 }

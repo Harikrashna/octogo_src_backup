@@ -30,6 +30,7 @@ namespace CF.Octogo.Authorization.Users
         /// <param name="senderTenancyName"></param>
         /// <param name="chatMessage"></param>
         Task TryToSendChatMessageMail(User user, string senderUsername, string senderTenancyName, ChatMessage chatMessage);
-        Task SendUserSignUpEmailActivationLinkAsync(User user, int userTypeId, string UserType, string plainPassword = null);
+        Task SendUserSignUpEmailActivationLinkAsync(User user, string UserType, int userTypeId, string plainPassword = null);
+        Task SendWelcomeMailToRegisteredUser(string emailAddress);
     }
 }

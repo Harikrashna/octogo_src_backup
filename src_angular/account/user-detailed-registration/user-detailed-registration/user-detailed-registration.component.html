@@ -1,231 +1,265 @@
 <div class="login-form" [@routerTransition]>
     <div class="pb-13 pt-lg-0 pt-5">
         <h3 class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">
-           {{UserType.name | localize}}&nbsp; Registration 
+            {{UserType.name| localize}}&nbsp; {{'Registration' | localize }}
         </h3>
-        <p>
-
-        </p>
     </div>
-
-    <form class="login-form form row g-3" #userDetailsForm="ngForm" novalidate
+    <form class="login-form form" #userDetailsForm="ngForm" novalidate
         (ngSubmit)="save(userDetailsForm,userDetailsForm.value)">
 
-        <div class="form-group col-md-12"  *ngIf="UserType.name!='Airline'" [ngClass]="{'form-group col-md-12':(selectedIndustry == 'Others' && (UserType.name == 'Shipper' || UserType.name == 'Others') ) || (UserType.name != 'Shipper' && UserType.name != 'Others'), 'form-group col-md-6': (UserType.name == 'Shipper' || UserType.name != 'Others') || (UserType.name == 'Others') }">
+        <div class="form-group" *ngIf="UserType.name!='Airline'">
             <div>
-                <label for="companyName" class="col-lg-12">{{"CompanyName" | localize}}<span class="text-danger"
-                        id="req">*</span></label>
-                <input id="companyName" inputId="companyName"
-                    class="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6" name="companyName"
-                    #companyName="ngModel" type="text" placeholder="Company Name *"
-                    [(ngModel)]="UserRegistration.company" maxlength="50" (keypress)="IsAlphanumeric($event)" pInputText
-                    required>
-                <validation-messages [formCtrl]="companyName"></validation-messages>
+                <span class="p-float-label">
+                    <input id="companyName" inputId="companyName"
+                        [ngClass]="{'p-filled':UserRegistration.company?.length > 0}"
+                        class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                        name="companyName" #companyName="ngModel" type="text" [(ngModel)]="UserRegistration.company"
+                        maxlength="50" (keypress)="IsAlphanumeric($event)" pInputText required>
+                    <label for="companyName">{{"CompanyName" | localize}}<span class="text-danger"
+                            id="req">*</span></label>
+                </span>
             </div>
+
+            <validation-messages [formCtrl]="companyName"></validation-messages>
         </div>
 
-
-        <div class="form-group col-md-12" *ngIf="UserType.name=='Airline'">
-            <label for="airlineName" class="col-lg-12">{{"AirlineName" | localize}}<span class="text-danger"
-                    id="req">*</span></label>
-            
+        <div class="form-group" *ngIf="UserType.name=='Airline'">
+            <span class="p-float-label">
                 <p-autoComplete id="airlineName"
-                    inputStyleClass="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                    #airlineName="ngModel" name="airlineName" [(ngModel)]="UserRegistration.airlineId"
+                    inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                    #airlineName="ngModel" name="airlineName" [(ngModel)]="UserRegistration.airlineId" [size]="60"
                     [suggestions]="airlineResult" (keypress)="IsAlphabet($event)" (completeMethod)="getAirline($event)"
-                    size="50" placeholder="Airline Name *" maxlength="50" [forceSelection]="true" field="name" required>
+                    maxlength="50" [forceSelection]="true" field="name" required>
                 </p-autoComplete>
-                <validation-messages [formCtrl]="airlineName"></validation-messages>
-            
+                <label for="airlineName">{{"AirlineName" | localize}}<span class="text-danger" id="req">*</span></label>
+            </span>
+            <validation-messages [formCtrl]="airlineName"></validation-messages>
+
         </div>
 
-        <div class="form-group col-md-6" *ngIf="UserType.name=='Shipper' || UserType.name=='Others'" >
-            <label for="industry" class="col-lg-12">{{"Industry" | localize}}<span class="text-danger"
-                    id="req">*</span></label>
-
-            <p-autoComplete inputStyleClass="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                id="industry" #industry="ngModel" name="industry" size="50" placeholder="Industry"
-                [(ngModel)]="UserRegistration.industryId" [suggestions]="industryResult" (keypress)="IsAlphabet($event)"
-                (completeMethod)="getIndustry($event)" (onSelect)="selectIndustry(UserRegistration.industryId)"
-                [forceSelection]="true" maxlength="50" field="name" required>
-            </p-autoComplete>
+        <div class="form-group" *ngIf="UserType.name=='Shipper' || UserType.name=='Others'">
+            <span class="p-float-label">
+                <p-autoComplete
+                    inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                    id="industry" #industry="ngModel" name="industry" [size]="60"
+                    [(ngModel)]="UserRegistration.industryId" [suggestions]="industryResult"
+                    (keypress)="IsAlphabet($event)" (completeMethod)="getIndustry($event)"
+                    (onSelect)="selectIndustry(UserRegistration.industryId)" [forceSelection]="true" maxlength="50"
+                    field="name" required>
+                </p-autoComplete>
+                <label for="industry">{{"Industry" | localize}}<span class="text-danger"
+                        id="req">*</span></label>
+            </span>
             <validation-messages [formCtrl]="industry"></validation-messages>
         </div>
-        <div class="form-group col-md-6" *ngIf="selectedIndustry=='Others'">
-            <label for="industryName" class="col-lg-12">{{"IndustryName" | localize}}<span class="text-danger"
-                    id="req">*</span></label>
-            <input id="industryName" class="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                name="industryName" #industryName="ngModel" type="text" placeholder="Industry Name *" minlength="2"
-                maxlength="50" [(ngModel)]="UserRegistration.industry" pInputText required>
+        <div class="form-group" *ngIf="selectedIndustry=='OTHERS'">
+            <span class="p-float-label">
+                <input id="industryName"
+                    class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" name="industryName"
+                    #industryName="ngModel" type="text" minlength="2" [ngClass]="{'p-filled':UserRegistration.industry != null}" (input)="checkDuplicateIndustry(UserRegistration.industry)" maxlength="50"
+                    [(ngModel)]="UserRegistration.industry" pInputText required>
+                <label for="industryName">{{"IndustryName" | localize}}<span class="text-danger"
+                        id="req">*</span></label>
+            </span>
 
             <validation-messages [formCtrl]="industryName"></validation-messages>
 
         </div>
-            <div class="form-group col-md-6" [ngClass]="{'form-group col-md-12':(selectedDepartment != 'Others' && selectedDesignation == 'Others')}">
-                <label for="department" class="col-lg-12">{{"Department" | localize}}<span class="text-danger"
-                        id="req">*</span></label>
-                
-                    <p-autoComplete
-                        inputStyleClass="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                        id="department" #department="ngModel" [forceSelection]="true" name="department"
-                        placeholder="Department *" [(ngModel)]="UserRegistration.departmentId" size="50"
-                        [suggestions]="departmentResult" (completeMethod)="getDepartment($event)" maxlength="50"
-                        field="name" (onSelect)="selectDepartment(UserRegistration.departmentId)"
-                        (keypress)="IsAlphabet($event)" required>
-                    </p-autoComplete>
-                    <validation-messages [formCtrl]="department"></validation-messages>
-                
-            </div>
-            <div class="form-group col-md-6" *ngIf="selectedDepartment=='Others'">
 
-                <label for="departmentName" class="col-lg-12">{{"DepartmentName" | localize}}<span class="text-danger"
-                        id="req">*</span></label>
-                <input id="departmentName"
-                    class="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                    name="departmentName" #departmentName="ngModel" type="text"
-                    [(ngModel)]="UserRegistration.department" placeholder="Department Name *" minlength="2"
-                    maxlength="50" (keypress)="IsAlphabet($event)" pInputText required>
+        <div class="form-group">
 
-                <validation-messages [formCtrl]="departmentName"></validation-messages>
-
-
-            </div>
-
-        <div class="form-group col-md-6" [ngClass]="{'form-group col-md-12':(selectedDesignation != 'Others' && selectedDepartment == 'Others')}">
-            <label for="designation" class="col-lg-12">{{"Designation" | localize}}<span class="text-danger"
-                    id="req">*</span></label>
-            
+            <span class="p-float-label">
                 <p-autoComplete
-                    inputStyleClass="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                    id="designation" #designation="ngModel" [forceSelection]="true" name="designation" size="50"
-                    minlength="2" [(ngModel)]="UserRegistration.designationId" placeholder="Designation *"
-                    (completeMethod)="getDesignation($event)"
-                    [suggestions]="designationResult" 
-                   maxlength="50" field="name"   (onSelect)="selectDesignation(UserRegistration.designationId)"
-                    (keypress)="IsAlphabet($event)" required>
+                    inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                    id="department" #department="ngModel" [forceSelection]="true" name="department"
+                    [(ngModel)]="UserRegistration.departmentId" [size]="60" [suggestions]="departmentResult"
+                    (completeMethod)="getDepartment($event)" maxlength="50" field="name"
+                    (onSelect)="selectDepartment(UserRegistration.departmentId)" (keypress)="IsAlphabet($event)"
+                    required>
                 </p-autoComplete>
-                <validation-messages [formCtrl]="designation"></validation-messages>
-            
+                <label for="department">{{"Department" | localize}}<span class="text-danger" id="req">*</span></label>
+            </span>
+
+            <validation-messages [formCtrl]="department"></validation-messages>
+
+        </div>
+        <div class="form-group" *ngIf="selectedDepartment=='OTHERS'">
+
+            <span class="p-float-label">
+                <input id="departmentName"
+                    class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                    name="departmentName" #departmentName="ngModel" type="text"
+                    [(ngModel)]="UserRegistration.department" minlength="2"
+                    (input)="checkDuplicateDepartment(UserRegistration.department)"
+                    [ngClass]="{'p-filled':UserRegistration.department?.length > 0}" maxlength="50"
+                    (keypress)="IsAlphabet($event)" pInputText required>
+                <label for="departmentName">{{"DepartmentName" | localize}}<span class="text-danger"
+                        id="req">*</span></label>
+            </span>
+
+            <validation-messages [formCtrl]="departmentName"></validation-messages>
+
+
         </div>
 
-        <div class="form-group col-md-6" *ngIf="selectedDesignation=='Others'">
-            <label for="designationName" class="col-lg-12">{{"DesignationName" | localize}}<span class="text-danger"
-                    id="req">*</span></label>
+        <div class="form-group">
+            <span class="p-float-label">
+                <p-autoComplete
+                    inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                    id="designation" #designation="ngModel" [forceSelection]="true" name="designation" size="50"
+                    minlength="2" [(ngModel)]="UserRegistration.designationId" (completeMethod)="getDesignation($event)"
+                    [size]="60" [suggestions]="designationResult" maxlength="50" field="name"
+                    (onSelect)="selectDesignation(UserRegistration.designationId)" (keypress)="IsAlphabet($event)"
+                    required>
+                </p-autoComplete>
+                <label for="designation">{{"Designation" | localize}}<span class="text-danger" id="req">*</span></label>
+            </span>
+            <validation-messages [formCtrl]="designation"></validation-messages>
 
-            <input id="designationName" class="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                name="designationName" #designationName="ngModel" type="text" placeholder="Designation Name*"
-                [(ngModel)]="UserRegistration.designation" minlength="2" maxlength="50" (keypress)="IsAlphabet($event)"
-                pInputText required>
+        </div>
+
+        <div class="form-group"  *ngIf="selectedDesignation=='OTHERS'">
+            <span class="p-float-label">
+
+                <input id="designationName"
+                    class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                    name="designationName" #designationName="ngModel" type="text"  [ngClass]="{'p-filled':UserRegistration.designation?.length > 0}"
+                    (input)="checkDuplicateDesignation(UserRegistration.designation)"[(ngModel)]="UserRegistration.designation" minlength="2" maxlength="50"
+                    (keypress)="IsAlphabet($event)" pInputText required>
+                <label for="designationName">{{"DesignationName" | localize}}<span class="text-danger"
+                        id="req">*</span></label>
+            </span>
 
             <validation-messages [formCtrl]="designationName"></validation-messages>
         </div>
 
-        <div class="form-group col-12">
-            <label for="services" class="col-lg-12 my-2">{{"ServicesLookingFor" | localize}}</label>
+        <div class="form-group">
             
+           
+                <span class="p-float-label">
                 <p-autoComplete [(ngModel)]="UserRegistration.services"
-                [suggestions]="servicesResult"
-                (completeMethod)="getService($event)"
-                field="name"
-                placeholder="Services"
-                [minLength]="1"
-                name="services"
-                id="services"
-                [multiple]="true"
-                inputStyleClass="form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                styleClass="width-percent-100"
-                (keypress)="IsAlphabet($event)"
-                [forceSelection]="true">
-                 </p-autoComplete>
+                                [suggestions]="servicesResult"
+                                (completeMethod)="getService($event)"
+                                field="name"
+                                name="services" id="services"
+                                 #services
+                                [multiple]="true"
+                                (onFocus)="services.handleDropdownClick(servicesResult)"
+                                [minLength]="1"
+                                [multiple]="true"
+                                inputStyleClass="form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                                styleClass="width-percent-100"
+                                (keypress)="IsAlphabet($event)" 
+                                [forceSelection]="true"
+                                (onSelect)="onSelectService()">
+                </p-autoComplete>
+                <label for="services">{{"ServicesLookingFor" | localize}}</label>
+            </span>
+           
             
         </div>
-        <div class="form-group col-12" *ngIf="UserType.name=='GSA' || UserType.name=='GHA'">
-            <label for="representingAirlines" class="col-lg-12">{{"RepresentingAirlines" | localize}} <span
-                    class="text-danger" id="req">*</span></label>
-            <div>
+
+        <!-- <div class="form-group">
+            <span class="p-float-label">
+                <p-autoComplete [(ngModel)]="UserRegistration.services" [suggestions]="servicesResult"
+                    (completeMethod)="getService($event)" field="name" [minLength]="1" name="services" id="services" #services
+                    [multiple]="true" (onFocus)="!services.value && services.handleDropdownClick(servicesResult)"
+                    inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                    styleClass="width-percent-100" (keypress)="IsAlphabet($event)" [forceSelection]="true">
+                </p-autoComplete>
+                <label for="services">{{"ServicesLookingFor" | localize}}</label>
+            </span>
+        </div> -->
+        <div class="form-group" *ngIf="UserType.name=='GSA' || UserType.name=='GHA'">
+            <span class="p-float-label">
                 <p-autoComplete [(ngModel)]="UserRegistration.representingAirlines"
                     [suggestions]="representingAirlinesResult" (completeMethod)="getRepresentingAirlines($event)"
-                    field="name" #representingAirlines="ngModel" name="representingAirlines" placeholder="Representing Airlines"
-                    [minLength]="1" maxlength="50" id="representingAirlines" [multiple]="true" [forceSelection]="true"
-                    inputStyleClass="form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
+                    field="name" #representingAirlines="ngModel" name="representingAirlines"
+                    [minLength]="1" maxlength="50" id="representingAirlines"
+                    [multiple]="true" [forceSelection]="true"
+                    inputStyleClass="form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                     styleClass="width-percent-100" (keypress)="IsAlphabet($event)" required>
                 </p-autoComplete>
-                <validation-messages [formCtrl]="representingAirlines"></validation-messages>
-            </div>
+                <label for="representingAirlines">{{"RepresentingAirlines" | localize}} <span class="text-danger"
+                        id="req">*</span></label>
+            </span>
+            <validation-messages [formCtrl]="representingAirlines"></validation-messages>
         </div>
 
-        <div class="form-group col-12" *ngIf="UserType.name=='GSA' || UserType.name=='GHA'">
-            <label for="presenceOrRepresentingCountries" class="col-lg-12">{{"PresenceOrRepresentingCountries" |
-                localize}}</label>
-           
+        <div class="form-group" *ngIf="UserType.name=='GSA' || UserType.name=='GHA'">
+            <span class="p-float-label">
                 <p-autoComplete [(ngModel)]="UserRegistration.representingCountries"
                     [suggestions]="representingCountriesResult" (completeMethod)="getRepresentingCountries($event)"
-                    field="name" placeholder="Presence And Representing Countries" [minLength]="1"
-                    #presenceAndRepresentingCountries="ngModel" [forceSelection]="true"
+                    field="name" [minLength]="1" #presenceAndRepresentingCountries="ngModel" [forceSelection]="true"
                     name="presenceOrRepresentingCountries" id="presenceOrRepresentingCountries" [multiple]="true"
-                    inputStyleClass="form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
+                    inputStyleClass="form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                     styleClass="width-percent-100" maxlength="50" (keypress)="IsAlphabet($event)">
                 </p-autoComplete>
-
-           
+                <label for="presenceOrRepresentingCountries">{{"PresenceOrRepresentingCountries" |
+                    localize}}</label>
+            </span>
         </div>
 
-        <div class="form-group col-md-6">
-
-            <label for="city" class="col-lg-12">{{"City" | localize}}<span class="text-danger" id="req">*</span></label>
-          
+        <div class="form-group">
+            <span class="p-float-label">
                 <p-autoComplete
-                    inputStyleClass="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6" id="city"
-                    #cityCode="ngModel" name="city" size="50" placeholder="City *" [(ngModel)]="UserRegistration.city"
+                    inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" id="city"
+                    #cityCode="ngModel" name="city" size="50"  [(ngModel)]="UserRegistration.city" [size]="60"
                     [suggestions]="cityCodeResult" (completeMethod)="getCity($event)" [forceSelection]="true"
-                    (keypress)="IsAlphabetWithoutWhiteSpace($event)" (onSelect)="fillCountry(UserRegistration.city)"
+                    (keypress)="IsAlphabet($event)" (onSelect)="fillCountry(UserRegistration.city)"
                     field="name" maxlength="50" required [forceSelection]="true">
                 </p-autoComplete>
-                <validation-messages [formCtrl]="cityCode"></validation-messages>
-           
+                <label for="city">{{"City" | localize}}<span class="text-danger" id="req">*</span></label>
+            </span>
+            <validation-messages [formCtrl]="cityCode"></validation-messages>
         </div>
 
-        <div class="form-group col-md-6">
-            <label for="country" class="col-lg-12">{{"Country" | localize}} <span class="text-danger"
-                    id="req">*</span></label>
-         
+        <div class="form-group">
+            <span class="p-float-label">
                 <p-autoComplete id="country" inputId="country"
-                    inputStyleClass="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
+                    inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                     #country="ngModel" name="country" (keypress)="IsAlphabet($event)" [forceSelection]="true"
-                    (completeMethod)="getCountry($event)" field="name" [(ngModel)]="UserRegistration.country" size="50"
-                    placeholder="Country *" [suggestions]="countryCodeResult" maxlength="50" required
-                    [forceSelection]="true">
+                    (completeMethod)="getCountry($event)" field="name" [(ngModel)]="UserRegistration.country"
+                    [size]="60" [suggestions]="countryCodeResult" maxlength="50" required [forceSelection]="true">
                 </p-autoComplete>
-                <validation-messages [formCtrl]="country"></validation-messages>
+                <label for="country">{{"Country" | localize}} <span class="text-danger" id="req">*</span></label>
+            </span>
+            <validation-messages [formCtrl]="country"></validation-messages>
 
-           
+
         </div>
 
-        <div class="form-group col-md-12">
-            <label for="phone" class="col-lg-12">{{"Contact" | localize}}<span class="text-danger"
-                    id="req">*</span></label>
+        <div class="form-group">
+            <span [ngClass]="UserRegistration.contact?.length > 0?'p-float-label':null">
             <div class="p-inputgroup" id="contact">
-                <input class="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                    name="isdCode" #isdCode="ngModel" type="text" id="isdCode" placeholder="ISD *"
-                    [ngModel]="UserRegistration.isdCode" maxlength="5" pInputText required  style="width: 15%;">
-&nbsp;
-                    <input id="phone" class="form-control form-control-solid h-auto py-4 px-3 rounded-lg font-size-h6"
-                    name="phone" (keypress)="IsNumeric($event)" #phone="ngModel" type="text"
-                    placeholder="Contact *" [(ngModel)]="UserRegistration.contact" maxlength="10" minlength="8"
-                    pInputText field="name" required>          
+                <input id="isdCode" class="form-control form-control-solid h-auto py-5 px-4 rounded-lg font-size-h6"
+                name="isdCode" #isdCode="ngModel" type="text"  [disabled]="true" placeholder="{{'ISD' | localize}}"
+                [ngClass]="{'p-filled':UserRegistration.isdCode != null}" [ngModel]="UserRegistration.isdCode"
+                maxlength="5" pInputText required style="width: 15%;">
+            &nbsp;
+                
+                    <input id="phone" inputId="phone"  [ngClass]="{'p-filled': UserRegistration.contact?.length > 0}"
+                        class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
+                        name="phone" (keypress)="IsNumeric($event)" #phone="ngModel" type="text" placeholder="{{'Contact' | localize}} *"
+                        [(ngModel)]="UserRegistration.contact" maxlength="10" minlength="8" pInputText
+                        required>
+
+                    <label for="contact"*ngIf="UserRegistration.contact?.length > 0">
+                        {{"Contact" | localize}}
+                        <span class="text-danger" id="req">*</span></label>
+                
             </div>
+        </span>
             <validation-messages [formCtrl]="phone"></validation-messages>
-
         </div>
-
-        <div class="pb-lg-0 pb-5 col-lg-12">
-            <button [disabled]="saving" routerLink="/account/login" type="button"
-                class="btn btn-light-primary font-weight-bolder font-size-h6 px-8 py-4 my-3"><i
+        <div class="pb-lg-0 pb-5">
+            <button [disabled]="saving" (click)="backClick()" type="button"
+                class="btn btn-light-primary font-weight-bolder font-size-h6 px-6 py-4 my-3"><i
                     class="fa fa-arrow-left"></i>
                 {{"Back" | localize}}</button>
             <button type="submit" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"
-                [disabled]="!userDetailsForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i
-                    class="fa fa-check"></i> {{"Submit" | localize}}</button>
+                [disabled]="saving || !userDetailsForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i
+                    class="fa fa-check"></i> {{"Register" | localize}}</button>
         </div>
     </form>
 </div>

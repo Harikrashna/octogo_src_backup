@@ -592,3 +592,5 @@ D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Public\obj\Debug\net5.0\CF.O
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Public\obj\Debug\net5.0\ref\CF.Octogo.Web.Public.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Public\obj\Debug\net5.0\CF.Octogo.Web.Public.pdb
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Public\obj\Debug\net5.0\CF.Octogo.Web.Public.genruntimeconfig.cache
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Public\bin\Debug\net5.0\CF.Octogo.Data.dll
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Public\bin\Debug\net5.0\CF.Octogo.Data.pdb

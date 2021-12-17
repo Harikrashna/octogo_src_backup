@@ -1,5 +1,6 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppAuthService } from '@app/shared/common/auth/app-auth.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { AccountServiceProxy, ActivateEmailInput, ResolveTenantIdInput } from '@shared/service-proxies/service-proxies';
 
@@ -42,10 +43,14 @@ export class ConfirmEmailComponent extends AppComponentBase implements OnInit {
                                 this._router.navigate(['account/login']);
                             }
                         });
-                        if(this.model.c != null && this.model.c != undefined){
+
+                        // Added by Hari Krashna - only for Signed Up users
+                        if(this.model.c != null && this.model.c != undefined && this.isGranted('Pages.isdefaultRegisterUser')){
                         this._router.navigate(['account/user-detailed-registration'], { queryParams: { c: this.model.c }, queryParamsHandling: 'merge' });    
                         }
                         else{
+                            abp.auth.clearToken();
+                            abp.auth.clearRefreshToken();
                             this._router.navigate(['account/login']);   
                         }
                 });

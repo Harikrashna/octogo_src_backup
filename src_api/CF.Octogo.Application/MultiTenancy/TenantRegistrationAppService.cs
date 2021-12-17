@@ -60,6 +60,11 @@ namespace CF.Octogo.MultiTenancy
 
         public async Task<RegisterTenantOutput> RegisterTenant(RegisterTenantInput input)
         {
+            // Added for Signed Up user - Added By: HARI KRASHNA(17/12/2021)
+            if (AbpSession.UserId.HasValue)
+            {
+                checkEmailDuplicacy(input.AdminEmailAddress);
+            }
             if (input.EditionId.HasValue)
             {
                 await CheckEditionSubscriptionAsync(input.EditionId.Value, input.SubscriptionStartType);
@@ -114,6 +119,15 @@ namespace CF.Octogo.MultiTenancy
                 );
 
                 var tenant = await TenantManager.GetByIdAsync(tenantId);
+                // Update Tenant Id of Logged In user
+                // Added for Logged In users only
+                if (AbpSession.UserId.HasValue)
+                {
+                    var user = UserManager.GetUserById((long)AbpSession.UserId);             // get user details for update TenantId
+                    user.TenantId = tenant.Id;
+                    user.LastModificationTime = DateTime.UtcNow;
+                    user.LastModifierUserId = user.Id;
+                }
                 await _appNotifier.NewTenantRegisteredAsync(tenant);
 
                 return new RegisterTenantOutput
@@ -287,5 +301,43 @@ namespace CF.Octogo.MultiTenancy
                     break;
             }
         }
-    }
+        public async Task<EditionsSelectOutput> GetEditionsForSelectForRegisteredUser()
+        {
+            var features = FeatureManager
+                .GetAll()
+                .Where(feature => (feature[FeatureMetadata.CustomFeatureKey] as FeatureMetadata)?.IsVisibleOnPricingTable ?? false);
+
+            var flatFeatures = ObjectMapper
+                .Map<List<FlatFeatureSelectDto>>(features)
+                .OrderBy(f => f.DisplayName)
+                .ToList();
+
+            var editions = (await _editionManager.GetAllAsync())
+                .Cast<SubscribableEdition>()
+                .OrderBy(e => e.MonthlyPrice)
+                .ToList();
+
+            var featureDictionary = features.ToDictionary(feature => feature.Name, f => f);
+
+            var editionWithFeatures = new List<EditionWithFeaturesDto>();
+            foreach (var edition in editions)
+            {
+                editionWithFeatures.Add(await CreateEditionWithFeaturesDto(edition, featureDictionary));
+            }
+
+            return new EditionsSelectOutput
+            {
+                AllFeatures = flatFeatures,
+                EditionsWithFeatures = editionWithFeatures,
+            };
+        }
+        private void checkEmailDuplicacy(string email)
+        {
+            var hostUser = UserManager.GetUserById((long)AbpSession.UserId);            
+            if (hostUser.EmailAddress.ToUpper() == email.ToUpper())
+            {
+                throw new UserFriendlyException(L("AdminEmailAdressDuplicate"));
+            }
+        }
+        }
 }

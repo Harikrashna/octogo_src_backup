@@ -1,11 +1,11 @@
 import { AbpMultiTenancyService } from 'abp-ng2-module';
 import { Injectable } from '@angular/core';
-import { ApplicationInfoDto, GetCurrentLoginInformationsOutput, SessionServiceProxy, TenantLoginInfoDto, UserLoginInfoDto, UiCustomizationSettingsDto } from '@shared/service-proxies/service-proxies';
+import { ApplicationInfoDto, GetCurrentLoginInformationsOutput, SessionServiceProxy, TenantLoginInfoDto, UserLoginInfoDto, UiCustomizationSettingsDto, GetCurrentLoginInformationsOutputNew, UserLoginInfoNewDto } from '@shared/service-proxies/service-proxies';
 
 @Injectable()
 export class AppSessionService {
 
-    private _user: UserLoginInfoDto;
+    private _user: UserLoginInfoNewDto;
     private _impersonatorUser: UserLoginInfoDto;
     private _tenant: TenantLoginInfoDto;
     private _impersonatorTenant: TenantLoginInfoDto;
@@ -25,7 +25,7 @@ export class AppSessionService {
         this._application = val;
     }
 
-    get user(): UserLoginInfoDto {
+    get user(): UserLoginInfoNewDto {
         return this._user;
     }
 
@@ -64,7 +64,10 @@ export class AppSessionService {
 
     init(): Promise<UiCustomizationSettingsDto> {
         return new Promise<UiCustomizationSettingsDto>((resolve, reject) => {
-            this._sessionService.getCurrentLoginInformations().toPromise().then((result: GetCurrentLoginInformationsOutput) => {
+            // Commented By: Hari Krashna 
+            // Use new Api for Login Details
+            //this._sessionService.getCurrentLoginInformations().toPromise().then((result: GetCurrentLoginInformationsOutput) => {
+            this._sessionService.getCurrentLoginInformationsNew().toPromise().then((result: GetCurrentLoginInformationsOutputNew) => {
                 this._application = result.application;
                 this._user = result.user;
                 this._tenant = result.tenant;

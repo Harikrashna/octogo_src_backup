@@ -18,6 +18,10 @@ using System.Data.SqlClient;
 using System.Linq;
 using Abp.Runtime.Security;
 using System.Threading.Tasks;
+using CF.Octogo.Caching;
+using Abp.UI;
+using Abp.Application.Services.Dto;
+using System.Data;
 
 namespace CF.Octogo.UserRegistration
 {
@@ -31,7 +35,9 @@ namespace CF.Octogo.UserRegistration
         private readonly IAppNotifier _appNotifier;
         private readonly IUserEmailer _userEmailer;
         private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<User, long> _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly UserManager _userManager;
         public UserRegistrationAppService(IPasswordHasher<User> passwordHasher, 
             IEnumerable<IPasswordValidator<User>> passwordValidators,
             RoleManager roleManager,
@@ -39,7 +45,9 @@ namespace CF.Octogo.UserRegistration
             IAppNotifier appNotifier,
             IUserEmailer userEmailer,
             IRepository<Role> roleRepository,
-            IUnitOfWorkManager unitOfWorkManager)
+            IUnitOfWorkManager unitOfWorkManager,
+            UserManager userManager,
+            IRepository<User, long> userRepository)
         {
             _passwordValidators = passwordValidators;
             _passwordHasher = passwordHasher;
@@ -50,15 +58,18 @@ namespace CF.Octogo.UserRegistration
             AppUrlService = Url.NullAppUrlService.Instance;
             _roleRepository = roleRepository;
             _unitOfWorkManager = unitOfWorkManager;
+            _userManager = userManager;
+            _userRepository = userRepository;
         }
 
+        // Disbale UOW to manage transaction manually
         [UnitOfWork(IsDisabled = true)]
         public virtual async Task CreateUserSignUp(UserSignUpInput input)
         {
                 User user = new User();
                 user.Name = input.FirstName;
                 user.Surname = input.LastName;
-                user.UserName = input.EmailAddress;
+                user.UserName = input.UserName;
                 user.EmailAddress = input.EmailAddress;
                 user.IsActive = true;
                 user.ShouldChangePasswordOnNextLogin = false;
@@ -73,6 +84,8 @@ namespace CF.Octogo.UserRegistration
             //    user.Password = _passwordHasher.HashPassword(user, randomPassword);
             //    input.User.Password = randomPassword;
             //}
+            
+            // Create new transaction using UOW
             using (var unitofwork = _unitOfWorkManager.Begin())
             {
                 if (!input.Password.IsNullOrEmpty())
@@ -82,16 +95,16 @@ namespace CF.Octogo.UserRegistration
                     {
                         CheckErrors(await validator.ValidateAsync(UserManager, user, input.Password));
                     }
-
+                    // Pssword Hashing
                     user.Password = _passwordHasher.HashPassword(user, input.Password);
                 }
 
-                //Assign roles
                 user.Roles = new Collection<UserRole>();
+                // get "User" role  data
                 var role = _roleRepository.GetAll().Where(f => f.DisplayName == "User" && f.IsDeleted == false && f.TenantId == null).FirstOrDefault();
                 user.Roles.Add(new UserRole(AbpSession.TenantId, user.Id, role.Id));
 
-
+                // Create new User
                 CheckErrors(await UserManager.CreateAsync(user));
                 //CurrentUnitOfWork.SaveChanges(); //To get new user's Id.
 
@@ -99,12 +112,53 @@ namespace CF.Octogo.UserRegistration
                 await _notificationSubscriptionManager.SubscribeToAllAvailableNotificationsAsync(user.ToUserIdentifier());
                 await _appNotifier.WelcomeToTheApplicationAsync(user);
                 user.SetNewEmailConfirmationCode();
-                unitofwork.Complete();
+                unitofwork.Complete();      // UOW Transaction completed
             }
+            // Insert user-UserType linking
             string UserType = await CreateUserTypeLink((int)user.Id, input.UserTypeId);
             //Send activation email
-            await _userEmailer.SendUserSignUpEmailActivationLinkAsync(user, input.UserTypeId, UserType, input.Password);
+            _userEmailer.SendUserSignUpEmailActivationLinkAsync(user, UserType,input.UserTypeId, input.Password);
             
+        }
+        public async Task SendEmailVerificationLink(int userId)
+        {
+            var res = await GetUserTypeByUserId(userId);
+            var  user = UserManager.GetUserById(userId);
+            user.SetNewEmailConfirmationCode();
+            await _userEmailer.SendUserSignUpEmailActivationLinkAsync(user, res.UserTypeName, res.UserTypeId);
+        }
+
+        private async Task<RegisteredUserDetailDto> GetUserRegistrationDetailsByUserId(long userId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("UserId", userId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetRegisteredUserDetailsByUserId", parameters);
+            if (ds.Tables.Count > 0)
+            {
+                return SqlHelper.ConvertDataTable<RegisteredUserDetailDto>(ds.Tables[0]).FirstOrDefault();
+            }
+            else
+            {
+                return null;
+            }
+        }
+        private async Task<UserTypeDetailsDto> GetUserTypeByUserId(long userId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("UserId", userId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetUserTypeByUserId", parameters);
+            if (ds.Tables.Count > 0)
+            {
+                return SqlHelper.ConvertDataTable<UserTypeDetailsDto>(ds.Tables[0]).FirstOrDefault();
+            }
+            else
+            {
+                return null;
+            }
         }
         private async Task<string> CreateUserTypeLink(int UserId, int UserTypeId)
         {
@@ -114,7 +168,7 @@ namespace CF.Octogo.UserRegistration
                 parameters[2] = new SqlParameter("LoginUserId", AbpSession.UserId);
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                             System.Data.CommandType.StoredProcedure,
-                            "InsertUserTypeLinking", parameters);
+                            "USP_InsertUserTypeMapping", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     return (string)ds.Tables[0].Rows[0]["UserType"];
@@ -123,11 +177,35 @@ namespace CF.Octogo.UserRegistration
         }
         public async Task<int> CreateDetailedUserRegistration(UserRegistrationInput input)
         {
-            int TenentId = 0;
-            string ServerName = "localhost";
-            string DatabaseName = input.Company;
-            string ConnectionString = "Server="+ ServerName + "; Database="+ DatabaseName + "; Trusted_Connection=True;";
-            SqlParameter[] parameters = new SqlParameter[18];
+            if(input.UserTypeId == null || input.UserTypeId == 0)
+            {
+                // If User fill registartion form after login
+                if (input.UserId == 0)
+                {
+                    input.UserId = (long)AbpSession.UserId;
+                }
+                var userType = await GetUserTypeByUserId(input.UserId);
+                input.UserTypeId = userType.UserTypeId;
+            }
+            int UserDetailId = 0;
+            var hostUser = UserManager.GetUserById(input.UserId);             // get user details for create new Tenant
+            if (hostUser == null) 
+            {
+                throw new UserFriendlyException(L("AbpLoginResultType_UserIsNotActive"));
+            }
+            if (hostUser != null && hostUser.IsEmailConfirmed == false)
+            {
+                throw new UserFriendlyException(L("PleaseVerifyMailBeforeRegistrationMessage"));
+            }
+            // ceheck Registration 
+            var res = await GetUserRegistrationDetailsByUserId(hostUser.Id);
+            if (res != null && res.UserDetailId > 0)
+            {
+                throw new UserFriendlyException(L("UserAlreadyRegistered"));
+            }
+
+            // Insert User details
+            SqlParameter[] parameters = new SqlParameter[17];
             parameters[0] = new SqlParameter("UserTypeId", input.UserTypeId);
             parameters[1] = new SqlParameter("UserId", input.UserId);
             parameters[2] = new SqlParameter("CompanyName", input.Company);
@@ -144,29 +222,61 @@ namespace CF.Octogo.UserRegistration
             parameters[13] = new SqlParameter("RepresentingCountries", input.RepresentingCountries);
             parameters[14] = new SqlParameter("IndustryId", input.IndustryId);
             parameters[15] = new SqlParameter("Industry", input.Industry);
-            parameters[16] = new SqlParameter("ConnectionString", SimpleStringCipher.Instance.Encrypt(ConnectionString));
-            parameters[17] = new SqlParameter("LoginUserId", AbpSession.UserId);
-            try
-            {
+            parameters[16] = new SqlParameter("LoginUserId", AbpSession.UserId);
+
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                            System.Data.CommandType.StoredProcedure,
-                            "USP_CreateUserDetailedRegistration", parameters);
+                           System.Data.CommandType.StoredProcedure,
+                           "USP_CreateUserDetailedRegistration", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    TenentId = (int)ds.Tables[0].Rows[0]["TenentId"];
-                    await CreateDataBase(DatabaseName, ConnectionString);
+                    UserDetailId = (int)ds.Tables[0].Rows[0]["UserDetailId"];
                 }
-            }catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            return TenentId;
+            await _userEmailer.SendWelcomeMailToRegisteredUser(hostUser.EmailAddress);
+            return UserDetailId;
         }
-        private async Task CreateDataBase(string dbName, string connectionString)
+       
+        [UnitOfWork(IsDisabled = true)]
+        public async Task<int> CreateTenant(UserRegistrationInput input)
         {
-            SqlHelper.ExecuteNonQuery(Connection.GetSqlConnection("localhost"),
-                System.Data.CommandType.Text,
-                "CREATE DATABASE " + dbName);
+            // Create tenancy data for setup new Tenant
+            UserRegistrationTenantInput tenantData = new UserRegistrationTenantInput();
+            tenantData.TenancyName = input.Company.Replace(" ", string.Empty);
+            tenantData.Name = input.Company;
+            //tenantData.AdminEmailAddress = hostUser.EmailAddress;
+            //tenantData.AdminPassword = hostUser.Password;
+            tenantData.ConnectionString = null;
+            tenantData.ShouldChangePasswordOnNextLogin = false;
+            tenantData.SendActivationEmail = false;
+            tenantData.EditionId = null;
+            tenantData.IsActive = true;
+            tenantData.IsInTrialPeriod = false;
+            int TenantId = await TenantManager.CreateWithAdminUserAsync(tenantData.TenancyName,
+                tenantData.Name,
+                tenantData.AdminPassword,
+                tenantData.AdminEmailAddress,
+                tenantData.ConnectionString,
+                tenantData.IsActive,
+                tenantData.EditionId,
+                tenantData.ShouldChangePasswordOnNextLogin,
+                tenantData.SendActivationEmail,
+                tenantData.SubscriptionEndDateUtc?.ToUniversalTime(),
+                tenantData.IsInTrialPeriod,
+                AppUrlService.CreateEmailActivationUrlFormat(tenantData.TenancyName)
+            );
+            if (TenantId > 0)
+            {
+                // update new Tenent's Admin user password from Host's registered user details
+                using (_unitOfWorkManager.Current.SetTenantId(TenantId))        // switch to Tenent's Database
+                {
+                    var tenantUser = _userRepository.GetAll().FirstOrDefault();             // get Tenant's Admin user details
+                   // tenantUser.Password = hostUser.Password;        // set tenent user password from registered host user
+                }
+
+                // Deactivate Host's registered user after new tenent creation
+                //hostUser.IsDeleted = true;
+                //hostUser.DeletionTime = DateTime.UtcNow;
+            }
+            return TenantId;
         }
     }
 }

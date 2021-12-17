@@ -1,0 +1,80 @@
+<app-registered-user-edition-selection *ngIf="isEmailConfirmed && isRegisteredUser"></app-registered-user-edition-selection>
+<div *ngIf="isEmailConfirmed == false">
+        <div class="content d-flex flex-column flex-column-fluid">
+            <!-- <sub-header [title]="'Notifications' | localize">
+               
+            </sub-header> -->
+            <div [class]="containerClass">
+                <div class="card card-custom">
+                    <div class="card-body">
+                        <div class="form">
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col primeng-datatable-container">
+                                <h3 style="text-align: center; font-family: sans-serif;" class="font-weight-bold text-primary font-size-h2 font-size-h1-lg">
+                                    {{"ThanksForchoosing" | localize}}
+                                </h3>
+                                <p style="text-align: center;">
+                                    {{"GreetingMessage" | localize}}
+                                </p>
+                                <div class="pb-13 pt-lg-0 pt-5">
+                                    <h3 style="text-align: center;" class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">
+                                       {{"PleaseVerifyEmail" | localize}}
+                                    </h3>
+                                </div>
+    
+                                <div>
+    
+                                </div>
+    
+                                <p style="text-align: center;" class="pb-lg-0 pb-5 mt-20">
+                                        {{"EmailResendNote" | localize}}
+                                        <u><a (click)=resendCode() href="javascript:;" class="text-primary">{{"ClickHere" | localize}}</a></u>
+                                </p>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+</div>
+
+
+<div *ngIf="isEmailConfirmed == true && isRegisteredUser==false">
+    <div>
+        <div class="content d-flex flex-column flex-column-fluid">
+            <div [class]="containerClass">
+                <div class="card card-custom">
+                    <div class="card-body">
+                        <div class="form">
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col primeng-datatable-container">
+                                <div class="pb-13 pt-lg-0 pt-5">
+                                    <h3 style="text-align: center;" class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">
+                                       {{"YourEmailVerified" | localize}}
+                                    </h3>
+                                </div>
+    
+                                <div>
+                            
+                                <p style="text-align: center;">
+                                    {{"PleaseRegisterCompany" | localize}}
+                                </p>
+    
+                                <div style="text-align: center;"class="pb-lg-0 pb-5">
+                                    <button style="max-width: 300px;" type="submit" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3" (click)=getRegistrationpage()  >{{"Register" | localize}}</button>
+                                </div>
+    
+                                </div>
+                                      
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>

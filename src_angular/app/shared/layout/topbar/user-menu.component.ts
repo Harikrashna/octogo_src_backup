@@ -2,7 +2,7 @@ import { Component, Injector, OnInit, Input, AfterViewInit } from '@angular/core
 import { ThemesLayoutBaseComponent } from '../themes/themes-layout-base.component';
 import { LinkedUserDto, ProfileServiceProxy, UserLinkServiceProxy } from '@shared/service-proxies/service-proxies';
 import { LinkedAccountService } from '@app/shared/layout/linked-account.service';
-import { AbpMultiTenancyService, AbpSessionService } from 'abp-ng2-module';
+import { AbpMultiTenancyService, AbpSessionService, PermissionCheckerService } from 'abp-ng2-module';
 import { AppAuthService } from '@app/shared/common/auth/app-auth.service';
 import { ImpersonationService } from '@app/admin/users/impersonation.service';
 import { AppConsts } from '@shared/AppConsts';
@@ -34,6 +34,7 @@ export class UserMenuComponent extends ThemesLayoutBaseComponent implements OnIn
     isMultiTenancyEnabled = false;
 
     mQuickUserOffcanvas: any;
+    showAllMenuItems: boolean = true;
 
     public constructor(
         injector: Injector,
@@ -45,7 +46,8 @@ export class UserMenuComponent extends ThemesLayoutBaseComponent implements OnIn
         private _authService: AppAuthService,
         private _impersonationService: ImpersonationService,
         private _abpSessionService: AbpSessionService,
-        _dateTimeService: DateTimeService
+        _dateTimeService: DateTimeService,
+        private _permissionChecker: PermissionCheckerService
     ) {
         super(injector, _dateTimeService);
     }
@@ -81,6 +83,10 @@ export class UserMenuComponent extends ThemesLayoutBaseComponent implements OnIn
         this.shownLoginName = this.appSession.getShownLoginName();
         this.tenancyName = this.appSession.tenancyName;
         this.userName = this.appSession.user.userName;
+        // if((!this.appSession.user.isEmailConfirmed || this.appSession.user.userDetailId == 0) &&
+        if(this._permissionChecker.isGranted('Pages.isdefaultRegisterUser')){
+            this.showAllMenuItems = false;
+        }
     }
 
     getShownUserName(linkedUser: LinkedUserDto): string {

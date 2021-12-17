@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { AppRouteGuard } from './shared/common/auth/auth-route-guard';
 import { NotificationsComponent } from './shared/layout/notifications/notifications.component';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { UnregisteredUserDashboardComponent } from './shared/layout/notifications/unregistered-user-dashboard/unregistered-user-dashboard.component';
 
 @NgModule({
     imports: [
@@ -18,6 +19,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
                         path: '',
                         children: [
                             { path: 'notifications', component: NotificationsComponent },
+                            { path: 'registered-user', component: UnregisteredUserDashboardComponent },
                             { path: '', redirectTo: '/app/main/dashboard', pathMatch: 'full' }
                         ]
                     },

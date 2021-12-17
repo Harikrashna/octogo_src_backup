@@ -26,7 +26,7 @@ import { AccountRouteGuard } from './auth/account-route-guard';
                         path: 'register-tenant',
                         loadChildren: () =>
                             import('./register/register-tenant.module').then((m) => m.RegisterTenantModule),
-                        canActivate: [AccountRouteGuard],
+                        // canActivate: [AccountRouteGuard],  Commeted BY: Hari Krashna(for Signed Up users)
                     },
                     {
                         path: 'register-tenant-result',
@@ -34,7 +34,7 @@ import { AccountRouteGuard } from './auth/account-route-guard';
                             import('./register/register-tenant-result.module').then(
                                 (m) => m.RegisterTenantResultModule
                             ),
-                        canActivate: [AccountRouteGuard],
+                        //canActivate: [AccountRouteGuard],   Commeted BY: Hari Krashna(for Signed Up users)
                     },
                     {
                         path: 'forgot-password',
@@ -58,7 +58,7 @@ import { AccountRouteGuard } from './auth/account-route-guard';
                         path: 'confirm-email',
                         loadChildren: () =>
                             import('./email-activation/confirm-email.module').then((m) => m.EmailConfirmModule),
-                        canActivate: [AccountRouteGuard],
+                        //canActivate: [AccountRouteGuard],   Commeted BY: Hari Krashna(for Signed Up users)
                     },
                     {
                         path: 'send-code',

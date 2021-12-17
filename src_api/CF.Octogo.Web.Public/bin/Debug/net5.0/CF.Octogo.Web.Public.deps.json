@@ -4032,8 +4032,10 @@
           "Abp.EntityFrameworkCore.EFPlus": "6.4.0",
           "CF.Octogo.Application.Shared": "10.4.0",
           "CF.Octogo.Core": "10.4.0",
+          "CF.Octogo.Data": "1.0.0",
           "CF.Octogo.EntityFrameworkCore": "10.4.0",
-          "NPOI": "2.5.3"
+          "NPOI": "2.5.3",
+          "System.Data.SqlClient": "4.8.2"
         },
         "runtime": {
           "CF.Octogo.Application.dll": {}
@@ -4091,6 +4093,20 @@
         },
         "compile": {
           "CF.Octogo.Core.Shared.dll": {}
+        }
+      },
+      "CF.Octogo.Data/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "5.0.0",
+          "Microsoft.Extensions.Configuration.Json": "5.0.0",
+          "System.Data.SqlClient": "4.8.2"
+        },
+        "runtime": {
+          "CF.Octogo.Data.dll": {}
+        },
+        "compile": {
+          "CF.Octogo.Data.dll": {}
         }
       },
       "CF.Octogo.EntityFrameworkCore/10.4.0": {
@@ -7894,6 +7910,11 @@
       "sha512": ""
     },
     "CF.Octogo.Core.Shared/10.4.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CF.Octogo.Data/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

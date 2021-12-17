@@ -1,5 +1,5 @@
 <div class="login-form" [@routerTransition]>
-    <div class="pb-13 pt-lg-0 pt-5">
+    <div class="pt-lg-0 pt-5">
         <h3 class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">
             {{"UserSignUp" | localize}}
         </h3>
@@ -19,31 +19,39 @@
         </div>
         <div class="form-group">
             <input #FirstNameInput="ngModel"
-                class="form-control form-control-solid h-auto py-3 px-3 rounded-lg font-size-h6" type="text"
-                placeholder="{{'FirstName' | localize}} *" [(ngModel)]="model.firstName" name="FirstName" required
+                class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text"
+                placeholder="{{'FirstName' | localize}} *" (keypress)="spaceBar($event) "[(ngModel)]="model.firstName" name="FirstName" required
                 maxlength="64" />
             <validation-messages [formCtrl]="FirstNameInput"></validation-messages>
         </div>
 
         <div class="form-group">
             <input #LastNameInput="ngModel"
-                class="form-control form-control-solid h-auto py-3 px-3 rounded-lg font-size-h6" type="text"
-                placeholder="{{'LastName' | localize}} *" [(ngModel)]="model.lastName" name="LastName" required
+                class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text"
+                placeholder="{{'LastName' | localize}} *" (keypress)="spaceBar($event)" [(ngModel)]="model.lastName" name="LastName" required
                 maxlength="64" />
             <validation-messages [formCtrl]="LastNameInput"></validation-messages>
         </div>
 
         <div class="form-group">
             <input #emailAddressInput="ngModel"
-                class="form-control form-control-solid h-auto py-3 px-3 rounded-lg font-size-h6" type="email"
+                class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="email"
                 placeholder="{{'EmailAddress' | localize}} *" [(ngModel)]="model.emailAddress" name="EmailAddress"
                 required maxlength="256" pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" />
             <validation-messages [formCtrl]="emailAddressInput"></validation-messages>
         </div>
 
         <div class="form-group">
+            <input #UserNameInput="ngModel"
+                class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text"
+                placeholder="{{'UserName' | localize}} *" (keypress)="spaceBars($event)" [(ngModel)]="model.userName" name="UserName" required
+                maxlength="64" />
+            <validation-messages [formCtrl]="UserNameInput"></validation-messages>
+        </div>
+
+        <div class="form-group">
             <input type="password" name="Password"
-                class="form-control form-control-solid h-auto py-3 px-3 rounded-lg font-size-h6"
+                class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                 [(ngModel)]="model.password" #Password="ngModel" placeholder="{{'Password' | localize}}"
                 validateEqual="PasswordRepeat" reverse="true" [requireDigit]="passwordComplexitySetting.requireDigit"
                 [requireLowercase]="passwordComplexitySetting.requireLowercase"
@@ -72,7 +80,7 @@
         
         <div class="form-group">
             <input type="password" name="PasswordRepeat"
-                class="form-control form-control-solid h-auto py-3 px-3 rounded-lg font-size-h6"
+                class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                 [ngModel]="pass.passwordRepeat" #PasswordRepeat="ngModel" placeholder="{{'PasswordRepeat' | localize}}"
                 validateEqual="Password" reverse="false" [requireDigit]="passwordComplexitySetting.requireDigit"
                 [requireLowercase]="passwordComplexitySetting.requireLowercase"
@@ -104,7 +112,7 @@
                     class="fa fa-arrow-left"></i>
                 {{"Back" | localize}}</button>
             <button type="submit" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"
-                [disabled]="!registerForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i
+                [disabled]="saving || !registerForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i
                     class="fa fa-check"></i> {{"SignUp" | localize}}</button>
         </div>
     </form>

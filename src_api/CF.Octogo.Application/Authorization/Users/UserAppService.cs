@@ -30,6 +30,9 @@ using CF.Octogo.Dto;
 using CF.Octogo.Notifications;
 using CF.Octogo.Url;
 using CF.Octogo.Organizations.Dto;
+using CF.Octogo.Data;
+using System.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace CF.Octogo.Authorization.Users
 {
@@ -464,6 +467,32 @@ namespace CF.Octogo.Authorization.Users
             }
 
             return query;
+        }
+        public async Task<ListResultDto<EditionModuePageDto>> EditionModuleAndPagesByUserId(int UserId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("UserId", UserId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_EditionModuleAndPagesByUserId", parameters
+               );
+            if (ds.Tables.Count > 0)
+            {
+                var userEditionPageData = SqlHelper.ConvertDataTable<EditionModuePageRet>(ds.Tables[0]);
+                var userEditionData = userEditionPageData.Select(rw => new EditionModuePageDto
+                {
+                    PageId = rw.PageId,
+                    PageName = rw.PageName,
+                    ChildPages = rw.ChildPages != null ? JsonConvert.DeserializeObject<List<ChildPagesDto>>(rw.ChildPages.ToString()) : null
+                }).ToList();
+                return new ListResultDto<EditionModuePageDto>(userEditionData);
+
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

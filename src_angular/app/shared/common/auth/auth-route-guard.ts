@@ -71,7 +71,6 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     selectBestRoute(): string {
-
         if (!this._sessionService.user) {
             return '/account/login';
         }
@@ -91,7 +90,10 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
         if (this._permissionChecker.isGranted('Pages.Administration.Users')) {
             return '/app/admin/users';
         }
-
+        // Added By : Hari Krashna (only for Signed Up User)
+        if (this._permissionChecker.isGranted('Pages.isdefaultRegisterUser')) {
+            return '/app/registered-user';
+        }
         return '/app/notifications';
     }
 }

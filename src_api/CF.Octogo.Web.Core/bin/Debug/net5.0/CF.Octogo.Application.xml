@@ -62,6 +62,31 @@
             Can be set when reading data from excel or when importing user
             </summary>
         </member>
+        <member name="M:CF.Octogo.Common.CommonAppService.GetMasterData(System.String)">
+            <summary>
+            1. Pricing Types :- MasterName = 'PRICINGTYPE'
+            2. Pricing Approach :- MasterName = 'PRICINGAPPROACH'
+            3. Awb Cost Approach :- MasterName = 'AWBCOSTAPPROACH'
+            4. Product :- MasterName = 'PRODUCT'
+            5. Services :- MasterName = 'SERVICE'
+            6. User Type :- MasterName = 'USERTYPE'
+            7. Department :- MasterName = 'DEPARTMENT'
+            8. Airline :- MasterName = 'AIRLINE'
+            9. Industry :- MasterName = 'INDUSTRY'
+            10. Designation  :- MasterName = 'DESIGNATION'
+            11. City  :- MasterName = 'CITY'
+            12. Country  :- MasterName = 'COUNTRY'
+            </summary>
+            <param name="masterName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Common.CommonAppService.SimpleStringDecription(System.String)">
+            <summary>
+            Decript Cipher Query string(Browser). Extract data and return to user as key-value pairs
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
         <member name="T:CF.Octogo.DashboardCustomization.Dto.DashboardOutput">
             <summary>
             This class stores filtered dashboard information by user
@@ -76,6 +101,14 @@
             <summary>
             Derive your application services from this class.
             </summary>
+        </member>
+        <member name="M:CF.Octogo.Sessions.SessionAppService.GetCurrentLoginInformationsNew">
+            <summary>
+            CREATED BY: HARI KRASHNA
+            CREATED ON: 16/12/2021
+            Add some additional information of user in existing user detail service 
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

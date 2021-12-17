@@ -21,6 +21,8 @@ using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System;
 using Abp.Domain.Uow;
+using CF.Octogo.UserRegistration.Dto;
+using CF.Octogo.Common.Dto;
 
 namespace CF.Octogo.Editions
 {
@@ -266,19 +268,21 @@ namespace CF.Octogo.Editions
         }
         public async Task<ListResultDto<PricingTypeDto>> GetPricingTypes()
         {
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-                    Connection.GetSqlConnection("DefaultOctoGo"),
-                    System.Data.CommandType.Text,
-                    "SELECT inPricingTypeId [Id],vcTypeName [Name],inNoOfDays [NoOfDays] FROM TblMst_PricingType  WHERE btIsActive = 1 ORDER BY inNoOfDays"
-                    );
-            if(ds.Tables.Count > 0)
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("MasterName", "PRICINGTYPE");
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetMasterDataByMasterName", parameters);
+            if (ds.Tables.Count > 0)
             {
-                return new ListResultDto<PricingTypeDto> (SqlHelper.ConvertDataTable<PricingTypeDto>(ds.Tables[0]));
+                var result = SqlHelper.ConvertDataTable<MasterDataRet>(ds.Tables[0]);
+                if(result.Count > 0)
+                {
+                    var res = result[0].MasterData != null ? JsonConvert.DeserializeObject<List<PricingTypeDto>>(result[0].MasterData.ToString()) : null;
+                    return new ListResultDto<PricingTypeDto>(res);
+                }
             }
-            else
-            {
                 return null;
-            }
         }
 
         public async Task<int> InsertUpdateEditionModuleAndPricing(CreateEditionDto input)

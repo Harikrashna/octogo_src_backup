@@ -9,5 +9,6 @@ namespace CF.Octogo.Sessions
         Task<GetCurrentLoginInformationsOutput> GetCurrentLoginInformations();
 
         Task<UpdateUserSignInTokenOutput> UpdateUserSignInToken();
+        Task<GetCurrentLoginInformationsOutputNew> GetCurrentLoginInformationsNew();
     }
 }

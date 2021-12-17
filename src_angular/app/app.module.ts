@@ -86,6 +86,8 @@ import { NgxSpinnerModule, NgxSpinnerComponent } from 'ngx-spinner';
 import { ScrollTopComponent } from './shared/layout/scroll-top.component';
 import { AppBsModalModule } from '@shared/common/appBsModal/app-bs-modal.module';
 import { SubheaderModule } from './shared/common/sub-header/subheader.module';
+import { UnregisteredUserDashboardComponent } from './shared/layout/notifications/unregistered-user-dashboard/unregistered-user-dashboard.component';
+import { RegisteredUserEditionSelectionComponent } from './shared/layout/notifications/registered-user-edition-selection/registered-user-edition-selection.component';
 
 
 
@@ -141,7 +143,9 @@ import { SubheaderModule } from './shared/common/sub-header/subheader.module';
         SessionTimeoutModalComponent,
         SessionTimeoutComponent,
         MenuSearchBarComponent,
-        ActiveDelegatedUsersComboComponent
+        ActiveDelegatedUsersComboComponent,
+        UnregisteredUserDashboardComponent,
+        RegisteredUserEditionSelectionComponent
     ],
     imports: [
         CommonModule,

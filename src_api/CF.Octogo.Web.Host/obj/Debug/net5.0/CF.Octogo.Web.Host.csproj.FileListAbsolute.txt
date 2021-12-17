@@ -539,6 +539,7 @@ D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Oct
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Application.Shared.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Core.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Core.Shared.dll
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Data.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.GraphQL.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Web.Core.dll
@@ -550,6 +551,7 @@ D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Oct
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Application.Shared.pdb
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Core.pdb
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Core.Shared.pdb
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Data.pdb
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.pdb
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll.config
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.GraphQL.pdb
@@ -587,5 +589,3 @@ D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\obj\Debug\net5.0\ref\CF
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\obj\Debug\net5.0\CF.Octogo.Web.Host.xml
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\obj\Debug\net5.0\CF.Octogo.Web.Host.pdb
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\obj\Debug\net5.0\CF.Octogo.Web.Host.genruntimeconfig.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Data.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Web.Host\bin\Debug\net5.0\CF.Octogo.Data.pdb

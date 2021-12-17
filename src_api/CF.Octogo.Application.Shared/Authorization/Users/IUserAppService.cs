@@ -25,5 +25,6 @@ namespace CF.Octogo.Authorization.Users
         Task DeleteUser(EntityDto<long> input);
 
         Task UnlockUser(EntityDto<long> input);
+        Task<ListResultDto<EditionModuePageDto>> EditionModuleAndPagesByUserId(int UserId);
     }
 }

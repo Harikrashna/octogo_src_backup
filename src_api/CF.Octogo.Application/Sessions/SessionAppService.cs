@@ -14,6 +14,9 @@ using CF.Octogo.UiCustomization;
 using CF.Octogo.Authorization.Delegation;
 using CF.Octogo.Authorization.Users;
 using Abp.Domain.Uow;
+using CF.Octogo.UserRegistration.Dto;
+using System.Data.SqlClient;
+using CF.Octogo.Data;
 
 namespace CF.Octogo.Sessions
 {
@@ -170,7 +173,7 @@ namespace CF.Octogo.Sessions
                     : ""
             };
         }
-        
+
         protected virtual async Task<User> GetImpersonatorUserAsync()
         {
             using (CurrentUnitOfWork.SetTenantId(AbpSession.ImpersonatorTenantId))
@@ -182,6 +185,71 @@ namespace CF.Octogo.Sessions
                 }
 
                 return user;
+            }
+        }
+        /// <summary>
+        /// CREATED BY: HARI KRASHNA
+        /// CREATED ON: 16/12/2021
+        /// Add some additional information of user in existing user detail service 
+        /// </summary>
+        /// <returns></returns>
+        [DisableAuditing]
+        public async Task<GetCurrentLoginInformationsOutputNew> GetCurrentLoginInformationsNew()
+        {
+            GetCurrentLoginInformationsOutput res = await GetCurrentLoginInformations();
+                UserLoginInfoNewDto user = new UserLoginInfoNewDto();
+                bool IsEmailConfirmed = false;
+                if (AbpSession.UserId.HasValue)
+                {
+                    User userdata = await GetCurrentUserAsync();
+                    IsEmailConfirmed = userdata.IsEmailConfirmed;
+                    RegisteredUserDetailDto userRegistrationDetails = await GetUserRegistrationDetailsByUserId(userdata.Id);
+
+                    user.Id = res.User.Id;
+                    user.Name = res.User.Name;
+                    user.Surname = res.User.Surname;
+                    user.UserName = res.User.UserName;
+                    user.EmailAddress = res.User.EmailAddress;
+                    user.ProfilePictureId = res.User.ProfilePictureId;
+                    user.IsEmailConfirmed = IsEmailConfirmed;
+                    user.UserDetailId = userRegistrationDetails!= null ? userRegistrationDetails.UserDetailId : 0;           
+                }
+                else
+                {
+                    user = null;
+                }
+                
+            
+            var output = new GetCurrentLoginInformationsOutputNew
+            {
+                Application = res.Application,
+                User = user,
+                Tenant = res.Tenant,
+                ImpersonatorTenant = res.ImpersonatorTenant,
+                ImpersonatorUser = res.ImpersonatorUser,
+                Theme = res.Theme
+            };
+            return output;
+        }
+        private async Task<RegisteredUserDetailDto> GetUserRegistrationDetailsByUserId(long userId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("UserId", userId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetRegisteredUserDetailsByUserId", parameters);
+            if (ds.Tables.Count > 0)
+            {
+                    var result = SqlHelper.ConvertDataTable<RegisteredUserDetailDto>(ds.Tables[0]);
+                    if (result.Count > 0)
+                    {
+                        return result.FirstOrDefault();
+                    }
+                return null;
+            }
+            else
+            {
+                return null;
             }
         }
     }

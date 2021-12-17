@@ -36,7 +36,8 @@ export class AccountComponent extends AppComponentBase implements OnInit {
         'stripe-cancel-payment',
         'session-locked',
         'sign-up/user-sign-up',
-        'user-detailed-registration'
+        'user-detailed-registration',
+        'confirm-email'
     ];
 
     public constructor(

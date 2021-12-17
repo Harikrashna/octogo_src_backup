@@ -4,7 +4,7 @@ import { AppConsts } from '@shared/AppConsts';
 import { accountModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import {
-     EditionSelectDto,
+    EditionSelectDto,
     PasswordComplexitySetting,
     ProfileServiceProxy,
     RegisterTenantOutput,
@@ -18,6 +18,7 @@ import { RegisterTenantModel } from './register-tenant.model';
 import { TenantRegistrationHelperService } from './tenant-registration-helper.service';
 import { finalize, catchError } from 'rxjs/operators';
 import { ReCaptchaV3Service } from 'ngx-captcha';
+import { AppAuthService } from '@app/shared/common/auth/app-auth.service';
 
 @Component({
     templateUrl: './register-tenant.component.html',
@@ -90,21 +91,47 @@ export class RegisterTenantComponent extends AppComponentBase implements OnInit,
                 .subscribe((result: RegisterTenantOutput) => {
                     this.notify.success(this.l('SuccessfullyRegistered'));
                     this._tenantRegistrationHelper.registrationResult = result;
-                    if (parseInt(this.model.subscriptionStartType.toString()) === SubscriptionStartType.Paid) {
-                        this._router.navigate(['account/buy'],
-                            {
-                                queryParams: {
-                                    tenantId: result.tenantId,
-                                    editionId: this.model.editionId,
-                                    subscriptionStartType: this.model.subscriptionStartType,
-                                    editionPaymentType: this.editionPaymentType
-                                }
-                            });
-                    } else {
-                        this._router.navigate(['account/register-tenant-result']);
+                    //  Commented for SingedUp user process
+                    // if (parseInt(this.model.subscriptionStartType.toString()) === SubscriptionStartType.Paid) {
+                    //     this._router.navigate(['account/buy'],
+                    //         {
+                    //             queryParams: {
+                    //                 tenantId: result.tenantId,
+                    //                 editionId: this.model.editionId,
+                    //                 subscriptionStartType: this.model.subscriptionStartType,
+                    //                 editionPaymentType: this.editionPaymentType
+                    //             }
+                    //         });
+                    // } else {
+                    //     this._router.navigate(['account/register-tenant-result']);
+                    // }
+
+                    //  Added for SingedUp user process
+                    if (this.appSession.user != null && this.appSession.user != undefined && this.appSession.user.id > 0) {
+                        abp.auth.clearToken();
+                        abp.auth.clearRefreshToken();
+                        if (this._tenantRegistrationHelper.registrationResult.tenantId > 0) {
+                            abp.multiTenancy.setTenantIdCookie(this._tenantRegistrationHelper.registrationResult.tenantId);
+                            this._router.navigate(['account/register-tenant-result']);
+                        }
+                    }
+                    else {
+                        if (parseInt(this.model.subscriptionStartType.toString()) === SubscriptionStartType.Paid) {
+                            this._router.navigate(['account/buy'],
+                                {
+                                    queryParams: {
+                                        tenantId: result.tenantId,
+                                        editionId: this.model.editionId,
+                                        subscriptionStartType: this.model.subscriptionStartType,
+                                        editionPaymentType: this.editionPaymentType
+                                    }
+                                });
+                        } else {
+                            this._router.navigate(['account/register-tenant-result']);
+                        }
                     }
                 });
-            };
+        };
 
         if (this.useCaptcha) {
             this._reCaptchaV3Service.execute(this.recaptchaSiteKey, 'register_tenant', (token) => {
