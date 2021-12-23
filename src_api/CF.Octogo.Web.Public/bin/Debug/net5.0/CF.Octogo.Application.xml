@@ -62,7 +62,7 @@
             Can be set when reading data from excel or when importing user
             </summary>
         </member>
-        <member name="M:CF.Octogo.Common.CommonAppService.GetMasterData_Cache(System.String)">
+        <member name="M:CF.Octogo.Common.CommonAppService.GetMasterData(System.String)">
             <summary>
             1. Pricing Types :- MasterName = 'PRICINGTYPE'
             2. Pricing Approach :- MasterName = 'PRICINGAPPROACH'
@@ -101,6 +101,14 @@
             <summary>
             Derive your application services from this class.
             </summary>
+        </member>
+        <member name="M:CF.Octogo.Sessions.SessionAppService.GetCurrentLoginInformationsNew">
+            <summary>
+            CREATED BY: HARI KRASHNA
+            CREATED ON: 16/12/2021
+            Add some additional information of user in existing user detail service 
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>

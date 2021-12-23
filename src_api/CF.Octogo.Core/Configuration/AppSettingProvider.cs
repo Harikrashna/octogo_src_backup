@@ -131,7 +131,10 @@ namespace CF.Octogo.Configuration
                     GetFromAppSettings(AppSettings.TenantManagement.BillingTaxVatNo, ""), scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.Email.UseHostDefaultEmailSettings,
                     GetFromAppSettings(AppSettings.Email.UseHostDefaultEmailSettings,
-                        OctogoConsts.MultiTenancyEnabled ? "true" : "false"), scopes: SettingScopes.Tenant)
+                        OctogoConsts.MultiTenancyEnabled ? "true" : "false"), scopes: SettingScopes.Tenant),
+                new SettingDefinition(AppSettings.TenantManagement.DefaultDashboardPage,
+                    GetFromAppSettings(AppSettings.TenantManagement.DefaultDashboardPage,
+                        OctogoConsts.MultiTenancyEnabled ? "/app/tenant-users-dashboard" : "/app/main/dashboard"))
             };
         }
 

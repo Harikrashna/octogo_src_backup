@@ -87,6 +87,15 @@
             <param name="str"></param>
             <returns></returns>
         </member>
+        <member name="M:CF.Octogo.DashboardCustomization.DashboardCustomizationAppService.GetProductAndEditionDetailByUserId(System.Int32)">
+            <summary>
+            Description:get produclist and editionlist by userId
+            Created by:Merajuddin khan
+            Created on:20-12-2021
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
         <member name="T:CF.Octogo.DashboardCustomization.Dto.DashboardOutput">
             <summary>
             This class stores filtered dashboard information by user

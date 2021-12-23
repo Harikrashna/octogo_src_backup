@@ -13,7 +13,8 @@ import {
     CreateInvoiceDto,
     EditionPaymentType,
     SubscriptionStartType,
-    SubscriptionPaymentType
+    SubscriptionPaymentType,
+    TenantRegistrationServiceProxy
 } from '@shared/service-proxies/service-proxies';
 
 import { LazyLoadEvent } from 'primeng/api';
@@ -28,8 +29,8 @@ import { finalize } from 'rxjs/operators';
 
 export class SubscriptionManagementComponent extends AppComponentBase implements OnInit {
 
-    @ViewChild('dataTable', {static: true}) dataTable: Table;
-    @ViewChild('paginator', {static: true}) paginator: Paginator;
+    @ViewChild('dataTable', { static: true }) dataTable: Table;
+    @ViewChild('paginator', { static: true }) paginator: Paginator;
 
     subscriptionStartType: typeof SubscriptionStartType = SubscriptionStartType;
     subscriptionPaymentType: typeof SubscriptionPaymentType = SubscriptionPaymentType;
@@ -48,7 +49,8 @@ export class SubscriptionManagementComponent extends AppComponentBase implements
         private _paymentServiceProxy: PaymentServiceProxy,
         private _invoiceServiceProxy: InvoiceServiceProxy,
         private _subscriptionServiceProxy: SubscriptionServiceProxy,
-        private _activatedRoute: ActivatedRoute
+        private _activatedRoute: ActivatedRoute,
+        private _tenantRegistrationService: TenantRegistrationServiceProxy
     ) {
         super(injector);
         this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
@@ -76,6 +78,18 @@ export class SubscriptionManagementComponent extends AppComponentBase implements
             this.user = this.appSession.user;
             this.tenant = this.appSession.tenant;
             this.application = this.appSession.application;
+            if(this.tenant.edition != null && this.tenant.edition.id > 0){
+                this.GetEditionDetailsById(this.tenant.edition.id);
+            }
+        });
+    }
+    GetEditionDetailsById(editionId): void {
+        this._tenantRegistrationService.getEditionDetailsById(editionId).subscribe(result => {
+            if (result != null && result.id > 0) {
+                this.tenant.edition.trialDayCount = result.trialDayCount;
+                this.tenant.isInTrialPeriod = result.isTrialActive;
+                this.tenant.edition.isFree = (result.pricingData != null && result.pricingData.length > 0) ? false : true;
+            }
         });
     }
 

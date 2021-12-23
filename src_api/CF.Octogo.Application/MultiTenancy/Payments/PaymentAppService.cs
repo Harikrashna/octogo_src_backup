@@ -146,7 +146,7 @@ namespace CF.Octogo.MultiTenancy.Payments
 
         public async Task<SubscriptionPaymentDto> GetPaymentAsync(long paymentId)
         {
-            return ObjectMapper.Map<SubscriptionPaymentDto>(await _subscriptionPaymentRepository.GetAsync(paymentId));
+               return ObjectMapper.Map<SubscriptionPaymentDto>(await _subscriptionPaymentRepository.GetAsync(paymentId));
         }
 
         public async Task<SubscriptionPaymentDto> GetLastCompletedPayment()
@@ -367,6 +367,37 @@ namespace CF.Octogo.MultiTenancy.Payments
                        tenantId: AbpSession.GetTenantId(),
                        gateway: null,
                        isRecurring: null) != default;
+        }
+        public async Task<long> CreatePaymentNew(CreatePaymentNewDto input)
+        {
+            if (!AbpSession.TenantId.HasValue)
+            {
+                throw new ApplicationException("A payment only can be created for a tenant. TenantId is not set in the IAbpSession!");
+            }
+            string targetEditionName;
+
+            using (UnitOfWorkManager.Current.SetTenantId(null))
+            {
+                var targetEdition = (SubscribableEdition)await _editionManager.GetByIdAsync(input.EditionId);
+                targetEditionName = targetEdition.DisplayName;
+            }
+
+            var payment = new SubscriptionPayment
+            {
+                Description = GetPaymentDescription(input.EditionPaymentType, PaymentPeriodType.Monthly, targetEditionName, input.RecurringPaymentEnabled),
+                PaymentPeriodType = PaymentPeriodType.Monthly,
+                EditionId = input.EditionId,
+                TenantId = AbpSession.GetTenantId(),
+                Gateway = input.SubscriptionPaymentGatewayType,
+                Amount = input.Amount,
+                DayCount = 30,//input.PaymentPeriodType.HasValue ? (int)input.PaymentPeriodType.Value : 0,
+                IsRecurring = input.RecurringPaymentEnabled,
+                SuccessUrl = input.SuccessUrl,
+                ErrorUrl = input.ErrorUrl,
+                EditionPaymentType = input.EditionPaymentType
+            };
+
+            return await _subscriptionPaymentRepository.InsertAndGetIdAsync(payment);
         }
     }
 }

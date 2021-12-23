@@ -1,4 +1,4 @@
-import { PermissionCheckerService, RefreshTokenService } from 'abp-ng2-module';
+import { PermissionCheckerService, RefreshTokenService, SettingService } from 'abp-ng2-module';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, CanLoad, Router, RouterStateSnapshot } from '@angular/router';
 import { AppSessionService } from '@shared/common/session/app-session.service';
@@ -13,7 +13,8 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
         private _permissionChecker: PermissionCheckerService,
         private _router: Router,
         private _sessionService: AppSessionService,
-        private _refreshTokenService: RefreshTokenService
+        private _refreshTokenService: RefreshTokenService,
+        private setting: SettingService
     ) { }
 
     canActivateInternal(data: any, state: RouterStateSnapshot): Observable<boolean> {
@@ -79,21 +80,29 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
             return '/app/admin/hostDashboard';
         }
 
-        if (this._permissionChecker.isGranted('Pages.Tenant.Dashboard')) {
-            return '/app/main/dashboard';
-        }
+        // if (this._permissionChecker.isGranted('Pages.Tenant.Dashboard')) {
+        //     return '/app/main/dashboard';
+        // }
 
-        if (this._permissionChecker.isGranted('Pages.Tenants')) {
-            return '/app/admin/tenants';
-        }
+        // if (this._permissionChecker.isGranted('Pages.Tenants')) {
+        //     return '/app/admin/tenants';
+        // }
 
-        if (this._permissionChecker.isGranted('Pages.Administration.Users')) {
-            return '/app/admin/users';
-        }
+        // if (this._permissionChecker.isGranted('Pages.Administration.Users')) {
+        //     return '/app/admin/users';
+        // }
         // Added By : Hari Krashna (only for Signed Up User)
         if (this._permissionChecker.isGranted('Pages.isdefaultRegisterUser')) {
             return '/app/registered-user';
         }
+        // Added By : Hari Krashna (only for Signed Up User(who SignedUp on Host, later transffered to Tenant))
+        // this functionality will build using setting management
+        else if (this._sessionService.tenant != null && this._sessionService.tenant != undefined && this._sessionService.tenant.id > 0) {
+            return this.getTenantDefaultdashBoard();;
+        }
         return '/app/notifications';
+    }
+    getTenantDefaultdashBoard(): string {
+        return '/app/main/tenant-dashboard'
     }
 }

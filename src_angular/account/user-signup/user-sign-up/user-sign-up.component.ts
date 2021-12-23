@@ -27,7 +27,7 @@ export class UserSignUpComponent extends AppComponentBase implements OnInit {
      private _router: Router) {
     super(injector);
   }
-  usertypes:any;
+  usertypes:any = [];
   // usertypes = [
   //   { id: 1, name: "AIRLINE" },
   //   { id: 2, name: "GSA" },

@@ -192,7 +192,7 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
       UserRegistrationInputData.representingCountries = values.presenceOrRepresentingCountries.map(s => s.id).toString();;
     }
 
-    UserRegistrationInputData.services = values.services.map(s => s.id).toString();
+    UserRegistrationInputData.services = (values.services != null && values.services != undefined) ? values.services.map(s => s.id).toString():null;
     //END
 
     UserRegistrationInputData.city = values.city.id;
@@ -208,9 +208,11 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
     this._userDetailRegistration.createDetailedUserRegistration(UserRegistrationInputData).pipe(finalize(() => { this.saving = false; })).subscribe(result => {
       
       if(result>0){
-      this.notify.success(this.l("SavedSuccessfully"))
+        this.message.success(this.l('UserRegisteredSuccessfullyMsg')).then(() => {
+      // this.notify.success(this.l("SavedSuccessfully"))
       form.resetForm();
       if(this.appSession.user != null && this.appSession.user != undefined && this.appSession.user.id > 0){
+        this.setAppModuleBodyClassInternal();
         this._router.navigate(['app/registered-user'], { 
           queryParams:
            { 
@@ -222,6 +224,7 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
       else{
       this._router.navigate(['account/login']);
       }
+    });
   }
 
   else{
@@ -375,6 +378,12 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
                                                     || (x.code).toLowerCase().includes((e.query.toLowerCase())));
     this.fillCountry(e.query);
   }
+  resetCountry(){
+    this.UserRegistration.country = null;
+    this.UserRegistration.isdCode = null;
+    this.filteredCountry = [];
+    this.selectedCountry = [];
+  }
   filteredCountry;
   selectedCountry;
   fillCountry(cityCode) {
@@ -430,6 +439,32 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
     //   document.getElementById("services").focus();
     // },3500)
   }
+  setAppModuleBodyClassInternal(): void {
+    let currentBodyClass = document.body.className;
+    let classesToRemember = '';
+
+    if (currentBodyClass.indexOf('brand-minimize') >= 0) {
+        classesToRemember += ' brand-minimize ';
+    }
+
+    if (currentBodyClass.indexOf('aside-left-minimize') >= 0) {
+        classesToRemember += ' aside-left-minimize';
+    }
+
+    if (currentBodyClass.indexOf('brand-hide') >= 0) {
+        classesToRemember += ' brand-hide';
+    }
+
+    if (currentBodyClass.indexOf('aside-left-hide') >= 0) {
+        classesToRemember += ' aside-left-hide';
+    }
+
+    if (currentBodyClass.indexOf('swal2-toast-shown') >= 0) {
+        classesToRemember += ' swal2-toast-shown';
+    }
+
+    document.body.className = this.ui.getAppModuleBodyClass() + ' ' + classesToRemember;
+}
   //END 
 }
 

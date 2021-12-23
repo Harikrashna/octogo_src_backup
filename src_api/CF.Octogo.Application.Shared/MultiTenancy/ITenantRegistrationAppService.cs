@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
+using CF.Octogo.Dto;
 using CF.Octogo.Editions.Dto;
 using CF.Octogo.MultiTenancy.Dto;
 
@@ -13,5 +15,7 @@ namespace CF.Octogo.MultiTenancy
 
         Task<EditionSelectDto> GetEdition(int editionId);
         Task<EditionsSelectOutput> GetEditionsForSelectForRegisteredUser();
+        Task<List<ProductWithEditionDto>> GetProductWithEdition();
+        Task<EditionDetailsForEditDto> GetEditionDetailsById(int EditionId);
     }
 }

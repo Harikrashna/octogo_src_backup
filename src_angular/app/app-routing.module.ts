@@ -5,6 +5,7 @@ import { AppRouteGuard } from './shared/common/auth/auth-route-guard';
 import { NotificationsComponent } from './shared/layout/notifications/notifications.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { UnregisteredUserDashboardComponent } from './shared/layout/notifications/unregistered-user-dashboard/unregistered-user-dashboard.component';
+import { TenantDashboardComponent } from './main/tenant-dashboard/tenant-dashboard.component';
 
 @NgModule({
     imports: [
@@ -20,13 +21,15 @@ import { UnregisteredUserDashboardComponent } from './shared/layout/notification
                         children: [
                             { path: 'notifications', component: NotificationsComponent },
                             { path: 'registered-user', component: UnregisteredUserDashboardComponent },
-                            { path: '', redirectTo: '/app/main/dashboard', pathMatch: 'full' }
+                            { path: 'main/tenant-dashboard', component: TenantDashboardComponent },
+                            // { path: '', redirectTo: '/app/main/dashboard', pathMatch: 'full' }
                         ]
                     },
                     {
                         path: 'main',
                         loadChildren: () => import('app/main/main.module').then(m => m.MainModule), //Lazy load main module
-                        data: { preload: true }
+                        data: { preload: true },
+                        canLoad: [AppRouteGuard]
                     },
                     {
                         path: 'admin',

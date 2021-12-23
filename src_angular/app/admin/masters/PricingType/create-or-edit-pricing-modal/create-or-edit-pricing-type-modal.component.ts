@@ -88,6 +88,8 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
       if (this.editpricingType.inPricingTypeId != null) {
         this._pricingTypeService.insertUpdatePricingType(this.editpricingType).subscribe(e => {
           this.notify.info(this.l('UpdatePricingTypeMessage'));
+          this.close(form);
+          this.modalSave.emit(null);
         })
         this.primengTableHelper.totalRecordsCount = this.pricingTypeList.length;
       }
@@ -95,13 +97,12 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
         this._pricingTypeService.insertUpdatePricingType(this.editpricingType).subscribe(e => {
 
           this.notify.info(this.l('SavedSuccessfully'));
-          // this.getAllPricingList();
+          this.close(form);
+          this.modalSave.emit(null);
         })
         this.primengTableHelper.totalRecordsCount = this.pricingTypeList.length;
       }
     }
-    this.close(form);
-    this.modalSave.emit(null);
   }
 
 

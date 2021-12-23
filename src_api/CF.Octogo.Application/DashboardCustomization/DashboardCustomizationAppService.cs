@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.MultiTenancy;
 using Abp.Runtime.Session;
@@ -8,6 +10,7 @@ using Abp.UI;
 using CF.Octogo.Configuration;
 using CF.Octogo.DashboardCustomization.Definitions;
 using CF.Octogo.DashboardCustomization.Dto;
+using CF.Octogo.Data;
 using Newtonsoft.Json;
 
 namespace CF.Octogo.DashboardCustomization
@@ -269,6 +272,37 @@ namespace CF.Octogo.DashboardCustomization
                 .Where(definition => allNeededFilters.Contains(definition.Id))
                 .Select(x => new WidgetFilterOutput(x.Id, x.Name))
                 .ToList();
+        }
+        /// <summary>
+        /// Description:get produclist and editionlist by userId
+        /// Created by:Merajuddin khan
+        /// Created on:20-12-2021
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+
+        public async Task<ListResultDto<EditionAndProductListDto>> GetProductAndEditionDetailByUserId(int userId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("UserId", userId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_EditionNameAndProductByUserId", parameters
+               );
+            var EditionProductData = new List<EditionAndProductListDto>();
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                EditionProductData = SqlHelper.ConvertDataTable<EditionAndProductListDto>(ds.Tables[0]);
+                return new ListResultDto<EditionAndProductListDto>(EditionProductData);
+
+            }
+            else
+            {
+                //if user does not have any active product then throw an userfriendly exception
+                // throw new UserFriendlyException(L("NotActiveProduct"));
+                return null;
+            }
         }
     }
 }

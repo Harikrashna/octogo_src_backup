@@ -12,6 +12,7 @@ export class ChatToggleButtonComponent extends ThemesLayoutBaseComponent impleme
     unreadChatMessageCount = 0;
     chatConnected = false;
     isHost = false;
+    isShowChatToggler: boolean;
 
     @Input() customStyle = 'btn btn-icon btn-dropdown btn-clean btn-lg mr-1';
 
@@ -24,6 +25,15 @@ export class ChatToggleButtonComponent extends ThemesLayoutBaseComponent impleme
     }
 
     ngOnInit(): void {
+                // Added for Tenents Login(Hari Krashna 20/12/2021)
+        // This process will changes to Setting Management
+        if ((this.appSession.tenant != null && this.appSession.tenant != undefined && this.appSession.tenant.id > 0)
+        || this.permission.isGranted('Pages.isdefaultRegisterUser')) {
+            this.isShowChatToggler = false;
+        }
+        else{
+            this.isShowChatToggler = true;
+        }
         this.registerToEvents();
         this.isHost = !this._abpSessionService.tenantId;
     }

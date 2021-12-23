@@ -23,6 +23,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CF.Octogo.MultiTenancy.Payments;
+using Newtonsoft.Json;
+using CF.Octogo.Data;
+using CF.Octogo.Dto;
+using System.Data.SqlClient;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -67,7 +71,8 @@ namespace CF.Octogo.MultiTenancy
             }
             if (input.EditionId.HasValue)
             {
-                await CheckEditionSubscriptionAsync(input.EditionId.Value, input.SubscriptionStartType);
+                // await CheckEditionSubscriptionAsync(input.EditionId.Value, input.SubscriptionStartType);
+                 await CheckEditionSubscriptionNew(input.EditionId.Value, input.SubscriptionStartType);
             }
             else
             {
@@ -276,6 +281,32 @@ namespace CF.Octogo.MultiTenancy
 
             CheckSubscriptionStart(edition, subscriptionStartType);
         }
+        private async Task CheckEditionSubscriptionNew(int editionId, SubscriptionStartType subscriptionStartType)
+        {
+            EditionDetailsForEditDto edition = await GetEditionDetailsById(editionId);
+
+            switch (subscriptionStartType)
+            {
+                case SubscriptionStartType.Free:
+                    if (edition.PricingData != null && edition.PricingData.Count > 0)
+                    {
+                        throw new UserFriendlyException("This is not a free edition !");
+                    }
+                    break;
+                case SubscriptionStartType.Trial:
+                    if (!edition.IsTrialActive)
+                    {
+                        throw new UserFriendlyException("Trial is not available for this edition !");
+                    }
+                    break;
+                case SubscriptionStartType.Paid:
+                    if (edition.PricingData == null)
+                    {
+                        throw new UserFriendlyException("This is a free edition and cannot be subscribed as paid !");
+                    }
+                    break;
+            }
+        }
 
         private static void CheckSubscriptionStart(SubscribableEdition edition, SubscriptionStartType subscriptionStartType)
         {
@@ -339,5 +370,75 @@ namespace CF.Octogo.MultiTenancy
                 throw new UserFriendlyException(L("AdminEmailAdressDuplicate"));
             }
         }
+        public async Task<List<ProductWithEditionDto>> GetProductWithEdition()
+        {
+            List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
+            ProductWithEditionDto result = new ProductWithEditionDto();
+            // List<EditionList> editionList = new List<EditionList>();
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_GetProductWithEdition");
+
+            if (ds.Tables.Count > 0)
+            {
+                var ProductWithEditionDataRet = SqlHelper.ConvertDataTable<ProductWithEditionRet>(ds.Tables[0]);
+                var ProductWithEditionData = ProductWithEditionDataRet.Select(rs => new ProductWithEditionDto
+                {
+                    ProductID = rs.ProductID,
+                    ProductName = rs.ProductName,
+                    Edition = rs.Edition != null ? JsonConvert.DeserializeObject<List<EditionList>>(rs.Edition.ToString()) : null
+
+                }).ToList();
+
+
+                //  ProductWithEditionDto pro = new ProductWithEditionDto();
+                //  pro.ProductID=ProductWithEditionData.ProductID;
+
+                //list.Add(ProductWithEditionData);
+                return ProductWithEditionData;
+
+
+
+            }
+
+            else
+            {
+                return null;
+            }
         }
+        public async Task<EditionDetailsForEditDto> GetEditionDetailsById(int EditionId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("EditionId", EditionId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GETEDITIONDATAFOREDIT", parameters
+                    );
+            if (ds.Tables.Count > 0)
+            {
+                var result = SqlHelper.ConvertDataTable<EditionDetailsForEdit>(ds.Tables[0]);
+                return result.Select(rw => new EditionDetailsForEditDto
+                {
+                    Id = rw.Id,
+                    DisplayName = rw.DisplayName,
+                    ExpiringEditionId = rw.ExpiringEditionId,
+                    ProductId = rw.ProductId,
+                    ApproachId = rw.ApproachId,
+                    TrialDayCount = rw.TrialDayCount,
+                    IsTrialActive = rw.IsTrialActive,
+                    WaitingDayAfterExpire = rw.WaitingDayAfterExpire,
+                    WaitAfterExpiry = rw.WaitAfterExpiry,
+                    DependantEditionID = rw.DependantEditionID,
+                    DependantEdition = rw.DependantEdition,
+                    PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<ModulePricingDto>>(rw.PricingData.ToString()) : null
+                }).FirstOrDefault();
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
 }

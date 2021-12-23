@@ -91,13 +91,18 @@ namespace CF.Octogo.Master.Product
         public async Task DeleteProduct(EntityDto input)
         {
             SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("ProductID", input.Id);
-            parameters[0] = new SqlParameter("@UserId", AbpSession.UserId);
+            parameters[0] = new SqlParameter("ProductId", input.Id);
+            parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
 
-
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-           System.Data.CommandType.StoredProcedure,
-           "USP_DeleteProduct", parameters);
+            try
+            {
+                await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+               System.Data.CommandType.StoredProcedure,
+               "USP_DeleteProduct", parameters);
+            }catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 
         }
 

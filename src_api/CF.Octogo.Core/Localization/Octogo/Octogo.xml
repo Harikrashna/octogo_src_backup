@@ -1302,5 +1302,7 @@
 		<text name="PresenceOrRepresentingCountries">Presence/Representing Countries</text>
 		<text name="RepresentingAirlines">Representing Airlines</text>
 		<text name="AdminEmailAddressDuplicate">Admin Email Address is duplicate</text>
+		<text name="UserRegisteredSuccessfullyMsg">Registration Completed</text>
+		<text name="Products">Products</text>
 	</texts>
 </localizationDictionary>

@@ -1,5 +1,5 @@
 <div dropdown class="topbar-item" data-toggle="dropdown" aria-expanded="true"
-     [dropup]="isDropup" container="{{isDropup ? null: 'body'}}">
+     [dropup]="isDropup" container="{{isDropup ? null: 'body'}}" *ngIf="isShowHeaderNotification">
     <div dropdownToggle [class]="customStyle" id="notificationIcon">
         <i class="flaticon-alert-2 unread-notification" *ngIf="unreadNotificationCount"></i>
         <span class="label label-warning unread-notification-count" *ngIf="unreadNotificationCount">

@@ -38,5 +38,6 @@ namespace CF.Octogo.MultiTenancy.Payments
         Task UpgradeSubscriptionCostsLessThenMinAmount(int editionId);
 
         Task<bool> HasAnyPayment();
+        Task<long> CreatePaymentNew(CreatePaymentNewDto input);
     }
 }

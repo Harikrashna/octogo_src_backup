@@ -750,16 +750,23 @@ namespace CF.Octogo.Web.Controllers
         private async Task<AbpLoginResult<Tenant, User>> GetLoginResultAsync(string usernameOrEmailAddress,
             string password, string tenancyName)
         {
-            var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, tenancyName);
-
-            switch (loginResult.Result)
+            try
             {
-                case AbpLoginResultType.Success:
-                    return loginResult;
-                default:
-                    throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result,
-                        usernameOrEmailAddress, tenancyName);
+                var loginResult = await _logInManager.LoginAsync(usernameOrEmailAddress, password, tenancyName);
+
+                switch (loginResult.Result)
+                {
+                    case AbpLoginResultType.Success:
+                        return loginResult;
+                    default:
+                        throw _abpLoginResultTypeHelper.CreateExceptionForFailedLoginAttempt(loginResult.Result,
+                            usernameOrEmailAddress, tenancyName);
+                }
+            }catch(Exception e)
+            {
+                throw new UserFriendlyException(L(e.Message));
             }
+            return null;
         }
 
         private string CreateAccessToken(IEnumerable<Claim> claims, TimeSpan? expiration = null)

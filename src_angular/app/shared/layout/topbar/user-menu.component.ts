@@ -8,6 +8,7 @@ import { ImpersonationService } from '@app/admin/users/impersonation.service';
 import { AppConsts } from '@shared/AppConsts';
 import { DateTimeService } from '@app/shared/common/timing/date-time.service';
 import { Router } from '@angular/router';
+import { AppSessionService } from '@shared/common/session/app-session.service';
 
 @Component({
     selector: 'user-menu',
@@ -34,7 +35,7 @@ export class UserMenuComponent extends ThemesLayoutBaseComponent implements OnIn
     isMultiTenancyEnabled = false;
 
     mQuickUserOffcanvas: any;
-    showAllMenuItems: boolean = true;
+    showOnlyChangePwdMenuItems: boolean = false;
 
     public constructor(
         injector: Injector,
@@ -47,7 +48,8 @@ export class UserMenuComponent extends ThemesLayoutBaseComponent implements OnIn
         private _impersonationService: ImpersonationService,
         private _abpSessionService: AbpSessionService,
         _dateTimeService: DateTimeService,
-        private _permissionChecker: PermissionCheckerService
+        private _permissionChecker: PermissionCheckerService,
+        appSession: AppSessionService
     ) {
         super(injector, _dateTimeService);
     }
@@ -85,7 +87,10 @@ export class UserMenuComponent extends ThemesLayoutBaseComponent implements OnIn
         this.userName = this.appSession.user.userName;
         // if((!this.appSession.user.isEmailConfirmed || this.appSession.user.userDetailId == 0) &&
         if(this._permissionChecker.isGranted('Pages.isdefaultRegisterUser')){
-            this.showAllMenuItems = false;
+            this.showOnlyChangePwdMenuItems = true;
+        }
+        else if (this.appSession.tenant != null && this.appSession.tenant != undefined && this.appSession.tenant.id > 0) {
+            this.showOnlyChangePwdMenuItems = true;
         }
     }
 

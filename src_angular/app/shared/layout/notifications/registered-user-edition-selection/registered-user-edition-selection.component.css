@@ -33,7 +33,7 @@ button[disabled] {
     font-size: 1.1rem;
     color: #adb1c7;
     font-weight: 500;
-    min-height: 72px;
+    min-height: 15px;
 }
 
 .pricing-items .pricing-item-icon {
@@ -46,3 +46,9 @@ button[disabled] {
 .pricing-items .pricing-item-icon > i {
     font-size: 8.57rem;
 }
+.customCard{
+    z-index: 1000;
+    box-shadow: 5px 5px red .5;
+    box-shadow: 3px 3px 5px 0px;
+    padding: 5px;
+  }

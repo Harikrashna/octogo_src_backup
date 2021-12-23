@@ -74,6 +74,8 @@ namespace CF.Octogo.Editions.Dto
     {
         public int EditionPricingID { get; set; }
         public int PricingTypeID { get; set; }
+        public string PricingTypeName { get; set; }
+        public int NoOfDays { get; set; }
         public decimal Amount { get; set; }
         public decimal DiscountPercentage { get; set; }
     }

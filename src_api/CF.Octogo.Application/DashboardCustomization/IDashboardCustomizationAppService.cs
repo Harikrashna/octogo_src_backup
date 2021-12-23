@@ -2,6 +2,7 @@
 using Abp.Application.Services;
 using System.Threading.Tasks;
 using CF.Octogo.DashboardCustomization.Dto;
+using Abp.Application.Services.Dto;
 
 namespace CF.Octogo.DashboardCustomization
 {
@@ -22,5 +23,6 @@ namespace CF.Octogo.DashboardCustomization
         DashboardOutput GetDashboardDefinition(GetDashboardInput input);
 
         List<WidgetOutput> GetAllWidgetDefinitions(GetDashboardInput input);
+        Task<ListResultDto<EditionAndProductListDto>> GetProductAndEditionDetailByUserId(int userId);
     }
 }

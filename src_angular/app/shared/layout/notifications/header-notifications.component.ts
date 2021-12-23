@@ -15,6 +15,7 @@ export class HeaderNotificationsComponent extends AppComponentBase implements On
 
     notifications: IFormattedUserNotification[] = [];
     unreadNotificationCount = 0;
+    isShowHeaderNotification: boolean;
     @Input() isDropup = false;
     @Input() customStyle = 'btn btn-icon btn-dropdown btn-clean btn-lg mr-1';
 
@@ -28,6 +29,15 @@ export class HeaderNotificationsComponent extends AppComponentBase implements On
     }
 
     ngOnInit(): void {
+        // Added for Tenents Login(Hari Krashna 20/12/2021)
+        // This process will changes to Setting Management
+        if ((this.appSession.tenant != null && this.appSession.tenant != undefined && this.appSession.tenant.id > 0)
+        || this.permission.isGranted('Pages.isdefaultRegisterUser')) {
+            this.isShowHeaderNotification = false;
+        }
+        else{
+            this.isShowHeaderNotification = true;
+        }
         this.loadNotifications();
         this.registerToEvents();
     }

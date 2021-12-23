@@ -61,7 +61,7 @@
         <!--end::Separator-->
 
         <!--begin::Nav-->
-        <div class="navi navi-spacer-x-0 p-0" *ngIf="showAllMenuItems">
+        <div class="navi navi-spacer-x-0 p-0" *ngIf="!showOnlyChangePwdMenuItems">
             <a href="javascript:;" *ngIf="isImpersonatedLogin" (click)="backToMyAccount()" class="navi-item" id="UserProfileBackToMyAccountButton">
                 <div class="navi-link">
                     <div class="symbol symbol-40 bg-light mr-3">
@@ -349,6 +349,63 @@
                         </div>
                         <div class="text-muted">
                             {{"DownloadCollectedData_Description" | localize}}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div *ngIf="showOnlyChangePwdMenuItems">
+            <a href="javascript:;" class="navi-item" id="UserProfileChangePasswordLink" (click)="changePassword()">
+                <div class="navi-link">
+                    <div class="symbol symbol-40 bg-light mr-3">
+                        <div class="symbol-label">
+                            <span class="svg-icon svg-icon-primary svg-icon-2x svg-icon-success">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <rect x="0" y="0" width="24" height="24" />
+                                        <circle fill="#000000" cx="5" cy="12" r="2" />
+                                        <circle fill="#000000" cx="12" cy="12" r="2" />
+                                        <circle fill="#000000" cx="19" cy="12" r="2" />
+                                    </g>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="navi-text">
+                        <div class="font-weight-bold">
+                            {{"ChangePassword" | localize}}
+                        </div>
+                        <div class="text-muted">
+                            {{"ChangePassword_Description" | localize}}
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a href="javascript:;" class="navi-item" id="UserProfileChangePictureLink" (click)="changeProfilePicture()">
+                <div class="navi-link">
+                    <div class="symbol symbol-40 bg-light mr-3">
+                        <div class="symbol-label">
+                            <span class="svg-icon svg-icon-primary svg-icon-2x svg-icon-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <polygon points="0 0 24 0 24 24 0 24" />
+                                        <rect fill="#000000" opacity="0.3" x="2" y="4" width="20" height="16" rx="2" />
+                                        <polygon fill="#000000" opacity="0.3" points="4 20 10.5 11 17 20" />
+                                        <polygon fill="#000000" points="11 20 15.5 14 20 20" />
+                                        <circle fill="#000000" opacity="0.3" cx="18.5" cy="8.5" r="1.5" />
+                                    </g>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="navi-text">
+                        <div class="font-weight-bold">
+                            {{"ChangeProfilePicture" | localize}}
+                        </div>
+                        <div class="text-muted">
+                            {{"ChangeProfilePicture_Description" | localize}}
                         </div>
                     </div>
                 </div>

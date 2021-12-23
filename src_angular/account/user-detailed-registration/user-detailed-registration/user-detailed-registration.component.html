@@ -207,7 +207,7 @@
                     #cityCode="ngModel" name="city" size="50"  [(ngModel)]="UserRegistration.city" [size]="60"
                     [suggestions]="cityCodeResult" (completeMethod)="getCity($event)" [forceSelection]="true"
                     (keypress)="IsAlphabet($event)" (onSelect)="fillCountry(UserRegistration.city)"
-                    field="name" maxlength="50" required [forceSelection]="true">
+                    field="name" maxlength="50" required [forceSelection]="true" (input)="resetCountry()">
                 </p-autoComplete>
                 <label for="city">{{"City" | localize}}<span class="text-danger" id="req">*</span></label>
             </span>
@@ -235,7 +235,7 @@
                 <input id="isdCode" class="form-control form-control-solid h-auto py-5 px-4 rounded-lg font-size-h6"
                 name="isdCode" #isdCode="ngModel" type="text"  [disabled]="true" placeholder="{{'ISD' | localize}}"
                 [ngClass]="{'p-filled':UserRegistration.isdCode != null}" [ngModel]="UserRegistration.isdCode"
-                maxlength="5" pInputText required style="width: 15%;">
+                maxlength="5" pInputText required style="width: 23%;">
             &nbsp;
                 
                     <input id="phone" inputId="phone"  [ngClass]="{'p-filled': UserRegistration.contact?.length > 0}"

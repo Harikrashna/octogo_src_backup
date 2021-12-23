@@ -112,7 +112,7 @@
                     class="fa fa-arrow-left"></i>
                 {{"Back" | localize}}</button>
             <button type="submit" class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3"
-                [disabled]="saving || !registerForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i
+                [disabled]="(saving || !registerForm.form.valid) || usertypes?.length == 0 || model?.userTypeId == null" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i
                     class="fa fa-check"></i> {{"SignUp" | localize}}</button>
         </div>
     </form>

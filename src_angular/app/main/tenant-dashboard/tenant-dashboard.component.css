@@ -1,0 +1,14 @@
+.h-500{
+    height: 400px;
+}
+
+.customCard{
+  height: 100px !important;
+  z-index: 1000;
+  box-shadow: 5px 5px red .5;
+  box-shadow: 3px 3px 5px 0px;
+  padding: 14px;
+}
+.bold{
+  font-weight: bold;
+}

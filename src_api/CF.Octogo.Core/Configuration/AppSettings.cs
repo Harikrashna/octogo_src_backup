@@ -68,6 +68,7 @@ namespace CF.Octogo.Configuration
             public const string BillingLegalName = "App.TenantManagement.BillingLegalName";
             public const string BillingAddress = "App.TenantManagement.BillingAddress";
             public const string BillingTaxVatNo = "App.TenantManagement.BillingTaxVatNo";
+            public const string DefaultDashboardPage = "App.TenantManagement.DefaultDashboardPage";
         }
 
         public static class UserManagement

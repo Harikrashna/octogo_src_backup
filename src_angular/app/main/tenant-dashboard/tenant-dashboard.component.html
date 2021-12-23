@@ -1,0 +1,25 @@
+<div [@routerTransition]>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header title="{{'Products' | localize}}">     
+        </sub-header>
+        <div [class]="containerClass">
+            <div class="card card-custom">
+                <div class="card-body h-500">
+                            <div *ngIf="productDetails?.length > 0">
+                                <div class="card col-sm-3 customCard"  *ngFor="let product of productDetails">
+                                  <u><a class="bold" href="{{product.productUrl}}" target="_blank">{{product.productName}}</a></u>
+                                 <span style="display: inline;">
+                                    <span>{{'EditionName' | localize}}: &nbsp;</span>
+                                    <span class="bold">{{product.editionName}}</span>
+                                 </span>
+                            </div>
+                            </div>
+                        <div *ngIf="productDetails == null || productDetails?.length == 0">
+                            {{'NoData' | localize}}
+                        </div>
+                </div>
+            </div>
+        </div>
+     
+    </div>
+</div>

@@ -12,6 +12,7 @@ export class LanguageSwitchDropdownComponent extends ThemesLayoutBaseComponent i
 
     languages: abp.localization.ILanguageInfo[];
     currentLanguage: abp.localization.ILanguageInfo;
+    isLanguageSelectionEnabled;
 
     @Input() isDropup = false;
     @Input() customStyle = 'btn btn-icon btn-dropdown btn-clean btn-lg mr-1';
@@ -25,6 +26,15 @@ export class LanguageSwitchDropdownComponent extends ThemesLayoutBaseComponent i
     }
 
     ngOnInit(): void {
+        // Added for Tenents Login(Hari Krashna 20/12/2021)
+        // This process will changes to Setting Management
+        if (this.appSession.tenant != null && this.appSession.tenant != undefined && this.appSession.tenant.id > 0
+            || this.permission.isGranted('Pages.isdefaultRegisterUser')) {
+            this.isLanguageSelectionEnabled = false;
+        }
+        else{
+            this.isLanguageSelectionEnabled = true;
+        }
         this.languages = _filter(this.localization.languages, l => (l).isDisabled === false);
         this.currentLanguage = this.localization.currentLanguage;
     }
