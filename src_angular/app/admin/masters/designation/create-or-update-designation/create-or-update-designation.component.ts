@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Injector, Output, ViewChild } from '@angular/core';
 import {  NgForm } from '@angular/forms';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { DesignationServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -20,29 +21,14 @@ export class CreateOrUpdateDesignationComponent  extends AppComponentBase  {
   active = false;
   saving = false;
   designation:Designation
-  PriceApproachComponent: any;
   currentDesingnation:string
-  constructor(  injector: Injector,private _designation:DesignationComponent,private _Designation:DesignationServiceProxy) {
+  constructor(  injector: Injector,private _designation:DesignationComponent,
+    private _Designation:DesignationServiceProxy,
+    public _validationService: ValidationServiceService) {
     super(injector);
     this.designation = new Designation();
    }
 
-   isAlphanumericAndAlphabet(e){
-  
-  
-    if(e.target.value=="" && e.keyCode==32){
-      return false    
-    }
-   
-    if(e.target.value=="" && e.keyCode>=48 && e.keyCode<=57){
-      return false
-    }
-    var keyCode=e.which? e.which:e.keyCode
-    var ret=((keyCode >=97 && keyCode<=122) || (keyCode >=65 && keyCode<=90 ) || (keyCode==32)
-    || (keyCode>=48 && keyCode<=57) || e.keyCode==45 || e.keyCode==8 ||e.keyCode==37 || e.keyCode==39);
-    return ret
-  
-  }
     show(record?: any): void {
       
       if(record!=null && record!=undefined){

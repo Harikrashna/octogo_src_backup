@@ -48,6 +48,7 @@ namespace CF.Octogo.Dto
     public class PricingType
     {
         public string Name { get; set; }
+        public decimal Discount { get; set; }
         public int Days { get; set; }
         public decimal Price { get; set; }
     }

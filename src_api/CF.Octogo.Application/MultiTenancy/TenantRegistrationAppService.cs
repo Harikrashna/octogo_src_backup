@@ -124,6 +124,7 @@ namespace CF.Octogo.MultiTenancy
                 );
 
                 var tenant = await TenantManager.GetByIdAsync(tenantId);
+
                 // Update Tenant Id of Logged In user
                 // Added for Logged In users only
                 if (AbpSession.UserId.HasValue)
@@ -372,13 +373,24 @@ namespace CF.Octogo.MultiTenancy
         }
         public async Task<List<ProductWithEditionDto>> GetProductWithEdition()
         {
+            int EditionId = 0;
+            if (AbpSession.UserId.HasValue && AbpSession.TenantId.HasValue)
+            {
+                var currentEditionId = (await _tenantManager.GetByIdAsync(AbpSession.GetTenantId())).EditionId;
+
+                if (currentEditionId.HasValue)
+                {
+                    EditionId = (int)currentEditionId;
+                }
+            }
             List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
             ProductWithEditionDto result = new ProductWithEditionDto();
-            // List<EditionList> editionList = new List<EditionList>();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("EditionId", EditionId);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetProductWithEdition");
+            "USP_GetProductWithEdition", parameters);
 
             if (ds.Tables.Count > 0)
             {

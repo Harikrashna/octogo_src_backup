@@ -1,100 +1,402 @@
 <div [@routerTransition]>
-    <div class="container">
-        <p-accordion>
-            <h5>{{"Products"}}</h5>
-            <p-accordionTab *ngFor="let product of ProductWithEditionList; let pinedx = index"
-                header="{{product.productName}}" [selected]="false">
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'OurProducts' | localize">
+        </sub-header>
 
-                <div class="content d-flex flex-column flex-column-fluid">
-                    <div [class]="containerClass" *ngIf="product?.edition?.length > 0 else elseBlock">
-                        <div class="card card-custom gutter-b shadow-lg">
-                            <div class="card-body">
-                                <div class="row justify-content-center mt-10 mb-0 pricing-items">
-                                    <div class="pt-30 pt-md-25 mb-15 text-left" style="min-width:200px"
-                                        *ngFor="let editionWithFeatures of product.edition;  let i = index"
-                                        [class.border-left-md]="i>0" [class.px-10]="i===0" [class.px-15]="i>0">
-                                        <!--begin::Icon-->
-                                        <div class="d-flex flex-center position-relative mb-25">
-                                            <span class="svg svg-fill-primary opacity-4 position-absolute">
-                                                <svg width="105" height="100">
-                                                    <polyline points="87,0 174,50 174,150 87,200 0,150 0,50 87,0">
-                                                    </polyline>
-                                                </svg>
-                                            </span>
-                                            <span class="pricing-item-icon text-primary">
-                                                <i class="fa {{editionIcons[i]}}"></i>
-                                            </span>
-                                        </div>
-                                        <!--end::Icon-->
-                                        <span
-                                            class="font-size-h1 d-block d-block font-weight-boldest py-2 pricing-title">
-                                            {{editionWithFeatures.editionName}}</span>
-                                        <h4 class="font-size-h6 d-block d-block font-weight-bold mb-1 pricing-subtitle"
-                                            *ngIf="isFree(editionWithFeatures.pricingtype)">
 
-                                            <span> {{"Free" | localize}}</span>
-                                        </h4>
-                                        <h4 class="font-size-h6 d-block d-block font-weight-bold mb-1 pricing-subtitle"
-                                            *ngIf="!isFree(editionWithFeatures.pricingtype)">
-                                            <span> {{"Paid" | localize}}</span>
-                                        </h4>
+        <div [class]="containerClass">
+            <div class="card1 card-custom1 gutter-b">
+                <div class="mt-4">
+                    <div *ngFor="let product of ProductWithEditionList; let i=index">
+                        <div class="card mb-5"
+                            *ngIf="product?.edition != undefined && product?.edition != null &&  product.edition?.length > 0">
+                            <div class="card-body pb-0">
 
-                                        <p class="d-flex flex-column mt-4" style="min-height: 100px;">
-                                            <span *ngFor="let feature of editionWithFeatures?.module">
-                                                <span class="text-success text-left">
-                                                    <i class="far fa-check-circle text-success"></i>
-                                                    {{feature.moduleName}}
-                                                </span>
-                                            </span>
-                                        </p>
-                                        <div class="card" *ngIf=" false && editionWithFeatures.addons?.length > 0">
-                                            Addons
-                                            <ul>
-                                                <li *ngFor="let addon of editionWithFeatures.addons">
-                                                    {{addon.addOnName}}
-                                                </li>
-                                            </ul>
-                                        </div>
+                                <div class="content d-flex flex-column" *ngIf="i == currentIndex">
 
-                                        <!-- <button class="btn btn-warning btn-block btn-lg"
-                                            (click)="upgrade(editionWithFeatures, editionPaymentType.Upgrade)"
-                                            *ngIf="isUserLoggedIn">
-                                            {{"Upgrade" | localize}}
-                                        </button> -->
+                                    <h4
+                                        class="font-size-h3 d-block d-block font-weight-bold mb-1 pricing-subtitle text-primary">
+                                        {{product.productName}}</h4>
 
-                                        <button class="btn btn-success btn-block btn-lg"
-                                            [routerLink]="['/account/register-tenant']"
-                                            [queryParams]="{editionId: editionWithFeatures.editionID, subscriptionStartType: subscriptionStartType.Free}"
-                                            href="#" *ngIf="isUserLoggedIn && isFree(editionWithFeatures.pricingtype)">
-                                            {{"Free" | localize}}
-                                        </button>
-
-                                        <button class="btn btn-warning btn-block btn-lg"
-                                            [routerLink]="['/account/register-tenant']"
-                                            [queryParams]="{editionId: editionWithFeatures.editionID, subscriptionStartType: subscriptionStartType.Trial}"
-                                            href="#"
-                                            *ngIf="isUserLoggedIn && !isFree(editionWithFeatures.pricingtype) && editionWithFeatures.trialDayCount > 0">
-                                            {{"FreeTrial" | localize}}
-                                        </button>
-
-                                        <button class="btn btn-primary btn-block btn-lg"
-                                            [routerLink]="['/account/register-tenant']"
-                                            [queryParams]="{editionId: editionWithFeatures.editionID, subscriptionStartType: subscriptionStartType.Paid, editionPaymentType: editionPaymentType.NewRegistration}"
-                                            href="#" *ngIf="isUserLoggedIn && !isFree(editionWithFeatures.pricingtype)">
-                                            {{"BuyNow" | localize}}
-                                        </button>
+                                    <div *ngIf="i != currentIndex" class="text-muted">
+                                        {{product.description}}
                                     </div>
+                                    <button type="button" id="btn" class="btn btn-link"
+                                        *ngIf="expanded && product.productName == productName"
+                                        (click)="expandedFalse(i,product.productName)"><i
+                                            class="fa fa-chevron-up"></i></button>
+                                </div>
 
-                                    <div *ngIf="ProductWithEditionList == null || ProductWithEditionList?.length == 0">
-                                        {{'NoData' | localize}}
+                                <div class="row" *ngIf="i != currentIndex && product.edition != undefined">
+                                    <div class="col-lg-5 col-sm-5">
+
+                                        <h4
+                                            class="font-size-h3 d-block d-block font-weight-bold mb-1 pricing-subtitle text-primary">
+                                            {{product.productName}}</h4>
+
+                                        <div *ngIf="i != currentIndex" class="text-muted">
+                                            {{product.description}}
+                                        </div>
                                     </div>
+                                    <div class="col-lg-3 col-sm-3">
+                                        <span class="text-primary">{{"PaidEditions" | localize}}</span>
+                                        <ul>
+                                            <li *ngFor="let editionWithFeatures of getFilteredEditions(product.edition,'PAID')"
+                                                class="text-success">{{editionWithFeatures.editionName}}</li>
+                                        </ul>
+                                        <!-- <ng-template #elseBlock>
+                                                    <span style="color: red;">{{'NoEditions' | localize}}</span>
+                                                </ng-template> -->
+                                    </div>
+                                    <div class="col-lg-4 col-sm-4">
+                                        <span class="text-primary">{{"FreeEditions" | localize}}</span>
+                                        <ul>
+                                            <li *ngFor="let editionWithFeatures of getFilteredEditions(product.edition,'FREE')"
+                                                class="text-success">{{editionWithFeatures.editionName}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <p-divider
+                                    *ngIf="i != currentIndex && (product.edition != undefined && product.edition != null)">
+                                </p-divider>
+                                <div>
+                                    <span class="col"
+                                        *ngIf="i != currentIndex && (product.edition != undefined && product.edition != null)"
+                                        style="left: 46%" (click)="expandedTrue(i,product.productName)">
+                                        <i class="fa fa-chevron-down" style="font-size: 16px;left: 46%"></i></span>
+                                </div>
+                            </div>
+
+                            <div [@openClose]="expanded ? 'open' : 'closed'">
+                                <div *ngIf="i == currentIndex && expanded" class="open-close-container">
+                                    {{product[currentIndex]}}
+                                    <p-divider></p-divider>
+                                    <!-- <p-accordionTab
+                                header="{{product[index]}}" [selected]="false"> -->
+
+                                    <div class="content d-flex flex-column flex-column-fluid">
+                                        <div [class]="containerClass"
+                                            *ngIf="product?.edition?.length > 0 else elseBlock">
+                                            <div class="card1 card-custom1 gutter-b shadow-lg1">
+                                                <div class="card-body1">
+                                                    <div class="row justify-content-center mt-10 mb-0 pricing-items">
+                                                        <div class="pt-30 pt-md-25 mb-15 text-left"
+                                                            style="min-width:200px"
+                                                            *ngFor="let editionWithFeatures of product.edition;  let i = index"
+                                                            [class.border-left-md]="i>0" [class.px-10]="i===0"
+                                                            [class.px-15]="i>0">
+                                                            <div class="d-flex flex-center position-relative mb-25"> "
+                                                                <span
+                                                                    class="svg svg-fill-primary opacity-4 position-absolute">
+                                                                    <svg width="105" height="100">
+                                                                        <polyline
+                                                                            points="87,0 174,50 174,150 87,200 0,150 0,50 87,0">
+                                                                        </polyline>
+                                                                    </svg>
+                                                                </span>
+                                                                <span class="pricing-item-icon text-primary">
+                                                                    <i class="fa {{editionIcons[i]}}"></i>
+                                                                </span>
+                                                            </div>
+
+                                                            <span
+                                                                class="font-size-h1 d-block d-block font-weight-boldest py-2 pricing-title">
+                                                                {{editionWithFeatures.editionName}}</span>
+                                                            <h4 class="font-size-h6 d-block d-block font-weight-bold mb-1 pricing-subtitle"
+                                                                *ngIf="isFree(editionWithFeatures.pricingtype)">
+
+                                                                <span> {{"Free" | localize}}</span>
+                                                            </h4>
+                                                            <h4 class="font-size-h6 d-block d-block font-weight-bold mb-1 pricing-subtitle"
+                                                                *ngIf="!isFree(editionWithFeatures.pricingtype)">
+                                                                <span (click)="op.toggle($event)"
+                                                                    > {{"Paid" |
+                                                                    localize}}</span>
+                                                            </h4>
+
+                                                            <p-overlayPanel #op appendTo="body" [focusOnShow]="true"
+                                                                [style]="{width: '600px'}" (mouseleave)="op.hide()">
+                                                                <ng-template pTemplate>
+                                                                    <p-table #tbl [responsive]="true"
+                                                                        [value]="editionWithFeatures.pricingtype">
+                                                                        <ng-template pTemplate="header">
+                                                                            <tr>
+                                                                                <th>{{"PricingType" | localize}}</th>
+                                                                                <th>{{"ActualPrice" | localize}}</th>
+                                                                                <th>{{"Discount" | localize}} (%)</th>
+                                                                                <th>{{"DiscountedPrice" | localize}}
+                                                                                </th>
+
+                                                                            </tr>
+                                                                        </ng-template>
+                                                                        <ng-template pTemplate="body" let-price>
+                                                                            <tr>
+                                                                                <td><span class="p-column-title">
+                                                                                        {{'PricingType' |
+                                                                                        localize}}</span>
+                                                                                    {{price.name}}&nbsp; ({{price.days}}
+                                                                                    {{'Days' | localize}})</td>
+
+                                                                                <td><span class="p-column-title">
+                                                                                        {{'ActualPrice' |
+                                                                                        localize}}</span>
+                                                                                    {{appSession.application.currencySign}}
+
+                                                                                    {{price.price}} </td>
+                                                                                <td><span
+                                                                                        class="p-column-title">{{"Discount"
+                                                                                        | localize}}
+                                                                                        (%)</span>{{price.discount}}
+                                                                                </td>
+                                                                                <td>
+                                                                                    <span
+                                                                                        class="p-column-title">{{"DiscountedPrice"
+                                                                                        | localize}}</span>
+                                                                                    {{appSession.application.currencySign}}
+
+                                                                                    {{price.price-(price.price*price.discount/100)
+                                                                                    | number : '1.2-2'}}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </ng-template>
+                                                                    </p-table>
+                                                                </ng-template>
+                                                            </p-overlayPanel>
+                                                            <div class="mb-2" id="moduleWithAddons">
+
+                                                                <p class="d-flex flex-column mt-4" id="modules">
+                                                                    <span
+                                                                        *ngFor="let feature of editionWithFeatures?.module ; let moduleIndex=index">
+                                                                        <span class="text-success text-left"
+                                                                            *ngIf="moduleIndex < showModules">
+                                                                            <i
+                                                                                class="far fa-check-circle text-success"></i>
+                                                                            {{feature.moduleName}}
+                                                                        </span>
+                                                                    </span>
+
+                                                                    <span
+                                                                        *ngIf="editionWithFeatures?.module?.length > showModules">
+                                                                        <!-- <b class="text-success">
+                                                                            &nbsp;
+                                                                            <i class="fa fa-angle-right cursor"
+                                                                                (click)="expandModules(i)"></i>&nbsp;
+                                                                            {{ 'More' | localize }}
+                                                                            ({{editionWithFeatures.module.length -
+                                                                            showModules}})
+                                                                        </b> --> 
+
+                                                                       
+
+
+                                                                        <span class="d-flex flex-column"
+                                                                            *ngIf="isModuleCollapsed && i == moduleIndex">
+                                                                            <span
+                                                                                *ngFor="let feature of editionWithFeatures?.module ; let moduleDataIndex = index">
+                                                                                <span class="text-success text-left"
+                                                                                    *ngIf="moduleDataIndex > showModules - 1">
+                                                                                    <i
+                                                                                        class="far fa-check-circle text-success"></i>
+                                                                                    {{feature.moduleName}}
+                                                                                </span>
+                                                                            </span>
+                                                                        </span>
+
+                                                                        <a class="text-info" (click)="expandModules(i)" type="button">
+                                                                            <u class="text-right mx-4" *ngIf="!(isModuleCollapsed && i == moduleIndex) else showLess">
+                                                                                {{ 'More' | localize }}
+                                                                                ({{editionWithFeatures.module.length -
+                                                                                showModules}})
+                                                                                </u>
+                                                                            </a>
+                                                                            <ng-template #showLess>
+                                                                               <u class="text-right mx-6">{{'Less' | localize}}</u> 
+                                                                            </ng-template>
+                                                                    </span>
+
+                                                                </p>
+
+                                                                <div *ngIf="editionWithFeatures?.addons?.length >0">
+                                                                    <label> <b class="text-danger">
+                                                                            &nbsp;
+                                                                            <i class="fa fa-angle-right cursor"
+                                                                                (click)="expandAddons(i)"></i>&nbsp;
+                                                                            {{ 'Addons' | localize }}
+                                                                            ({{editionWithFeatures.addons.length}})
+                                                                        </b></label>
+
+                                                                    <ol *ngIf="isAddonCollapsed && i == addonIndex">
+                                                                        <li
+                                                                            *ngFor="let addon of editionWithFeatures?.addons; let k=index">
+                                                                            <b (click)="addons.toggle($event)"
+                                                                               
+                                                                                class="text-success">{{addon.addOnName}}</b>
+                                                                            <p-overlayPanel appendTo="body" #addons
+                                                                            (mousemove)="addons.hide()"
+                                                                            
+                                                                                >
+                                                                                <ng-template pTemplate>
+                                                                                    <div>
+                                                                                        <p-panel 
+                                                                                            header="{{'ModuleName' | localize}} : {{addon.addOnName}}"
+                                                                                            [toggleable]="true"
+                                                                                            [collapsed]="false">
+                                                                                            <ul
+                                                                                                *ngIf="addon.subModule?.length > 0">
+                                                                                                <li
+                                                                                                    *ngFor="let subModule of addon.subModule ; let i=index">
+                                                                                                    {{subModule.subModuleName}}
+                                                                                                </li>
+                                                                                            </ul>
+                                                                                            <div
+                                                                                                *ngIf="addon.subModule== null || addon.subModule?.length == 0">
+                                                                                                {{'SubModuleNotExist' |
+                                                                                                localize}}
+                                                                                            </div>
+                                                                                        </p-panel>
+                                                                                    </div>
+                                                                                    <p-table [responsive]="true" [resizableColumns]="true" [autoLayout]="true"
+                                                                                        *ngIf="addon?.addonPrice?.length > 0"
+                                                                                        id="tbl"
+                                                                                        [value]="addon.addonPrice">
+                                                                                        <ng-template pTemplate="header">
+                                                                                            <tr>
+                                                                                                <th>{{"PricingType" |
+                                                                                                    localize}}</th>
+                                                                                                <th>{{"ActualPrice" |
+                                                                                                    localize}}</th>
+                                                                                                <th>{{"Discount" |
+                                                                                                    localize}} (%)</th>
+                                                                                                <th>{{"DiscountedPrice"
+                                                                                                    |
+                                                                                                    localize}}
+                                                                                                </th>
+
+                                                                                            </tr>
+                                                                                        </ng-template>
+                                                                                        <ng-template pTemplate="body"
+                                                                                            let-addonPrice>
+                                                                                            <tr>
+
+                                                                                                <td><span
+                                                                                                        class="p-column-title">
+                                                                                                        {{'PricingType'
+                                                                                                        |
+                                                                                                        localize}}</span>
+                                                                                                    {{addonPrice.name}}&nbsp;
+                                                                                                    ({{addonPrice.days}}
+                                                                                                    {{'Days' |
+                                                                                                    localize}})
+                                                                                                </td>
+
+                                                                                                <td><span
+                                                                                                        class="p-column-title">
+                                                                                                        {{'ActualPrice'
+                                                                                                        |
+                                                                                                        localize}}</span>
+                                                                                                    {{appSession.application.currencySign}}
+
+                                                                                                    {{addonPrice.price}}
+                                                                                                </td>
+                                                                                                <td><span
+                                                                                                        class="p-column-title">{{"Discount"
+                                                                                                        | localize}}
+                                                                                                        (%)</span>{{addonPrice.discount}}
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <span
+                                                                                                        class="p-column-title">{{"DiscountedPrice"
+                                                                                                        |
+                                                                                                        localize}}</span>
+                                                                                                    {{appSession.application.currencySign}}
+
+                                                                                                    {{addonPrice.price-(addonPrice.price*addonPrice.discount/100)
+                                                                                                    | number : '1.2-2'}}
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </ng-template>
+                                                                                    </p-table>
+                                                                                </ng-template>
+                                                                            </p-overlayPanel>
+                                                                        </li>
+                                                                    </ol>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- <button class="btn btn-success btn-block btn-lg"
+                                                                [routerLink]="['/account/register-tenant']"
+                                                                [queryParams]="{editionId: editionWithFeatures.editionId, subscriptionStartType: subscriptionStartType.Free}"
+                                                                href="#"
+                                                                *ngIf="isUserLoggedIn && isFree(editionWithFeatures.pricingtype)">
+                                                                {{"Free" | localize}}
+                                                            </button>
+
+                                                            <button class="btn btn-warning btn-block btn-lg"
+                                                                [routerLink]="['/account/register-tenant']"
+                                                                [queryParams]="{editionId: editionWithFeatures.editionId, subscriptionStartType: subscriptionStartType.Trial}"
+                                                                href="#"
+                                                                *ngIf="isUserLoggedIn && !isFree(editionWithFeatures.pricingtype) && editionWithFeatures.trialDayCount > 0">
+                                                                {{"FreeTrial" | localize}}
+                                                            </button>
+                                                            <button class="btn btn-primary btn-block btn-lg"
+                                                                [routerLink]=""
+                                                                [queryParams]="{editionId: editionWithFeatures.editionId, subscriptionStartType: subscriptionStartType.Paid, editionPaymentType: editionPaymentType.NewRegistration}"
+                                                                href="#"
+                                                                *ngIf="isUserLoggedIn && !isFree(editionWithFeatures.pricingtype)">
+                                                                {{"BuyNow" | localize}}
+                                                            </button> -->
+                                                            
+                                                            <button class="btn btn-success btn-block btn-lg"
+                                                                [routerLink]="['/account/register-tenant']"
+                                                                [queryParams]="{editionId: editionWithFeatures.editionID, subscriptionStartType: subscriptionStartType.Free}"
+                                                                href="#"
+                                                                *ngIf="isUserLoggedIn && isFree(editionWithFeatures.pricingtype)">
+                                                                {{"Free" | localize}}
+                                                            </button>
+
+                                                            <button class="btn btn-warning btn-block btn-lg"
+                                                                [routerLink]="['/account/register-tenant']"
+                                                                [queryParams]="{editionId: editionWithFeatures.editionID, subscriptionStartType: subscriptionStartType.Trial}"
+                                                                href="#"
+                                                                *ngIf="isUserLoggedIn && !isFree(editionWithFeatures.pricingtype) && editionWithFeatures.trialDayCount > 0">
+                                                                {{"FreeTrial" | localize}}
+                                                            </button>
+                                                            <!-- <button class="btn btn-primary btn-block btn-lg"
+                                                                (click)="upgrade(editionWithFeatures, editionPaymentType.Upgrade)"
+                                                                *ngIf="isUserLoggedIn">
+                                                                {{"Upgrade" | localize}}
+                                                            </button> -->
+                                                            <button class="btn btn-primary btn-block btn-lg"
+                                                                [routerLink]="['/account/register-tenant']"
+                                                                [queryParams]="{editionId: editionWithFeatures.editionID, subscriptionStartType: subscriptionStartType.Paid, editionPaymentType: editionPaymentType.NewRegistration}"
+                                                                href="#"
+                                                                *ngIf="isUserLoggedIn && !isFree(editionWithFeatures.pricingtype)">
+                                                                {{"BuyNow" | localize}}
+                                                            </button>
+                                                        </div>
+
+                                                        <div
+                                                            *ngIf="ProductWithEditionList == null || ProductWithEditionList?.length == 0">
+                                                            {{'NoData' | localize}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <ng-template #elseBlock>
+                                            <span style="color: red;">{{'NoEditions' | localize}}</span>
+                                        </ng-template>
+                                    </div>
+                                    <!-- </p-accordionTab> -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <ng-template #elseBlock> {{'NoData' | localize}}</ng-template>
+
+
                 </div>
-            </p-accordionTab>
-        </p-accordion>
+            </div>
+        </div>
     </div>
 </div>

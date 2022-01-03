@@ -12,13 +12,20 @@ using Abp.Authorization;
 using CF.Octogo.Authorization;
 using CF.Octogo.Dto;
 using Abp.UI;
+using Abp.Runtime.Caching;
 
 namespace CF.Octogo.Master.Product
 {
     [AbpAuthorize(AppPermissions.Pages_Administration_Product)]
     public class ProductAppService : OctogoAppServiceBase, IProductAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
 
+        public ProductAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         public async Task<PagedResultDto<ProductListDto>> GetProduct(PagedAndSortedInputDto input, string filter)
         {
             SqlParameter[] parameters = new SqlParameter[4];
@@ -69,7 +76,7 @@ namespace CF.Octogo.Master.Product
             }
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inProductID", inp.inProductID);
-            parameters[1] = new SqlParameter("vcProductName", inp.vcProductName);
+            parameters[1] = new SqlParameter("vcProductName", inp.vcProductName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
 
@@ -79,6 +86,7 @@ namespace CF.Octogo.Master.Product
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -99,7 +107,9 @@ namespace CF.Octogo.Master.Product
                 await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                System.Data.CommandType.StoredProcedure,
                "USP_DeleteProduct", parameters);
-            }catch(Exception e)
+                await ClearCache();
+            }
+            catch(Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -137,7 +147,7 @@ namespace CF.Octogo.Master.Product
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicacy", parameters
+            "USP_CheckDuplicateProduct", parameters
             );
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
@@ -148,7 +158,11 @@ namespace CF.Octogo.Master.Product
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
 }

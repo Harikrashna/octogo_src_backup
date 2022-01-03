@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PermissionTreeComponent } from '@app/admin/shared/permission-tree.component';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateOrUpdateIndustryInput, IndustryServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -20,7 +21,8 @@ export class CreateOrEditIndustryComponent extends AppComponentBase {
   saving: boolean = false; 
   edit: boolean = false;
   currentIndustryName;
-  constructor(injector: Injector, private _Industry: IndustryServiceProxy,) {
+  constructor(injector: Injector, private _Industry: IndustryServiceProxy,
+    public _validationService: ValidationServiceService) {
     super(injector)
   }
   ngOnInit(): void {
@@ -49,18 +51,14 @@ export class CreateOrEditIndustryComponent extends AppComponentBase {
       })
     }
   }
-  validations(event: any) {
-    if (event.target.selectionStart == 0 && event.keyCode == 32 || event.keyCode >=104 && event.keyCode<=222) {
-      return false;
-    }
-  }
+
   onShown(): void {
     document.getElementById('IndustryName').focus();
   }
 
-  save(form: NgForm):void{
 
-    let Duplicacy = this.Industry.filter((x) => x.vcIndustryName.toUpperCase() == this.createIndustry.vcIndustryName.toUpperCase());
+  save(form: NgForm):void{
+    let Duplicacy = this.Industry.filter((x) => x.vcIndustryName.trim().toUpperCase() == this.createIndustry.vcIndustryName.trim().toUpperCase());
     if (Duplicacy != null && Duplicacy != undefined && Duplicacy.length > 0 && Duplicacy[0].inIndustryID != this.createIndustry.inIndustryID) {
       return this.notify.warn(this.l('DuplicateIndustryMessage'));
     }

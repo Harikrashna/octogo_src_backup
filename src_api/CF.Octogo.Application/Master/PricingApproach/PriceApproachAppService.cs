@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Runtime.Caching;
 using Abp.UI;
 using CF.Octogo.Authorization;
 using CF.Octogo.Data;
@@ -15,9 +16,17 @@ using System.Threading.Tasks;
 
 namespace CF.Octogo.Master.PricingApproach
 {
+
     [AbpAuthorize(AppPermissions.Pages_Administration_PriceApproach)]
     public class PriceApproachAppService : OctogoAppServiceBase, IPriceApproachService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public PriceApproachAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         public async Task<PagedResultDto<PriceApproachListDto>> GetPricingApproach(GetPriceApproachInput input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
@@ -72,6 +81,7 @@ namespace CF.Octogo.Master.PricingApproach
                 else
                 {
                     await UpdatePriceApproachAsync(input);
+
                 }
 
             }
@@ -101,7 +111,7 @@ namespace CF.Octogo.Master.PricingApproach
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("ApproachId", input.ApproachId);
-            parameters[1] = new SqlParameter("ApproachName", input.ApproachName);
+            parameters[1] = new SqlParameter("ApproachName", input.ApproachName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
             parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
 
@@ -112,7 +122,7 @@ namespace CF.Octogo.Master.PricingApproach
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
 
             }
@@ -145,7 +155,7 @@ namespace CF.Octogo.Master.PricingApproach
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("ApproachId", input.ApproachId);
-            parameters[1] = new SqlParameter("ApproachName", input.ApproachName);
+            parameters[1] = new SqlParameter("ApproachName", input.ApproachName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
             parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
 
@@ -155,6 +165,7 @@ namespace CF.Octogo.Master.PricingApproach
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -176,10 +187,15 @@ namespace CF.Octogo.Master.PricingApproach
                 await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,
                 "USP_DeletePricingApproach", parameters);
+                await ClearCache();
                 return "Success";
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
 }

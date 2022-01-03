@@ -17,7 +17,7 @@ namespace CF.Octogo.Master.Industry
         Task<int> CreateorUpdateIndustry(CreateOrUpdateIndustryInput inp);
         Task DeleteIndustry(EntityDto input);
         Task<DataSet> GetIndustryForEdit(GetEditIndustryinput input);
-        Task<DataSet> GetIndustryByIndustryId(int? inIndustryID, string vcIndustryName, string vcDescription);
+        Task<DataSet> GetIndustryByIndustryId(int? inIndustryID, string vcIndustryName);
 
     }
 }

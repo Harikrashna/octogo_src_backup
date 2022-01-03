@@ -4,6 +4,7 @@ import { AppComponentBase } from '@shared/common/app-component-base';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgForm } from '@angular/forms';
 import { AwbCostApproachListDto, AwbCostApproachServiceProxy, CreateOrUpdateAwbCostApproachInput } from '@shared/service-proxies/service-proxies';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 
 @Component({
   selector: 'app-create-or-edit-awb-cost-approach',
@@ -26,7 +27,8 @@ export class CreateOrEditAwbCostApproachComponent extends AppComponentBase {
   isEdit = false;
   vcApproachName='';
  
-  constructor(injector: Injector, private _awbcostapproachservice: AwbCostApproachServiceProxy) {
+  constructor(injector: Injector, private _awbcostapproachservice: AwbCostApproachServiceProxy
+    ,public _validationService: ValidationServiceService) {
     super(injector)
   }
 
@@ -51,18 +53,25 @@ export class CreateOrEditAwbCostApproachComponent extends AppComponentBase {
       })
     }
   }
-  save(form): void {
-    let Duplicacy = this.perAWBCostApproach.filter((a) => a.vcApproachName.toLowerCase() === this.createAwbApproach.vcApproachName.toLowerCase() && a.inApproachID != this.createAwbApproach.inApproachID).length === 1;;
+  
+  save(form: NgForm): void {
+   
+    let Duplicacy = this.perAWBCostApproach.filter((a) => a.vcApproachName.trim().toLowerCase() === this.createAwbApproach.vcApproachName.trim().toLowerCase() && a.inApproachID != this.createAwbApproach.inApproachID).length === 1;;
     if (Duplicacy) {
       return this.notify.warn(this.l('DuplicateRecord'));
-    } else if (this.createAwbApproach.inApproachID == null) {
+    } 
+    else if (this.createAwbApproach.inApproachID == null) {
+      this.saving = true;
       this._awbcostapproachservice.createOrUpdateAwbCostType(this.createAwbApproach).subscribe(e => {
+        this.saving = false;
         this.notify.info(this.l('SavedSuccessfully'));
         this.close(form)
         this.modalSave.emit(null);
       })
     } else {
+      this.saving = true;
       this._awbcostapproachservice.createOrUpdateAwbCostType(this.createAwbApproach).subscribe(e => {
+        this.saving = false;
         this.notify.info(this.l('UpdateAwbCostApproachMessage'));
         this.close(form)
         this.modalSave.emit(null);
@@ -70,7 +79,7 @@ export class CreateOrEditAwbCostApproachComponent extends AppComponentBase {
     }
   }
   onShown(): void {
-    document.getElementById('vcApproachName');
+    document.getElementById('vcApproachName').focus();;
   }
 
   close(form: NgForm): void {
@@ -79,10 +88,4 @@ export class CreateOrEditAwbCostApproachComponent extends AppComponentBase {
     this.modal.hide();
     form.resetForm();
   }
-  spaceBar(e:any){
-      if(e.target.selectionStart ==0 && e.keyCode == 32){
-      return false;
-      }
-  }
-
 }

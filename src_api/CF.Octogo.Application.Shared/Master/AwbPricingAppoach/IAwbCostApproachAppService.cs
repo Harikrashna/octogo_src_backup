@@ -13,7 +13,7 @@ namespace CF.Octogo.Master.AwbPricingAppoach
         Task<int> CreateOrUpdateAwbCostType(CreateOrUpdateAwbCostApproachInput input);
         Task<DataSet> GetPerAwbCostApproachForEdit(GetEditAwbCostApproachInput input);
         Task DeleteAwbCostApproach(EntityDto input);
-        Task<DataSet> GetAwbCostApproachDuplicacy(int? inApproachID, string vcApproachName, string vcDescription);
+        Task<DataSet> GetAwbCostApproachDuplicacy(int? inApproachID, string vcApproachName);
 
     }
 }

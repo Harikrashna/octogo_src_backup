@@ -1,5 +1,6 @@
 import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateorUpdatePricingType, PricingTypeServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -28,7 +29,8 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
 
 
 
-  constructor(injector: Injector, private _pricingTypeService: PricingTypeServiceProxy) {
+  constructor(injector: Injector, private _pricingTypeService: PricingTypeServiceProxy,
+    public _validationService: ValidationServiceService) {
     super(injector)
     this.editpricingType = new CreateorUpdatePricingType()
   }
@@ -85,8 +87,10 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
       return;
     }
     else {
+      this.saving = true;
       if (this.editpricingType.inPricingTypeId != null) {
         this._pricingTypeService.insertUpdatePricingType(this.editpricingType).subscribe(e => {
+          this.saving = false;
           this.notify.info(this.l('UpdatePricingTypeMessage'));
           this.close(form);
           this.modalSave.emit(null);
@@ -95,7 +99,7 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
       }
       else {
         this._pricingTypeService.insertUpdatePricingType(this.editpricingType).subscribe(e => {
-
+          this.saving = false;
           this.notify.info(this.l('SavedSuccessfully'));
           this.close(form);
           this.modalSave.emit(null);

@@ -28,25 +28,28 @@ export class IndustryComponent extends AppComponentBase implements AfterViewInit
      this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
    }
  
-   getallIndustryList(event?: LazyLoadEvent) {
-     if (this.primengTableHelper.shouldResetPaging(event)) {
-       this.paginator.changePage(0);
-       return;
+   getallIndustryList(event?: LazyLoadEvent, isSubmit:boolean = false) {
+    if(isSubmit == true){
+      this.filterText = "";
      }
-     this.primengTableHelper.showLoadingIndicator();
-     this._Industry.getIndustry(
-       this.primengTableHelper.getMaxResultCount(this.paginator, event),
-       this.primengTableHelper.getSkipCount(this.paginator, event),
-       this.primengTableHelper.getSorting(this.dataTable),
-       this.filterText,
-     ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
-       this.primengTableHelper.totalRecordsCount = result.totalCount;
-       this.primengTableHelper.totalRecordsCount = result.items.length;
-       this.primengTableHelper.records = result.items;
-       this.Industry = result.items;
-       this.primengTableHelper.hideLoadingIndicator();
-     });
-   }
+    if (this.primengTableHelper.shouldResetPaging(event)) {
+      this.paginator.changePage(0);
+      return;
+    }
+    this.primengTableHelper.showLoadingIndicator();
+    this._Industry.getIndustry(
+      this.primengTableHelper.getMaxResultCount(this.paginator, event),
+      this.primengTableHelper.getSkipCount(this.paginator, event),
+      this.primengTableHelper.getSorting(this.dataTable),
+      this.filterText,
+    ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
+     this.primengTableHelper.records=result.items
+     this.primengTableHelper.totalRecordsCount = result.totalCount;
+     this.Industry=result.items;
+     this.primengTableHelper.hideLoadingIndicator();   
+    });
+  }
+ 
  
    ngAfterViewInit() {
      this.getallIndustryList();

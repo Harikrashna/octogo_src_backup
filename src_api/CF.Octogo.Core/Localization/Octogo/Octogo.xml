@@ -1304,5 +1304,12 @@
 		<text name="AdminEmailAddressDuplicate">Admin Email Address is duplicate</text>
 		<text name="UserRegisteredSuccessfullyMsg">Registration Completed</text>
 		<text name="Products">Products</text>
+		<text name="NoEditions">No Edition to display</text>
+		<text name="OurProducts">Our Products</text>
+		<text name="ProductsHeaderInfo">Products that we Provide</text>
+		<text name="ProductWithEdition">Product With Edition</text>
+		<text name="FreeEditions">Free Editions</text>
+		<text name="PaidEditions">Paid Editions</text>
 	</texts>
 </localizationDictionary>
+

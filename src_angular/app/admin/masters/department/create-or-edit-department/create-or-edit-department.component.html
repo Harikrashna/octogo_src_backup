@@ -2,7 +2,7 @@
     aria-labelledby="createOrEditDepartment" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form *ngIf="active" #DepartmentForm="ngForm" novalidate (ngSubmit)="save(DepartmentForm)"
+            <form *ngIf="active" #DepartmentForm="ngForm" novalidate (keyup.enter)="save(DepartmentForm)"
                 autocomplete="new-password">
                 <div class="modal-header">
                     <h4 class="modal-title">
@@ -22,14 +22,14 @@
                     </div>
                     <div class="form-group">
                         <label>{{"DepartmentName" | localize}}*</label>
-                        <input id="DepartmentName" (keydown)="validations($event)" #DepartmentNameInput="ngModel"
+                        <input id="DepartmentName" (keypress)="_validationService.NameValidation($event)" #DepartmentNameInput="ngModel"
                             class="form-control" type="text" name="DepartmentName"
                             [(ngModel)]="createDepartment.vcDepartmentName" required maxlength="100">
                         <validation-messages [formCtrl]="DepartmentNameInput"></validation-messages>
                     </div>
                     <div class="form-group">
                         <label>{{"Description" | localize}} </label>
-                        <input id="Description" class="form-control" type="text" name="Description"
+                        <input id="Description" (keypress)="_validationService.NameValidation($event)" class="form-control" type="text" name="Description"
                             [(ngModel)]="createDepartment.vcDescription" maxlength="250">
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                     <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
                         (click)="close(DepartmentForm)">{{"Cancel" | localize}}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!DepartmentForm.form.valid"
-                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')" (click)="save(DepartmentForm)"><i class="fa fa-save"></i>
                         <span>{{"Save" | localize}}</span></button>
                 </div>
             </form>

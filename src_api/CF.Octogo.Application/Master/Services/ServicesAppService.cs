@@ -13,12 +13,20 @@ using Abp.Authorization;
 using CF.Octogo.Authorization;
 using static CF.Octogo.Master.Services.Dto.EditServiceDto;
 using static CF.Octogo.Master.Services.Dto.CreateOrUpdateServiceInputDto;
+using Abp.Runtime.Caching;
 
 namespace CF.Octogo.Master.Services
 {
 
     public class ServicesAppService : OctogoAppServiceBase, IServicesAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public ServicesAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         [AbpAuthorize(AppPermissions.Pages_Administration_Services)]
         public async Task<PagedResultDto<ServicesListDto>> GetService(PagedAndSortedInputDto input, string filter)
         {
@@ -29,7 +37,7 @@ namespace CF.Octogo.Master.Services
             parameters[3] = new SqlParameter("Filter", filter);
             List<ServicesListDto> ServiceList = new List<ServicesListDto>();
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetServices", parameters
             );
@@ -62,7 +70,7 @@ namespace CF.Octogo.Master.Services
         public async Task<int> CreateorUpdateService(CreateOrUpdateServiceInput inp)
         {
 
-            var dup_data = GetServiceByServiceId(inp.inServiceID, inp.vcServiceName, inp.vcDescription);
+            var dup_data = GetServiceByServiceId(inp.inServiceID, inp.vcServiceName);
 
             if (dup_data.Result != null)
             {
@@ -71,10 +79,10 @@ namespace CF.Octogo.Master.Services
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inServiceID", inp.inServiceID);
-            parameters[1] = new SqlParameter("vcServiceName", inp.vcServiceName);
+            parameters[1] = new SqlParameter("vcServiceName", inp.vcServiceName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateService", parameters);
 
@@ -84,6 +92,7 @@ namespace CF.Octogo.Master.Services
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -99,10 +108,10 @@ namespace CF.Octogo.Master.Services
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("ServiceID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteService", parameters);
-
+            await ClearCache();
         }
 
 
@@ -112,7 +121,7 @@ namespace CF.Octogo.Master.Services
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("ServiceID", input.inServiceID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetServiceById", parameters
             );
@@ -127,17 +136,17 @@ namespace CF.Octogo.Master.Services
         }
 
 
-        public async Task<DataSet> GetServiceByServiceId(int? inServiceID, string vcServiceName, string vcDescription)
+        public async Task<DataSet> GetServiceByServiceId(int? inServiceID, string vcServiceName)
         {
-            SqlParameter[] parameters = new SqlParameter[3];
+            SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("ServiceId", inServiceID);
             parameters[1] = new SqlParameter("ServiceName", vcServiceName);
-            parameters[2] = new SqlParameter("Description", vcDescription);
+
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicateRecord", parameters
+            "USP_CheckDuplicateServices", parameters
             );
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
@@ -148,7 +157,11 @@ namespace CF.Octogo.Master.Services
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
 

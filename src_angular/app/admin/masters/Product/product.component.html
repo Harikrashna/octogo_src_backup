@@ -87,12 +87,12 @@
                                             </td>
 
                                             <td>
-
+                                                <span class="p-column-title"> {{'ProductName' | localize}}</span>
                                                 {{Product.vcProductName }}
 
                                             </td>
                                             <td>
-
+                                                <span class="p-column-title"> {{'Description' | localize}}</span>
                                                 {{Product.vcDescription }}
 
                                             </td>
@@ -125,5 +125,5 @@
         </div>
     </div>
 
-    <app-create-or-edit-product (modalSave)="getallProductList()" [Product]="Product" #createOrEditProduct>
+    <app-create-or-edit-product (modalSave)="getallProductList(null,true)" [Product]="Product" #createOrEditProduct>
     </app-create-or-edit-product>

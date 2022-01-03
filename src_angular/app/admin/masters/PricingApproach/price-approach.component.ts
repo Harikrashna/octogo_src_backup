@@ -33,7 +33,10 @@ export class PriceApproachComponent extends AppComponentBase implements OnInit {
   edit(record){
     this.createOrEditPricingApproachModal.show(record)
   }
-  getPricingApproach(event? :LazyLoadEvent):void{
+  getPricingApproach(event? :LazyLoadEvent, isSubmit:boolean = false):void{
+    if(isSubmit == true){
+      this.filterText = "";
+     }
     if (this.primengTableHelper.shouldResetPaging(event)) {
       this.paginator.changePage(0);
       return;

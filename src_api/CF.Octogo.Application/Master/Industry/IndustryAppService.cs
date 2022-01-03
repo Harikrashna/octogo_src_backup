@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Runtime.Caching;
 using Abp.UI;
 using CF.Octogo.Authorization;
 using CF.Octogo.Data;
@@ -17,6 +18,13 @@ namespace CF.Octogo.Master.Industry
 {
     public class IndustryAppService : OctogoAppServiceBase, IIndustryAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public IndustryAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         [AbpAuthorize(AppPermissions.Pages_Administration_Industry)]
         public async Task<PagedResultDto<IndustryListDto>> GetIndustry(PagedAndSortedInputDto input, string filter)
         {
@@ -60,7 +68,7 @@ namespace CF.Octogo.Master.Industry
         public async Task<int> CreateorUpdateIndustry(CreateOrUpdateIndustryInput inp)
         {
 
-            var dup_data = GetIndustryByIndustryId(inp.inIndustryID, inp.vcIndustryName, inp.vcDescription);
+            var dup_data = GetIndustryByIndustryId(inp.inIndustryID, inp.vcIndustryName);
 
             if (dup_data.Result != null)
             {
@@ -69,7 +77,7 @@ namespace CF.Octogo.Master.Industry
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inIndustryID", inp.inIndustryID);
-            parameters[1] = new SqlParameter("vcIndustryName", inp.vcIndustryName);
+            parameters[1] = new SqlParameter("vcIndustryName", inp.vcIndustryName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
@@ -82,6 +90,7 @@ namespace CF.Octogo.Master.Industry
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -104,7 +113,7 @@ namespace CF.Octogo.Master.Industry
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteIndustry", parameters);
-
+            await ClearCache();
         }
 
 
@@ -129,7 +138,7 @@ namespace CF.Octogo.Master.Industry
         }
 
 
-        public async Task<DataSet> GetIndustryByIndustryId(int? inIndustryID, string vcIndustryName, string vcDescription)
+        public async Task<DataSet> GetIndustryByIndustryId(int? inIndustryID, string vcIndustryName)
         {
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("IndustryId", inIndustryID);
@@ -148,6 +157,11 @@ namespace CF.Octogo.Master.Industry
             {
                 return null;
             }
+        }
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
         }
 
 

@@ -23,7 +23,7 @@
                                 </div>
                             </div>
                             <div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
-                                <p-table #dt [value]="Department" #dataTable sortMode="multiple"
+                                <p-table #dt [value]="primengTableHelper.records" sortMode="multiple" [paginator]="false"
                                     (onLazyLoad)="getallDepartmentList($event)" [value]="primengTableHelper.records"
                                     [globalFilterFields]="['Department']"
                                     rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false"
@@ -82,18 +82,14 @@
                                 <div class="primeng-no-data" *ngIf="primengTableHelper.totalRecordsCount == 0">
                                     {{'NoData' | localize}}
                                 </div>
-                                <div class="primeng-paging-container">
-                                    <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage" #paginator
-                                        (onPageChange)="getallDepartmentList($event)"
-                                        [totalRecords]="primengTableHelper.totalRecordsCount"
-                                        [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
-                                        [showCurrentPageReport]="true"
-                                        [currentPageReportTemplate]="'TotalRecordsCount' | localize:primengTableHelper.totalRecordsCount">
-                                    </p-paginator>
-                                    
-                                </div>
-                                <div class="ui-table-footer">
-                                </div>
+                                <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage" #paginator
+                                (onPageChange)="getallDepartmentList($event)"
+                                [totalRecords]="primengTableHelper.totalRecordsCount"
+                                [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                                [showCurrentPageReport]="true"
+                                [currentPageReportTemplate]="'TotalRecordsCount' | localize:primengTableHelper.totalRecordsCount">
+                            </p-paginator>
+                                
                             </div>
                         </div>
                     </div>
@@ -101,5 +97,5 @@
             </div>
         </div>
     </div>
-    <app-create-or-edit-department (modalSave)="getallDepartmentList()" [Department]="Department" #createOrEditDepartment>
+    <app-create-or-edit-department (modalSave)="getallDepartmentList(null, true)" [departmentListDto]="departmentListDto" #createOrEditDepartment>
     </app-create-or-edit-department>

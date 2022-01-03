@@ -1,9 +1,9 @@
 <div appBsModal #createOrEditAwbCostApproach="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1"
-    role="dialog" aria-labelledby="createOrEditAwbCostApproach" aria-hidden="true"
+    role="dialog" aria-labelledby="createOrEditModal" aria-hidden="true"
     [config]="{backdrop: 'static', keyboard: !saving}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form *ngIf="active" #AwbCostApproachForm="ngForm" novalidate (ngSubmit)="save(AwbCostApproachForm)"
+            <form *ngIf="active" #AwbCostApproachForm="ngForm" novalidate (keyup.enter)="save(AwbCostApproachForm)"
                 autocomplete="new-password">
                 <div class="modal-header">
                     <h4 class="modal-title">
@@ -19,24 +19,33 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>{{"ApproachName" | localize}} *</label>
-                        <input id="ApproachName" #ApproachNameInput="ngModel" class="form-control" type="text"
-                            name="ApproachName" (keypress)="spaceBar($event)"
+                        <input id="vcApproachName" #ApproachNameInput="ngModel" class="form-control" type="text"
+                            name="vcApproachName" (keypress)="_validationService.NameValidation($event)"
                             [(ngModel)]="createAwbApproach.vcApproachName" required maxlength="100">
                         <validation-messages [formCtrl]="ApproachNameInput"></validation-messages>
                     </div>
                     <div class="form-group">
                         <label>{{"Description" | localize}} </label>
                         <input id="Description" class="form-control" type="text" name="Description"
-                            (keypress)="spaceBar($event)" [(ngModel)]="createAwbApproach.vcDescription" maxlength="250">
+                            (keypress)="_validationService.NameValidation($event)" [(ngModel)]="createAwbApproach.vcDescription"
+                            maxlength="250">
                     </div>
 
                 </div>
-                <div class="modal-footer">
+                <!-- <div class="modal-footer">
                     <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
                         (click)="close(AwbCostApproachForm)">{{"Cancel" | localize}}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold"
                         [disabled]="!AwbCostApproachForm.form.valid" [buttonBusy]="saving"
                         [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" |
+                            localize}}</span></button>
+                </div> -->
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
+                        (click)="close(AwbCostApproachForm)">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold"
+                        [disabled]="!AwbCostApproachForm.form.valid" [buttonBusy]="saving"
+                        [busyText]="l('SavingWithThreeDot')" (click)="save(AwbCostApproachForm)"><i class="fa fa-save"></i> <span>{{"Save" |
                             localize}}</span></button>
                 </div>
 

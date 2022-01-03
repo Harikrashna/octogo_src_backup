@@ -11,23 +11,30 @@ using System.Data.SqlClient;
 using System.Linq;
 using CF.Octogo.Master.Department.Dto;
 using System.Threading.Tasks;
-
+using Abp.Runtime.Caching;
 
 namespace CF.Octogo.Master.Department
 {
     public class DepartmentAppService : OctogoAppServiceBase, IDepartmentAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public DepartmentAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         [AbpAuthorize(AppPermissions.Pages_Administration_Department)]
-        public async Task<PagedResultDto<DepartmentListDto>> GetDepartment(PagedAndSortedInputDto input, string filter)
+        public async Task<PagedResultDto<DepartmentListDto>> GetDepartment(DepartmentListInputDto input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("Sorting", input.Sorting);
-            parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
-            parameters[3] = new SqlParameter("Filter", filter);
+            parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
+            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[2] = new SqlParameter("Sort", input.Sorting);
+            parameters[3] = new SqlParameter("Filter", input.filter);
             List<DepartmentListDto> DepartmentList = new List<DepartmentListDto>();
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetDepartment", parameters
             );
@@ -60,7 +67,7 @@ namespace CF.Octogo.Master.Department
         public async Task<int> CreateorUpdateDepartment(CreateOrUpdateDepartmentInput inp)
         {
 
-            var dup_data = GetDepartmentByDepartmentId(inp.inDepartmentID, inp.vcDepartmentName, inp.vcDescription);
+            var dup_data = GetDepartmentByDepartmentId(inp.inDepartmentID, inp.vcDepartmentName);
 
             if (dup_data.Result != null)
             {
@@ -69,10 +76,10 @@ namespace CF.Octogo.Master.Department
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inDepartmentID", inp.inDepartmentID);
-            parameters[1] = new SqlParameter("vcDepartmentName", inp.vcDepartmentName);
+            parameters[1] = new SqlParameter("vcDepartmentName", inp.vcDepartmentName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateDepartment", parameters);
 
@@ -82,6 +89,7 @@ namespace CF.Octogo.Master.Department
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -97,13 +105,10 @@ namespace CF.Octogo.Master.Department
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("DepartmentID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
-
-
-
-
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteDepartment", parameters);
+            await ClearCache();
 
         }
 
@@ -114,7 +119,7 @@ namespace CF.Octogo.Master.Department
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("DepartmentID", input.inDepartmentID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetDepartmentById", parameters
             );
@@ -129,15 +134,15 @@ namespace CF.Octogo.Master.Department
         }
 
 
-        public async Task<DataSet> GetDepartmentByDepartmentId(int? inDepartmentID, string vcDepartmentName, string vcDescription)
+        public async Task<DataSet> GetDepartmentByDepartmentId(int? inDepartmentID, string vcDepartmentName)
         {
-            SqlParameter[] parameters = new SqlParameter[3];
+            SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("DepartmentId", inDepartmentID);
             parameters[1] = new SqlParameter("DepartmentName", vcDepartmentName);
-            parameters[2] = new SqlParameter("Description", vcDescription);
+
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_CheckDuplicateDepart", parameters
             );
@@ -150,7 +155,11 @@ namespace CF.Octogo.Master.Department
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
 

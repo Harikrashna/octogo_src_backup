@@ -14,10 +14,10 @@ namespace CF.Octogo.Master.Department
 {
     public interface IDepartmentAppService : IApplicationService
     {
-        Task<PagedResultDto<DepartmentListDto>> GetDepartment(PagedAndSortedInputDto input, string filter);
+        Task<PagedResultDto<DepartmentListDto>> GetDepartment(DepartmentListInputDto input);
         Task<int> CreateorUpdateDepartment(CreateOrUpdateDepartmentInput inp);
         Task DeleteDepartment(EntityDto input);
         Task<DataSet> GetDepartmentForEdit(EditDepartmentDto input);
-        Task<DataSet> GetDepartmentByDepartmentId(int? inDepartmentID, string vcDepartmentName, string vcDescription);
+        Task<DataSet> GetDepartmentByDepartmentId(int? inDepartmentID, string vcDepartmentName);
     }
 }

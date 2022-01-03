@@ -27,8 +27,15 @@ export class UsertypeComponent extends AppComponentBase implements AfterViewInit
      super(injector);
      this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
    }
+   ngAfterViewInit() {
+    this.getallUserTypeList();
+  }
+
  
-   getallUserTypeList(event?: LazyLoadEvent) {
+   getallUserTypeList(event?: LazyLoadEvent, isSubmit:boolean = false) {
+     if(isSubmit == true){
+      this.filterText = "";
+     }
      if (this.primengTableHelper.shouldResetPaging(event)) {
        this.paginator.changePage(0);
        return;
@@ -40,18 +47,14 @@ export class UsertypeComponent extends AppComponentBase implements AfterViewInit
        this.primengTableHelper.getSorting(this.dataTable),
        this.filterText,
      ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
-       this.primengTableHelper.totalRecordsCount = result.totalCount;
-       this.primengTableHelper.totalRecordsCount = result.items.length;
-       this.primengTableHelper.records = result.items;
-       this.UserType = result.items;
-       this.primengTableHelper.hideLoadingIndicator();
+      this.primengTableHelper.totalRecordsCount = result.totalCount;
+      this.primengTableHelper.records = result.items;
+      this.UserType = result.items;
+      this.primengTableHelper.hideLoadingIndicator();
      });
    }
  
-   ngAfterViewInit() {
-     this.getallUserTypeList();
-   }
- 
+  
    createUserType(): void {
      this.createOrEditUserType.show();
    }

@@ -4,6 +4,7 @@ import { PermissionTreeComponent } from '@app/admin/shared/permission-tree.compo
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgForm, PatternValidator } from '@angular/forms';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 @Component({
   selector: 'app-create-or-edit-services',
   templateUrl: './create-or-edit-services.component.html',
@@ -19,7 +20,8 @@ export class CreateOrEditServicesComponent extends AppComponentBase {
   saving: boolean = false; 
   edit: boolean = false;
   currentServiceName;
-  constructor(injector: Injector, private _services: ServicesServiceProxy,) {
+  constructor(injector: Injector, private _services: ServicesServiceProxy,
+    public _validationService: ValidationServiceService) {
     super(injector)
   }
   ngOnInit(): void {
@@ -48,31 +50,30 @@ export class CreateOrEditServicesComponent extends AppComponentBase {
       })
     }
   }
-  validations(event: any) {
-    if (event.target.selectionStart == 0 && event.keyCode == 32 || event.keyCode >=104 && event.keyCode<=222) {
-      return false;
-    }
-  }
   onShown(): void {
     document.getElementById('ServiceName').focus();
   }
 
   save(form: NgForm):void{
 
-    let Duplicacy = this.Services.filter((x) => x.vcServiceName.toUpperCase() == this.createServices.vcServiceName.toUpperCase());
+    let Duplicacy = this.Services.filter((x) => x.vcServiceName.trim().toUpperCase() == this.createServices.vcServiceName.trim().toUpperCase());
     if (Duplicacy != null && Duplicacy != undefined && Duplicacy.length > 0 && Duplicacy[0].inServiceID != this.createServices.inServiceID) {
-      return this.notify.warn(this.l('DuplicateServiceMessage'));
+      return this.notify.warn(this.l('DuplicateProductMessage'));
     }
     else if (this.createServices.inServiceID == 0 || this.createServices.inServiceID == null) {
+      this.saving = true;
       this._services.createorUpdateService(this.createServices).subscribe(e => {
+        this.saving = false
         this.notify.info(this.l('SavedSuccessfully'));
         this.close(form);
         this.modalSave.emit(null)
       })
     }
     else {
+      this.saving = true
       this._services.createorUpdateService(this.createServices).subscribe(e => {
-        this.notify.info(this.l('UpdateServiceMessage'));
+        this.saving = false
+        this.notify.info(this.l('UpdateProductMessage'));
         this.close(form);
         this.modalSave.emit(null)
       })      

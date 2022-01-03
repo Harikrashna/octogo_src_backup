@@ -1,87 +1,267 @@
-import { Component, Injector, OnInit, ViewEncapsulation } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Component, Injector, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppComponent } from '@app/app.component';
 import { accountModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import {
-    EditionSelectDto,
-    EditionWithFeaturesDto,
-    EditionsSelectOutput,
-    FlatFeatureSelectDto,
-    TenantRegistrationServiceProxy,
-    EditionPaymentType,
-    SubscriptionStartType
-} from '@shared/service-proxies/service-proxies';
-import { filter as _filter } from 'lodash-es';
-import { EditionHelperService } from '@account/payment/edition-helper.service';
+import { EditionPaymentType, EditionsSelectOutput, ProductWithEditionDto, SubscriptionStartType, TenantRegistrationServiceProxy } from '@shared/service-proxies/service-proxies';
+
 
 @Component({
-    templateUrl: './select-edition.component.html',
-    styleUrls: ['./select-edition.component.less'],
-    encapsulation: ViewEncapsulation.None,
-    animations: [accountModuleAnimation()]
+     templateUrl: './select-edition.component.html',
+     styleUrls: ['./select-edition.component.less'],
+    animations: [accountModuleAnimation(),
+      trigger('openClose', [
+        // ...
+        state('open', style({
+         
+          opacity: 1,
+          // backgroundColor: 'yellow'
+        })),
+        state('closed', style({
+         
+          opacity: 0.8,
+         // backgroundColor: 'blue'
+        })),
+        transition('open => closed', [animate('2800ms ease-out')]),
+        transition('closed => open', [animate('2800ms ease-in')])
+      ]),]
 })
 export class SelectEditionComponent extends AppComponentBase implements OnInit {
+  ProductWithEditionList:ProductWithEditionDto[]
+  loading: boolean = true;
+  editionsSelectOutput: EditionsSelectOutput = new EditionsSelectOutput();
+  isUserLoggedIn: boolean = false;
+  discountedPrice:any;
+  expanded:boolean=false;
+  currentIndex=null;
+  productName=null;
 
-    editionsSelectOutput: EditionsSelectOutput = new EditionsSelectOutput();
-    isUserLoggedIn = false;
-    isSetted = false;
-    editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
-    subscriptionStartType: typeof SubscriptionStartType = SubscriptionStartType;
-    /*you can change your edition icons order within editionIcons variable */
-    editionIcons: string[] = ['flaticon-open-box', 'flaticon-rocket', 'flaticon-gift', 'flaticon-confetti', 'flaticon-cogwheel-2', 'flaticon-app', 'flaticon-coins', 'flaticon-piggy-bank', 'flaticon-bag', 'flaticon-lifebuoy', 'flaticon-technology-1', 'flaticon-cogwheel-1', 'flaticon-infinity', 'flaticon-interface-5', 'flaticon-squares-3', 'flaticon-interface-6', 'flaticon-mark', 'flaticon-business', 'flaticon-interface-7', 'flaticon-list-2', 'flaticon-bell', 'flaticon-technology', 'flaticon-squares-2', 'flaticon-notes', 'flaticon-profile', 'flaticon-layers', 'flaticon-interface-4', 'flaticon-signs', 'flaticon-menu-1', 'flaticon-symbol'];
+  subscriptionStartType: typeof SubscriptionStartType = SubscriptionStartType;
+  editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
+  editionIcons: string[] = ['flaticon-open-box', 'flaticon-rocket', 'flaticon-gift', 'flaticon-confetti', 'flaticon-cogwheel-2', 'flaticon-app', 'flaticon-coins', 'flaticon-piggy-bank', 'flaticon-bag', 'flaticon-lifebuoy', 'flaticon-technology-1', 'flaticon-cogwheel-1', 'flaticon-infinity', 'flaticon-interface-5', 'flaticon-squares-3', 'flaticon-interface-6', 'flaticon-mark', 'flaticon-business', 'flaticon-interface-7', 'flaticon-list-2', 'flaticon-bell', 'flaticon-technology', 'flaticon-squares-2', 'flaticon-notes', 'flaticon-profile', 'flaticon-layers', 'flaticon-interface-4', 'flaticon-signs', 'flaticon-menu-1', 'flaticon-symbol'];
 
-    constructor(
-        injector: Injector,
-        private _tenantRegistrationService: TenantRegistrationServiceProxy,
-        private _editionHelperService: EditionHelperService,
-        private _router: Router
-    ) {
-        super(injector);
+  constructor(private injector:Injector,private _tenantRegistrationService:TenantRegistrationServiceProxy,
+    private _router: Router) {
+    super(injector);
+   }
+
+  ngOnInit(): void {
+    if(this.appSession.user != null && this.appSession.user != undefined && this.appSession.user.id > 0){
+      this.isUserLoggedIn = true;
     }
+    this._tenantRegistrationService.getProductWithEdition().subscribe(result=>{
+      this.loading=false;
+      this.ProductWithEditionList=result;
+      
+    
+      console.log(this.ProductWithEditionList);
+      console.log(this.ProductWithEditionList[0].edition);
+    })
 
-    ngOnInit() {
-        this.isUserLoggedIn = abp.session.userId > 0;
-        this.spinnerService.show();
-        this._tenantRegistrationService.getEditionsForSelect()
-            .subscribe((result) => {
-                this.spinnerService.hide();
-                this.editionsSelectOutput = result;
-
-                if (!this.editionsSelectOutput.editionsWithFeatures || this.editionsSelectOutput.editionsWithFeatures.length <= 0) {
-                    this._router.navigate(['/account/register-tenant']);
-                }
-            });
+    // for(let i=0;i<this.ProductWithEditionList.length;i++){
+    //   if(this.ProductWithEditionList[i]?.edition?.length > 0){
+    //     console.log(this.ProductWithEditionList)
+    //   }
+    // }
+  }
+  isFree(pricingData?): boolean{
+    if(pricingData != null && pricingData.length > 0){
+      return false;
     }
+    return true;
+  }
 
-    isFree(edition: EditionSelectDto): boolean {
-        return this._editionHelperService.isEditionFree(edition);
-    }
-
-    isTrueFalseFeature(feature: FlatFeatureSelectDto): boolean {
-        return feature.inputType.name === 'CHECKBOX';
-    }
-
-    featureEnabledForEdition(feature: FlatFeatureSelectDto, edition: EditionWithFeaturesDto): boolean {
-        const featureValues = _filter(edition.featureValues, { name: feature.name });
-        if (!featureValues || featureValues.length <= 0) {
-            return false;
-        }
-
-        const featureValue = featureValues[0];
-        return featureValue.value.toLowerCase() === 'true';
-    }
-
-    getFeatureValueForEdition(feature: FlatFeatureSelectDto, edition: EditionWithFeaturesDto): string {
-        const featureValues = _filter(edition.featureValues, { name: feature.name });
-        if (!featureValues || featureValues.length <= 0) {
-            return '';
-        }
-
-        const featureValue = featureValues[0];
-        return featureValue.value;
-    }
-
-    upgrade(upgradeEdition: EditionSelectDto, editionPaymentType: EditionPaymentType): void {
-        this._router.navigate(['/account/upgrade'], { queryParams: { upgradeEditionId: upgradeEdition.id, editionPaymentType: editionPaymentType } });
-    }
+expandedTrue(i,product){
+  
+  this.currentIndex=i;
+  this.productName=product;
+  this.expanded=true;
+  // alert(product+","+i);
 }
+
+expandedFalse(i,product){
+  this.currentIndex=null;
+  this.productName=product;
+  this.expanded=false;
+  this.currentIndex=null
+  // alert(product+","+i);
+}
+getFilteredEditions(edition, type){
+  if(edition != null){
+    if(type=="FREE"){
+      return edition.filter(obj => obj.pricingtype == null || obj.pricingtype.length == 0)
+    }
+    else if(type=="PAID"){
+      return edition.filter(obj => obj.pricingtype != null && obj.pricingtype.length > 0)
+    }
+  }
+  else{
+    return [];
+  }
+}
+
+DicountedPriceInput(item) {
+ let savingPrice=(item.price * item.discount) /100;
+ this.discountedPrice=item.price-savingPrice;
+ console.log(this.discountedPrice);  
+}
+upgrade(upgradeEdition, editionPaymentType: EditionPaymentType): void {
+    debugger
+    this._router.navigate(['/account/upgrade'], { queryParams: { upgradeEditionId: upgradeEdition.editionID, editionPaymentType: editionPaymentType } });
+}
+}
+
+export class expanded{
+  expand:false;
+  index:null;
+}
+
+const roundTo = function (num: number, places: number) {
+  const factor = 10 ** places;
+  return Math.round(num * factor) / factor;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { Component, Injector, OnInit, ViewEncapsulation } from '@angular/core';
+// import { Router } from '@angular/router';
+// import { accountModuleAnimation } from '@shared/animations/routerTransition';
+// import { AppComponentBase } from '@shared/common/app-component-base';
+// import {
+//     EditionSelectDto,
+//     EditionWithFeaturesDto,
+//     EditionsSelectOutput,
+//     FlatFeatureSelectDto,
+//     TenantRegistrationServiceProxy,
+//     EditionPaymentType,
+//     SubscriptionStartType
+// } from '@shared/service-proxies/service-proxies';
+// import { filter as _filter } from 'lodash-es';
+// import { EditionHelperService } from '@account/payment/edition-helper.service';
+
+// @Component({
+//     templateUrl: './select-edition.component.html',
+//     styleUrls: ['./select-edition.component.less'],
+//     encapsulation: ViewEncapsulation.None,
+//     animations: [accountModuleAnimation()]
+// })
+// export class SelectEditionComponent extends AppComponentBase implements OnInit {
+
+//     editionsSelectOutput: EditionsSelectOutput = new EditionsSelectOutput();
+//     isUserLoggedIn = false;
+//     isSetted = false;
+//     editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
+//     subscriptionStartType: typeof SubscriptionStartType = SubscriptionStartType;
+//     /*you can change your edition icons order within editionIcons variable */
+//     editionIcons: string[] = ['flaticon-open-box', 'flaticon-rocket', 'flaticon-gift', 'flaticon-confetti', 'flaticon-cogwheel-2', 'flaticon-app', 'flaticon-coins', 'flaticon-piggy-bank', 'flaticon-bag', 'flaticon-lifebuoy', 'flaticon-technology-1', 'flaticon-cogwheel-1', 'flaticon-infinity', 'flaticon-interface-5', 'flaticon-squares-3', 'flaticon-interface-6', 'flaticon-mark', 'flaticon-business', 'flaticon-interface-7', 'flaticon-list-2', 'flaticon-bell', 'flaticon-technology', 'flaticon-squares-2', 'flaticon-notes', 'flaticon-profile', 'flaticon-layers', 'flaticon-interface-4', 'flaticon-signs', 'flaticon-menu-1', 'flaticon-symbol'];
+
+//     constructor(
+//         injector: Injector,
+//         private _tenantRegistrationService: TenantRegistrationServiceProxy,
+//         private _editionHelperService: EditionHelperService,
+//         private _router: Router
+//     ) {
+//         super(injector);
+//     }
+
+//     ngOnInit() {
+//         this.isUserLoggedIn = abp.session.userId > 0;
+//         this.spinnerService.show();
+//         this._tenantRegistrationService.getEditionsForSelect()
+//             .subscribe((result) => {
+//                 this.spinnerService.hide();
+//                 this.editionsSelectOutput = result;
+
+//                 if (!this.editionsSelectOutput.editionsWithFeatures || this.editionsSelectOutput.editionsWithFeatures.length <= 0) {
+//                     this._router.navigate(['/account/register-tenant']);
+//                 }
+//             });
+//     }
+
+//     isFree(edition: EditionSelectDto): boolean {
+//         return this._editionHelperService.isEditionFree(edition);
+//     }
+
+//     isTrueFalseFeature(feature: FlatFeatureSelectDto): boolean {
+//         return feature.inputType.name === 'CHECKBOX';
+//     }
+
+//     featureEnabledForEdition(feature: FlatFeatureSelectDto, edition: EditionWithFeaturesDto): boolean {
+//         const featureValues = _filter(edition.featureValues, { name: feature.name });
+//         if (!featureValues || featureValues.length <= 0) {
+//             return false;
+//         }
+
+//         const featureValue = featureValues[0];
+//         return featureValue.value.toLowerCase() === 'true';
+//     }
+
+//     getFeatureValueForEdition(feature: FlatFeatureSelectDto, edition: EditionWithFeaturesDto): string {
+//         const featureValues = _filter(edition.featureValues, { name: feature.name });
+//         if (!featureValues || featureValues.length <= 0) {
+//             return '';
+//         }
+
+//         const featureValue = featureValues[0];
+//         return featureValue.value;
+//     }
+
+//     upgrade(upgradeEdition: EditionSelectDto, editionPaymentType: EditionPaymentType): void {
+//         this._router.navigate(['/account/upgrade'], { queryParams: { upgradeEditionId: upgradeEdition.id, editionPaymentType: editionPaymentType } });
+//     }
+// }

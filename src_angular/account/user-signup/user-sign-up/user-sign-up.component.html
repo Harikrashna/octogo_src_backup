@@ -8,12 +8,14 @@
     <form #registerForm="ngForm" class="login-form form" method="post" novalidate 
     (ngSubmit)="save(registerForm)" autocomplete="off">
 
-        <div class="row register-form">
-            <div class="box">
-                <div class="border px-4 px-3 divcolor my-3" id="check" *ngFor="let name of usertypes">
-                    <input class="checkbox" type="checkbox" [name]="name" (change)="onChange($event,name)"
+        <div class="col px-0 register-form">
+            <div class="row">
+                <div class="my-3 col-lg-4 col-md-6 col-sm-6 col-xs-6" *ngFor="let name of usertypes">
+                    <div class="border px-4 divcolor ">
+                        <input class="checkbox" type="checkbox" [name]="name" (change)="onChange($event,name)"
                         [checked]="name.id==model.userTypeId">
-                    <span class="ml-2 checkboxText" id="checkName">{{name.name}}</span>                   
+                    <span class="ml-2 checkboxText" id="checkName">{{name.name}}</span> 
+                    </div>                  
                 </div>
             </div>
         </div>

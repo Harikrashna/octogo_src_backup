@@ -6,4 +6,11 @@
         InActive,
         NotFound
     }
+    public enum TenantPyamenteSateAndAvailability
+    {
+        Completed = 1,
+        NotCompleted,
+        isFree,
+        NotFound
+    }
 }

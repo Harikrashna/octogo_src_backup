@@ -1,6 +1,7 @@
 ﻿
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Runtime.Caching;
 using Abp.UI;
 using CF.Octogo.Authorization;
 using CF.Octogo.Data;
@@ -17,6 +18,13 @@ namespace CF.Octogo.Master.Designation
     [AbpAuthorize(AppPermissions.Pages_Administration_Designation)]
     public class DesignationAppService : OctogoAppServiceBase, IDesignationService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public DesignationAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         public async Task<PagedResultDto<DesignationListDto>> GetDesignation(GetDesignationInput input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
@@ -26,7 +34,7 @@ namespace CF.Octogo.Master.Designation
             parameters[3] = new SqlParameter("Filter", input.filter);
 
             DataSet ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetDesignation", parameters
             );
@@ -70,7 +78,6 @@ namespace CF.Octogo.Master.Designation
                 else
                 {
                     await UpdateDesignationAsync(input);
-
                 }
 
             }
@@ -88,7 +95,6 @@ namespace CF.Octogo.Master.Designation
                 {
 
                     await CreateDesignationAsync(input);
-
                 }
 
             }
@@ -100,15 +106,23 @@ namespace CF.Octogo.Master.Designation
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("DesignationId", input.DesignationId);
-            parameters[1] = new SqlParameter("DesignationName", input.DesignationName);
+            parameters[1] = new SqlParameter("DesignationName", input.DesignationName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
             parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
 
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
                     "USP_InsertUpdateDesignation", parameters);
 
-            return 1;
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                await ClearCache();
+                return (int)ds.Tables[0].Rows[0]["Id"];
+            }
+            else
+            {
+                return 0;
+            }
 
         }
 
@@ -120,7 +134,7 @@ namespace CF.Octogo.Master.Designation
 
 
             DataSet ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetDesignationDuplicacyCheck", parameters
             );
@@ -134,21 +148,21 @@ namespace CF.Octogo.Master.Designation
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("DesignationId", input.DesignationId);
-            parameters[1] = new SqlParameter("DesignationName", input.DesignationName);
+            parameters[1] = new SqlParameter("DesignationName", input.DesignationName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
             parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
 
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure, "USP_InsertUpdateDesignation", parameters);
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
             {
-                return 1;
+                return 0;
             }
 
         }
@@ -162,13 +176,17 @@ namespace CF.Octogo.Master.Designation
                      new SqlParameter("@DesignationId", designationId),
                      new SqlParameter("@LoginBy", AbpSession.UserId)
                 };
-                await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+                await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,
                 "USP_DeleteDesignation", parameters);
+                await ClearCache();
                 return "Success";
             }
         }
-
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
     }
 }

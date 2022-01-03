@@ -70,6 +70,9 @@ import { NotificationsComponent } from './shared/layout/notifications/notificati
 import { TextMaskModule } from 'angular2-text-mask';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { AccordionModule } from 'primeng/accordion';
+import {PanelModule} from 'primeng/panel';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
+import {DividerModule} from 'primeng/divider';
 import { ActiveDelegatedUsersComboComponent } from './shared/layout/topbar/active-delegated-users-combo.component';
 
 // Metronic
@@ -89,6 +92,7 @@ import { AppBsModalModule } from '@shared/common/appBsModal/app-bs-modal.module'
 import { SubheaderModule } from './shared/common/sub-header/subheader.module';
 import { UnregisteredUserDashboardComponent } from './shared/layout/notifications/unregistered-user-dashboard/unregistered-user-dashboard.component';
 import { RegisteredUserEditionSelectionComponent } from './shared/layout/notifications/registered-user-edition-selection/registered-user-edition-selection.component';
+
 
 
 
@@ -177,7 +181,11 @@ import { RegisteredUserEditionSelectionComponent } from './shared/layout/notific
         NgxSpinnerModule,
         AppBsModalModule,
         SubheaderModule,
-        AccordionModule
+        AccordionModule,
+        PanelModule,
+        OverlayPanelModule,
+        DividerModule,
+        TooltipModule
     ],
     providers: [
         ImpersonationService,

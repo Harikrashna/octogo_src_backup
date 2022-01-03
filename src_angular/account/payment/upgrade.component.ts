@@ -13,7 +13,8 @@ import {
     SubscriptionPaymentGatewayType,
     SubscriptionPaymentType,
     SubscriptionStartType,
-    TenantRegistrationServiceProxy
+    TenantRegistrationServiceProxy,
+    EditionDetailsForEditDto
 } from '@shared/service-proxies/service-proxies';
 
 import { AppConsts } from '@shared/AppConsts';
@@ -40,6 +41,7 @@ export class UpgradeEditionComponent extends AppComponentBase implements OnInit 
     upgradeEditionId;
     editionPaymentTypeCheck: typeof EditionPaymentType = EditionPaymentType;
     paymentGateways: PaymentGatewayModel[];
+    editionDetails: EditionDetailsForEditDto;
 
     showPaymentForm = false;
     constructor(
@@ -54,26 +56,27 @@ export class UpgradeEditionComponent extends AppComponentBase implements OnInit 
     }
 
     ngOnInit(): void {
+        debugger
         this.showMainSpinner();
         this.editionPaymentType = parseInt(this._activatedRoute.snapshot.queryParams['editionPaymentType']);
         this.upgradeEditionId = this._activatedRoute.snapshot.queryParams['upgradeEditionId'];
-
-        if (this.appSession.tenant.edition.isFree) {
-            this._tenantRegistrationAppService.getEdition(this.upgradeEditionId)
-                .subscribe((upgradeEdition) => {
-                    if (this._editionHelperService.isEditionFree(upgradeEdition)) {
-                        this._paymentAppService.switchBetweenFreeEditions(upgradeEdition.id)
-                            .subscribe(() => {
-                                this.hideMainSpinner();
-                                this._router.navigate(['app/admin/subscription-management']);
-                            });
-                    } else {
-                        this.hideMainSpinner();
-                        this.redirectToBuy();
-                    }
-                });
-            return;
-        }
+        this.GetEditionDetailsById(this.upgradeEditionId);
+        // if (this.appSession.tenant.edition.isFree) {
+        //     this._tenantRegistrationAppService.getEdition(this.upgradeEditionId)
+        //         .subscribe((upgradeEdition) => {
+        //             if (this._editionHelperService.isEditionFree(upgradeEdition)) {
+        //                 this._paymentAppService.switchBetweenFreeEditions(upgradeEdition.id)
+        //                     .subscribe(() => {
+        //                         this.hideMainSpinner();
+        //                         this._router.navigate(['app/admin/subscription-management']);
+        //                     });
+        //             } else {
+        //                 this.hideMainSpinner();
+        //                 this.redirectToBuy();
+        //             }
+        //         });
+        //     return;
+        // }
         //edition is not free but there is no previous payment(tenant might be created with paid edition.)
         this._paymentAppService.hasAnyPayment()
             .subscribe(hasPayment => {
@@ -118,7 +121,27 @@ export class UpgradeEditionComponent extends AppComponentBase implements OnInit 
                 });
             });
     }
-
+    GetEditionDetailsById(editionId): void {
+        this._tenantRegistrationAppService.getEditionDetailsById(editionId).subscribe(result => {
+            if (result != null && result.id > 0) {
+                this.editionDetails = result; 
+                if (this.editionDetails.pricingData == undefined || this.editionDetails.pricingData == null || this.editionDetails.pricingData.length == 0) {
+                        this._paymentAppService.switchBetweenFreeEditions(this.editionDetails.id)
+                            .subscribe(() => {
+                                this.hideMainSpinner();
+                                this._router.navigate(['app/admin/subscription-management']);
+                            });
+                    } else {
+                        this.hideMainSpinner();
+                        this.redirectToBuy();
+                    }
+            }
+            else{
+                this.editionDetails = null;
+                this.hideMainSpinner();
+            }
+        });
+    }
     checkout(gatewayType) {
         let input = new CreatePaymentDto();
         input.editionId = this.edition.id;

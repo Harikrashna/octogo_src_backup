@@ -37,7 +37,10 @@ export class AwbCostApproachComponent extends AppComponentBase implements AfterV
   createApproach(): void {
     this.createOrEditAwbCostApproach.show();
   }
-  GetPerAWBCostApproachList(event?: LazyLoadEvent) {
+  GetPerAWBCostApproachList(event?: LazyLoadEvent, isSubmit:boolean = false) {
+    if(isSubmit == true){
+      this.filterText = "";
+     }
     if (this.primengTableHelper.shouldResetPaging(event)) {
       this.paginator.changePage(0);
       return;
@@ -49,11 +52,10 @@ export class AwbCostApproachComponent extends AppComponentBase implements AfterV
       this.primengTableHelper.getSorting(this.dataTable),
       this.filterText
     ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
+      this.primengTableHelper.records=result.items
       this.primengTableHelper.totalRecordsCount = result.totalCount;
-      this.primengTableHelper.totalRecordsCount = result.items.length;
-      this.primengTableHelper.records = result.items;
-      this.perAWBCostApproach = result.items;
-      this.primengTableHelper.hideLoadingIndicator();
+      this.perAWBCostApproach=result.items;
+      this.primengTableHelper.hideLoadingIndicator();   
     });
   }
 

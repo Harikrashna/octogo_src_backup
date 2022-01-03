@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Runtime.Caching;
 using Abp.UI;
 using CF.Octogo.Authorization;
 using CF.Octogo.Data;
@@ -18,6 +19,13 @@ namespace CF.Octogo.Master.UserType
 {
     public class UserTypeAppService : OctogoAppServiceBase, IUserTypeAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public UserTypeAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         [AbpAuthorize(AppPermissions.Pages_Administration_UserType)]
         public async Task<PagedResultDto<UserTypeListDto>> GetUserType(PagedAndSortedInputDto input, string filter)
         {
@@ -28,7 +36,7 @@ namespace CF.Octogo.Master.UserType
             parameters[3] = new SqlParameter("Filter", filter);
             List<UserTypeListDto> UserTypeList = new List<UserTypeListDto>();
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetUserType", parameters
             );
@@ -61,7 +69,7 @@ namespace CF.Octogo.Master.UserType
         public async Task<int> CreateorUpdateUserType(CreateOrUpdateUserTypeInputDto inp)
         {
 
-            var dup_data = GetUserTypeByUserTypeId(inp.inUserTypeID, inp.vcUserTypeName, inp.vcDescription);
+            var dup_data = GetUserTypeByUserTypeId(inp.inUserTypeID, inp.vcUserTypeName);
 
             if (dup_data.Result != null)
             {
@@ -70,10 +78,10 @@ namespace CF.Octogo.Master.UserType
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inUserTypeID", inp.inUserTypeID);
-            parameters[1] = new SqlParameter("vcUserTypeName", inp.vcUserTypeName);
+            parameters[1] = new SqlParameter("vcUserTypeName", inp.vcUserTypeName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateUserType", parameters);
 
@@ -83,12 +91,16 @@ namespace CF.Octogo.Master.UserType
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
             {
                 return 0;
             }
+
+
+
 
         }
         [AbpAuthorize(AppPermissions.Pages_Administration_UserType_Delete)]
@@ -99,13 +111,10 @@ namespace CF.Octogo.Master.UserType
             parameters[0] = new SqlParameter("UserTypeID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
 
-
-
-
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteUserType", parameters);
-
+            await ClearCache();
         }
 
 
@@ -130,17 +139,16 @@ namespace CF.Octogo.Master.UserType
         }
 
 
-        public async Task<DataSet> GetUserTypeByUserTypeId(int? inUserTypeID, string vcUserTypeName, string vcDescription)
+        public async Task<DataSet> GetUserTypeByUserTypeId(int? inUserTypeID, string vcUserTypeName)
         {
-            SqlParameter[] parameters = new SqlParameter[3];
+            SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("UserTypeId", inUserTypeID);
             parameters[1] = new SqlParameter("UserTypeName", vcUserTypeName);
-            parameters[2] = new SqlParameter("Description", vcDescription);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicate", parameters
+            "USP_CheckDuplicateUserType", parameters
             );
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
@@ -151,7 +159,11 @@ namespace CF.Octogo.Master.UserType
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
 

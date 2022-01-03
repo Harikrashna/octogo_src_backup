@@ -58,13 +58,13 @@
                                     <!-- [disabled]="isEdit" -->
                                 <label for="EditEdition_IsFree" class="radio">
                                     <input id="EditEdition_IsFree" name="SubscriptionPrice" [(ngModel)]="isFree"
-                                        (ngModelChange)="resetPrices($event)" [value]="true" type="radio">
+                                        (change)="resetPrices($event)" [value]="true" type="radio">
                                     <span></span>
                                     {{"Free" | localize}}
                                 </label>
                                 <label for="EditEdition_IsPaid" class="radio">
                                     <input id="EditEdition_IsPaid" name="SubscriptionPrice" [(ngModel)]="isFree"
-                                        [value]="false" type="radio" (ngModelChange)="resetPrices($event)"
+                                        [value]="false" type="radio" (change)="resetPrices($event)"
                                        >
                                     <span></span>
                                     {{"Paid" | localize}}
@@ -72,7 +72,7 @@
                             </fieldset>
                         </tab>
                         <tab heading="{{'Modules' | localize}}" class="p-5">
-                            <feature-tree #featureTree hidden></feature-tree>
+                            <!-- <feature-tree #featureTree hidden></feature-tree> -->
                             <app-add-edition-modules #editionModules></app-add-edition-modules>
                         </tab>
                         <tab heading="{{'Pricing' | localize}}" class="p-5" *ngIf="!isFree">
@@ -113,7 +113,7 @@
                                                     <div class="input-group-prepend"><span
                                                             class="input-group-text">{{appSession.application.currencySign}}</span>
                                                     </div>
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control px-1"
                                                         [ngModelOptions]="{standalone: true}"
                                                         [(ngModel)]="item.ActualPrice" autocomplete="new-password"
                                                         [required]="!isFree"
@@ -124,7 +124,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control" style="width: 60%;"
+                                                <input type="text" class="form-control px-1" style="width: 60%;"
                                                     [ngModelOptions]="{standalone: true}"
                                                     [(ngModel)]="item.DiscountPercentage" autocomplete="new-password"
                                                     [required]="!isFree"
@@ -138,7 +138,7 @@
                                                     <div class="input-group-prepend"><span
                                                             class="input-group-text">{{appSession.application.currencySign}}</span>
                                                     </div>
-                                                    <input type="text" class="form-control"
+                                                    <input type="text" class="form-control px-1"
                                                         [ngModelOptions]="{standalone: true}"
                                                         [(ngModel)]="item.DiscountedPrice" autocomplete="new-password"
                                                         [required]="!isFree"

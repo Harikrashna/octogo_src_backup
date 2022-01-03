@@ -10,7 +10,10 @@ import {
     CreatePaymentDto,
     EditionPaymentType,
     PaymentPeriodType,
-    SubscriptionPaymentGatewayType
+    SubscriptionPaymentGatewayType,
+    ModulePricingDto,
+    EditionDetailsForEditDto,
+    CreatePaymentNewDto
 } from '@shared/service-proxies/service-proxies';
 import { AppConsts } from '@shared/AppConsts';
 import { PaymentHelperService } from './payment-helper.service';
@@ -32,6 +35,8 @@ export class BuyEditionComponent extends AppComponentBase implements OnInit {
     supportsRecurringPayments = false;
     recurringPaymentEnabled = false;
     editionId = 0;
+    selectedPricingType: ModulePricingDto = null;
+    editionDetails: EditionDetailsForEditDto;
 
     constructor(
         injector: Injector,
@@ -50,36 +55,48 @@ export class BuyEditionComponent extends AppComponentBase implements OnInit {
         this.editionPaymentType = this._activatedRoute.snapshot.queryParams['editionPaymentType'];
         this.editionId = this._activatedRoute.snapshot.queryParams['editionId'];
 
-        this._tenantRegistrationService.getEdition(this.editionId)
-            .subscribe((result: EditionSelectDto) => {
-                this.edition = result;
-                this.selectedPaymentPeriodType = this._paymnetHelperService.getInitialSelectedPaymentPeriodType(this.edition);
-            });
-
+        // this._tenantRegistrationService.getEdition(this.editionId)
+        //     .subscribe((result: EditionSelectDto) => {
+        //         this.edition = result;
+        //         this.selectedPaymentPeriodType = this._paymnetHelperService.getInitialSelectedPaymentPeriodType(this.edition);
+        //     });
+        this.GetEditionDetailsById(this.editionId);
         this._paymentAppService.getActiveGateways(undefined)
             .subscribe((result: PaymentGatewayModel[]) => {
                 this.paymentGateways = result;
                 this.supportsRecurringPayments = result.some((pg) => pg.supportsRecurringPayments);
             });
     }
-
+    GetEditionDetailsById(editionId): void {
+        this._tenantRegistrationService.getEditionDetailsById(editionId).subscribe(result => {
+            if (result != null && result.id > 0) {
+                this.editionDetails = result; 
+            }
+            else{
+                this.editionDetails = null;
+            }
+        });
+    }
     checkout(gatewayType) {
-        let input = {} as CreatePaymentDto;
+        // let input = {} as CreatePaymentDto;
+        let input = {} as CreatePaymentNewDto;
         input.editionId = this.editionId;
         input.editionPaymentType = ((this.editionPaymentType) as any);
-        input.paymentPeriodType = ((this.selectedPaymentPeriodType) as any);
+        input.paymentPeriodType = this.selectedPricingType.pricingTypeID;//((this.selectedPaymentPeriodType) as any);
+        input.amount = this.selectedPricingType.amount - (this.selectedPricingType.amount*this.selectedPricingType.discountPercentage/100)
         input.recurringPaymentEnabled = this.recurringPaymentEnabled;
         input.subscriptionPaymentGatewayType = gatewayType;
         input.successUrl = AppConsts.remoteServiceBaseUrl + '/api/services/app/payment/' + this._paymnetHelperService.getEditionPaymentType(this.editionPaymentType) + 'Succeed';
         input.errorUrl = AppConsts.remoteServiceBaseUrl + '/api/services/app/payment/PaymentFailed';
 
-        this._paymentAppService.createPayment(input)
+        // this._paymentAppService.createPayment(input)
+        this._paymentAppService.createPaymentNew(input)
             .subscribe((paymentId: number) => {
                 this._router.navigate(['account/' + this.getPaymentGatewayType(gatewayType).toLocaleLowerCase() + '-purchase'],
                     {
                         queryParams: {
                             paymentId: paymentId,
-                            redirectUrl: 'account/register-tenant-result'
+                            redirectUrl: (this.appSession.userId > 0 && abp.auth.getToken() != "") ?'app/admin/subscription-management':'account/register-tenant-result'
                         }
                     });
             });
@@ -90,6 +107,7 @@ export class BuyEditionComponent extends AppComponentBase implements OnInit {
     }
 
     onPaymentPeriodChangeChange(selectedPaymentPeriodType) {
-        this.selectedPaymentPeriodType = selectedPaymentPeriodType;
+        // this.selectedPaymentPeriodType = selectedPaymentPeriodType;
+        this.selectedPricingType = selectedPaymentPeriodType;
     }
 }

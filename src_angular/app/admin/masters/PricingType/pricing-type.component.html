@@ -72,8 +72,11 @@
                                                 </ul>
                                             </div>
                                         </td>
-                                        <td> {{PricingType.vcTypeName}}</td>
-                                        <td> {{PricingType.inNoOfDays}} </td>
+                                        <td><span class="p-column-title"> {{'VcTypeName' | localize}}</span>
+                                            {{PricingType.vcTypeName}}</td>
+                                        <td><span class="p-column-title"> {{'InNoOfDays' | localize}}</span>
+                                        
+                                            {{PricingType.inNoOfDays}}</td>
                                     </tr>
                                 </ng-template>
                             </p-table>
@@ -94,5 +97,5 @@
         </div>
     </div>
 </div>
-<CreateorEditPricingType (modalSave)="getAllPricingList()" [pricingTypeList]="pricingTypeList" #createPricingType>
+<CreateorEditPricingType (modalSave)="getAllPricingList(null, true)" [pricingTypeList]="pricingTypeList" #createPricingType>
 </CreateorEditPricingType>

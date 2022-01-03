@@ -28,7 +28,10 @@ export class ServicesComponent extends AppComponentBase implements AfterViewInit
     this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
   }
 
-  getallServicesList(event?: LazyLoadEvent) {
+  getallServicesList(event?: LazyLoadEvent, isSubmit:boolean = false) {
+    if(isSubmit == true){
+      this.filterText = "";
+    }
     if (this.primengTableHelper.shouldResetPaging(event)) {
       this.paginator.changePage(0);
       return;
@@ -40,11 +43,10 @@ export class ServicesComponent extends AppComponentBase implements AfterViewInit
       this.primengTableHelper.getSorting(this.dataTable),
       this.filterText,
     ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
+      this.primengTableHelper.records=result.items
       this.primengTableHelper.totalRecordsCount = result.totalCount;
-      this.primengTableHelper.totalRecordsCount = result.items.length;
-      this.primengTableHelper.records = result.items;
-      this.Services = result.items;
-      this.primengTableHelper.hideLoadingIndicator();
+      this.Services=result.items;
+      this.primengTableHelper.hideLoadingIndicator();   
     });
   }
 

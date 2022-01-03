@@ -62,11 +62,12 @@
                                             </div>
                                         </td>
                                         <td>
-                                            
-                                            {{record.approachName | StringConverter}}
+                                            <span class="p-column-title"> {{'ApproachName' | localize}}</span>
+                                            {{record.approachName}}
                                         </td>
                                         <td>
-                                            {{record.description | StringConverter}}
+                                            <span class="p-column-title"> {{'Description' | localize}}</span>
+                                            {{record.description}}
                                         </td>
                                     </tr>
                                 </ng-template>
@@ -92,6 +93,6 @@
                 </div>
             </div>
         </div>
-        <app-create-or-edit-pricing-approach-modal #createOrEditPricingApproachModal (modalSave)="getPricingApproach()"></app-create-or-edit-pricing-approach-modal>
+        <app-create-or-edit-pricing-approach-modal #createOrEditPricingApproachModal (modalSave)="getPricingApproach(null, true)"></app-create-or-edit-pricing-approach-modal>
     </div>
 </div>

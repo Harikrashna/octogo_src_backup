@@ -127,7 +127,7 @@ namespace CF.Octogo.Editions
                 parameters[6] = new SqlParameter("ModuleId", input.ModuleId);
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                         System.Data.CommandType.StoredProcedure,
-                        "InsertUpdateAddonAndPricing", parameters);
+                        "USP_InsertUpdateAddonAndPricing", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     return (int)ds.Tables[0].Rows[0]["Id"];

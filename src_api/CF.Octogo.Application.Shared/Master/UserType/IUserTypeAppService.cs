@@ -18,7 +18,7 @@ namespace CF.Octogo.Master.UserType
         Task<int> CreateorUpdateUserType(CreateOrUpdateUserTypeInputDto inp);
         Task DeleteUserType(EntityDto input);
         Task<DataSet> GetUserTypeForEdit(GetEditUserTypeinput input);
-        Task<DataSet> GetUserTypeByUserTypeId(int? inUserTypeID, string vcUserTypeName, string vcDescription);
+        Task<DataSet> GetUserTypeByUserTypeId(int? inUserTypeID, string vcUserTypeName);
 
     }
 }

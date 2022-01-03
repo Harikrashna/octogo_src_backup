@@ -112,21 +112,25 @@ export class RegisterTenantComponent extends AppComponentBase implements OnInit,
                         abp.auth.clearRefreshToken();
                         if (this._tenantRegistrationHelper.registrationResult.tenantId > 0) {
                             abp.multiTenancy.setTenantIdCookie(this._tenantRegistrationHelper.registrationResult.tenantId);
-                            this._router.navigate(['account/register-tenant-result']);
+
+                            if (parseInt(this.model.subscriptionStartType.toString()) === SubscriptionStartType.Paid) {
+                                if (parseInt(this.model.subscriptionStartType.toString()) === SubscriptionStartType.Paid) {
+                                    this._router.navigate(['account/buy'],
+                                        {
+                                            queryParams: {
+                                                tenantId: result.tenantId,
+                                                editionId: this.model.editionId,
+                                                subscriptionStartType: this.model.subscriptionStartType,
+                                                editionPaymentType: this.editionPaymentType
+                                            }
+                                        });
+                                }
+                            }
+                            else {
+                                this._router.navigate(['account/register-tenant-result']);
+                            }
                         }
-                    }
-                    else {
-                        if (parseInt(this.model.subscriptionStartType.toString()) === SubscriptionStartType.Paid) {
-                            this._router.navigate(['account/buy'],
-                                {
-                                    queryParams: {
-                                        tenantId: result.tenantId,
-                                        editionId: this.model.editionId,
-                                        subscriptionStartType: this.model.subscriptionStartType,
-                                        editionPaymentType: this.editionPaymentType
-                                    }
-                                });
-                        } else {
+                        else {
                             this._router.navigate(['account/register-tenant-result']);
                         }
                     }

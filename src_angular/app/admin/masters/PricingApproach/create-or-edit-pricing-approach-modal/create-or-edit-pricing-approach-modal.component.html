@@ -2,7 +2,7 @@
      aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form *ngIf="active" #priceApproachForm="ngForm" novalidate (ngSubmit)="save(PriceApproach)" autocomplete="new-password">
+            <form *ngIf="active" #priceApproachForm="ngForm" novalidate (keyup.enter)="save(PriceApproach)" autocomplete="new-password">
                 <div class="modal-header">
                     <h4 class="modal-title">
                         <span *ngIf="PriceApproach?.approachId >0">{{"EditPriceApproach" | localize}}: {{CurrentApproachName}}</span>
@@ -16,20 +16,23 @@
                             <div class="form-group">
                                 <label>{{"ApproachName" | localize}} *</label>
                                 <input  id="PricingApproachName" #ApproachNameInput="ngModel" class="form-control" type="text" 
-                                name="name" [(ngModel)]="PriceApproach.approachName"  (keydown)="isAlphanumericAndAlphabet($event)" required maxlength="100">
+                                name="name" [(ngModel)]="PriceApproach.approachName"  (keypress)="_validationService.NameValidation($event)" required maxlength="100">
                                 <validation-messages [formCtrl]="ApproachNameInput"></validation-messages>
                          
                             </div>
                             <div class="form-group">
                                 <label>{{"Description" | localize}} </label>
                                 <input id="PricingApproachName"  class="form-control" 
-                                type="text" name="description" #ApproachDescriptionInput="ngModel" [(ngModel)]="PriceApproach.description" pattern="^(?!\s*$).+" maxlength="250">
+                                type="text" name="description" #ApproachDescriptionInput="ngModel" [(ngModel)]="PriceApproach.description" (keypress)="_validationService.NameValidation($event)" maxlength="250">
                                 <validation-messages [formCtrl]="ApproachDescriptionInput"></validation-messages>
                             </div>
                 </div>
                 <div class="modal-footer">
                     <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold" (click)="close()">{{"Cancel" | localize}}</button>
-                    <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!priceApproachForm.form.valid" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
+                    <button type="button" class="btn btn-primary font-weight-bold" 
+                    [disabled]="!priceApproachForm.form.valid" [buttonBusy]="saving" 
+                    [busyText]="l('SavingWithThreeDot')" (click)="save(PriceApproach)">
+                    <i class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
                 </div>
             </form>
         </div>

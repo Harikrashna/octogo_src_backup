@@ -2,13 +2,13 @@
     aria-labelledby="createOrEditServices" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form *ngIf="active" #ServicesForm="ngForm" novalidate (ngSubmit)="save(ServicesForm)"
+            <form *ngIf="active" #ServicesForm="ngForm" novalidate (keyup.enter)="save(ServicesForm)"
                 autocomplete="new-password">
                 <div class="modal-header">
                     <h4 class="modal-title">
-                        <span *ngIf="createServices.inServiceID">{{"EditServices" | localize}} :
+                        <span *ngIf="createServices.inServiceID">{{"EditService" | localize}} :
                             {{currentServiceName}}</span>
-                        <span *ngIf="!createServices.inServiceID">{{"CreateNewServices" | localize}}</span>
+                        <span *ngIf="!createServices.inServiceID">{{"CreateNewService" | localize}}</span>
                     </h4>
                     <button type="button" class="close" (click)="close(ServicesForm)" [attr.aria-label]="l('Close')"
                         [disabled]="saving">
@@ -22,14 +22,14 @@
                     </div>
                     <div class="form-group">
                         <label>{{"ServiceName" | localize}}*</label>
-                        <input id="ServiceName" (keydown)="validations($event)" #ServiceNameInput="ngModel"
+                        <input id="ServiceName" (keypress)="_validationService.NameValidation($event)" #ServiceNameInput="ngModel"
                             class="form-control" type="text" name="ServiceName"
                             [(ngModel)]="createServices.vcServiceName" required maxlength="100">
                         <validation-messages [formCtrl]="ServiceNameInput"></validation-messages>
                     </div>
                     <div class="form-group">
                         <label>{{"Description" | localize}} </label>
-                        <input id="Description" class="form-control" type="text" name="Description"
+                        <input id="Description" class="form-control" type="text" name="Description" (keypress)="_validationService.NameValidation($event)"
                             [(ngModel)]="createServices.vcDescription" maxlength="250">
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                     <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
                         (click)="close(ServicesForm)">{{"Cancel" | localize}}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!ServicesForm.form.valid"
-                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')" (click)="save(ServicesForm)"><i class="fa fa-save"></i>
                         <span>{{"Save" | localize}}</span></button>
                 </div>
             </form>

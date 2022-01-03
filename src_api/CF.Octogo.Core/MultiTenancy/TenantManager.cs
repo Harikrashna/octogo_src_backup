@@ -23,6 +23,8 @@ using Abp.Localization;
 using Abp.Runtime.Session;
 using Abp.UI;
 using CF.Octogo.MultiTenancy.Payments;
+using Abp.Authorization;
+using System.Collections.Generic;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -317,6 +319,27 @@ namespace CF.Octogo.MultiTenancy
             }
 
             return base.UpdateAsync(tenant);
+        }
+
+        // Created by : HARI KRASHNA
+        // Create ON: 27/12/2021
+        // create static role
+        public async Task<int> SeedStaticRoles(string Name, int? TenantId)
+        {
+            if (!_roleManager.RoleExistsAsync(Name).Result)
+            {
+                Role role = new Role();
+                role.Name = Name;
+                role.DisplayName = Name;
+                role.NormalizedName = Name.ToUpper();
+                role.IsStatic = !TenantId.HasValue;
+                role.IsDeleted = false;
+                role.CreationTime = DateTime.UtcNow;
+                role.TenantId = TenantId;
+                var roleResult = _roleManager.CreateAsync(role);
+                return roleResult.Id;
+            }
+            return 0;
         }
     }
 }

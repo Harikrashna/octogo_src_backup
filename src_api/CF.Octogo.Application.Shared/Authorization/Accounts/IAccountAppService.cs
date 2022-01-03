@@ -25,5 +25,6 @@ namespace CF.Octogo.Authorization.Accounts
         Task<ImpersonateOutput> BackToImpersonator();
 
         Task<SwitchToLinkedAccountOutput> SwitchToLinkedAccount(SwitchToLinkedAccountInput input);
+        Task<CheckPaymentAvailabiltyDto> CheckPaymentAndAvailibility(IsTenantAvailableInput input);
     }
 }

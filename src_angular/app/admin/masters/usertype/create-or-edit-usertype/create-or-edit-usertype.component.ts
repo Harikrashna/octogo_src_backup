@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { PermissionTreeComponent } from '@app/admin/shared/permission-tree.component';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateOrUpdateUserTypeInputDto, UserTypeServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -20,11 +21,13 @@ export class CreateOrEditUsertypeComponent extends AppComponentBase {
   saving: boolean = false; 
   edit: boolean = false;
   currentUserTypeName;
-  constructor(injector: Injector, private _UserType: UserTypeServiceProxy,) {
+  constructor(injector: Injector, private _UserType: UserTypeServiceProxy,
+    public _validationService: ValidationServiceService) {
     super(injector)
   }
   ngOnInit(): void {
   }
+
   close(form: NgForm): void {
     this.active = false;
     this.modal.hide();
@@ -49,30 +52,29 @@ export class CreateOrEditUsertypeComponent extends AppComponentBase {
       })
     }
   }
-  validations(event: any) {
-    if (event.target.selectionStart == 0 && event.keyCode == 32 || event.keyCode >=104 && event.keyCode<=222) {
-      return false;
-    }
-  }
   onShown(): void {
     document.getElementById('UserTypeName').focus();
   }
 
   save(form: NgForm):void{
 
-    let Duplicacy = this.UserType.filter((x) => x.vcUserTypeName.toUpperCase() == this.createUserType.vcUserTypeName.toUpperCase());
+    let Duplicacy = this.UserType.filter((x) => x.vcUserTypeName.trim().toUpperCase() == this.createUserType.vcUserTypeName.trim().toUpperCase());
     if (Duplicacy != null && Duplicacy != undefined && Duplicacy.length > 0 && Duplicacy[0].inUserTypeID != this.createUserType.inUserTypeID) {
       return this.notify.warn(this.l('DuplicateUserTypeMessage'));
     }
     else if (this.createUserType.inUserTypeID == 0 || this.createUserType.inUserTypeID == null) {
+      this.saving = true;
       this._UserType.createorUpdateUserType(this.createUserType).subscribe(e => {
         this.notify.info(this.l('SavedSuccessfully'));
+        this.saving = false;
         this.close(form);
         this.modalSave.emit(null)
       })
     }
     else {
+      this.saving = true;
       this._UserType.createorUpdateUserType(this.createUserType).subscribe(e => {
+        this.saving = false;
         this.notify.info(this.l('UpdateUserTypeMessage'));
         this.close(form);
         this.modalSave.emit(null)

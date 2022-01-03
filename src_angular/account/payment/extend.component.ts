@@ -76,8 +76,8 @@ export class ExtendEditionComponent extends AppComponentBase implements OnInit {
         });
     }
     checkout(gatewayType) {
-        debugger
         let input = {} as CreatePaymentNewDto;
+        // let input = {} as CreatePaymentDto;
         input.editionId = this.edition.id;
         input.editionPaymentType = ((this.editionPaymentType) as any);
         input.paymentPeriodType = this.selectedPricingType.pricingTypeID;//((this.selectedPaymentPeriodType) as any);
@@ -86,7 +86,7 @@ export class ExtendEditionComponent extends AppComponentBase implements OnInit {
         input.subscriptionPaymentGatewayType = gatewayType;
         input.successUrl = AppConsts.remoteServiceBaseUrl + '/api/services/app/payment/' + this._paymnetHelperService.getEditionPaymentType(this.editionPaymentType) + 'Succeed';
         input.errorUrl = AppConsts.remoteServiceBaseUrl + '/api/services/app/payment/PaymentFailed';
-
+        // this._paymentAppService.createPayment(input)
         this._paymentAppService.createPaymentNew(input)
             .subscribe((paymentId: number) => {
                 this._router.navigate(['account/' + this.getPaymentGatewayType(gatewayType).toLocaleLowerCase() + '-purchase'],

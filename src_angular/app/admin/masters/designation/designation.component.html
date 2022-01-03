@@ -56,16 +56,17 @@
                                                     </li>
                                                     <li *ngIf="'Pages.Administration.Designation.Delete' | permission">
                                                         <a class="dropdown-item" href="javascript:;"                                                        
-                                                        (click)="deletePriceApproach(record)">{{'Delete' | localize}}</a>
+                                                        (click)="deleteDesignation(record)">{{'Delete' | localize}}</a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </td>
                                         <td>
-                                            
+                                            <span class="p-column-title"> {{'DesignationName' | localize}}</span>
                                             {{record.designationName}}
                                         </td>
                                         <td>
+                                            <span class="p-column-title"> {{'Description' | localize}}</span>
                                             {{record.description }}
                                         </td>
                                     </tr>
@@ -92,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <app-create-or-update-designation #createOrEditDesignation (modalSave)="getDesignation()"></app-create-or-update-designation>
+        <app-create-or-update-designation #createOrEditDesignation (modalSave)="getDesignation(null, true)"></app-create-or-update-designation>
     </div>
 </div>
 

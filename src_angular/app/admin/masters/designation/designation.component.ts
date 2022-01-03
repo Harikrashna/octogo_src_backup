@@ -33,7 +33,10 @@ export class DesignationComponent extends AppComponentBase implements OnInit {
   edit(record){
     this.createOrEditDesignation.show(record)
   }
-  getDesignation(event? :LazyLoadEvent):void{
+  getDesignation(event? :LazyLoadEvent, isSubmit:boolean = false):void{
+    if(isSubmit == true){
+      this.filterText = "";
+     }
     if (this.primengTableHelper.shouldResetPaging(event)) {
       this.paginator.changePage(0);
       return;
@@ -45,7 +48,6 @@ export class DesignationComponent extends AppComponentBase implements OnInit {
       this.primengTableHelper.getSkipCount(this.paginator, event),
     ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
     .subscribe(result => {
-      debugger
         this.primengTableHelper.records=result.items
         this.primengTableHelper.totalRecordsCount = result.totalCount;
         this.records=result.items;
@@ -57,7 +59,7 @@ export class DesignationComponent extends AppComponentBase implements OnInit {
   createDesignation(): void {
     this.createOrEditDesignation.show();
   }
-  deletePriceApproach(data): void {
+  deleteDesignation(data): void {
     this.message.confirm(
         this.l('DesignationDeleteWarningMessage', data.designationName),
         this.l('AreYouSure'),

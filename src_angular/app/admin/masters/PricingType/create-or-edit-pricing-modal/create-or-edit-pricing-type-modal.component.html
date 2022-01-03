@@ -2,7 +2,7 @@
     aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form *ngIf="active" #personForm="ngForm" novalidate (ngSubmit)="save(personForm)">
+            <form *ngIf="active" #personForm="ngForm" novalidate (keyup.enter)="save(personForm)">
                 <div class="modal-header">
                     <h4 class="modal-title" *ngIf="!editpricingType.inPricingTypeId">
                         <span>{{"CreateNewPricingTypeDialog" | localize}}</span>
@@ -23,7 +23,7 @@
                         <label>{{"VcTypeName" | localize}} <span class="text-danger" id="req"
                                 >*</span></label>
                         <input class="form-control" #typeNameInput type="text" name="pricingType"
-                            [(ngModel)]="editpricingType. vcTypeName" required pattern="^[^-\s][\w\s-]+$" maxlength="50">
+                            [(ngModel)]="editpricingType. vcTypeName" required (keypress)="_validationService.NameValidation($event)" maxlength="50">
                         <validation-messages [formCtrl]="typeNameInput"></validation-messages>
                     </div>
                     <div class="form-group">
@@ -38,7 +38,8 @@
                     <button [disabled]="saving" type="button" class="btn btn-secondary" (click)="close(personForm)">{{"Cancel" |
                         localize}}</button>
                     <button type="submit"  class="btn btn-primary" [disabled]="!personForm.form.valid" 
-                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot' | localize)"><i class="fa fa-save"></i>
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot' | localize)"
+                        (click)="save(personForm)"><i class="fa fa-save"></i>
                         <span>{{"Save" | localize}}</span></button>                        
                 </div>
             </form>

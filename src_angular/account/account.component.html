@@ -13,7 +13,7 @@
             <div class="aside-img d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center" style="background-image: url(/assets/metronic/assets/media/svg/illustrations/login-visual-1.svg)"></div>
         </div>
         <div [ngClass]="{'login-content': !useFullWidthLayout()}" class="flex-row-fluid d-flex flex-column justify-content-center position-relative overflow-hidden p-7 mx-auto">
-            <div class="d-flex flex-column-fluid flex-center">
+            <div class="d-flex flex-column-fluid flex-center" id="AccountModuleRoot">
                 <div class="login-form login-signin">
                     <div class="pb-13 pt-lg-0 pt-5">
                         <a (click)="goToHome()" href="" class="text-center mb-10" *ngIf="useFullWidthLayout()">

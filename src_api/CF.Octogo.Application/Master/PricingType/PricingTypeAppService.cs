@@ -12,7 +12,7 @@ using CF.Octogo.Dto;
 using Abp.UI;
 using CF.Octogo.Master.PricingType;
 using CF.Octogo.Master.PricingType.Dto;
-
+using Abp.Runtime.Caching;
 
 namespace CF.Octogo.Master.PricingType
 {
@@ -20,6 +20,13 @@ namespace CF.Octogo.Master.PricingType
     [AbpAuthorize(AppPermissions.Pages_Administration_PricingType)]
     public class PricingTypeAppService : OctogoAppServiceBase, IPricingTypeAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public PricingTypeAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         List<PricingTypeListDto> list = new List<PricingTypeListDto>();
 
 
@@ -81,7 +88,7 @@ namespace CF.Octogo.Master.PricingType
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("PricingTypeId", inp.inPricingTypeId);
-            parameters[1] = new SqlParameter("TypeName", inp.vcTypeName);
+            parameters[1] = new SqlParameter("TypeName", inp.vcTypeName.Trim());
             parameters[2] = new SqlParameter("NoOfDays", inp.inNoOfDays);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
 
@@ -93,6 +100,7 @@ namespace CF.Octogo.Master.PricingType
             "USP_CreateUpdatePricingType", parameters);
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -115,7 +123,7 @@ namespace CF.Octogo.Master.PricingType
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeletePricingType", parameters);
-
+            await ClearCache();
         }
 
 
@@ -160,7 +168,11 @@ namespace CF.Octogo.Master.PricingType
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
 }

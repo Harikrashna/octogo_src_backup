@@ -35,6 +35,15 @@
             Be careful, If you enable this, all expired logs will be permanently deleted.
             </summary>
         </member>
+        <member name="M:CF.Octogo.Authorization.Accounts.AccountAppService.CheckPaymentAndAvailibility(CF.Octogo.Authorization.Accounts.Dto.IsTenantAvailableInput)">
+            <summary>
+            desc:This service is used to find payment deatils and availibility of tenant
+            created by:Merajuddin khan
+            created on:03-01-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
         <member name="M:CF.Octogo.Authorization.Permissions.PermissionManagerExtensions.GetPermissionsFromNamesByValidating(Abp.Authorization.IPermissionManager,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Gets all permissions by names.

@@ -7,6 +7,7 @@ import { AddonsRoutingModule } from './addons-routing.module';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {PickListModule} from 'primeng/picklist';
 import {PanelModule} from 'primeng/panel';
+import {OverlayPanelModule} from 'primeng/overlaypanel';
 
 
 
@@ -20,7 +21,8 @@ import {PanelModule} from 'primeng/panel';
     AppSharedModule,
     AddonsRoutingModule,
     PickListModule,
-    PanelModule
+    PanelModule,
+    OverlayPanelModule
   ]
 })
 export class AddonsModule { }

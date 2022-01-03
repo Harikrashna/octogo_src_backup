@@ -105,7 +105,7 @@ namespace CF.Octogo.Configuration
                 new SettingDefinition(AppSettings.UiManagement.Theme,
                     GetFromAppSettings(AppSettings.UiManagement.Theme, "default"), 
                     clientVisibilityProvider: _visibleSettingClientVisibilityProvider,
-                    scopes: SettingScopes.All),
+                    scopes: SettingScopes.All)
             };
         }
 
@@ -134,7 +134,9 @@ namespace CF.Octogo.Configuration
                         OctogoConsts.MultiTenancyEnabled ? "true" : "false"), scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.DefaultDashboardPage,
                     GetFromAppSettings(AppSettings.TenantManagement.DefaultDashboardPage,
-                        OctogoConsts.MultiTenancyEnabled ? "/app/tenant-users-dashboard" : "/app/main/dashboard"))
+                        OctogoConsts.MultiTenancyEnabled ? "/app/tenant-users-dashboard" : "/app/main/dashboard"),
+                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider,
+                    scopes: SettingScopes.Tenant)
             };
         }
 

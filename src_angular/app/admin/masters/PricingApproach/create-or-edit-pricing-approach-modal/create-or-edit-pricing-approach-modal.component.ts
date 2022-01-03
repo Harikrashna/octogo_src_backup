@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Injector, Output, ViewChild } from '@angular/core';
 import {  NgForm } from '@angular/forms';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { PriceApproachServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -25,24 +26,13 @@ export class CreateOrEditPricingApproachModalComponent extends AppComponentBase 
 
   constructor(
     injector: Injector,private _priceApproach:PriceApproachComponent,
-    private _PricingApproach:PriceApproachServiceProxy) 
+    private _PricingApproach:PriceApproachServiceProxy,
+    public _validationService: ValidationServiceService) 
     {
     super(injector);
     this.PriceApproach = new PriceApproach();
 }
 
-isAlphanumericAndAlphabet(e){
-  if(e.target.value=="" && e.keyCode==32){
-    return false    
-  }
-  if(e.target.value=="" && e.keyCode>=48 && e.keyCode<=57){
-    return false
-  }
-  var keyCode=e.which? e.which:e.keyCode
-  var ret=((keyCode >=97 && keyCode<=122) || (keyCode >=65 && keyCode<=90 ) || (keyCode==32)
-  || (keyCode>=48 && keyCode<=57) || e.keyCode==45 || e.keyCode==8);
-  return ret
-}
   show(record?: any): void {
     if(record!=null && record!=undefined){
       this.active = true;
@@ -64,23 +54,6 @@ onShown(): void {
 
 save(Record:any): void {
   let flag;
-  // if(Record.approachId){
-  //   var priceApproach=this._priceApproach.records
-  //   for (var index = 0; index < this._priceApproach.records.length; index++) {
-  //     if (priceApproach[index].approachName.trim().toUpperCase() === Record.approachName.trim().toUpperCase()&& this.EditPriceApproachName.trim().toUpperCase()!=Record.approachName.trim().toUpperCase()) {
-  //       flag=0
-  //       break
-  //     }
-  //   }
-  // }else{
-  //   var priceApproach=this._priceApproach.records
-  //   for (var index = 0; index < this._priceApproach.records.length; index++) {
-  //     if (priceApproach[index].approachName.trim().toUpperCase() === Record.approachName.trim().toUpperCase()) {
-  //       flag=0
-  //       break
-  //     }
-  //   }
-  // }
   var priceApproach=this._priceApproach.records
   priceApproach.forEach(function (priceApproachValue) {
     if(priceApproachValue.approachName.trim().toUpperCase()==Record.approachName.trim().toUpperCase() && priceApproachValue.id!=Record.approachId){

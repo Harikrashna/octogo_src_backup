@@ -2,7 +2,7 @@
         <!-- <input id="ModuleDisplayName" class="form-control" type="text" name="ModuleDisplayName" [(ngModel)]="ModuleName"
             required placeholder="{{'ModuleName' | localize}}" (keydown.enter)="ModuleName?.length > 0 && AddModule()"> -->
         <div class="form-group row">
-            <div class="col-lg-10 col-md-9 col-sm-8">
+            <div class="col-lg-10 col-md-12 col-sm-12 pt-2">
                 <p-autoComplete [(ngModel)]="Module"
                                 id="ModuleDisplayName"
                                 [suggestions]="filteredPageModuleList"
@@ -18,8 +18,8 @@
                                 [forceSelection]="true">
                 </p-autoComplete>
             </div>
-            <div class="col-lg-2 col-md-3 col-sm-4">
-                <button class="btn btn-primary"  [ngClass]="Module?.displayName?.length > 1 ? '':'disableHyperlink'"
+            <div class="col-lg-2 col-md-12 col-sm-12 pl-10 pt-2">
+                <button class="btn btn-primary width-percent-100"  [ngClass]="Module?.displayName?.length > 1 ? '':'disableHyperlink'"
                     (click)="Module?.displayName?.length > 0 && AddModule()" type="button">
                         <span *ngIf="isModuleEdit">{{ 'Edit' | localize}}</span>
                         <span *ngIf="!isModuleEdit">{{ 'Add' | localize}}</span>

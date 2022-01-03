@@ -19,7 +19,7 @@ namespace CF.Octogo.Master.Services
         Task<int> CreateorUpdateService(CreateOrUpdateServiceInput inp);
         Task DeleteService(EntityDto input);
         Task<DataSet> GetServiceForEdit(GetEditServiceinput input);
-        Task<DataSet> GetServiceByServiceId(int? inServiceID, string vcServiceName, string vcDescription);
+        Task<DataSet> GetServiceByServiceId(int? inServiceID, string vcServiceName);
 
     }
 }

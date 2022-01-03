@@ -30,7 +30,7 @@ namespace CF.Octogo.Common
         {
 
             string cacheKey = (Name != null && Name != "") ?  Name.Trim().ToUpper() : "MasterDataKey_All";
-            var cache = _cacheManager.GetCache("MasterData_Cache");       // create cache if not created before
+            var cache = _cacheManager.GetCache(OctogoCacheKeyConst.MasterDataCacheKey);       // create cache if not created before
             var cache_result = cache.GetOrDefault(cacheKey);        // get caching data
             try
             {
@@ -75,7 +75,8 @@ namespace CF.Octogo.Common
             if (ds.Tables.Count > 0)
             {
                 var result = SqlHelper.ConvertDataTable<MasterDataRet>(ds.Tables[0]);
-                return result.Select(rw => new MasterDataDto
+                return result.Where(o => o.MasterName != "" && o.MasterName != null)
+                 .Select(rw => new MasterDataDto
                 {
                     MasterName = rw.MasterName,
                     MasterData = rw.MasterData != null ? JsonConvert.DeserializeObject<List<object>>(rw.MasterData.ToString()) : null

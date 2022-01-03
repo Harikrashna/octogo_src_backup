@@ -35,7 +35,10 @@ export class PricingTypeComponent extends AppComponentBase implements AfterViewI
     this.getAllPricingList();
   }
 
-  getAllPricingList(event?: LazyLoadEvent) {
+  getAllPricingList(event?: LazyLoadEvent, isSubmit:boolean = false) {
+    if(isSubmit == true){
+      this.filterText = "";
+    }
     if (this.primengTableHelper.shouldResetPaging(event)) {
       this.paginator.changePage(0);
       return;

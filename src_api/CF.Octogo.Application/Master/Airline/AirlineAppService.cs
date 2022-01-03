@@ -11,11 +11,19 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using CF.Octogo.Data;
 using CF.Octogo.Master.Airline.Dto;
+using Abp.Runtime.Caching;
 
 namespace CF.Octogo.Master.Airline
 {
     public class AirlineAppService : OctogoAppServiceBase, IAirlineAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public AirlineAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         //[AbpAuthorize(AppPermissions.Pages_Administration_Airline)]
         public async Task<PagedResultDto<AirlineListDto>> GetAirline(PagedAndSortedInputDto input, string filter)
         {
@@ -25,7 +33,7 @@ namespace CF.Octogo.Master.Airline
             parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
             parameters[3] = new SqlParameter("Filter", filter);
             List<AirlineListDto> AirlineList = new List<AirlineListDto>();
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetAirline", parameters
             );
@@ -67,10 +75,10 @@ namespace CF.Octogo.Master.Airline
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inAirlineID", inp.inAirlineID);
-            parameters[1] = new SqlParameter("vcAirlineName", inp.vcAirlineName);
+            parameters[1] = new SqlParameter("vcAirlineName", inp.vcAirlineName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateAirline", parameters);
 
@@ -80,6 +88,7 @@ namespace CF.Octogo.Master.Airline
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -99,10 +108,10 @@ namespace CF.Octogo.Master.Airline
 
 
 
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteAirline", parameters);
-
+            await ClearCache();
         }
 
 
@@ -112,7 +121,7 @@ namespace CF.Octogo.Master.Airline
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("AirlineID", input.inAirlineID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetAirlineById", parameters
             );
@@ -134,9 +143,9 @@ namespace CF.Octogo.Master.Airline
             parameters[1] = new SqlParameter("AirlineName", vcAirlineName);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("Default"),
+            Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicateRecord", parameters
+            "USP_CheckDuplicateAirline", parameters
             );
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
@@ -147,7 +156,11 @@ namespace CF.Octogo.Master.Airline
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
 

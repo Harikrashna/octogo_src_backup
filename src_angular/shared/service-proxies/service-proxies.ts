@@ -625,6 +625,62 @@ export class AccountServiceProxy {
         }
         return _observableOf<SwitchToLinkedAccountOutput>(<any>null);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    checkPaymentAndAvailibility(body: IsTenantAvailableInput | undefined): Observable<CheckPaymentAvailabiltyDto> {
+        let url_ = this.baseUrl + "/api/services/app/Account/CheckPaymentAndAvailibility";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCheckPaymentAndAvailibility(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCheckPaymentAndAvailibility(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckPaymentAvailabiltyDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckPaymentAvailabiltyDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCheckPaymentAndAvailibility(response: HttpResponseBase): Observable<CheckPaymentAvailabiltyDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CheckPaymentAvailabiltyDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckPaymentAvailabiltyDto>(<any>null);
+    }
 }
 
 @Injectable()
@@ -1224,6 +1280,53 @@ export class AirlineServiceProxy {
             }));
         }
         return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Airline/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -2079,10 +2182,9 @@ export class AwbCostApproachServiceProxy {
     /**
      * @param inApproachID (optional) 
      * @param vcApproachName (optional) 
-     * @param vcDescription (optional) 
      * @return Success
      */
-    getAwbCostApproachDuplicacy(inApproachID: number | undefined, vcApproachName: string | undefined, vcDescription: string | undefined): Observable<any> {
+    getAwbCostApproachDuplicacy(inApproachID: number | undefined, vcApproachName: string | undefined): Observable<any> {
         let url_ = this.baseUrl + "/api/services/app/AwbCostApproach/GetAwbCostApproachDuplicacy?";
         if (inApproachID === null)
             throw new Error("The parameter 'inApproachID' cannot be null.");
@@ -2092,10 +2194,6 @@ export class AwbCostApproachServiceProxy {
             throw new Error("The parameter 'vcApproachName' cannot be null.");
         else if (vcApproachName !== undefined)
             url_ += "vcApproachName=" + encodeURIComponent("" + vcApproachName) + "&";
-        if (vcDescription === null)
-            throw new Error("The parameter 'vcDescription' cannot be null.");
-        else if (vcDescription !== undefined)
-            url_ += "vcDescription=" + encodeURIComponent("" + vcDescription) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2140,6 +2238,53 @@ export class AwbCostApproachServiceProxy {
             }));
         }
         return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/AwbCostApproach/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -3833,14 +3978,22 @@ export class DepartmentServiceProxy {
     }
 
     /**
+     * @param filter (optional) 
+     * @param sorting (optional) 
      * @param maxResultCount (optional) 
      * @param skipCount (optional) 
-     * @param sorting (optional) 
-     * @param filter (optional) 
      * @return Success
      */
-    getDepartment(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, filter: string | undefined): Observable<PagedResultDtoOfDepartmentListDto> {
+    getDepartment(filter: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfDepartmentListDto> {
         let url_ = this.baseUrl + "/api/services/app/Department/GetDepartment?";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "filter=" + encodeURIComponent("" + filter) + "&";
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
         if (maxResultCount === null)
             throw new Error("The parameter 'maxResultCount' cannot be null.");
         else if (maxResultCount !== undefined)
@@ -3849,14 +4002,6 @@ export class DepartmentServiceProxy {
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
             url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
-        if (filter === null)
-            throw new Error("The parameter 'filter' cannot be null.");
-        else if (filter !== undefined)
-            url_ += "filter=" + encodeURIComponent("" + filter) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4070,10 +4215,9 @@ export class DepartmentServiceProxy {
     /**
      * @param inDepartmentID (optional) 
      * @param vcDepartmentName (optional) 
-     * @param vcDescription (optional) 
      * @return Success
      */
-    getDepartmentByDepartmentId(inDepartmentID: number | undefined, vcDepartmentName: string | undefined, vcDescription: string | undefined): Observable<any> {
+    getDepartmentByDepartmentId(inDepartmentID: number | undefined, vcDepartmentName: string | undefined): Observable<any> {
         let url_ = this.baseUrl + "/api/services/app/Department/GetDepartmentByDepartmentId?";
         if (inDepartmentID === null)
             throw new Error("The parameter 'inDepartmentID' cannot be null.");
@@ -4083,10 +4227,6 @@ export class DepartmentServiceProxy {
             throw new Error("The parameter 'vcDepartmentName' cannot be null.");
         else if (vcDepartmentName !== undefined)
             url_ += "vcDepartmentName=" + encodeURIComponent("" + vcDepartmentName) + "&";
-        if (vcDescription === null)
-            throw new Error("The parameter 'vcDescription' cannot be null.");
-        else if (vcDescription !== undefined)
-            url_ += "vcDescription=" + encodeURIComponent("" + vcDescription) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4131,6 +4271,53 @@ export class DepartmentServiceProxy {
             }));
         }
         return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Department/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -4383,6 +4570,53 @@ export class DesignationServiceProxy {
             }));
         }
         return _observableOf<string>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Designation/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -8081,10 +8315,9 @@ export class IndustryServiceProxy {
     /**
      * @param inIndustryID (optional) 
      * @param vcIndustryName (optional) 
-     * @param vcDescription (optional) 
      * @return Success
      */
-    getIndustryByIndustryId(inIndustryID: number | undefined, vcIndustryName: string | undefined, vcDescription: string | undefined): Observable<any> {
+    getIndustryByIndustryId(inIndustryID: number | undefined, vcIndustryName: string | undefined): Observable<any> {
         let url_ = this.baseUrl + "/api/services/app/Industry/GetIndustryByIndustryId?";
         if (inIndustryID === null)
             throw new Error("The parameter 'inIndustryID' cannot be null.");
@@ -8094,10 +8327,6 @@ export class IndustryServiceProxy {
             throw new Error("The parameter 'vcIndustryName' cannot be null.");
         else if (vcIndustryName !== undefined)
             url_ += "vcIndustryName=" + encodeURIComponent("" + vcIndustryName) + "&";
-        if (vcDescription === null)
-            throw new Error("The parameter 'vcDescription' cannot be null.");
-        else if (vcDescription !== undefined)
-            url_ += "vcDescription=" + encodeURIComponent("" + vcDescription) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -8142,6 +8371,53 @@ export class IndustryServiceProxy {
             }));
         }
         return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Industry/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -11322,6 +11598,53 @@ export class PriceApproachServiceProxy {
         }
         return _observableOf<string>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/PriceApproach/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
 }
 
 @Injectable()
@@ -11635,6 +11958,53 @@ export class PricingTypeServiceProxy {
         }
         return _observableOf<any>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/PricingType/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
 }
 
 @Injectable()
@@ -11942,6 +12312,53 @@ export class ProductServiceProxy {
             }));
         }
         return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Product/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -13217,10 +13634,9 @@ export class ServicesServiceProxy {
     /**
      * @param inServiceID (optional) 
      * @param vcServiceName (optional) 
-     * @param vcDescription (optional) 
      * @return Success
      */
-    getServiceByServiceId(inServiceID: number | undefined, vcServiceName: string | undefined, vcDescription: string | undefined): Observable<any> {
+    getServiceByServiceId(inServiceID: number | undefined, vcServiceName: string | undefined): Observable<any> {
         let url_ = this.baseUrl + "/api/services/app/Services/GetServiceByServiceId?";
         if (inServiceID === null)
             throw new Error("The parameter 'inServiceID' cannot be null.");
@@ -13230,10 +13646,6 @@ export class ServicesServiceProxy {
             throw new Error("The parameter 'vcServiceName' cannot be null.");
         else if (vcServiceName !== undefined)
             url_ += "vcServiceName=" + encodeURIComponent("" + vcServiceName) + "&";
-        if (vcDescription === null)
-            throw new Error("The parameter 'vcDescription' cannot be null.");
-        else if (vcDescription !== undefined)
-            url_ += "vcDescription=" + encodeURIComponent("" + vcDescription) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -13278,6 +13690,53 @@ export class ServicesServiceProxy {
             }));
         }
         return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Services/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -18181,10 +18640,9 @@ export class UserTypeServiceProxy {
     /**
      * @param inUserTypeID (optional) 
      * @param vcUserTypeName (optional) 
-     * @param vcDescription (optional) 
      * @return Success
      */
-    getUserTypeByUserTypeId(inUserTypeID: number | undefined, vcUserTypeName: string | undefined, vcDescription: string | undefined): Observable<any> {
+    getUserTypeByUserTypeId(inUserTypeID: number | undefined, vcUserTypeName: string | undefined): Observable<any> {
         let url_ = this.baseUrl + "/api/services/app/UserType/GetUserTypeByUserTypeId?";
         if (inUserTypeID === null)
             throw new Error("The parameter 'inUserTypeID' cannot be null.");
@@ -18194,10 +18652,6 @@ export class UserTypeServiceProxy {
             throw new Error("The parameter 'vcUserTypeName' cannot be null.");
         else if (vcUserTypeName !== undefined)
             url_ += "vcUserTypeName=" + encodeURIComponent("" + vcUserTypeName) + "&";
-        if (vcDescription === null)
-            throw new Error("The parameter 'vcDescription' cannot be null.");
-        else if (vcDescription !== undefined)
-            url_ += "vcDescription=" + encodeURIComponent("" + vcDescription) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -18242,6 +18696,53 @@ export class UserTypeServiceProxy {
             }));
         }
         return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/UserType/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -20493,6 +20994,58 @@ export class CheckDatabaseOutput implements ICheckDatabaseOutput {
 
 export interface ICheckDatabaseOutput {
     isDatabaseExist: boolean;
+}
+
+export class CheckPaymentAvailabiltyDto implements ICheckPaymentAvailabiltyDto {
+    state!: TenantAvailabilityState;
+    states!: TenantPyamenteSateAndAvailability;
+    tenantId!: number | undefined;
+    serverRootAddress!: string | undefined;
+    ediEditionId!: number | undefined;
+
+    constructor(data?: ICheckPaymentAvailabiltyDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.state = _data["state"];
+            this.states = _data["states"];
+            this.tenantId = _data["tenantId"];
+            this.serverRootAddress = _data["serverRootAddress"];
+            this.ediEditionId = _data["ediEditionId"];
+        }
+    }
+
+    static fromJS(data: any): CheckPaymentAvailabiltyDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckPaymentAvailabiltyDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["state"] = this.state;
+        data["states"] = this.states;
+        data["tenantId"] = this.tenantId;
+        data["serverRootAddress"] = this.serverRootAddress;
+        data["ediEditionId"] = this.ediEditionId;
+        return data; 
+    }
+}
+
+export interface ICheckPaymentAvailabiltyDto {
+    state: TenantAvailabilityState;
+    states: TenantPyamenteSateAndAvailability;
+    tenantId: number | undefined;
+    serverRootAddress: string | undefined;
+    ediEditionId: number | undefined;
 }
 
 export class ChildPagesDto implements IChildPagesDto {
@@ -31536,6 +32089,7 @@ export interface IPriceDiscount {
 
 export class PricingType implements IPricingType {
     name!: string | undefined;
+    discount!: number;
     days!: number;
     price!: number;
 
@@ -31551,6 +32105,7 @@ export class PricingType implements IPricingType {
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
+            this.discount = _data["discount"];
             this.days = _data["days"];
             this.price = _data["price"];
         }
@@ -31566,6 +32121,7 @@ export class PricingType implements IPricingType {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
+        data["discount"] = this.discount;
         data["days"] = this.days;
         data["price"] = this.price;
         return data; 
@@ -31574,6 +32130,7 @@ export class PricingType implements IPricingType {
 
 export interface IPricingType {
     name: string | undefined;
+    discount: number;
     days: number;
     price: number;
 }
@@ -34104,6 +34661,13 @@ export class TenantOtherSettingsEditDto implements ITenantOtherSettingsEditDto {
 
 export interface ITenantOtherSettingsEditDto {
     isQuickThemeSelectEnabled: boolean;
+}
+
+export enum TenantPyamenteSateAndAvailability {
+    Completed = 1,
+    NotCompleted = 2,
+    IsFree = 3,
+    NotFound = 4,
 }
 
 export class TenantSettingsEditDto implements ITenantSettingsEditDto {

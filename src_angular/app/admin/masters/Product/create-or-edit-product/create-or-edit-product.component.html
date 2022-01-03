@@ -2,7 +2,7 @@
     aria-labelledby="createOrEditProduct" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form *ngIf="active" #productForm="ngForm" novalidate (ngSubmit)="save(productForm)"
+            <form *ngIf="active" #productForm="ngForm" novalidate (keyup.enter)="save(productForm)"
                 autocomplete="new-password">
                 <div class="modal-header">
                     <h4 class="modal-title">
@@ -23,14 +23,15 @@
                     </div>
                     <div class="form-group">
                         <label>{{"ProductName" | localize}}*</label>
-                        <input id="ProductName" (keydown)="Space($event)" #ProductNameInput="ngModel" class="form-control" type="text"
+                        <input id="ProductName" (keypress)="_validationService.NameValidation($event)" #ProductNameInput="ngModel" class="form-control" type="text"
                             name="ProductName"  [(ngModel)]="createProduct.vcProductName" required maxlength="100">
                         <validation-messages [formCtrl]="ProductNameInput"></validation-messages>
                     </div>
                     <div class="form-group">
                         <label>{{"Description" | localize}} </label>
                         <input id="Description" class="form-control" type="text" name="Description"
-                            [(ngModel)]="createProduct.vcDescription" maxlength="250">
+                            [(ngModel)]="createProduct.vcDescription" maxlength="250"
+                            (keypress)="_validationService.NameValidation($event)">
                     </div>
 
 
@@ -39,7 +40,7 @@
                     <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
                         (click)="close(productForm)">{{"Cancel" | localize}}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!productForm.form.valid"
-                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')" (click)="save(productForm)"><i class="fa fa-save"></i>
                         <span>{{"Save" | localize}}</span></button>
                 </div>
 

@@ -19,7 +19,7 @@ using CF.Octogo.Security.Recaptcha;
 using CF.Octogo.Url;
 using CF.Octogo.Authorization.Delegation;
 using Abp.Domain.Repositories;
-
+using CF.Octogo.MultiTenancy.Payments;
 
 namespace CF.Octogo.Authorization.Accounts
 {
@@ -36,7 +36,8 @@ namespace CF.Octogo.Authorization.Accounts
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IWebUrlService _webUrlService;
         private readonly IUserDelegationManager _userDelegationManager;
-
+        private readonly ITenantRegistrationAppService _tenantRegistrationAppService;
+        private readonly ISubscriptionPaymentRepository _subscriptionPaymentRepository;
         public AccountAppService(
             IUserEmailer userEmailer,
             UserRegistrationManager userRegistrationManager,
@@ -44,7 +45,9 @@ namespace CF.Octogo.Authorization.Accounts
             IUserLinkManager userLinkManager,
             IPasswordHasher<User> passwordHasher,
             IWebUrlService webUrlService, 
-            IUserDelegationManager userDelegationManager)
+            IUserDelegationManager userDelegationManager,
+            ITenantRegistrationAppService tenantRegistrationAppService,
+            ISubscriptionPaymentRepository subscriptionPaymentRepository)
         {
             _userEmailer = userEmailer;
             _userRegistrationManager = userRegistrationManager;
@@ -56,6 +59,8 @@ namespace CF.Octogo.Authorization.Accounts
             AppUrlService = NullAppUrlService.Instance;
             RecaptchaValidator = NullRecaptchaValidator.Instance;
             _userDelegationManager = userDelegationManager;
+            _tenantRegistrationAppService = tenantRegistrationAppService;
+            _subscriptionPaymentRepository = subscriptionPaymentRepository;
         }
 
         public async Task<IsTenantAvailableOutput> IsTenantAvailable(IsTenantAvailableInput input)
@@ -263,6 +268,40 @@ namespace CF.Octogo.Authorization.Accounts
             }
 
             return user;
+        }
+        /// <summary>
+        /// desc:This service is used to find payment deatils and availibility of tenant
+        /// created by:Merajuddin khan
+        /// created on:03-01-2022
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<CheckPaymentAvailabiltyDto> CheckPaymentAndAvailibility(IsTenantAvailableInput input)
+        {
+            var tenant = await TenantManager.FindByTenancyNameAsync(input.TenancyName);
+            if (tenant == null)
+            {
+                return new CheckPaymentAvailabiltyDto(TenantPyamenteSateAndAvailability.NotFound);
+            }
+            var tenantEditionInfo = await _tenantRegistrationAppService.GetEdition((int)tenant.EditionId);
+
+            var paymentCompleteInfo = await _subscriptionPaymentRepository.GetLastCompletedPaymentOrDefaultAsync(
+                   tenantId: tenant.Id,
+                   gateway: null,
+                   isRecurring: null);
+            if (tenantEditionInfo.IsFree)
+            {
+
+                return new CheckPaymentAvailabiltyDto(TenantPyamenteSateAndAvailability.isFree, tenant.Id, _webUrlService.GetServerRootAddress(input.TenancyName));
+            }
+
+            if (paymentCompleteInfo == null)
+            {
+
+                return new CheckPaymentAvailabiltyDto(TenantPyamenteSateAndAvailability.NotCompleted, tenant.Id, _webUrlService.GetServerRootAddress(input.TenancyName), tenant.EditionId);
+            }
+
+            return new CheckPaymentAvailabiltyDto(TenantPyamenteSateAndAvailability.Completed, tenant.Id, _webUrlService.GetServerRootAddress(input.TenancyName));
         }
     }
 }

@@ -1,4 +1,4 @@
-import { DepartmentServiceProxy } from './../../../../shared/service-proxies/service-proxies';
+import { DepartmentListDto, DepartmentServiceProxy } from './../../../../shared/service-proxies/service-proxies';
 import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppComponentBase } from '@shared/common/app-component-base';
@@ -19,38 +19,45 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 export class DepartmentComponent extends AppComponentBase implements AfterViewInit {
   @ViewChild('createOrEditDepartment', { static: true }) createOrEditDepartment: CreateOrEditDepartmentComponent;
    @ViewChild('createOrEditDepartment', { static: true }) modal: ModalDirective;
-   @ViewChild('dataTable', { static: true }) dataTable: Table;
+   @ViewChild('dt', { static: true }) dataTable: Table;
    @ViewChild('paginator', { static: true }) paginator: Paginator;
-   Department: any;
+
+   departmentListDto: DepartmentListDto[] = [];
+   departmentList: DepartmentListDto;
    filterText = '';
    constructor(injector: Injector, private _Department: DepartmentServiceProxy, private _activatedRoute: ActivatedRoute) {
      super(injector);
      this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
    }
+
+   ngAfterViewInit() {
+    this.getallDepartmentList();
+  }
  
-   getallDepartmentList(event?: LazyLoadEvent) {
+   getallDepartmentList(event?: LazyLoadEvent, isSubmit:boolean = false) {
+     if(isSubmit==true){
+      this.filterText = "";
+     }
      if (this.primengTableHelper.shouldResetPaging(event)) {
        this.paginator.changePage(0);
        return;
      }
      this.primengTableHelper.showLoadingIndicator();
      this._Department.getDepartment(
-       this.primengTableHelper.getMaxResultCount(this.paginator, event),
-       this.primengTableHelper.getSkipCount(this.paginator, event),
-       this.primengTableHelper.getSorting(this.dataTable),
-       this.filterText,
+      this.filterText,
+      this.primengTableHelper.getSorting(this.dataTable),
+      this.primengTableHelper.getMaxResultCount(this.paginator, event),
+      this.primengTableHelper.getSkipCount(this.paginator, event)
+      
      ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
-       this.primengTableHelper.totalRecordsCount = result.totalCount;
-       this.primengTableHelper.totalRecordsCount = result.items.length;
-       this.primengTableHelper.records = result.items;
-       this.Department = result.items;
-       this.primengTableHelper.hideLoadingIndicator();
+      this.primengTableHelper.records=result.items
+  this.primengTableHelper.totalRecordsCount = result.totalCount;
+  this.departmentListDto=result.items;
+  this.primengTableHelper.hideLoadingIndicator(); 
      });
    }
  
-   ngAfterViewInit() {
-     this.getallDepartmentList();
-   }
+  
  
    createDepartment(): void {
      this.createOrEditDepartment.show();

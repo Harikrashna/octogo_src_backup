@@ -17,6 +17,7 @@ using Abp.Domain.Uow;
 using CF.Octogo.UserRegistration.Dto;
 using System.Data.SqlClient;
 using CF.Octogo.Data;
+using CF.Octogo.Authorization.Roles;
 
 namespace CF.Octogo.Sessions
 {

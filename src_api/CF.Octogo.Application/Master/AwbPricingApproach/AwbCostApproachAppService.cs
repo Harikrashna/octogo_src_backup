@@ -13,11 +13,19 @@ using Abp.Authorization;
 using CF.Octogo.Authorization;
 using CF.Octogo.Dto;
 using Abp.UI;
+using Abp.Runtime.Caching;
 
 namespace CF.Octogo.Master.AwbPricingApproach
 {
     public class AwbCostApproachAppService : OctogoAppServiceBase, IAwbCostApproachAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public AwbCostApproachAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         public async Task<PagedResultDto<AwbCostApproachListDto>> GetPerAWBCostApproach(PagedAndSortedInputDto input, string Filter)
         {
             SqlParameter[] parameters = new SqlParameter[4];
@@ -52,17 +60,18 @@ namespace CF.Octogo.Master.AwbPricingApproach
             }
         }
 
+
         [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Create, AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
         public async Task<int> CreateOrUpdateAwbCostType(CreateOrUpdateAwbCostApproachInput input)
         {
-            var dup_data = GetAwbCostApproachDuplicacy(input.inApproachID, input.vcApproachName, input.vcDescription);
-            if (dup_data.Result != null)
+            var AwbCostApproach = GetAwbCostApproachDuplicacy(input.inApproachID, input.vcApproachName);
+            if (AwbCostApproach.Result != null)
             {
                 throw new UserFriendlyException(L("DuplicateRecord"));
             }
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
-            parameters[1] = new SqlParameter("vcApproachName", input.vcApproachName);
+            parameters[1] = new SqlParameter("vcApproachName", input.vcApproachName.Trim());
             parameters[2] = new SqlParameter("vcDescription", input.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
 
@@ -72,6 +81,7 @@ namespace CF.Octogo.Master.AwbPricingApproach
             "USP_CreateOrUpdateAwbCostApproach", parameters);
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -106,16 +116,16 @@ namespace CF.Octogo.Master.AwbPricingApproach
             parameters[0] = new SqlParameter("AwbCostApproachId", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
 
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteAwbCostApproach", parameters);
+            await ClearCache();
         }
-        public async Task<DataSet> GetAwbCostApproachDuplicacy(int? inApproachID, string vcApproachName, string vcDescription)
+        public async Task<DataSet> GetAwbCostApproachDuplicacy(int? inApproachID, string vcApproachName)
         {
-            SqlParameter[] parameters = new SqlParameter[3];
+            SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("ApproachId", inApproachID);
             parameters[1] = new SqlParameter("ApproachName", vcApproachName);
-            parameters[2] = new SqlParameter("Description", vcDescription);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
@@ -130,6 +140,10 @@ namespace CF.Octogo.Master.AwbPricingApproach
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
     }
 }

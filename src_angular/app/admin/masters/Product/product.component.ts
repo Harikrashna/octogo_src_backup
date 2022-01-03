@@ -36,7 +36,10 @@ export class ProductComponent extends AppComponentBase implements AfterViewInit 
     this.getallProductList();
   }
   
-  getallProductList(event?: LazyLoadEvent) {
+  getallProductList(event?: LazyLoadEvent, isSubmit:boolean = false) {
+    if(isSubmit == true){
+      this.filterText = "";
+    }
     if (this.primengTableHelper.shouldResetPaging(event)) {
         this.paginator.changePage(0);
         return;
@@ -50,12 +53,10 @@ export class ProductComponent extends AppComponentBase implements AfterViewInit 
         this.filterText
     
     ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
-        this.primengTableHelper.totalRecordsCount = result.totalCount;
-    this.primengTableHelper.totalRecordsCount = result.items.length;
-        this.primengTableHelper.records = result.items;
-        this.Product=result.items;
-      
-        this.primengTableHelper.hideLoadingIndicator();
+      this.primengTableHelper.records=result.items
+      this.primengTableHelper.totalRecordsCount = result.totalCount;
+      this.Product=result.items;
+      this.primengTableHelper.hideLoadingIndicator();  
     });
 }
   createProduct(): void {

@@ -3,7 +3,7 @@ import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { accountModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { SessionServiceProxy, UpdateUserSignInTokenOutput } from '@shared/service-proxies/service-proxies';
+import { AccountServiceProxy, CheckPaymentAvailabiltyDto, EditionPaymentType, IsTenantAvailableInput, SessionServiceProxy, TenantPyamenteSateAndAvailability, UpdateUserSignInTokenOutput } from '@shared/service-proxies/service-proxies';
 import { UrlHelper } from 'shared/helpers/UrlHelper';
 import { ExternalLoginProvider, LoginService } from './login.service';
 import { ReCaptchaV3Service } from 'ngx-captcha';
@@ -18,6 +18,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     submitting = false;
     isMultiTenancyEnabled: boolean = this.multiTenancy.isEnabled;
     recaptchaSiteKey: string = AppConsts.recaptchaSiteKey;
+    
+    editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
 
     constructor(
         injector: Injector,
@@ -25,7 +27,8 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         private _router: Router,
         private _sessionService: AbpSessionService,
         private _sessionAppService: SessionServiceProxy,
-        private _reCaptchaV3Service: ReCaptchaV3Service
+        private _reCaptchaV3Service: ReCaptchaV3Service,
+        private _accountService: AccountServiceProxy,
     ) {
         super(injector);
     }
@@ -47,6 +50,11 @@ export class LoginComponent extends AppComponentBase implements OnInit {
     }
 
     ngOnInit(): void {
+        if(this.appSession.tenant != null && this.appSession.tenant.tenancyName != null 
+            && this.appSession.tenant.edition.isHighestEdition==false ){
+            
+        this.checkTenantPaymentStatus()
+        }
         this.loginService.init();
         if (this._sessionService.userId > 0 && UrlHelper.getReturnUrl() && UrlHelper.getSingleSignIn()) {
             this._sessionAppService.updateUserSignInToken()
@@ -110,5 +118,30 @@ export class LoginComponent extends AppComponentBase implements OnInit {
 
     get useCaptcha(): boolean {
         return this.setting.getBoolean('App.UserManagement.UseCaptchaOnLogin');
+    }
+
+    checkTenantPaymentStatus(): void {
+        let input = new IsTenantAvailableInput();
+        input.tenancyName = this.appSession.tenant.tenancyName;
+        this._accountService.checkPaymentAndAvailibility(input)
+            .subscribe((result: CheckPaymentAvailabiltyDto) => {
+                //this.SubscriptionEndDateUtc= result.subscriptionEndDateUtc;
+                debugger
+                switch (result.states) {
+                    case TenantPyamenteSateAndAvailability.NotCompleted:
+                        this._router.navigate(["/account/buy"],{
+                            queryParams: {
+                                tenantId: result.tenantId,
+                                editionId: result.ediEditionId,
+                                 //subscriptionStartType: this.model.subscriptionStartType,
+   
+                                //subscriptionStartType: this.model.subscriptionStartType,
+                                editionPaymentType: this.editionPaymentType.NewRegistration
+                               }
+                            })
+                        break;
+                }
+              
+            });
     }
 }

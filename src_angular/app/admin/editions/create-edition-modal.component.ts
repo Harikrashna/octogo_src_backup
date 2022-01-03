@@ -3,7 +3,7 @@ import { AppEditionExpireAction } from '@shared/AppEnums';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CommonLookupServiceProxy, CreateEditionDto, EditionListByProductDto, EditionServiceProxy, ModuleDto, ModuleListDto, ModulePricingDto, PageModulesDto, PriceDiscount } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { FeatureTreeComponent } from '../shared/feature-tree.component';
+// import { FeatureTreeComponent } from '../shared/feature-tree.component';
 import { finalize } from 'rxjs/operators';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import { NgForm } from '@angular/forms';
@@ -23,7 +23,7 @@ const roundTo = function (num: number, places: number) {
 export class CreateEditionModalComponent extends AppComponentBase implements OnInit {
 
     @ViewChild('createUpdateModal', { static: true }) modal: ModalDirective;
-    @ViewChild('featureTree') featureTree: FeatureTreeComponent;
+    // @ViewChild('featureTree') featureTree: FeatureTreeComponent;
     @ViewChild('editionForm') editionForm: NgForm;
     @ViewChild('editionModules') editionModules: AddEditionModulesComponent;
     @ViewChild('staticTabs', { static: false }) staticTabs?: TabsetComponent;
@@ -215,10 +215,10 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         //     this.expiringEditions = editionsResult.items;
         //     this.expiringEditions.unshift(new ComboboxItemDto({ value: null, displayText: this.l('NotAssigned'), isSelected: true }));
 
-        this._editionService.getEditionForEdit(editionId).subscribe(editionResult => {
-            this.featureTree.editData = editionResult;
-            this.modal.show();
-        });
+        // this._editionService.getEditionForEdit(editionId).subscribe(editionResult => {
+        //     this.featureTree.editData = editionResult;
+        // });
+        this.modal.show();
         // });
     }
 
@@ -226,9 +226,9 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         document.getElementById('product').focus();
     }
 
-    resetPrices(isFree) {
+    resetPrices(event) {
         this.pricingTypes = new Array<EditionPricing>();
-        if (isFree == false) {
+        if (this.isFree == false) {
             this.getPricingTypes();
         }
         // this.edition.edition.annualPrice = undefined;
@@ -240,17 +240,17 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     }
 
     save(): void {
-        if (!this.featureTree.areAllValuesValid()) {
-            this.message.warn(this.l('InvalidFeaturesWarning'));
-            return;
-        }
+        // if (!this.featureTree.areAllValuesValid()) {
+        //     this.message.warn(this.l('InvalidFeaturesWarning'));
+        //     return;
+        // }
         this.priceFormInvalid = this.ValidatePriceForm();
         if (this.editionModules.ModulesList.length > 0) {
             if (!this.priceFormInvalid) {
                 const input = new CreateEditionDto();
                 input.moduleList = new Array<ModuleListDto>();
                 input.edition = this.edition.edition;
-                input.featureValues = this.featureTree.getGrantedFeatures();
+                // input.featureValues = this.featureTree.getGrantedFeatures();
                 input.dependantEditionID = this.DependantEditionID;
                 input.productId = this.ProductId;
                 input.approachId = this.ApproachId;
@@ -354,12 +354,13 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         this.ProductList = [];
         this.ProductId = null;
         this.DependantEditionID = null;
+        this.ApproachId = null;
         this.edition = new CreateEditionDto();
         this.modal.hide();
     }
     getEditions(): void {
         this.EditionList = [];
-        if (this.IsDependent) {
+        if (this.IsDependent && this.ProductId != null) {
             this._editionService.getEditionsByProductId(this.ProductId, 0, '')
                 .pipe().subscribe(result => {
                     this.EditionList = result.items;
