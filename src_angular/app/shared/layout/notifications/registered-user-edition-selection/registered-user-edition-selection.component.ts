@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import { AppComponent } from '@app/app.component';
 import { accountModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { EditionPaymentType, EditionsSelectOutput, ProductWithEditionDto, SubscriptionStartType, TenantRegistrationServiceProxy } from '@shared/service-proxies/service-proxies';
+import { EditionPaymentType, EditionServiceProxy, EditionsSelectOutput, ProductWithEditionDto, SubscriptionStartType } from '@shared/service-proxies/service-proxies';
 
 
 @Component({
@@ -49,7 +49,7 @@ export class RegisteredUserEditionSelectionComponent extends AppComponentBase im
   editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
   editionIcons: string[] = ['flaticon-open-box', 'flaticon-rocket', 'flaticon-gift', 'flaticon-confetti', 'flaticon-cogwheel-2', 'flaticon-app', 'flaticon-coins', 'flaticon-piggy-bank', 'flaticon-bag', 'flaticon-lifebuoy', 'flaticon-technology-1', 'flaticon-cogwheel-1', 'flaticon-infinity', 'flaticon-interface-5', 'flaticon-squares-3', 'flaticon-interface-6', 'flaticon-mark', 'flaticon-business', 'flaticon-interface-7', 'flaticon-list-2', 'flaticon-bell', 'flaticon-technology', 'flaticon-squares-2', 'flaticon-notes', 'flaticon-profile', 'flaticon-layers', 'flaticon-interface-4', 'flaticon-signs', 'flaticon-menu-1', 'flaticon-symbol'];
 
-  constructor(private injector:Injector,private _tenantRegistrationService:TenantRegistrationServiceProxy) {
+  constructor(private injector:Injector, private _editionService: EditionServiceProxy,) {
     super(injector);
    }
 
@@ -57,7 +57,7 @@ export class RegisteredUserEditionSelectionComponent extends AppComponentBase im
     if(this.appSession.user != null && this.appSession.user != undefined && this.appSession.user.id > 0){
       this.isUserLoggedIn = true;
     }
-    this._tenantRegistrationService.getProductWithEdition().subscribe(result=>{
+    this._editionService.getProductWithEdition().subscribe(result=>{
       this.loading=false;
       this.ProductWithEditionList=result;
       
@@ -123,9 +123,13 @@ this.addonIndex = index;
 }
 
 expandModules(index){
-
 this.moduleIndex = index;
-this.isModuleCollapsed = ! this.isModuleCollapsed
+if(index >= 0){
+  this.isModuleCollapsed = false;
+}
+else{
+  this.isModuleCollapsed = true;
+}
 }
 }
 

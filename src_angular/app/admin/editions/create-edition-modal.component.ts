@@ -11,6 +11,8 @@ import { AddEditionModulesComponent } from '../shared/add-edition-modules/add-ed
 import { EditionModule } from '../shared-models/Edition/EditionModule';
 import { EditionPricing } from '../shared-models/Edition/EditionPricing';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
+import { EditionModulesComponent } from './edition-modules/edition-modules.component';
+import { ValidationServiceService } from '../validation-service.service';
 
 const roundTo = function (num: number, places: number) {
     const factor = 10 ** places;
@@ -25,8 +27,9 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     @ViewChild('createUpdateModal', { static: true }) modal: ModalDirective;
     // @ViewChild('featureTree') featureTree: FeatureTreeComponent;
     @ViewChild('editionForm') editionForm: NgForm;
-    @ViewChild('editionModules') editionModules: AddEditionModulesComponent;
+    // @ViewChild('editionModules') editionModules: AddEditionModulesComponent;
     @ViewChild('staticTabs', { static: false }) staticTabs?: TabsetComponent;
+    @ViewChild('editionModule') editionModule: EditionModulesComponent;
 
     @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
 
@@ -62,7 +65,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     constructor(
         injector: Injector,
         private _editionService: EditionServiceProxy,
-        private _commonLookupService: CommonLookupServiceProxy
+        public validationService: ValidationServiceService
     ) {
         super(injector);
         this.discountPercentage = 5;    // This will come from back-end
@@ -128,42 +131,46 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     }
     // Get Edition Modules data for Dependent Edition OR for Edit mode of Edition
     getEditionModulesData(EditionId, ForEdit: boolean = true) {
-        if (this.editionModules != undefined && this.editionModules != null) {
-            this.editionModules.ModulesList = [];
-            this.editionModules.DependEditionData = [];
+        if (this.editionModule != undefined && this.editionModule != null) {
+            // this.editionModules.ModulesList = [];
+            this.editionModule.DependEditionData = [];
             if (EditionId > 0) {
                 this._editionService.getEditionModules(EditionId).subscribe(result => {
                     if (result != null) {
-                        this.editionModules.DependEditionData = result.dependEditionData;
-                        if (ForEdit == true && result.modulesData != null && result.modulesData.length > 0) {
-                            // this.editionModules.ModulesList = result.modulesData;
-                            result.modulesData.forEach(element => {
-                                this.editionModules.ModulesList.push({
-                                    ModuleName: element.moduleName,
-                                    SubModuleList: this.fillSubModuleData(element.subModuleList),
-                                    CanAddSubModule: false,
-                                    EditionModuleId: element.moduleId,
-                                    PageModuleId: element.pageModuleId
-                                })
-                            })
+                        this.editionModule.DependEditionData = result.dependEditionData;
+                        // if (ForEdit == true && result.modulesData != null && result.modulesData.length > 0) {
+                        //     // this.editionModules.ModulesList = result.modulesData;
+                        //     result.modulesData.forEach(element => {
+                        //         this.editionModules.ModulesList.push({
+                        //             ModuleName: element.moduleName,
+                        //             SubModuleList: this.fillSubModuleData(element.subModuleList),
+                        //             CanAddSubModule: false,
+                        //             EditionModuleId: element.moduleId,
+                        //             PageModuleId: element.pageModuleId
+                        //         })
+                        //     })
+                        // }
+                        if (ForEdit == true) {
+                            this.editionModule.SetModuleDataForEdit(result.modulesData);
                         }
                         else if (this.IsDependent && ForEdit == false && result.modulesData != null && result.modulesData.length > 0) {
-                            this.editionModules.DependEditionData.unshift({
+                            this.editionModule.DependEditionData.unshift({
                                 editionId: this.DependantEditionID,
                                 displayName: this.EditionList.filter(obj => obj.id == this.DependantEditionID)[0].displayName,
                                 moduleData: result.modulesData,
                             });
                         }
-                        if (this.editionModules.DependEditionData != null && this.editionModules.DependEditionData.length > 0) {
-                            this.editionModules.DependEditionData.forEach(obj => {
-                                obj["Collapse"] = true;
-                                if (obj.moduleData != null && obj.moduleData.length) {
-                                    obj.moduleData.forEach(ele => {
-                                        ele["Collapse"] = true;
-                                    })
-                                }
-                            })
-                        }
+                        this.editionModule.RemoveDependentEditionModules();
+                        // if (this.editionModules.DependEditionData != null && this.editionModules.DependEditionData.length > 0) {
+                        //     this.editionModules.DependEditionData.forEach(obj => {
+                        //         obj["Collapse"] = true;
+                        //         if (obj.moduleData != null && obj.moduleData.length) {
+                        //             obj.moduleData.forEach(ele => {
+                        //                 ele["Collapse"] = true;
+                        //             })
+                        //         }
+                        //     })
+                        // }
                     }
                 });
             }
@@ -219,6 +226,14 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         //     this.featureTree.editData = editionResult;
         // });
         this.modal.show();
+        if (!(editionId > 0)) {
+            let timer = setInterval(() => {
+                if (this.editionModule != null && this.editionModule != undefined) {
+                    this.editionModule.GetModuleList();
+                    clearInterval(timer)
+                }
+            }, 50)
+        }
         // });
     }
 
@@ -245,7 +260,31 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         //     return;
         // }
         this.priceFormInvalid = this.ValidatePriceForm();
-        if (this.editionModules.ModulesList.length > 0) {
+        let isModuleSubModuleSelected = false;
+        let selectedModules = [];
+        if (this.editionModule != undefined && this.editionModule.PageModuleList != null && this.editionModule.PageModuleList.length > 0) {
+            selectedModules = this.editionModule.PageModuleList.filter(obj => obj["selected"] == true);
+            if (selectedModules != null && selectedModules.length > 0) 
+            {
+                selectedModules.forEach(obj => {
+                    let subModule = this.editionModule.PageSubModuleList.filter(x => x.moduleId == obj.id);
+                    if (subModule != null && subModule.length > 0 && subModule[0].subModuleList != null && subModule[0].subModuleList.length > 0) 
+                    {
+                        let tempIndex = subModule[0].subModuleList.findIndex(x => x["selected"] == true);
+                        isModuleSubModuleSelected = true;
+                        if(tempIndex < 0){
+                            isModuleSubModuleSelected = false;
+                            return;
+                        }
+                    }
+                    else{
+                        isModuleSubModuleSelected = false;
+                        return;
+                    }
+                })
+            }
+        }
+        if (isModuleSubModuleSelected) {
             if (!this.priceFormInvalid) {
                 const input = new CreateEditionDto();
                 input.moduleList = new Array<ModuleListDto>();
@@ -264,9 +303,9 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                         }));
                     });
                 }
-                if (this.isEdit && this.editionModules.DependEditionData != null && this.editionModules.DependEditionData.length > 0) {
-                    for (let i = 0; i < this.editionModules.DependEditionData.length; i++) {
-                        this.editionModules.DependEditionData[i].moduleData.forEach(element => {
+                if (this.isEdit && this.editionModule.DependEditionData != null && this.editionModule.DependEditionData.length > 0) {
+                    for (let i = 0; i < this.editionModule.DependEditionData.length; i++) {
+                        this.editionModule.DependEditionData[i].moduleData.forEach(element => {
                             input.moduleList.push(new ModuleListDto({
                                 editionModuleId: element.moduleId,
                                 moduleName: element.moduleName,
@@ -276,12 +315,20 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                         });
                     }
                 }
-                this.editionModules.ModulesList.forEach(element => {
+                // this.editionModules.ModulesList.forEach(element => {
+                //     input.moduleList.push(new ModuleListDto({
+                //         editionModuleId: element.EditionModuleId,
+                //         moduleName: element.ModuleName,
+                //         subModuleList: this.fillData(element.SubModuleList),
+                //         pageModuleId: element.PageModuleId
+                //     }));
+                // });
+                selectedModules.forEach(element => {
                     input.moduleList.push(new ModuleListDto({
-                        editionModuleId: element.EditionModuleId,
-                        moduleName: element.ModuleName,
-                        subModuleList: this.fillData(element.SubModuleList),
-                        pageModuleId: element.PageModuleId
+                        editionModuleId: element["editionModuleId"],
+                        moduleName: element.displayName,
+                        subModuleList: this.fillSubModuleDataToInsert(element.id),
+                        pageModuleId: element.id
                     }));
                 });
                 this.saving = true;
@@ -300,6 +347,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         }
         else {
             // Module tab selection
+            this.notify.warn(this.l('PleaseSelectValidModuleAndSubModules'));
             this.selectTab(1);
         }
     }
@@ -307,6 +355,46 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         if (this.staticTabs?.tabs[tabId]) {
             this.staticTabs.tabs[tabId].active = true;
         }
+    }
+    fillSubModuleDataToInsert(pageModuleId) {
+        let subModuleIndex = this.editionModule.PageSubModuleList.findIndex(obj => obj.moduleId == pageModuleId);
+        if (subModuleIndex >= 0) {
+            let selectedSubModules = this.editionModule.PageSubModuleList[subModuleIndex].subModuleList.filter(obj => obj["selected"] == true);
+            if (selectedSubModules != null && selectedSubModules.length > 0) {
+                let subModules = new Array<ModuleListDto>();
+                selectedSubModules.forEach(element => {
+                    subModules.push(new ModuleListDto(
+                        {
+                            editionModuleId: element["subModuleId"],
+                            moduleName: element.displayName,
+                            subModuleList: this.fillSubSubModuleDataToInsert(element.subSubModuleList),
+                            pageModuleId: element.id
+                        }
+                    ));
+                })
+                return subModules;
+            }
+        }
+        return null;
+    }
+    fillSubSubModuleDataToInsert(subSubModules) {
+        if (subSubModules != null && subSubModules.length > 0) {
+            let subModules = new Array<ModuleListDto>();
+            subSubModules.forEach(element => {
+                if (element["selected"] == true) {
+                    subModules.push(new ModuleListDto(
+                        {
+                            editionModuleId: element["subModuleId"],
+                            moduleName: element.displayName,
+                            subModuleList: null,
+                            pageModuleId: element.id
+                        }
+                    ));
+                }
+            })
+            return subModules;
+        }
+        return null;
     }
     fillData(data?: EditionModule[]) {
         let subModules = new Array<ModuleListDto>();
@@ -333,7 +421,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                     ModuleName: element.moduleName,
                     EditionModuleId: element.subModuleId,
                     SubModuleList: this.fillSubModuleData(element.subModuleList),
-                    PageModuleId: element.pageModuleId 
+                    PageModuleId: element.pageModuleId
                 });
             });
         }

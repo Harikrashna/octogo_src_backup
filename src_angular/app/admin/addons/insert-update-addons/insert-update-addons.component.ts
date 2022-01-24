@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Injector, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { EditionPricing } from '@app/admin/shared-models/Edition/EditionPricing';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { AddonServiceProxy, CreateAddonDto, EditionServiceProxy, ModulePricingDto, PageModulesDto, PriceDiscount, SubModulesDto } from '@shared/service-proxies/service-proxies';
+import { AddonListDto, AddonServiceProxy, CreateAddonDto, EditionServiceProxy, ModuleListDto, ModuleListForAddonDto, ModulePricingDto, PageModulesDto, PriceDiscount, SubModuleForAddonDto, SubModulesDto } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import { finalize } from 'rxjs/operators';
@@ -32,7 +33,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
     isFree: boolean = true;
     ProductId: number;
     isEdit: boolean = false;
-    isStandAlone: boolean = true;
+    isStandAlone: boolean = false;
     EditionList = [];
     ProductList = [];
     ApproachList = [];
@@ -47,31 +48,40 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
     PageModuleList: PageModulesDto[];
     filteredPageModuleList: PageModulesDto[];
     PageSubModuleList: SubModulesDto[];
-    AddonDataForEdit: any;
-    AddonModuleDetails: any;
+    AddonDataForEdit: AddonListDto;
+    // AddonModuleDetails: any;
     AddonName;
-    FromEditionName;
+    Description;
+    // FromEditionName;
     ForEditionName;
+    ModulesList: ModuleListForAddonDto[];
+    SelectedIndex: number = -1;
+    SelectedModule: ModuleListForAddonDto = null;
+    IsScrollable: boolean = false;
+    CanScrollLeft: boolean = false;
+    CanScrollRight: boolean = false;
+    SubSubModuleList: SubModuleForAddonDto[] = [];
 
     constructor(injector: Injector,
         private addonServiceProxy: AddonServiceProxy,
-        private _editionService: EditionServiceProxy,) {
+        private _editionService: EditionServiceProxy,
+        public validationService: ValidationServiceService) {
         super(injector);
     }
 
     ngOnInit(): void {
     }
     // get Page Module list
-    GetAddonModuleList() {
-        this.PageModuleList = [];
-        this.PageSubModuleList = [];
-        this._editionService.getModuleList().subscribe(result => {
-            if (result != null) {
-                this.PageModuleList = result.moduleList;
-                this.PageSubModuleList = result.subModuleList;
-            }
-        });
-    }
+    // GetAddonModuleList() {
+    //     this.PageModuleList = [];
+    //     this.PageSubModuleList = [];
+    //     this._editionService.getModuleList().subscribe(result => {
+    //         if (result != null) {
+    //             this.PageModuleList = result.moduleList;
+    //             this.PageSubModuleList = result.subModuleList;
+    //         }
+    //     });
+    // }
     show(data?): void {
         this.active = true;
         if (data != null && data != undefined) {
@@ -80,22 +90,91 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             this.ProductId = this.AddonDataForEdit.productId;
             this.ApproachId = this.AddonDataForEdit.approachId;
             this.isFree = this.AddonDataForEdit.isFree;
-            this.SelectedAddon = this.AddonDataForEdit.addonName;
             this.AddonName = this.AddonDataForEdit.addonName;
-            this.FromEditionName = this.AddonDataForEdit.fromEditionName;
             this.ForEditionName = this.AddonDataForEdit.forEditionName;
-            this.GetAddonDetailsByModuleId(this.AddonDataForEdit.moduleId);
+            this.EditionID = this.AddonDataForEdit.forEditionId;
+            this.Description = this.AddonDataForEdit.description;
+            this.GetModuleListByEditionForAddon(this.EditionID);
+            this.GetEditionListForAddon();
         }
         this.GetOtherDataForEdition();
-        if (!this.isEdit) {
-            this.GetAddonModuleList();
-        }
+        // if (!this.isEdit) {
+        //     this.GetAddonModuleList();
+        // }
         this.modal.show();
     }
     onShown(): void {
-        document.getElementById('product').focus();
+        document.getElementById('ddl_Product').focus();
     }
-
+    GetModuleListByEditionForAddon(EditionId) {
+        this.ModulesList = new Array<ModuleListForAddonDto>();
+        this.SubSubModuleList = [];
+        this.SelectedModule = null;
+        this.IsScrollable = false;
+        if (EditionId > 0) {
+            this.addonServiceProxy.getModuleListByEditionForAddon(EditionId)
+                .pipe().subscribe(result => {
+                    this.ModulesList = new Array<ModuleListForAddonDto>();
+                    if (result != null && result != undefined && result.length > 0) {
+                        // filter modules, if duplicate modules get from different-different editions
+                        result.forEach(module => {
+                            let duplicateModuleIndex = this.ModulesList.findIndex(obj => obj.pageId == module.pageId);
+                            if (duplicateModuleIndex >= 0) {
+                                if (module.subModuleList != undefined && module.subModuleList != null) {
+                                    if (this.ModulesList[duplicateModuleIndex].subModuleList != undefined && this.ModulesList[duplicateModuleIndex].subModuleList != null) {
+                                        // check duplicate sub module
+                                        module.subModuleList.forEach(subModule => {
+                                            let duplicateSubModuleIndex = this.ModulesList[duplicateModuleIndex].subModuleList.findIndex(obj => obj.pageId == subModule.pageId);
+                                            if (duplicateSubModuleIndex >= 0) {
+                                                if (subModule.subSubModuleList != undefined && subModule.subSubModuleList != null) {
+                                                    subModule.subSubModuleList.forEach(subSubModule => {
+                                                        if (this.ModulesList[duplicateModuleIndex].subModuleList[duplicateSubModuleIndex].subSubModuleList != undefined && this.ModulesList[duplicateModuleIndex].subModuleList[duplicateSubModuleIndex].subSubModuleList != null) {
+                                                            // check duplicate sub sub module
+                                                            let duplicateSubSubModuleIndex = this.ModulesList[duplicateModuleIndex].subModuleList[duplicateSubModuleIndex].subSubModuleList.findIndex(obj => obj.pageId == subSubModule.pageId);
+                                                            if (duplicateSubSubModuleIndex < 0) {
+                                                                this.ModulesList[duplicateModuleIndex].subModuleList.push(subSubModule);
+                                                            }
+                                                        }
+                                                        else {
+                                                            this.ModulesList[duplicateModuleIndex].subModuleList.push(subSubModule);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                            else {
+                                                this.ModulesList[duplicateModuleIndex].subModuleList.push(subModule);
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        this.ModulesList[duplicateModuleIndex].subModuleList = module.subModuleList;
+                                    }
+                                }
+                            }
+                            else {
+                                this.ModulesList.push(module);
+                            }
+                        })
+                    }
+                    if (this.isEdit) {
+                        this.GetAddonModuleAndPricing(this.AddonDataForEdit.addonId);
+                    }
+                    this.CheckScrollable();
+                });
+        }
+    }
+    GetEditionListForAddon() {
+        this.EditionList = [];
+        this.ModulesList = [];
+        this.SubSubModuleList = [];
+        this.SelectedModule = null;
+        if (this.ProductId > 0) {
+            this.addonServiceProxy.getEditionListForAddon(this.ProductId)
+                .pipe().subscribe(result => {
+                    this.EditionList = result.items;
+                });
+        }
+    }
     GetOtherDataForEdition() {
         this.ProductList = [];
         this.ApproachList = [];
@@ -109,27 +188,165 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             }
         });
     }
-    // GetAddonByEditionId() {
-    //     this.AddonDataList = [];
-    //     this.ActualAddonDataList = [];
-    //     this.SelectedAddonList = [];
-    //     if (this.EditionID > 0) {
-    //         this.addonServiceProxy.getAddonListByEditionId(this.EditionID)
-    //             .pipe().subscribe(result => {
-    //                 this.ActualAddonDataList = result.items;
-    //                 this.AddonDataList = result.items;
-    //             });
-    //     }
-    // }
-    GetAddonDetailsByModuleId(ModuleId) {
-        this.AddonModuleDetails = null;
-        this.addonServiceProxy.getAddonDetailsByModuleId(ModuleId)
+    GetAddonModuleAndPricing(AddonId) {
+        // this.AddonModuleDetails = null;
+        this.addonServiceProxy.getAddonModuleAndPricing(AddonId)
             .pipe().subscribe(result => {
-                this.AddonModuleDetails = result.items[0];
-                this.getPricingTypes(result.items[0].pricingData);
+                this.getPricingTypes(result.pricingData);
+                if (result.moduleList != null && result.moduleList.length > 0) {
+                    // Module data selection
+                    result.moduleList.forEach(module => {
+                        let moduleIndex = this.ModulesList.findIndex(obj => obj.pageId == module.pageId);
+                        if (moduleIndex >= 0) {
+                            this.ModulesList[moduleIndex]["selected"] = true;
+
+                            // Sub Module data selection
+                            if (module.subModuleList != null && module.subModuleList.length > 0) {
+                                module.subModuleList.forEach(subModule => {
+                                    if (this.ModulesList[moduleIndex].subModuleList != null && this.ModulesList[moduleIndex].subModuleList.length > 0) {
+                                        let subModuleIndex = this.ModulesList[moduleIndex].subModuleList.findIndex(obj => obj.pageId == subModule.pageId);
+                                        if (subModuleIndex >= 0) {
+                                            this.ModulesList[moduleIndex].subModuleList[subModuleIndex]["selected"] = true;
+
+                                            // Sub Sub Module data selection
+                                            if (subModule.subSubModuleList != null && subModule.subSubModuleList.length > 0) {
+                                                subModule.subSubModuleList.forEach(subSubModule => {
+                                                    if (this.ModulesList[moduleIndex].subModuleList[subModuleIndex].subSubModuleList != null && this.ModulesList[moduleIndex].subModuleList[subModuleIndex].subSubModuleList.length > 0) {
+                                                        let subSubModuleIndex = this.ModulesList[moduleIndex].subModuleList.findIndex(obj => obj.pageId == subSubModule.pageId);
+                                                        if (subSubModuleIndex >= 0) {
+                                                            this.ModulesList[moduleIndex].subModuleList[subModuleIndex].subSubModuleList[subSubModuleIndex]["selected"] = true;
+                                                        }
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
             });
     }
-
+    ScrollLeft() {
+        let scroll = 100;
+        let ele = document.getElementById('module_content')
+        ele.scrollLeft -= scroll;
+        this.CanScrollRight = true;
+        this.CanScrollLeft = ele.scrollLeft > 0;
+    }
+    ScrollRight() {
+        let scroll = 100;
+        let ele = document.getElementById('module_content')
+        this.CanScrollLeft = true;
+        if ((ele.scrollWidth - ele.clientWidth) - ele.scrollLeft > scroll) {
+            this.CanScrollRight = true;
+        }
+        else {
+            this.CanScrollRight = false;
+        }
+        ele.scrollLeft += scroll;
+    }
+    CheckScrollable() {
+        this.IsScrollable = false;
+        this.CanScrollLeft = false;
+        this.CanScrollRight = false;
+        let timer = setInterval(() => {
+            let ele = document.getElementById('module_content')
+            if (ele != null && ele != undefined) {
+                const hasScrollableContent = ele.scrollWidth > ele.clientWidth;
+                this.IsScrollable = hasScrollableContent;
+                this.CanScrollLeft = false;
+                this.CanScrollRight = this.IsScrollable;
+                if (ele.clientWidth > 0) {
+                    clearInterval(timer);
+                }
+            }
+        }, 50)
+    }
+    SelectModuleAction(module, index, isConfirmed = false) {
+        this.SubSubModuleList = [];
+        if(!isConfirmed)
+        {
+            this.SelectedIndex = index;
+        }
+        if (module == null || isConfirmed) {
+            this.ModulesList[this.SelectedIndex]["selected"] = false;
+            if(this.ModulesList[this.SelectedIndex].subModuleList != null && this.ModulesList[this.SelectedIndex].subModuleList.length > 0){
+                this.ModulesList[this.SelectedIndex].subModuleList.forEach(obj =>{
+                    obj["selected"] = false;
+                })
+            }
+            this.SelectedModule = null;
+            this.SelectedIndex = -1;
+            if(isConfirmed)
+            {  // when user confirm YES while module selection change without selct any sub-module
+                this.SelectModuleAction(module, index, false);
+            }
+        }
+        else {
+            this.ModulesList[index]["selected"] = true;
+            this.SelectedIndex = index;
+            this.SelectedModule = module;
+        }
+    }
+    SelectModule(module, index) {
+        if (this.SelectedIndex >= 0 && this.SelectedIndex != index) {
+          if (!this.ModulesList[this.SelectedIndex].subModuleList) {
+            this.SelectModuleAction(module, index, true);
+          }
+          else {
+            let selectedSubModule = this.ModulesList[this.SelectedIndex].subModuleList.findIndex(obj => obj["selected"] == true);
+            if (selectedSubModule >= 0) {
+              this.SelectModuleAction(module, index);
+            }
+            else {
+              this.message.confirm(
+                this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.moduleName),
+                this.l('AreYouSure'),
+                isConfirmed => {
+                  if(isConfirmed){
+                    this.SelectModuleAction(module, index, true);
+                  }
+                  else{
+                    return;
+                  }
+                }
+              );
+            }
+          }
+        }
+        else{
+          this.SelectModuleAction(module, index);
+        }
+      }
+    
+    SelectSubModule(subIndex) {
+        if (this.ModulesList[this.SelectedIndex].subModuleList[subIndex]["selected"]) {
+            this.ModulesList[this.SelectedIndex].subModuleList[subIndex]["selected"] = false;
+        }
+        else {
+            this.ModulesList[this.SelectedIndex].subModuleList[subIndex]["selected"] = true;
+        }
+        this.SubSubModuleList = [];
+        let selectedSubModules = this.ModulesList[this.SelectedIndex].subModuleList.filter(obj => obj["selected"] == true);
+        selectedSubModules.forEach(obj => {
+            this.SubSubModuleList.concat(obj.subSubModuleList);
+        });
+    }
+    SelectSubSubModule(subSubModuleId) {
+        this.ModulesList[this.SelectedIndex].subModuleList.forEach(obj => {
+            if (obj.subSubModuleList != null && obj.subSubModuleList != undefined && obj.subSubModuleList.length > 0)
+                obj.subSubModuleList.forEach(subModule => {
+                    if (subModule.subModuleId == subSubModuleId) {
+                        subModule["selected"] = true;
+                    }
+                    else {
+                        subModule["selected"] = false;
+                    }
+                });
+        });
+    }
     resetPrices(isFree) {
         this.pricingTypes = new Array<EditionPricing>();
         if (isFree == false) {
@@ -176,14 +393,40 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
         }
     }
     save() {
-        this.priceFormInvalid = this.ValidatePriceForm();
+        let isModuleSubModuleSelected = false;
+        let selectedModules = [];
+        if (this.ModulesList != null && this.ModulesList != undefined && this.ModulesList.length > 0) {
+            selectedModules = this.ModulesList.filter(obj => obj["selected"] == true);
+            if (selectedModules != null && selectedModules.length > 0) 
+            {
+                selectedModules.forEach(obj => {
+                    if (obj.subModuleList != null && obj.subModuleList.length > 0) 
+                    {
+                        let tempIndex = obj.subModuleList.findIndex(x => x["selected"] == true);
+                        isModuleSubModuleSelected = true;
+                        if(tempIndex < 0){
+                            isModuleSubModuleSelected = false;
+                            return;
+                        }
+                    }
+                    else{
+                        isModuleSubModuleSelected = false;
+                        return;
+                    }
+                })
+            }
+        }
+        if (isModuleSubModuleSelected) {
+            this.priceFormInvalid = this.ValidatePriceForm();
             if (!this.priceFormInvalid) {
                 const input = new CreateAddonDto();
                 input.productId = this.ProductId;
                 input.approachId = this.ApproachId;
-                input.editionID = this.AddonDataForEdit != null ?this.AddonDataForEdit.forEditionId : null;
-                input.moduleId = this.AddonDataForEdit != null ?this.AddonDataForEdit.moduleId : null;
-                input.addonId = this.AddonDataForEdit != null ?this.AddonDataForEdit.addonId : null;
+                input.editionID = this.EditionID;
+                input.addonName = this.AddonName;
+                input.isStandAlone = this.isStandAlone;
+                input.description = this.Description;
+                input.addonId = this.AddonDataForEdit != null ? this.AddonDataForEdit.addonId : null;
                 if (!this.isFree && this.pricingTypes.length > 0) {
                     input.priceDiscount = new Array<PriceDiscount>();
                     this.pricingTypes.forEach(obj => {
@@ -193,6 +436,15 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                             discountPercentage: obj.DiscountPercentage
                         }));
                     });
+                }
+                input.moduleList = new Array<ModuleListDto>();
+                for (let i = 0; i < selectedModules.length; i++) {
+                    input.moduleList.push(new ModuleListDto({
+                        editionModuleId: selectedModules[i].moduleId,
+                        moduleName: selectedModules[i].moduleName,
+                        subModuleList: this.fillSubModuleDataToInsert(selectedModules[i].moduleId),
+                        pageModuleId: selectedModules[i].pageId
+                    }));
                 }
                 this.saving = true;
                 this.addonServiceProxy.insertUpdateAddonModuleAndPricing(input)
@@ -207,26 +459,71 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                 // Pricing tab selection
                 this.selectTab(2);
             }
+        }
+        else {
+            this.notify.warn(this.l('PleaseSelectValidModuleAndSubModules'));
+            this.selectTab(1);
+        }
     }
     selectTab(tabId: number) {
         if (this.staticTabs?.tabs[tabId]) {
             this.staticTabs.tabs[tabId].active = true;
         }
     }
-    SearchAddonModule(event) {
-        let filtered: any[] = [];
-        let query = event.query.trim();
-        for (let i = 0; i < this.PageModuleList.length; i++) {
-            let module = this.PageModuleList[i];
-            if (module.displayName.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-                filtered.push(module);
+    fillSubModuleDataToInsert(moduleId) {
+        let index = this.ModulesList.findIndex(obj => obj.moduleId == moduleId)
+        if (this.ModulesList[index].subModuleList != null && this.ModulesList[index].subModuleList.length > 0) {
+            let selectedSubModules = this.ModulesList[index].subModuleList.filter(obj => obj["selected"] == true);
+            if (selectedSubModules != null && selectedSubModules.length > 0) {
+                let subModules = new Array<ModuleListDto>();
+                for (let i = 0; i < selectedSubModules.length; i++) {
+                    subModules.push(new ModuleListDto(
+                        {
+                            editionModuleId: selectedSubModules[i].subModuleId,
+                            moduleName: selectedSubModules[i].subModuleName,
+                            subModuleList: this.fillSubSubModuleDataToInsert(selectedSubModules[i].subSubModuleList),
+                            pageModuleId: selectedSubModules[i].pageId
+                        }
+                    ));
+                }
+                return subModules;
             }
         }
+        return null;
+    }
+    fillSubSubModuleDataToInsert(subSubModules) {
+        if (subSubModules != null && subSubModules.length > 0) {
+            let subModules = new Array<ModuleListDto>();
+            subSubModules.forEach(element => {
+                if (element["selected"] == true) {
+                    subModules.push(new ModuleListDto(
+                        {
+                            editionModuleId: element.subModuleId,
+                            moduleName: element.subModuleName,
+                            subModuleList: null,
+                            pageModuleId: element.pageId
+                        }
+                    ));
+                }
+            })
+            return subModules;
+        }
+        return null;
+    }
+    // SearchAddonModule(event) {
+    //     let filtered: any[] = [];
+    //     let query = event.query.trim();
+    //     for (let i = 0; i < this.PageModuleList.length; i++) {
+    //         let module = this.PageModuleList[i];
+    //         if (module.displayName.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+    //             filtered.push(module);
+    //         }
+    //     }
 
-        this.filteredPageModuleList = filtered;
-    }
-    AddAddonModule() {
-    }
+    //     this.filteredPageModuleList = filtered;
+    // }
+    // AddAddonModule() {
+    // }
     Reset(): void {
         this.editionForm.reset();
         this.isFree = true;
@@ -244,8 +541,10 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
         // this.ActualAddonDataList = [];
         // this.SelectedAddonList = [];
         this.AddonDataForEdit = null;
-        this.isStandAlone = true;
-        this.AddonModuleDetails = null;
+        this.isStandAlone = false;
+        // this.AddonModuleDetails = null;
+        this.SelectedModule = null;
+        this.SelectedIndex = -1;
         this.modal.hide();
     }
     ValidatePriceForm(): boolean {
@@ -324,24 +623,5 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
         else {
             item.DiscountedPrice = 0;
         }
-    }
-    IsNumericWithDot(e, value: any = "", num) {
-        value = value != null ? value.toString() : "";
-        if ((value.indexOf(".") >= 0) && (value.length - value.indexOf(".") > num)) {
-            return false
-        }
-        var keyCode = e.which ? e.which : e.keyCode
-        var ret = ((keyCode >= 48 && keyCode <= 57) || keyCode == 46 || keyCode == 0);
-        if (ret && value != null) {
-            let IsDoubleDot = value.includes('.');
-            if (IsDoubleDot) {
-                let input = String.fromCharCode(e.charCode);
-                const reg = /^\d*(?:[.,]\d{1,2})?$/;
-                if (!reg.test(input)) {
-                    e.preventDefault();
-                }
-            }
-        }
-        return ret;
     }
 }

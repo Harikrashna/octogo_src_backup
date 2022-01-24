@@ -23,6 +23,7 @@ using System;
 using Abp.Domain.Uow;
 using CF.Octogo.UserRegistration.Dto;
 using CF.Octogo.Common.Dto;
+using CF.Octogo.Dto;
 
 namespace CF.Octogo.Editions
 {
@@ -32,19 +33,22 @@ namespace CF.Octogo.Editions
         private readonly IRepository<SubscribableEdition> _editionRepository;
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IBackgroundJobManager _backgroundJobManager;
+        private readonly TenantManager _tenantManager;
         public IAbpSession AbpSession { get; set; }
 
         public EditionAppService(
             EditionManager editionManager,
             IRepository<SubscribableEdition> editionRepository,
             IRepository<Tenant> tenantRepository,
-            IBackgroundJobManager backgroundJobManager)
+            IBackgroundJobManager backgroundJobManager,
+            TenantManager tenantManager)
         {
             _editionManager = editionManager;
             _editionRepository = editionRepository;
             _tenantRepository = tenantRepository;
             _backgroundJobManager = backgroundJobManager;
             AbpSession = NullAbpSession.Instance;
+            _tenantManager = tenantManager;
         }
 
         [AbpAuthorize(AppPermissions.Pages_Editions)]
@@ -294,8 +298,6 @@ namespace CF.Octogo.Editions
             }
             else
             {
-                try
-                {
                     SqlParameter[] parameters = new SqlParameter[12];
                     parameters[0] = new SqlParameter("ProductId", input.ProductId);
                     parameters[1] = new SqlParameter("ModuleData", JsonConvert.SerializeObject(input.ModuleList));
@@ -320,10 +322,6 @@ namespace CF.Octogo.Editions
                     {
                         return 0;
                     }
-                }catch(Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
             }
             return 0;
         }
@@ -497,6 +495,10 @@ namespace CF.Octogo.Editions
                 return 0;
             }
         }
+        /// <summary>
+        /// to get Page module data
+        /// </summary>
+        /// <returns></returns>
         public async Task<ModuleSubModuleDto> GetModuleList()
         {
             var ds = await SqlHelper.ExecuteDatasetAsync(
@@ -511,13 +513,96 @@ namespace CF.Octogo.Editions
                 var SubModuleData = SubModuleDataRet.Select(rw => new SubModulesDto
                 {
                     ModuleId = rw.ModuleId,
-                    SubModuleList = rw.SubModuleList != null ? JsonConvert.DeserializeObject<List<PageModulesDto>>(rw.SubModuleList.ToString()) : null
+                    SubModuleList = rw.SubModuleList != null ? JsonConvert.DeserializeObject<List<SubModuleListDto>>(rw.SubModuleList.ToString()) : null
                 }).ToList();
                 ModuleSubModuleDto result = new ModuleSubModuleDto();
                 result.ModuleList = ModuleData;
                 result.SubModuleList = SubModuleData;
                 return result;
             }
+            else
+            {
+                return null;
+            }
+        }
+        /// <summary>
+        /// Get Edition details by comma seperated Edition Ids for compare editions
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<EditionCompareResultDto>> GetEditionDeatilsByEditionIdForCompare(string EditionIds)
+        {
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("EditionIds", EditionIds);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                        Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetEditonDetailToCompare", parameters
+                        );
+                if (ds.Tables.Count > 0)
+                {
+                    var CompareResult = SqlHelper.ConvertDataTable<EditionCompareResultRet>(ds.Tables[0]);
+                    var result = CompareResult.Select(rw => new EditionCompareResultDto
+                    {
+                        EditionID = rw.EditionID,
+                        EditionName = rw.EditionName,
+                        ProductId = rw.ProductId,
+                        ProductName = rw.ProductName,
+                        TrialDayCount = rw.TrialDayCount,
+                        IsTrailActive = rw.IsTrailActive,
+                        Modules = rw.Modules != null ? JsonConvert.DeserializeObject<List<EditionModuleList>>(rw.Modules.ToString()) : null,
+                        PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<PricingDto>>(rw.PricingData.ToString()) : null,
+                        AddonList = rw.AddonList != null ? JsonConvert.DeserializeObject<List<EditionAddonList>>(rw.AddonList.ToString()) : null
+                    }).ToList();
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+        }
+        public async Task<List<ProductWithEditionDto>> GetProductWithEdition()
+        {
+            int EditionId = 0;
+            if (AbpSession.UserId.HasValue && AbpSession.TenantId.HasValue)
+            {
+                var currentEditionId = (await _tenantManager.GetByIdAsync(AbpSession.GetTenantId())).EditionId;
+
+                if (currentEditionId.HasValue)
+                {
+                    EditionId = (int)currentEditionId;
+                }
+            }
+            List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
+            ProductWithEditionDto result = new ProductWithEditionDto();
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("EditionId", EditionId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_GetProductWithEdition", parameters);
+
+            if (ds.Tables.Count > 0)
+            {
+                var ProductWithEditionDataRet = SqlHelper.ConvertDataTable<ProductWithEditionRet>(ds.Tables[0]);
+                var ProductWithEditionData = ProductWithEditionDataRet.Select(rs => new ProductWithEditionDto
+                {
+                    ProductID = rs.ProductID,
+                    ProductName = rs.ProductName,
+                    Edition = rs.Edition != null ? JsonConvert.DeserializeObject<List<EditionList>>(rs.Edition.ToString()) : null
+
+                }).ToList();
+
+
+                //  ProductWithEditionDto pro = new ProductWithEditionDto();
+                //  pro.ProductID=ProductWithEditionData.ProductID;
+
+                //list.Add(ProductWithEditionData);
+                return ProductWithEditionData;
+
+
+
+            }
+
             else
             {
                 return null;

@@ -57,7 +57,19 @@ namespace CF.Octogo.Dto
         public int AddOnId { get; set; }
         public string AddOnName { get; set; }
         public List<PricingType> ADDONPrice { get; set; }
-        public List<SubModules> SUBModule { get; set; }
+        public List<AddonModules> ModuleList { get; set; }
+    }
+    public class AddonModules
+    {
+        public int PageId { get; set; }
+        public string ModuleName { get; set; }
+        public List<AddonSubModuleList> SubModuleList { get; set; }
+    }
+    public class AddonSubModuleList
+    {
+        public int PageId { get; set; }
+        public string SubModuleName { get; set; }
+        public List<AddonSubModuleList> SubSubModuleList { get; set; }
     }
 
 }

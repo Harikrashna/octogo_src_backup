@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using CF.Octogo.Authorization.Users.Dto;
@@ -10,6 +11,9 @@ namespace CF.Octogo.Editions
     {
         Task<PagedResultDto<AddonListDto>> GetAddonList(GetAddonInput input);
         Task<ListResultDto<EditionListByProductDto>> GetEditionListForAddon(int ProductId);
-        Task<ListResultDto<AddonByEdtionIdDto>> GetAddonListByEditionId(int EditionId);
+        // Task<ListResultDto<AddonByEdtionIdDto>> GetAddonListByEditionId(int EditionId);
+        Task<List<ModuleListForAddonDto>> GetModuleListByEditionForAddon(int editionId);
+        Task<AddonModuleAndPricingDto> GetAddonModuleAndPricing(int AddonId);
+        Task DeleteAddon(EntityDto input);
     }
 }

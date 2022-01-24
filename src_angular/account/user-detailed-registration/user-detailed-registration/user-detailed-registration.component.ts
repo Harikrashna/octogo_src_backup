@@ -374,8 +374,9 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
   }
 
   getCity(e) {
-    this.cityCodeResult = this.cityCode.filter(x => (x.name).toLowerCase().includes((e.query.toLowerCase()))
-                                                    || (x.code).toLowerCase().includes((e.query.toLowerCase())));
+    // this.cityCodeResult = this.cityCode.filter(x => (x.name).toLowerCase().includes((e.query.toLowerCase()))
+    //                                                 || (x.code).toLowerCase().includes((e.query.toLowerCase())));
+    this.cityCodeResult = this.cityCode.filter(x => (x.code).toLowerCase().includes((e.query.toLowerCase())));
     this.fillCountry(e.query);
   }
   resetCountry(){

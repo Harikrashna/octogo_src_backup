@@ -102,17 +102,10 @@ namespace CF.Octogo.Master.Product
             parameters[0] = new SqlParameter("ProductId", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
 
-            try
-            {
                 await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                System.Data.CommandType.StoredProcedure,
                "USP_DeleteProduct", parameters);
                 await ClearCache();
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
 
         }
 

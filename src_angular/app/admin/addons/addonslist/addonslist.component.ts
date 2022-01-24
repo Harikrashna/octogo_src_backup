@@ -56,10 +56,10 @@ export class AddonslistComponent extends AppComponentBase implements OnInit {
       this.l('AreYouSure'),
       isConfirmed => {
           if (isConfirmed) {
-              // this._editionService.deleteEdition(edition.id).subscribe(() => {
+              this.addonServiceProxy.deleteAddon(row.addonId).subscribe(() => {
                   this.GetAddons();
                   this.notify.success(this.l('SuccessfullyDeleted'));
-              // });
+              });
           }
       }
   );

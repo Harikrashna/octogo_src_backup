@@ -9,5 +9,6 @@ namespace CF.Octogo.Configuration.Host.Dto
         public bool UseCaptchaOnRegistration { get; set; }
 
         public int? DefaultEditionId { get; set; }
+        public bool? ShowTenantChange { get; set; }
     }
 }

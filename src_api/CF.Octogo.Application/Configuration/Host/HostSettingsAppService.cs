@@ -57,6 +57,7 @@ namespace CF.Octogo.Configuration.Host
                 Security = await GetSecuritySettingsAsync(),
                 Billing = await GetBillingSettingsAsync(),
                 OtherSettings = await GetOtherSettingsAsync(),
+                AdditionalSettings = await GetAdditionalSettingsAsync(),
                 ExternalLoginProviderSettings = await GetExternalLoginProviderSettings()
             };
         }
@@ -92,6 +93,9 @@ namespace CF.Octogo.Configuration.Host
                 UseCaptchaOnRegistration =
                     await SettingManager.GetSettingValueAsync<bool>(AppSettings.TenantManagement
                         .UseCaptchaOnRegistration),
+                ShowTenantChange =
+                    await SettingManager.GetSettingValueAsync<bool>(AppSettings.TenantManagement
+                        .ShowTenantChange),
             };
 
             var defaultEditionId =
@@ -231,6 +235,15 @@ namespace CF.Octogo.Configuration.Host
                         AppSettings.UserManagement.IsQuickThemeSelectEnabled)
             };
         }
+        private async Task<AdditionalSettingEditDto> GetAdditionalSettingsAsync()
+        {
+            return new AdditionalSettingEditDto()
+            {
+                ShowTenantChange =
+                    await SettingManager.GetSettingValueAsync<bool>(
+                        AppSettings.TenantManagement.ShowTenantChange)
+            };
+        }
 
         private async Task<UserLockOutSettingsEditDto> GetUserLockOutSettingsAsync()
         {
@@ -346,6 +359,7 @@ namespace CF.Octogo.Configuration.Host
             await UpdateEmailSettingsAsync(input.Email);
             await UpdateBillingSettingsAsync(input.Billing);
             await UpdateOtherSettingsAsync(input.OtherSettings);
+            await UpdateAdditionalSettingAsync(input.AdditionalSettings);            // Added by Hari Krashna(19/01/2022)
             await UpdateExternalLoginSettingsAsync(input.ExternalLoginProviderSettings);
         }
 
@@ -356,7 +370,13 @@ namespace CF.Octogo.Configuration.Host
                 input.IsQuickThemeSelectEnabled.ToString().ToLowerInvariant()
             );
         }
-
+        private async Task UpdateAdditionalSettingAsync(AdditionalSettingEditDto input)
+        {
+            await SettingManager.ChangeSettingForApplicationAsync(
+               AppSettings.TenantManagement.ShowTenantChange,
+                input.ShowTenantChange.ToString().ToLowerInvariant()
+            );
+        }
         private async Task UpdateBillingSettingsAsync(HostBillingSettingsEditDto input)
         {
             await SettingManager.ChangeSettingForApplicationAsync(AppSettings.HostManagement.BillingLegalName,

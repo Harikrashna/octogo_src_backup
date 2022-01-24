@@ -807,15 +807,15 @@ export class AddonServiceProxy {
     }
 
     /**
-     * @param editionId (optional) 
+     * @param addonId (optional) 
      * @return Success
      */
-    getAddonListByEditionId(editionId: number | undefined): Observable<ListResultDtoOfAddonByEdtionIdDto> {
-        let url_ = this.baseUrl + "/api/services/app/Addon/GetAddonListByEditionId?";
-        if (editionId === null)
-            throw new Error("The parameter 'editionId' cannot be null.");
-        else if (editionId !== undefined)
-            url_ += "EditionId=" + encodeURIComponent("" + editionId) + "&";
+    getAddonModuleAndPricing(addonId: number | undefined): Observable<AddonModuleAndPricingDto> {
+        let url_ = this.baseUrl + "/api/services/app/Addon/GetAddonModuleAndPricing?";
+        if (addonId === null)
+            throw new Error("The parameter 'addonId' cannot be null.");
+        else if (addonId !== undefined)
+            url_ += "AddonId=" + encodeURIComponent("" + addonId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -827,20 +827,20 @@ export class AddonServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAddonListByEditionId(response_);
+            return this.processGetAddonModuleAndPricing(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetAddonListByEditionId(<any>response_);
+                    return this.processGetAddonModuleAndPricing(<any>response_);
                 } catch (e) {
-                    return <Observable<ListResultDtoOfAddonByEdtionIdDto>><any>_observableThrow(e);
+                    return <Observable<AddonModuleAndPricingDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<ListResultDtoOfAddonByEdtionIdDto>><any>_observableThrow(response_);
+                return <Observable<AddonModuleAndPricingDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAddonListByEditionId(response: HttpResponseBase): Observable<ListResultDtoOfAddonByEdtionIdDto> {
+    protected processGetAddonModuleAndPricing(response: HttpResponseBase): Observable<AddonModuleAndPricingDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -851,7 +851,7 @@ export class AddonServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfAddonByEdtionIdDto.fromJS(resultData200);
+            result200 = AddonModuleAndPricingDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -859,63 +859,7 @@ export class AddonServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ListResultDtoOfAddonByEdtionIdDto>(<any>null);
-    }
-
-    /**
-     * @param moduleId (optional) 
-     * @return Success
-     */
-    getAddonDetailsByModuleId(moduleId: number | undefined): Observable<ListResultDtoOfAddonByEdtionIdDto> {
-        let url_ = this.baseUrl + "/api/services/app/Addon/GetAddonDetailsByModuleId?";
-        if (moduleId === null)
-            throw new Error("The parameter 'moduleId' cannot be null.");
-        else if (moduleId !== undefined)
-            url_ += "ModuleId=" + encodeURIComponent("" + moduleId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAddonDetailsByModuleId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAddonDetailsByModuleId(<any>response_);
-                } catch (e) {
-                    return <Observable<ListResultDtoOfAddonByEdtionIdDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ListResultDtoOfAddonByEdtionIdDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAddonDetailsByModuleId(response: HttpResponseBase): Observable<ListResultDtoOfAddonByEdtionIdDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfAddonByEdtionIdDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ListResultDtoOfAddonByEdtionIdDto>(<any>null);
+        return _observableOf<AddonModuleAndPricingDto>(<any>null);
     }
 
     /**
@@ -972,6 +916,121 @@ export class AddonServiceProxy {
             }));
         }
         return _observableOf<number>(<any>null);
+    }
+
+    /**
+     * @param editionId (optional) 
+     * @return Success
+     */
+    getModuleListByEditionForAddon(editionId: number | undefined): Observable<ModuleListForAddonDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Addon/GetModuleListByEditionForAddon?";
+        if (editionId === null)
+            throw new Error("The parameter 'editionId' cannot be null.");
+        else if (editionId !== undefined)
+            url_ += "editionId=" + encodeURIComponent("" + editionId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetModuleListByEditionForAddon(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetModuleListByEditionForAddon(<any>response_);
+                } catch (e) {
+                    return <Observable<ModuleListForAddonDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ModuleListForAddonDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetModuleListByEditionForAddon(response: HttpResponseBase): Observable<ModuleListForAddonDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ModuleListForAddonDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ModuleListForAddonDto[]>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    deleteAddon(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Addon/DeleteAddon?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteAddon(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteAddon(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDeleteAddon(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -2632,6 +2691,253 @@ export class ChatServiceProxy {
 }
 
 @Injectable()
+export class CityServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param sorting (optional) 
+     * @param filter (optional) 
+     * @return Success
+     */
+    getCityList(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, filter: string | undefined): Observable<PagedResultDtoOfCityListDto> {
+        let url_ = this.baseUrl + "/api/services/app/City/GetCityList?";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCityList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCityList(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfCityListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfCityListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCityList(response: HttpResponseBase): Observable<PagedResultDtoOfCityListDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultDtoOfCityListDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfCityListDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    createOrUpdateCityType(body: CreateOrUpdateCityInput | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/services/app/City/CreateOrUpdateCityType";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdateCityType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdateCityType(<any>response_);
+                } catch (e) {
+                    return <Observable<number>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<number>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrUpdateCityType(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<number>(<any>null);
+    }
+
+    /**
+     * @param sNo (optional) 
+     * @return Success
+     */
+    getCityForEdit(sNo: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/City/GetCityForEdit?";
+        if (sNo === null)
+            throw new Error("The parameter 'sNo' cannot be null.");
+        else if (sNo !== undefined)
+            url_ += "SNo=" + encodeURIComponent("" + sNo) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCityForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCityForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<any>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCityForEdit(response: HttpResponseBase): Observable<any> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    deleteCity(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/City/DeleteCity?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteCity(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteCity(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDeleteCity(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable()
 export class CommonServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -3004,6 +3310,319 @@ export class CommonLookupServiceProxy {
             }));
         }
         return _observableOf<GetDefaultEditionNameOutput>(<any>null);
+    }
+}
+
+@Injectable()
+export class CountryServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param sorting (optional) 
+     * @param filter (optional) 
+     * @return Success
+     */
+    getCountry(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, filter: string | undefined): Observable<PagedResultDtoOfCountryListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Country/GetCountry?";
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&";
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "filter=" + encodeURIComponent("" + filter) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCountry(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCountry(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfCountryListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfCountryListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCountry(response: HttpResponseBase): Observable<PagedResultDtoOfCountryListDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultDtoOfCountryListDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfCountryListDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    createorUpdateCountry(body: CreateOrUpdateCountryInput | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/services/app/Country/CreateorUpdateCountry";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateorUpdateCountry(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateorUpdateCountry(<any>response_);
+                } catch (e) {
+                    return <Observable<number>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<number>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateorUpdateCountry(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<number>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    deleteCountry(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Country/DeleteCountry?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteCountry(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteCountry(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDeleteCountry(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param sNo (optional) 
+     * @return Success
+     */
+    getCountryForEdit(sNo: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/Country/GetCountryForEdit?";
+        if (sNo === null)
+            throw new Error("The parameter 'sNo' cannot be null.");
+        else if (sNo !== undefined)
+            url_ += "SNo=" + encodeURIComponent("" + sNo) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCountryForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCountryForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<any>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCountryForEdit(response: HttpResponseBase): Observable<any> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<any>(<any>null);
+    }
+
+    /**
+     * @param sNo (optional) 
+     * @param countryName (optional) 
+     * @param countryCode (optional) 
+     * @return Success
+     */
+    getCountryByCountryId(sNo: number | undefined, countryName: string | undefined, countryCode: string | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/Country/GetCountryByCountryId?";
+        if (sNo === null)
+            throw new Error("The parameter 'sNo' cannot be null.");
+        else if (sNo !== undefined)
+            url_ += "SNo=" + encodeURIComponent("" + sNo) + "&";
+        if (countryName === null)
+            throw new Error("The parameter 'countryName' cannot be null.");
+        else if (countryName !== undefined)
+            url_ += "CountryName=" + encodeURIComponent("" + countryName) + "&";
+        if (countryCode === null)
+            throw new Error("The parameter 'countryCode' cannot be null.");
+        else if (countryCode !== undefined)
+            url_ += "CountryCode=" + encodeURIComponent("" + countryCode) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCountryByCountryId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCountryByCountryId(<any>response_);
+                } catch (e) {
+                    return <Observable<any>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<any>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCountryByCountryId(response: HttpResponseBase): Observable<any> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<any>(<any>null);
     }
 }
 
@@ -7264,6 +7883,127 @@ export class EditionServiceProxy {
             }));
         }
         return _observableOf<ModuleSubModuleDto>(<any>null);
+    }
+
+    /**
+     * @param editionIds (optional) 
+     * @return Success
+     */
+    getEditionDeatilsByEditionIdForCompare(editionIds: string | undefined): Observable<EditionCompareResultDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetEditionDeatilsByEditionIdForCompare?";
+        if (editionIds === null)
+            throw new Error("The parameter 'editionIds' cannot be null.");
+        else if (editionIds !== undefined)
+            url_ += "EditionIds=" + encodeURIComponent("" + editionIds) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetEditionDeatilsByEditionIdForCompare(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetEditionDeatilsByEditionIdForCompare(<any>response_);
+                } catch (e) {
+                    return <Observable<EditionCompareResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EditionCompareResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetEditionDeatilsByEditionIdForCompare(response: HttpResponseBase): Observable<EditionCompareResultDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EditionCompareResultDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EditionCompareResultDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    getProductWithEdition(): Observable<ProductWithEditionDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetProductWithEdition";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetProductWithEdition(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetProductWithEdition(<any>response_);
+                } catch (e) {
+                    return <Observable<ProductWithEditionDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ProductWithEditionDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetProductWithEdition(response: HttpResponseBase): Observable<ProductWithEditionDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ProductWithEditionDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ProductWithEditionDto[]>(<any>null);
     }
 }
 
@@ -15275,6 +16015,86 @@ export class TenantDashboardServiceProxy {
 }
 
 @Injectable()
+export class TenantDetailsServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param tenantId (optional) 
+     * @param productId (optional) 
+     * @return Success
+     */
+    getPageSnoByTenantAndProductId(tenantId: number | undefined, productId: number | undefined): Observable<TenantPageSnoListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/TenantDetails/GetPageSnoByTenantAndProductId?";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            url_ += "TenantId=" + encodeURIComponent("" + tenantId) + "&";
+        if (productId === null)
+            throw new Error("The parameter 'productId' cannot be null.");
+        else if (productId !== undefined)
+            url_ += "ProductId=" + encodeURIComponent("" + productId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPageSnoByTenantAndProductId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPageSnoByTenantAndProductId(<any>response_);
+                } catch (e) {
+                    return <Observable<TenantPageSnoListDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TenantPageSnoListDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPageSnoByTenantAndProductId(response: HttpResponseBase): Observable<TenantPageSnoListDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TenantPageSnoListDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TenantPageSnoListDto[]>(<any>null);
+    }
+}
+
+@Injectable()
 export class TenantRegistrationServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -15497,64 +16317,6 @@ export class TenantRegistrationServiceProxy {
             }));
         }
         return _observableOf<EditionsSelectOutput>(<any>null);
-    }
-
-    /**
-     * @return Success
-     */
-    getProductWithEdition(): Observable<ProductWithEditionDto[]> {
-        let url_ = this.baseUrl + "/api/services/app/TenantRegistration/GetProductWithEdition";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetProductWithEdition(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetProductWithEdition(<any>response_);
-                } catch (e) {
-                    return <Observable<ProductWithEditionDto[]>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ProductWithEditionDto[]>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetProductWithEdition(response: HttpResponseBase): Observable<ProductWithEditionDto[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(ProductWithEditionDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ProductWithEditionDto[]>(<any>null);
     }
 
     /**
@@ -19740,6 +20502,42 @@ export interface IActivateWebhookSubscriptionInput {
     isActive: boolean;
 }
 
+export class AdditionalSettingEditDto implements IAdditionalSettingEditDto {
+    showTenantChange!: boolean;
+
+    constructor(data?: IAdditionalSettingEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.showTenantChange = _data["showTenantChange"];
+        }
+    }
+
+    static fromJS(data: any): AdditionalSettingEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdditionalSettingEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["showTenantChange"] = this.showTenantChange;
+        return data; 
+    }
+}
+
+export interface IAdditionalSettingEditDto {
+    showTenantChange: boolean;
+}
+
 export class AddNewPageInput implements IAddNewPageInput {
     dashboardName!: string | undefined;
     name!: string | undefined;
@@ -19824,7 +20622,7 @@ export class AddOn implements IAddOn {
     addOnId!: number;
     addOnName!: string | undefined;
     addonPrice!: PricingType[] | undefined;
-    subModule!: SubModules[] | undefined;
+    moduleList!: AddonModules[] | undefined;
 
     constructor(data?: IAddOn) {
         if (data) {
@@ -19844,10 +20642,10 @@ export class AddOn implements IAddOn {
                 for (let item of _data["addonPrice"])
                     this.addonPrice!.push(PricingType.fromJS(item));
             }
-            if (Array.isArray(_data["subModule"])) {
-                this.subModule = [] as any;
-                for (let item of _data["subModule"])
-                    this.subModule!.push(SubModules.fromJS(item));
+            if (Array.isArray(_data["moduleList"])) {
+                this.moduleList = [] as any;
+                for (let item of _data["moduleList"])
+                    this.moduleList!.push(AddonModules.fromJS(item));
             }
         }
     }
@@ -19868,10 +20666,10 @@ export class AddOn implements IAddOn {
             for (let item of this.addonPrice)
                 data["addonPrice"].push(item.toJSON());
         }
-        if (Array.isArray(this.subModule)) {
-            data["subModule"] = [];
-            for (let item of this.subModule)
-                data["subModule"].push(item.toJSON());
+        if (Array.isArray(this.moduleList)) {
+            data["moduleList"] = [];
+            for (let item of this.moduleList)
+                data["moduleList"].push(item.toJSON());
         }
         return data; 
     }
@@ -19881,86 +20679,21 @@ export interface IAddOn {
     addOnId: number;
     addOnName: string | undefined;
     addonPrice: PricingType[] | undefined;
-    subModule: SubModules[] | undefined;
-}
-
-export class AddonByEdtionIdDto implements IAddonByEdtionIdDto {
-    moduleId!: number;
-    moduleName!: string | undefined;
-    subModuleList!: ModuleDto[] | undefined;
-    pricingData!: ModulePricingDto[] | undefined;
-
-    constructor(data?: IAddonByEdtionIdDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.moduleId = _data["moduleId"];
-            this.moduleName = _data["moduleName"];
-            if (Array.isArray(_data["subModuleList"])) {
-                this.subModuleList = [] as any;
-                for (let item of _data["subModuleList"])
-                    this.subModuleList!.push(ModuleDto.fromJS(item));
-            }
-            if (Array.isArray(_data["pricingData"])) {
-                this.pricingData = [] as any;
-                for (let item of _data["pricingData"])
-                    this.pricingData!.push(ModulePricingDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): AddonByEdtionIdDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AddonByEdtionIdDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["moduleId"] = this.moduleId;
-        data["moduleName"] = this.moduleName;
-        if (Array.isArray(this.subModuleList)) {
-            data["subModuleList"] = [];
-            for (let item of this.subModuleList)
-                data["subModuleList"].push(item.toJSON());
-        }
-        if (Array.isArray(this.pricingData)) {
-            data["pricingData"] = [];
-            for (let item of this.pricingData)
-                data["pricingData"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IAddonByEdtionIdDto {
-    moduleId: number;
-    moduleName: string | undefined;
-    subModuleList: ModuleDto[] | undefined;
-    pricingData: ModulePricingDto[] | undefined;
+    moduleList: AddonModules[] | undefined;
 }
 
 export class AddonListDto implements IAddonListDto {
     addonId!: number | undefined;
     addonName!: string | undefined;
     moduleId!: number;
-    fromEditionId!: number | undefined;
     forEditionId!: number | undefined;
-    fromEditionName!: string | undefined;
     forEditionName!: string | undefined;
     isStandAlone!: boolean;
     productId!: number;
     product!: string | undefined;
     isFree!: boolean;
     approachId!: number;
+    description!: string | undefined;
 
     constructor(data?: IAddonListDto) {
         if (data) {
@@ -19976,15 +20709,14 @@ export class AddonListDto implements IAddonListDto {
             this.addonId = _data["addonId"];
             this.addonName = _data["addonName"];
             this.moduleId = _data["moduleId"];
-            this.fromEditionId = _data["fromEditionId"];
             this.forEditionId = _data["forEditionId"];
-            this.fromEditionName = _data["fromEditionName"];
             this.forEditionName = _data["forEditionName"];
             this.isStandAlone = _data["isStandAlone"];
             this.productId = _data["productId"];
             this.product = _data["product"];
             this.isFree = _data["isFree"];
             this.approachId = _data["approachId"];
+            this.description = _data["description"];
         }
     }
 
@@ -20000,15 +20732,14 @@ export class AddonListDto implements IAddonListDto {
         data["addonId"] = this.addonId;
         data["addonName"] = this.addonName;
         data["moduleId"] = this.moduleId;
-        data["fromEditionId"] = this.fromEditionId;
         data["forEditionId"] = this.forEditionId;
-        data["fromEditionName"] = this.fromEditionName;
         data["forEditionName"] = this.forEditionName;
         data["isStandAlone"] = this.isStandAlone;
         data["productId"] = this.productId;
         data["product"] = this.product;
         data["isFree"] = this.isFree;
         data["approachId"] = this.approachId;
+        data["description"] = this.description;
         return data; 
     }
 }
@@ -20017,15 +20748,334 @@ export interface IAddonListDto {
     addonId: number | undefined;
     addonName: string | undefined;
     moduleId: number;
-    fromEditionId: number | undefined;
     forEditionId: number | undefined;
-    fromEditionName: string | undefined;
     forEditionName: string | undefined;
     isStandAlone: boolean;
     productId: number;
     product: string | undefined;
     isFree: boolean;
     approachId: number;
+    description: string | undefined;
+}
+
+export class AddonModuleAndPricingDto implements IAddonModuleAndPricingDto {
+    moduleList!: ModuleListForEditAddonDto[] | undefined;
+    pricingData!: ModulePricingDto[] | undefined;
+
+    constructor(data?: IAddonModuleAndPricingDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["moduleList"])) {
+                this.moduleList = [] as any;
+                for (let item of _data["moduleList"])
+                    this.moduleList!.push(ModuleListForEditAddonDto.fromJS(item));
+            }
+            if (Array.isArray(_data["pricingData"])) {
+                this.pricingData = [] as any;
+                for (let item of _data["pricingData"])
+                    this.pricingData!.push(ModulePricingDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AddonModuleAndPricingDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddonModuleAndPricingDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.moduleList)) {
+            data["moduleList"] = [];
+            for (let item of this.moduleList)
+                data["moduleList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pricingData)) {
+            data["pricingData"] = [];
+            for (let item of this.pricingData)
+                data["pricingData"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAddonModuleAndPricingDto {
+    moduleList: ModuleListForEditAddonDto[] | undefined;
+    pricingData: ModulePricingDto[] | undefined;
+}
+
+export class AddonModuleList implements IAddonModuleList {
+    pageId!: number;
+    moduleName!: string | undefined;
+    subModuleList!: AddonSubModules[] | undefined;
+
+    constructor(data?: IAddonModuleList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageId = _data["pageId"];
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModuleList"])) {
+                this.subModuleList = [] as any;
+                for (let item of _data["subModuleList"])
+                    this.subModuleList!.push(AddonSubModules.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AddonModuleList {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddonModuleList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageId"] = this.pageId;
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModuleList)) {
+            data["subModuleList"] = [];
+            for (let item of this.subModuleList)
+                data["subModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAddonModuleList {
+    pageId: number;
+    moduleName: string | undefined;
+    subModuleList: AddonSubModules[] | undefined;
+}
+
+export class AddonModules implements IAddonModules {
+    pageId!: number;
+    moduleName!: string | undefined;
+    subModuleList!: AddonSubModuleList[] | undefined;
+
+    constructor(data?: IAddonModules) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageId = _data["pageId"];
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModuleList"])) {
+                this.subModuleList = [] as any;
+                for (let item of _data["subModuleList"])
+                    this.subModuleList!.push(AddonSubModuleList.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AddonModules {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddonModules();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageId"] = this.pageId;
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModuleList)) {
+            data["subModuleList"] = [];
+            for (let item of this.subModuleList)
+                data["subModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAddonModules {
+    pageId: number;
+    moduleName: string | undefined;
+    subModuleList: AddonSubModuleList[] | undefined;
+}
+
+export class AddonModulesDto implements IAddonModulesDto {
+    editionModuleId!: number | undefined;
+    pageModuleId!: number | undefined;
+    moduleName!: string | undefined;
+    subModuleList!: ModuleListDto[] | undefined;
+
+    constructor(data?: IAddonModulesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.editionModuleId = _data["editionModuleId"];
+            this.pageModuleId = _data["pageModuleId"];
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModuleList"])) {
+                this.subModuleList = [] as any;
+                for (let item of _data["subModuleList"])
+                    this.subModuleList!.push(ModuleListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AddonModulesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddonModulesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["editionModuleId"] = this.editionModuleId;
+        data["pageModuleId"] = this.pageModuleId;
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModuleList)) {
+            data["subModuleList"] = [];
+            for (let item of this.subModuleList)
+                data["subModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAddonModulesDto {
+    editionModuleId: number | undefined;
+    pageModuleId: number | undefined;
+    moduleName: string | undefined;
+    subModuleList: ModuleListDto[] | undefined;
+}
+
+export class AddonSubModuleList implements IAddonSubModuleList {
+    pageId!: number;
+    subModuleName!: string | undefined;
+    subSubModuleList!: AddonSubModuleList[] | undefined;
+
+    constructor(data?: IAddonSubModuleList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageId = _data["pageId"];
+            this.subModuleName = _data["subModuleName"];
+            if (Array.isArray(_data["subSubModuleList"])) {
+                this.subSubModuleList = [] as any;
+                for (let item of _data["subSubModuleList"])
+                    this.subSubModuleList!.push(AddonSubModuleList.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AddonSubModuleList {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddonSubModuleList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageId"] = this.pageId;
+        data["subModuleName"] = this.subModuleName;
+        if (Array.isArray(this.subSubModuleList)) {
+            data["subSubModuleList"] = [];
+            for (let item of this.subSubModuleList)
+                data["subSubModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAddonSubModuleList {
+    pageId: number;
+    subModuleName: string | undefined;
+    subSubModuleList: AddonSubModuleList[] | undefined;
+}
+
+export class AddonSubModules implements IAddonSubModules {
+    pageId!: number;
+    subModuleName!: string | undefined;
+    subSubModuleList!: AddonSubModules[] | undefined;
+
+    constructor(data?: IAddonSubModules) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageId = _data["pageId"];
+            this.subModuleName = _data["subModuleName"];
+            if (Array.isArray(_data["subSubModuleList"])) {
+                this.subSubModuleList = [] as any;
+                for (let item of _data["subSubModuleList"])
+                    this.subSubModuleList!.push(AddonSubModules.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AddonSubModules {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddonSubModules();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageId"] = this.pageId;
+        data["subModuleName"] = this.subModuleName;
+        if (Array.isArray(this.subSubModuleList)) {
+            data["subSubModuleList"] = [];
+            for (let item of this.subSubModuleList)
+                data["subSubModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAddonSubModules {
+    pageId: number;
+    subModuleName: string | undefined;
+    subSubModuleList: AddonSubModules[] | undefined;
 }
 
 export class AddWidgetInput implements IAddWidgetInput {
@@ -21088,6 +22138,70 @@ export interface IChildPagesDto {
     pageName: string | undefined;
 }
 
+export class CityListDto implements ICityListDto {
+    sNo!: number;
+    cityCode!: string | undefined;
+    cityName!: string | undefined;
+    stateName!: string | undefined;
+    countryName!: string | undefined;
+    priorApproval!: boolean;
+    isDayLightSaving!: boolean;
+    isActive!: boolean;
+
+    constructor(data?: ICityListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sNo = _data["sNo"];
+            this.cityCode = _data["cityCode"];
+            this.cityName = _data["cityName"];
+            this.stateName = _data["stateName"];
+            this.countryName = _data["countryName"];
+            this.priorApproval = _data["priorApproval"];
+            this.isDayLightSaving = _data["isDayLightSaving"];
+            this.isActive = _data["isActive"];
+        }
+    }
+
+    static fromJS(data: any): CityListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CityListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sNo"] = this.sNo;
+        data["cityCode"] = this.cityCode;
+        data["cityName"] = this.cityName;
+        data["stateName"] = this.stateName;
+        data["countryName"] = this.countryName;
+        data["priorApproval"] = this.priorApproval;
+        data["isDayLightSaving"] = this.isDayLightSaving;
+        data["isActive"] = this.isActive;
+        return data; 
+    }
+}
+
+export interface ICityListDto {
+    sNo: number;
+    cityCode: string | undefined;
+    cityName: string | undefined;
+    stateName: string | undefined;
+    countryName: string | undefined;
+    priorApproval: boolean;
+    isDayLightSaving: boolean;
+    isActive: boolean;
+}
+
 export class CleanValuesInput implements ICleanValuesInput {
     dynamicEntityPropertyId!: number;
     entityId!: string | undefined;
@@ -21212,13 +22326,68 @@ export interface ICommonNameValueDto {
     value: string | undefined;
 }
 
+export class CountryListDto implements ICountryListDto {
+    sNo!: number;
+    countryCode!: string | undefined;
+    countryName!: string | undefined;
+    currencyCode!: string | undefined;
+    continent!: string | undefined;
+
+    constructor(data?: ICountryListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sNo = _data["sNo"];
+            this.countryCode = _data["countryCode"];
+            this.countryName = _data["countryName"];
+            this.currencyCode = _data["currencyCode"];
+            this.continent = _data["continent"];
+        }
+    }
+
+    static fromJS(data: any): CountryListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CountryListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sNo"] = this.sNo;
+        data["countryCode"] = this.countryCode;
+        data["countryName"] = this.countryName;
+        data["currencyCode"] = this.currencyCode;
+        data["continent"] = this.continent;
+        return data; 
+    }
+}
+
+export interface ICountryListDto {
+    sNo: number;
+    countryCode: string | undefined;
+    countryName: string | undefined;
+    currencyCode: string | undefined;
+    continent: string | undefined;
+}
+
 export class CreateAddonDto implements ICreateAddonDto {
-    priceDiscount!: PriceDiscount[] | undefined;
-    editionID!: number | undefined;
+    addonName!: string | undefined;
+    editionID!: number;
     productId!: number;
     approachId!: number;
-    moduleId!: number;
+    isStandAlone!: boolean;
     addonId!: number | undefined;
+    description!: string | undefined;
+    moduleList!: AddonModulesDto[] | undefined;
+    priceDiscount!: PriceDiscount[] | undefined;
 
     constructor(data?: ICreateAddonDto) {
         if (data) {
@@ -21231,16 +22400,23 @@ export class CreateAddonDto implements ICreateAddonDto {
 
     init(_data?: any) {
         if (_data) {
+            this.addonName = _data["addonName"];
+            this.editionID = _data["editionID"];
+            this.productId = _data["productId"];
+            this.approachId = _data["approachId"];
+            this.isStandAlone = _data["isStandAlone"];
+            this.addonId = _data["addonId"];
+            this.description = _data["description"];
+            if (Array.isArray(_data["moduleList"])) {
+                this.moduleList = [] as any;
+                for (let item of _data["moduleList"])
+                    this.moduleList!.push(AddonModulesDto.fromJS(item));
+            }
             if (Array.isArray(_data["priceDiscount"])) {
                 this.priceDiscount = [] as any;
                 for (let item of _data["priceDiscount"])
                     this.priceDiscount!.push(PriceDiscount.fromJS(item));
             }
-            this.editionID = _data["editionID"];
-            this.productId = _data["productId"];
-            this.approachId = _data["approachId"];
-            this.moduleId = _data["moduleId"];
-            this.addonId = _data["addonId"];
         }
     }
 
@@ -21253,27 +22429,37 @@ export class CreateAddonDto implements ICreateAddonDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["addonName"] = this.addonName;
+        data["editionID"] = this.editionID;
+        data["productId"] = this.productId;
+        data["approachId"] = this.approachId;
+        data["isStandAlone"] = this.isStandAlone;
+        data["addonId"] = this.addonId;
+        data["description"] = this.description;
+        if (Array.isArray(this.moduleList)) {
+            data["moduleList"] = [];
+            for (let item of this.moduleList)
+                data["moduleList"].push(item.toJSON());
+        }
         if (Array.isArray(this.priceDiscount)) {
             data["priceDiscount"] = [];
             for (let item of this.priceDiscount)
                 data["priceDiscount"].push(item.toJSON());
         }
-        data["editionID"] = this.editionID;
-        data["productId"] = this.productId;
-        data["approachId"] = this.approachId;
-        data["moduleId"] = this.moduleId;
-        data["addonId"] = this.addonId;
         return data; 
     }
 }
 
 export interface ICreateAddonDto {
-    priceDiscount: PriceDiscount[] | undefined;
-    editionID: number | undefined;
+    addonName: string | undefined;
+    editionID: number;
     productId: number;
     approachId: number;
-    moduleId: number;
+    isStandAlone: boolean;
     addonId: number | undefined;
+    description: string | undefined;
+    moduleList: AddonModulesDto[] | undefined;
+    priceDiscount: PriceDiscount[] | undefined;
 }
 
 export class CreateEditionDto implements ICreateEditionDto {
@@ -21614,6 +22800,174 @@ export interface ICreateOrUpdateAwbCostApproachInput {
     vcApproachName: string | undefined;
     vcDescription: string | undefined;
     filter: string | undefined;
+}
+
+export class CreateOrUpdateCityInput implements ICreateOrUpdateCityInput {
+    sNo!: number | undefined;
+    cityCode!: string | undefined;
+    cityName!: string | undefined;
+    stateSNo!: number | undefined;
+    stateName!: string | undefined;
+    countrySNo!: number;
+    countryCode!: string | undefined;
+    countryName!: string | undefined;
+    isActive!: boolean;
+    priorApproval!: boolean;
+    timeZoneSNo!: number;
+    zoneSNo!: number | undefined;
+    zoneName!: string | undefined;
+    iataAreaCode!: number | undefined;
+    shcSNo!: number | undefined;
+    dgClassSNo!: number | undefined;
+    isDayLightSaving!: boolean;
+
+    constructor(data?: ICreateOrUpdateCityInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sNo = _data["sNo"];
+            this.cityCode = _data["cityCode"];
+            this.cityName = _data["cityName"];
+            this.stateSNo = _data["stateSNo"];
+            this.stateName = _data["stateName"];
+            this.countrySNo = _data["countrySNo"];
+            this.countryCode = _data["countryCode"];
+            this.countryName = _data["countryName"];
+            this.isActive = _data["isActive"];
+            this.priorApproval = _data["priorApproval"];
+            this.timeZoneSNo = _data["timeZoneSNo"];
+            this.zoneSNo = _data["zoneSNo"];
+            this.zoneName = _data["zoneName"];
+            this.iataAreaCode = _data["iataAreaCode"];
+            this.shcSNo = _data["shcSNo"];
+            this.dgClassSNo = _data["dgClassSNo"];
+            this.isDayLightSaving = _data["isDayLightSaving"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateCityInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateCityInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sNo"] = this.sNo;
+        data["cityCode"] = this.cityCode;
+        data["cityName"] = this.cityName;
+        data["stateSNo"] = this.stateSNo;
+        data["stateName"] = this.stateName;
+        data["countrySNo"] = this.countrySNo;
+        data["countryCode"] = this.countryCode;
+        data["countryName"] = this.countryName;
+        data["isActive"] = this.isActive;
+        data["priorApproval"] = this.priorApproval;
+        data["timeZoneSNo"] = this.timeZoneSNo;
+        data["zoneSNo"] = this.zoneSNo;
+        data["zoneName"] = this.zoneName;
+        data["iataAreaCode"] = this.iataAreaCode;
+        data["shcSNo"] = this.shcSNo;
+        data["dgClassSNo"] = this.dgClassSNo;
+        data["isDayLightSaving"] = this.isDayLightSaving;
+        return data; 
+    }
+}
+
+export interface ICreateOrUpdateCityInput {
+    sNo: number | undefined;
+    cityCode: string | undefined;
+    cityName: string | undefined;
+    stateSNo: number | undefined;
+    stateName: string | undefined;
+    countrySNo: number;
+    countryCode: string | undefined;
+    countryName: string | undefined;
+    isActive: boolean;
+    priorApproval: boolean;
+    timeZoneSNo: number;
+    zoneSNo: number | undefined;
+    zoneName: string | undefined;
+    iataAreaCode: number | undefined;
+    shcSNo: number | undefined;
+    dgClassSNo: number | undefined;
+    isDayLightSaving: boolean;
+}
+
+export class CreateOrUpdateCountryInput implements ICreateOrUpdateCountryInput {
+    sNo!: number | undefined;
+    countryName!: string | undefined;
+    currencySNo!: number | undefined;
+    countryCode!: string | undefined;
+    isdCode!: number;
+    currencyCode!: string | undefined;
+    continent!: string | undefined;
+    iataAreaCode!: string | undefined;
+    nationality!: string | undefined;
+
+    constructor(data?: ICreateOrUpdateCountryInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sNo = _data["sNo"];
+            this.countryName = _data["countryName"];
+            this.currencySNo = _data["currencySNo"];
+            this.countryCode = _data["countryCode"];
+            this.isdCode = _data["isdCode"];
+            this.currencyCode = _data["currencyCode"];
+            this.continent = _data["continent"];
+            this.iataAreaCode = _data["iataAreaCode"];
+            this.nationality = _data["nationality"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateCountryInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateCountryInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sNo"] = this.sNo;
+        data["countryName"] = this.countryName;
+        data["currencySNo"] = this.currencySNo;
+        data["countryCode"] = this.countryCode;
+        data["isdCode"] = this.isdCode;
+        data["currencyCode"] = this.currencyCode;
+        data["continent"] = this.continent;
+        data["iataAreaCode"] = this.iataAreaCode;
+        data["nationality"] = this.nationality;
+        return data; 
+    }
+}
+
+export interface ICreateOrUpdateCountryInput {
+    sNo: number | undefined;
+    countryName: string | undefined;
+    currencySNo: number | undefined;
+    countryCode: string | undefined;
+    isdCode: number;
+    currencyCode: string | undefined;
+    continent: string | undefined;
+    iataAreaCode: string | undefined;
+    nationality: string | undefined;
 }
 
 export class CreateOrUpdateDepartmentInput implements ICreateOrUpdateDepartmentInput {
@@ -22999,6 +24353,70 @@ export interface IDynamicPropertyValueDto {
     id: number;
 }
 
+export class EditionAddonList implements IEditionAddonList {
+    addOnId!: number;
+    addOnName!: string | undefined;
+    addonPrice!: PricingDto[] | undefined;
+    moduleList!: AddonModuleList[] | undefined;
+
+    constructor(data?: IEditionAddonList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addOnId = _data["addOnId"];
+            this.addOnName = _data["addOnName"];
+            if (Array.isArray(_data["addonPrice"])) {
+                this.addonPrice = [] as any;
+                for (let item of _data["addonPrice"])
+                    this.addonPrice!.push(PricingDto.fromJS(item));
+            }
+            if (Array.isArray(_data["moduleList"])) {
+                this.moduleList = [] as any;
+                for (let item of _data["moduleList"])
+                    this.moduleList!.push(AddonModuleList.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): EditionAddonList {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditionAddonList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addOnId"] = this.addOnId;
+        data["addOnName"] = this.addOnName;
+        if (Array.isArray(this.addonPrice)) {
+            data["addonPrice"] = [];
+            for (let item of this.addonPrice)
+                data["addonPrice"].push(item.toJSON());
+        }
+        if (Array.isArray(this.moduleList)) {
+            data["moduleList"] = [];
+            for (let item of this.moduleList)
+                data["moduleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IEditionAddonList {
+    addOnId: number;
+    addOnName: string | undefined;
+    addonPrice: PricingDto[] | undefined;
+    moduleList: AddonModuleList[] | undefined;
+}
+
 export class EditionAndProductListDto implements IEditionAndProductListDto {
     productId!: number;
     productName!: string | undefined;
@@ -23053,6 +24471,98 @@ export interface IEditionAndProductListDto {
     editionId: number;
     editionName: string | undefined;
     listModule: number | undefined;
+}
+
+export class EditionCompareResultDto implements IEditionCompareResultDto {
+    editionID!: number;
+    editionName!: string | undefined;
+    productId!: number;
+    productName!: string | undefined;
+    trialDayCount!: number;
+    isTrailActive!: boolean;
+    modules!: EditionModuleList[] | undefined;
+    pricingData!: PricingDto[] | undefined;
+    addonList!: EditionAddonList[] | undefined;
+
+    constructor(data?: IEditionCompareResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.editionID = _data["editionID"];
+            this.editionName = _data["editionName"];
+            this.productId = _data["productId"];
+            this.productName = _data["productName"];
+            this.trialDayCount = _data["trialDayCount"];
+            this.isTrailActive = _data["isTrailActive"];
+            if (Array.isArray(_data["modules"])) {
+                this.modules = [] as any;
+                for (let item of _data["modules"])
+                    this.modules!.push(EditionModuleList.fromJS(item));
+            }
+            if (Array.isArray(_data["pricingData"])) {
+                this.pricingData = [] as any;
+                for (let item of _data["pricingData"])
+                    this.pricingData!.push(PricingDto.fromJS(item));
+            }
+            if (Array.isArray(_data["addonList"])) {
+                this.addonList = [] as any;
+                for (let item of _data["addonList"])
+                    this.addonList!.push(EditionAddonList.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): EditionCompareResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditionCompareResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["editionID"] = this.editionID;
+        data["editionName"] = this.editionName;
+        data["productId"] = this.productId;
+        data["productName"] = this.productName;
+        data["trialDayCount"] = this.trialDayCount;
+        data["isTrailActive"] = this.isTrailActive;
+        if (Array.isArray(this.modules)) {
+            data["modules"] = [];
+            for (let item of this.modules)
+                data["modules"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pricingData)) {
+            data["pricingData"] = [];
+            for (let item of this.pricingData)
+                data["pricingData"].push(item.toJSON());
+        }
+        if (Array.isArray(this.addonList)) {
+            data["addonList"] = [];
+            for (let item of this.addonList)
+                data["addonList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IEditionCompareResultDto {
+    editionID: number;
+    editionName: string | undefined;
+    productId: number;
+    productName: string | undefined;
+    trialDayCount: number;
+    isTrailActive: boolean;
+    modules: EditionModuleList[] | undefined;
+    pricingData: PricingDto[] | undefined;
+    addonList: EditionAddonList[] | undefined;
 }
 
 export class EditionCreateDto implements IEditionCreateDto {
@@ -23625,6 +25135,58 @@ export interface IEditionModuePageDto {
     pageId: number;
     pageName: string | undefined;
     childPages: ChildPagesDto[] | undefined;
+}
+
+export class EditionModuleList implements IEditionModuleList {
+    moduleId!: number;
+    moduleName!: string | undefined;
+    subModule!: SubModuleList[] | undefined;
+
+    constructor(data?: IEditionModuleList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.moduleId = _data["moduleId"];
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModule"])) {
+                this.subModule = [] as any;
+                for (let item of _data["subModule"])
+                    this.subModule!.push(SubModuleList.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): EditionModuleList {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditionModuleList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["moduleId"] = this.moduleId;
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModule)) {
+            data["subModule"] = [];
+            for (let item of this.subModule)
+                data["subModule"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IEditionModuleList {
+    moduleId: number;
+    moduleName: string | undefined;
+    subModule: SubModuleList[] | undefined;
 }
 
 export class EditionModulesDto implements IEditionModulesDto {
@@ -27289,6 +28851,7 @@ export class HostSettingsEditDto implements IHostSettingsEditDto {
     security!: SecuritySettingsEditDto;
     billing!: HostBillingSettingsEditDto;
     otherSettings!: OtherSettingsEditDto;
+    additionalSettings!: AdditionalSettingEditDto;
     externalLoginProviderSettings!: ExternalLoginProviderSettingsEditDto;
 
     constructor(data?: IHostSettingsEditDto) {
@@ -27316,6 +28879,7 @@ export class HostSettingsEditDto implements IHostSettingsEditDto {
             this.security = _data["security"] ? SecuritySettingsEditDto.fromJS(_data["security"]) : new SecuritySettingsEditDto();
             this.billing = _data["billing"] ? HostBillingSettingsEditDto.fromJS(_data["billing"]) : <any>undefined;
             this.otherSettings = _data["otherSettings"] ? OtherSettingsEditDto.fromJS(_data["otherSettings"]) : <any>undefined;
+            this.additionalSettings = _data["additionalSettings"] ? AdditionalSettingEditDto.fromJS(_data["additionalSettings"]) : <any>undefined;
             this.externalLoginProviderSettings = _data["externalLoginProviderSettings"] ? ExternalLoginProviderSettingsEditDto.fromJS(_data["externalLoginProviderSettings"]) : <any>undefined;
         }
     }
@@ -27336,6 +28900,7 @@ export class HostSettingsEditDto implements IHostSettingsEditDto {
         data["security"] = this.security ? this.security.toJSON() : <any>undefined;
         data["billing"] = this.billing ? this.billing.toJSON() : <any>undefined;
         data["otherSettings"] = this.otherSettings ? this.otherSettings.toJSON() : <any>undefined;
+        data["additionalSettings"] = this.additionalSettings ? this.additionalSettings.toJSON() : <any>undefined;
         data["externalLoginProviderSettings"] = this.externalLoginProviderSettings ? this.externalLoginProviderSettings.toJSON() : <any>undefined;
         return data; 
     }
@@ -27349,6 +28914,7 @@ export interface IHostSettingsEditDto {
     security: SecuritySettingsEditDto;
     billing: HostBillingSettingsEditDto;
     otherSettings: OtherSettingsEditDto;
+    additionalSettings: AdditionalSettingEditDto;
     externalLoginProviderSettings: ExternalLoginProviderSettingsEditDto;
 }
 
@@ -28342,50 +29908,6 @@ export interface ILinkToUserInput {
     tenancyName: string | undefined;
     usernameOrEmailAddress: string;
     password: string;
-}
-
-export class ListResultDtoOfAddonByEdtionIdDto implements IListResultDtoOfAddonByEdtionIdDto {
-    items!: AddonByEdtionIdDto[] | undefined;
-
-    constructor(data?: IListResultDtoOfAddonByEdtionIdDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(AddonByEdtionIdDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ListResultDtoOfAddonByEdtionIdDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ListResultDtoOfAddonByEdtionIdDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IListResultDtoOfAddonByEdtionIdDto {
-    items: AddonByEdtionIdDto[] | undefined;
 }
 
 export class ListResultDtoOfCacheDto implements IListResultDtoOfCacheDto {
@@ -29740,6 +31262,122 @@ export interface IModuleListDto {
     subModuleList: ModuleListDto[] | undefined;
 }
 
+export class ModuleListForAddonDto implements IModuleListForAddonDto {
+    moduleId!: number;
+    pageId!: number;
+    moduleName!: string | undefined;
+    fromEditionId!: number;
+    fromEditionName!: string | undefined;
+    subModuleList!: SubModuleForAddonDto[] | undefined;
+
+    constructor(data?: IModuleListForAddonDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.moduleId = _data["moduleId"];
+            this.pageId = _data["pageId"];
+            this.moduleName = _data["moduleName"];
+            this.fromEditionId = _data["fromEditionId"];
+            this.fromEditionName = _data["fromEditionName"];
+            if (Array.isArray(_data["subModuleList"])) {
+                this.subModuleList = [] as any;
+                for (let item of _data["subModuleList"])
+                    this.subModuleList!.push(SubModuleForAddonDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModuleListForAddonDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModuleListForAddonDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["moduleId"] = this.moduleId;
+        data["pageId"] = this.pageId;
+        data["moduleName"] = this.moduleName;
+        data["fromEditionId"] = this.fromEditionId;
+        data["fromEditionName"] = this.fromEditionName;
+        if (Array.isArray(this.subModuleList)) {
+            data["subModuleList"] = [];
+            for (let item of this.subModuleList)
+                data["subModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IModuleListForAddonDto {
+    moduleId: number;
+    pageId: number;
+    moduleName: string | undefined;
+    fromEditionId: number;
+    fromEditionName: string | undefined;
+    subModuleList: SubModuleForAddonDto[] | undefined;
+}
+
+export class ModuleListForEditAddonDto implements IModuleListForEditAddonDto {
+    pageId!: number;
+    moduleName!: string | undefined;
+    subModuleList!: SubModuleForEditAddonDto[] | undefined;
+
+    constructor(data?: IModuleListForEditAddonDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageId = _data["pageId"];
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModuleList"])) {
+                this.subModuleList = [] as any;
+                for (let item of _data["subModuleList"])
+                    this.subModuleList!.push(SubModuleForEditAddonDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ModuleListForEditAddonDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ModuleListForEditAddonDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageId"] = this.pageId;
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModuleList)) {
+            data["subModuleList"] = [];
+            for (let item of this.subModuleList)
+                data["subModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IModuleListForEditAddonDto {
+    pageId: number;
+    moduleName: string | undefined;
+    subModuleList: SubModuleForEditAddonDto[] | undefined;
+}
+
 export class ModulePricingDto implements IModulePricingDto {
     editionPricingID!: number;
     pricingTypeID!: number;
@@ -30762,6 +32400,102 @@ export class PagedResultDtoOfAwbCostApproachListDto implements IPagedResultDtoOf
 export interface IPagedResultDtoOfAwbCostApproachListDto {
     totalCount: number;
     items: AwbCostApproachListDto[] | undefined;
+}
+
+export class PagedResultDtoOfCityListDto implements IPagedResultDtoOfCityListDto {
+    totalCount!: number;
+    items!: CityListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfCityListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CityListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfCityListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfCityListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfCityListDto {
+    totalCount: number;
+    items: CityListDto[] | undefined;
+}
+
+export class PagedResultDtoOfCountryListDto implements IPagedResultDtoOfCountryListDto {
+    totalCount!: number;
+    items!: CountryListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfCountryListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CountryListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfCountryListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfCountryListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfCountryListDto {
+    totalCount: number;
+    items: CountryListDto[] | undefined;
 }
 
 export class PagedResultDtoOfDepartmentListDto implements IPagedResultDtoOfDepartmentListDto {
@@ -32085,6 +33819,58 @@ export interface IPriceDiscount {
     pricingTypeId: number;
     amount: number;
     discountPercentage: number;
+}
+
+export class PricingDto implements IPricingDto {
+    pricingTypeId!: number;
+    discount!: number;
+    typeName!: string | undefined;
+    days!: number;
+    price!: number;
+
+    constructor(data?: IPricingDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pricingTypeId = _data["pricingTypeId"];
+            this.discount = _data["discount"];
+            this.typeName = _data["typeName"];
+            this.days = _data["days"];
+            this.price = _data["price"];
+        }
+    }
+
+    static fromJS(data: any): PricingDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PricingDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pricingTypeId"] = this.pricingTypeId;
+        data["discount"] = this.discount;
+        data["typeName"] = this.typeName;
+        data["days"] = this.days;
+        data["price"] = this.price;
+        return data; 
+    }
+}
+
+export interface IPricingDto {
+    pricingTypeId: number;
+    discount: number;
+    typeName: string | undefined;
+    days: number;
+    price: number;
 }
 
 export class PricingType implements IPricingType {
@@ -33640,6 +35426,218 @@ export interface IStripePaymentResultOutput {
     paymentDone: boolean;
 }
 
+export class SubModuleForAddonDto implements ISubModuleForAddonDto {
+    subModuleId!: number;
+    pageId!: number;
+    subModuleName!: string | undefined;
+    subSubModuleList!: SubModuleForAddonDto[] | undefined;
+
+    constructor(data?: ISubModuleForAddonDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.subModuleId = _data["subModuleId"];
+            this.pageId = _data["pageId"];
+            this.subModuleName = _data["subModuleName"];
+            if (Array.isArray(_data["subSubModuleList"])) {
+                this.subSubModuleList = [] as any;
+                for (let item of _data["subSubModuleList"])
+                    this.subSubModuleList!.push(SubModuleForAddonDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SubModuleForAddonDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubModuleForAddonDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["subModuleId"] = this.subModuleId;
+        data["pageId"] = this.pageId;
+        data["subModuleName"] = this.subModuleName;
+        if (Array.isArray(this.subSubModuleList)) {
+            data["subSubModuleList"] = [];
+            for (let item of this.subSubModuleList)
+                data["subSubModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISubModuleForAddonDto {
+    subModuleId: number;
+    pageId: number;
+    subModuleName: string | undefined;
+    subSubModuleList: SubModuleForAddonDto[] | undefined;
+}
+
+export class SubModuleForEditAddonDto implements ISubModuleForEditAddonDto {
+    pageId!: number;
+    subModuleName!: string | undefined;
+    subSubModuleList!: SubModuleForEditAddonDto[] | undefined;
+
+    constructor(data?: ISubModuleForEditAddonDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageId = _data["pageId"];
+            this.subModuleName = _data["subModuleName"];
+            if (Array.isArray(_data["subSubModuleList"])) {
+                this.subSubModuleList = [] as any;
+                for (let item of _data["subSubModuleList"])
+                    this.subSubModuleList!.push(SubModuleForEditAddonDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SubModuleForEditAddonDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubModuleForEditAddonDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageId"] = this.pageId;
+        data["subModuleName"] = this.subModuleName;
+        if (Array.isArray(this.subSubModuleList)) {
+            data["subSubModuleList"] = [];
+            for (let item of this.subSubModuleList)
+                data["subSubModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISubModuleForEditAddonDto {
+    pageId: number;
+    subModuleName: string | undefined;
+    subSubModuleList: SubModuleForEditAddonDto[] | undefined;
+}
+
+export class SubModuleList implements ISubModuleList {
+    subModuleID!: number;
+    subModuleName!: string | undefined;
+    subSubModule!: SubModuleList[] | undefined;
+
+    constructor(data?: ISubModuleList) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.subModuleID = _data["subModuleID"];
+            this.subModuleName = _data["subModuleName"];
+            if (Array.isArray(_data["subSubModule"])) {
+                this.subSubModule = [] as any;
+                for (let item of _data["subSubModule"])
+                    this.subSubModule!.push(SubModuleList.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SubModuleList {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubModuleList();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["subModuleID"] = this.subModuleID;
+        data["subModuleName"] = this.subModuleName;
+        if (Array.isArray(this.subSubModule)) {
+            data["subSubModule"] = [];
+            for (let item of this.subSubModule)
+                data["subSubModule"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISubModuleList {
+    subModuleID: number;
+    subModuleName: string | undefined;
+    subSubModule: SubModuleList[] | undefined;
+}
+
+export class SubModuleListDto implements ISubModuleListDto {
+    id!: number;
+    displayName!: string | undefined;
+    subSubModuleList!: SubSubModuleListDto[] | undefined;
+
+    constructor(data?: ISubModuleListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.displayName = _data["displayName"];
+            if (Array.isArray(_data["subSubModuleList"])) {
+                this.subSubModuleList = [] as any;
+                for (let item of _data["subSubModuleList"])
+                    this.subSubModuleList!.push(SubSubModuleListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SubModuleListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubModuleListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        if (Array.isArray(this.subSubModuleList)) {
+            data["subSubModuleList"] = [];
+            for (let item of this.subSubModuleList)
+                data["subSubModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISubModuleListDto {
+    id: number;
+    displayName: string | undefined;
+    subSubModuleList: SubSubModuleListDto[] | undefined;
+}
+
 export class SubModules implements ISubModules {
     subModuleID!: number;
     subModuleName!: string | undefined;
@@ -33682,7 +35680,7 @@ export interface ISubModules {
 
 export class SubModulesDto implements ISubModulesDto {
     moduleId!: number;
-    subModuleList!: PageModulesDto[] | undefined;
+    subModuleList!: SubModuleListDto[] | undefined;
 
     constructor(data?: ISubModulesDto) {
         if (data) {
@@ -33699,7 +35697,7 @@ export class SubModulesDto implements ISubModulesDto {
             if (Array.isArray(_data["subModuleList"])) {
                 this.subModuleList = [] as any;
                 for (let item of _data["subModuleList"])
-                    this.subModuleList!.push(PageModulesDto.fromJS(item));
+                    this.subModuleList!.push(SubModuleListDto.fromJS(item));
             }
         }
     }
@@ -33725,7 +35723,7 @@ export class SubModulesDto implements ISubModulesDto {
 
 export interface ISubModulesDto {
     moduleId: number;
-    subModuleList: PageModulesDto[] | undefined;
+    subModuleList: SubModuleListDto[] | undefined;
 }
 
 export class SubscribableEditionComboboxItemDto implements ISubscribableEditionComboboxItemDto {
@@ -33999,6 +35997,46 @@ export enum SubscriptionStartType {
     Free = 1,
     Trial = 2,
     Paid = 3,
+}
+
+export class SubSubModuleListDto implements ISubSubModuleListDto {
+    id!: number;
+    displayName!: string | undefined;
+
+    constructor(data?: ISubSubModuleListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.displayName = _data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): SubSubModuleListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubSubModuleListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface ISubSubModuleListDto {
+    id: number;
+    displayName: string | undefined;
 }
 
 export class SwitchedAccountAuthenticateResultModel implements ISwitchedAccountAuthenticateResultModel {
@@ -34516,6 +36554,7 @@ export class TenantManagementSettingsEditDto implements ITenantManagementSetting
     isNewRegisteredTenantActiveByDefault!: boolean;
     useCaptchaOnRegistration!: boolean;
     defaultEditionId!: number | undefined;
+    showTenantChange!: boolean | undefined;
 
     constructor(data?: ITenantManagementSettingsEditDto) {
         if (data) {
@@ -34532,6 +36571,7 @@ export class TenantManagementSettingsEditDto implements ITenantManagementSetting
             this.isNewRegisteredTenantActiveByDefault = _data["isNewRegisteredTenantActiveByDefault"];
             this.useCaptchaOnRegistration = _data["useCaptchaOnRegistration"];
             this.defaultEditionId = _data["defaultEditionId"];
+            this.showTenantChange = _data["showTenantChange"];
         }
     }
 
@@ -34548,6 +36588,7 @@ export class TenantManagementSettingsEditDto implements ITenantManagementSetting
         data["isNewRegisteredTenantActiveByDefault"] = this.isNewRegisteredTenantActiveByDefault;
         data["useCaptchaOnRegistration"] = this.useCaptchaOnRegistration;
         data["defaultEditionId"] = this.defaultEditionId;
+        data["showTenantChange"] = this.showTenantChange;
         return data; 
     }
 }
@@ -34557,6 +36598,7 @@ export interface ITenantManagementSettingsEditDto {
     isNewRegisteredTenantActiveByDefault: boolean;
     useCaptchaOnRegistration: boolean;
     defaultEditionId: number | undefined;
+    showTenantChange: boolean | undefined;
 }
 
 export class TenantNotification implements ITenantNotification {
@@ -34661,6 +36703,50 @@ export class TenantOtherSettingsEditDto implements ITenantOtherSettingsEditDto {
 
 export interface ITenantOtherSettingsEditDto {
     isQuickThemeSelectEnabled: boolean;
+}
+
+export class TenantPageSnoListDto implements ITenantPageSnoListDto {
+    pageSno!: number;
+    parentSno!: number | undefined;
+    pageName!: string | undefined;
+
+    constructor(data?: ITenantPageSnoListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageSno = _data["pageSno"];
+            this.parentSno = _data["parentSno"];
+            this.pageName = _data["pageName"];
+        }
+    }
+
+    static fromJS(data: any): TenantPageSnoListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantPageSnoListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageSno"] = this.pageSno;
+        data["parentSno"] = this.parentSno;
+        data["pageName"] = this.pageName;
+        return data; 
+    }
+}
+
+export interface ITenantPageSnoListDto {
+    pageSno: number;
+    parentSno: number | undefined;
+    pageName: string | undefined;
 }
 
 export enum TenantPyamenteSateAndAvailability {

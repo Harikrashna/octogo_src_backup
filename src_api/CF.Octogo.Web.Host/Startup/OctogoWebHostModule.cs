@@ -21,6 +21,7 @@ using CF.Octogo.Configuration;
 using CF.Octogo.EntityFrameworkCore;
 using CF.Octogo.MultiTenancy;
 using CF.Octogo.Web.Startup.ExternalLoginInfoProviders;
+using CF.Octogo.HangfireJobs;
 
 namespace CF.Octogo.Web.Startup
 {
@@ -66,8 +67,9 @@ namespace CF.Octogo.Web.Startup
             {
                 workManager.Add(IocManager.Resolve<SubscriptionExpirationCheckWorker>());
                 workManager.Add(IocManager.Resolve<SubscriptionExpireEmailNotifierWorker>());
+                workManager.Add(IocManager.Resolve<TenantChangesSyncWorker>());
             }
-
+            
             if (Configuration.Auditing.IsEnabled && ExpiredAuditLogDeleterWorker.IsEnabled)
             {
                 workManager.Add(IocManager.Resolve<ExpiredAuditLogDeleterWorker>());

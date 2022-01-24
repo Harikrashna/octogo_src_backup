@@ -180,6 +180,16 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
                         loadChildren: () => import('./masters/designation/designation.module').then(m => m.DesignationModule),
                         data: { permission: 'Pages.Administration.Designation' }
                     },
+                    {
+                        path: 'master/city',
+                        loadChildren: () => import('./masters/city/city.module').then(m => m.CityModule),
+                        data: { permission: 'Pages.Administration.City' }
+                    },
+                    {
+                        path: 'master/country',
+                        loadChildren: () => import('./masters/country/country.module').then(m => m.CountryModule),
+                        data: { permission: 'Pages.Administration.Country' }
+                    },
                     { path: '', redirectTo: 'hostDashboard', pathMatch: 'full' },
                     { path: '**', redirectTo: 'hostDashboard' }
                 ]

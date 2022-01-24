@@ -20,6 +20,7 @@ using CF.Octogo.Url;
 using CF.Octogo.Authorization.Delegation;
 using Abp.Domain.Repositories;
 using CF.Octogo.MultiTenancy.Payments;
+using CF.Octogo.Editions;
 
 namespace CF.Octogo.Authorization.Accounts
 {
@@ -38,6 +39,7 @@ namespace CF.Octogo.Authorization.Accounts
         private readonly IUserDelegationManager _userDelegationManager;
         private readonly ITenantRegistrationAppService _tenantRegistrationAppService;
         private readonly ISubscriptionPaymentRepository _subscriptionPaymentRepository;
+        private readonly IEditionAppService _editionAppService;
         public AccountAppService(
             IUserEmailer userEmailer,
             UserRegistrationManager userRegistrationManager,
@@ -47,7 +49,8 @@ namespace CF.Octogo.Authorization.Accounts
             IWebUrlService webUrlService, 
             IUserDelegationManager userDelegationManager,
             ITenantRegistrationAppService tenantRegistrationAppService,
-            ISubscriptionPaymentRepository subscriptionPaymentRepository)
+            ISubscriptionPaymentRepository subscriptionPaymentRepository,
+            IEditionAppService editionAppService)
         {
             _userEmailer = userEmailer;
             _userRegistrationManager = userRegistrationManager;
@@ -61,6 +64,7 @@ namespace CF.Octogo.Authorization.Accounts
             _userDelegationManager = userDelegationManager;
             _tenantRegistrationAppService = tenantRegistrationAppService;
             _subscriptionPaymentRepository = subscriptionPaymentRepository;
+            _editionAppService = editionAppService;
         }
 
         public async Task<IsTenantAvailableOutput> IsTenantAvailable(IsTenantAvailableInput input)
@@ -283,13 +287,14 @@ namespace CF.Octogo.Authorization.Accounts
             {
                 return new CheckPaymentAvailabiltyDto(TenantPyamenteSateAndAvailability.NotFound);
             }
-            var tenantEditionInfo = await _tenantRegistrationAppService.GetEdition((int)tenant.EditionId);
+            //var tenantEditionInfo = await _tenantRegistrationAppService.GetEdition((int)tenant.EditionId);
+            var tenantEditionInfo = await _editionAppService.getEditionDetailsForEdit((int)tenant.EditionId);
 
             var paymentCompleteInfo = await _subscriptionPaymentRepository.GetLastCompletedPaymentOrDefaultAsync(
                    tenantId: tenant.Id,
                    gateway: null,
                    isRecurring: null);
-            if (tenantEditionInfo.IsFree)
+            if (tenantEditionInfo.PricingData == null)
             {
 
                 return new CheckPaymentAvailabiltyDto(TenantPyamenteSateAndAvailability.isFree, tenant.Id, _webUrlService.GetServerRootAddress(input.TenancyName));

@@ -1,11 +1,11 @@
-import { PageModulesDto } from "@shared/service-proxies/service-proxies";
+import { PageModulesDto, SubModuleListDto } from "@shared/service-proxies/service-proxies";
 
 export class EditionModule{
     EditionModuleId? : number;
     ModuleName : string;
     SubModuleList? : EditionModule[];
     CanAddSubModule? : boolean;
-    SubModule? : PageModulesDto;
+    SubModule? : SubModuleListDto;
     Collapse?:boolean;
     selectedSubModuleIndex?;
     PageModuleId? :number;

@@ -10,7 +10,8 @@ import { DOCUMENT } from '@angular/common';
 })
 export class DefaultBrandComponent extends AppComponentBase {
 
-    defaultLogo = AppConsts.appBaseUrl + '/assets/common/images/app-logo-on-' + this.currentTheme.baseSettings.menu.asideSkin + '.svg';
+    // defaultLogo = AppConsts.appBaseUrl + '/assets/common/images/app-logo-on-' + this.currentTheme.baseSettings.menu.asideSkin + '.svg';
+    defaultLogo = AppConsts.appBaseUrl + '/assets/common/images/OctoGoLogo/OctoGoLogo21.JPG';
     remoteServiceBaseUrl: string = AppConsts.remoteServiceBaseUrl;
 
     constructor(

@@ -25,6 +25,9 @@ using Abp.UI;
 using CF.Octogo.MultiTenancy.Payments;
 using Abp.Authorization;
 using System.Collections.Generic;
+using CF.Octogo.Data;
+using System.Data.SqlClient;
+using CF.Octogo.MultiTenancy.Dto;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -340,6 +343,28 @@ namespace CF.Octogo.MultiTenancy
                 return roleResult.Id;
             }
             return 0;
+        }
+        public async Task<int> InsertUpdateTenantEditionAddonDetails(InsertTenantEditionAddonDto input)
+        {
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("TenantId", input.TenantId);
+            parameters[1] = new SqlParameter("EditionId", input.EditionId);
+            parameters[2] = new SqlParameter("isEdit", input.isEdit);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_InsertUpdateTenantEditionAddonDetails", parameters
+               );
+            if (ds.Tables.Count > 0)
+            {
+                return 1;
+
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

@@ -155,5 +155,15 @@
         public const string Pages_Administration_Designation_Edit = "Pages.Administration.Designation.Edit";
         public const string Pages_Administration_Designation_Delete = "Pages.Administration.Designation.Delete";
 
+        public const string Pages_Administration_City = "Pages.Administration.City";
+        public const string Pages_Administration_City_Create = "Pages.Administration.City.Create";
+        public const string Pages_Administration_City_Edit = "Pages.Administration.City.Edit";
+        public const string Pages_Administration_City_Delete = "Pages.Administration.City.Delete";
+
+        public const string Pages_Administration_Country = "Pages.Administration.Country";
+        public const string Pages_Administration_Country_Create = "Pages.Administration.Country.Create";
+        public const string Pages_Administration_Country_Edit = "Pages.Administration.Country.Edit";
+        public const string Pages_Administration_Country_Delete = "Pages.Administration.Country.Delete";
+
     }
 }

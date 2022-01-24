@@ -1,0 +1,156 @@
+<div appBsModal #createOrEditCity="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditCity" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #CityForm="ngForm" novalidate (keyup.enter)="save(CityForm , CityForm.value)"
+                autocomplete="new-password">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="createCity.sNo">{{"EditCity" | localize}}:
+                            {{cityName | StringConverter}}</span>
+                        <span *ngIf="!createCity.sNo">{{"CreateNewCity" | localize}}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close(CityForm)" [attr.aria-label]="l('Close')"
+                        [disabled]="saving">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <input id="cityName" #CityNameInput="ngModel"
+                                [ngClass]="{'p-filled':createCity.cityName?.length > 0}" class="form-control"
+                                type="text" name="cityName" (keypress)="_validationService.NameValidation($event)"
+                                [(ngModel)]="createCity.cityName" required maxlength="100">
+                            <label for="CityName">{{"CityName" | localize}}<span class="text-danger"
+                                    id="req">*</span></label>
+                        </span>
+                        <validation-messages [formCtrl]="CityNameInput"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <input id="CityCode" #CityCodeInput="ngModel" class="form-control" type="text"
+                                [ngClass]="{'p-filled':createCity.cityCode?.length > 0}" name="CityCode"
+                                (keypress)="_validationService.NameValidation($event)" [(ngModel)]="createCity.cityCode" required
+                                maxlength="3">
+                            <label for="CityCode">{{"CityCode" | localize}}<span class="text-danger"
+                                    id="req">*</span></label>
+                        </span>
+                        <validation-messages [formCtrl]="CityCodeInput"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete [(ngModel)]="createCity.stateSNo" [suggestions]="stateResult"
+                                [showEmptyMessage]="true" inputStyleClass="form-control"
+                                (completeMethod)="getState($event)" (keypress)="_validationService.NameValidation($event)"
+                                styleClass="width-percent-100" name="stateName" field="name"
+                                value="this.stateresults.name" [forceSelection]="true">
+                            </p-autoComplete>
+                            <label for="StateName">{{"StateName" | localize}}<span class="text-danger"
+                                    id="req"></span></label>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete #countryName="ngModel" id="countryName" [(ngModel)]="createCity.countrySNo"
+                                 [suggestions]="countryResult" inputStyleClass="form-control"
+                                (completeMethod)="getCountry($event)" (keypress)="_validationService.NameValidation($event)"
+                                styleClass="width-percent-100" name="countryName" field="name" value="this.countryResult.name"
+                                [forceSelection]="true" required>
+                            </p-autoComplete><label for="countryName">{{"CountryName" | localize}}<span
+                                    class="text-danger" id="req">*</span></label>
+                        </span>
+                        <validation-messages [formCtrl]="countryName"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete #timezoneName="ngModel" [(ngModel)]="createCity.timeZoneSNo"
+                                [showEmptyMessage]="true" [suggestions]="timezoneResult"
+                                (completeMethod)="getTimeZone($event)" (keypress)="_validationService.NameValidation($event)"
+                                [multiple]="false" inputStyleClass="form-control" styleClass="width-percent-100"
+                                name="timezoneName" field="name" value="this.timezoneResult.name"
+                                [forceSelection]="true" required>
+                            </p-autoComplete><label for="timezoneName">{{"TimeZone" | localize}}<span
+                                    class="text-danger" id="req">*</span></label>
+                        </span>
+                        <validation-messages [formCtrl]="timezoneName"></validation-messages>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete [(ngModel)]="createCity.zoneSNo" [suggestions]="zoneResult"
+                                [showEmptyMessage]="true" (completeMethod)="getZone($event)"
+                                (keypress)="_validationService.NameValidation($event)" [multiple]="false" inputStyleClass="form-control"
+                                styleClass="width-percent-100" name="zone" field="name" value="this.zoneResult.name"
+                                [forceSelection]="true">
+                            </p-autoComplete><label for="zone">{{"Zone" | localize}}<span class="text-danger"
+                                    id="req"></span></label>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete [(ngModel)]="createCity.iataAreaCode" [suggestions]="iataareacodeResult"
+                                [showEmptyMessage]="true" (completeMethod)="getIataAreaCode($event)"
+                                (keypress)="_validationService.NameValidation($event)" [multiple]="false" inputStyleClass="form-control"
+                                styleClass="width-percent-100" name="iataAreaCode" field="name"
+                                value="this.iataareacodeResult.name" [forceSelection]="true">
+                            </p-autoComplete><label for="iataAreaCode">{{"IataAreaCode" | localize}}<span
+                                    class="text-danger" id="req"></span></label>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete [(ngModel)]="createCity.shcSNo" [suggestions]="shcResult"
+                                [showEmptyMessage]="true" (completeMethod)="getShc($event)"
+                                (keypress)="_validationService.NameValidation($event)" [multiple]="false" inputStyleClass="form-control"
+                                styleClass="width-percent-100" name="shc" field="name" value="this.shcResult.name"
+                                [forceSelection]="true">
+                            </p-autoComplete>
+                            <label for="shc">{{"Shc" | localize}}<span class="text-danger" id="req"></span></label>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete [(ngModel)]="createCity.dgClassSNo" [suggestions]="dgclassResult"
+                                [showEmptyMessage]="true" (completeMethod)="getDgClass($event)"
+                                (keypress)="_validationService.NameValidation($event)" [multiple]="false" inputStyleClass="form-control"
+                                styleClass="width-percent-100" name="dgclass" field="name"
+                                value="this.dgclassResult.name" [forceSelection]="true">
+                            </p-autoComplete> <label for="dgclass">{{"Dgclass" | localize}}<span class="text-danger"
+                                    id="req"></span></label>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="IsPriorApproval" class="checkbox">
+                            <input id="IsPriorApproval" type="checkbox" name="IsPriorApproval"
+                                [(ngModel)]="createCity.priorApproval">
+                            <span></span>
+                            {{"PriorApproval" | localize}}
+                        </label>
+                        
+                        <label for="IsDayLightSaving" class="checkbox">
+                            <input id="IsDayLightSaving" type="checkbox" name="IsDayLightSaving"
+                                [(ngModel)]="createCity.isDayLightSaving">
+                            <span></span>
+                            {{"IsDayLightSaving" | localize}}
+                        </label>
+
+                        <label for="CreateCity_IsActive" class="checkbox">
+                            <input id="CreateCity_IsActive" type="checkbox" name="IsActive"
+                                [(ngModel)]="createCity.isActive">
+                            <span></span>
+                            {{"Active" | localize}}
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
+                        (click)="close(CityForm)">{{"Cancel" | localize}}</button>
+                    <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!CityForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"
+                        (click)="save(CityForm , CityForm.value)"><i class="fa fa-save"></i>
+                        <span>{{"Save" | localize}}</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

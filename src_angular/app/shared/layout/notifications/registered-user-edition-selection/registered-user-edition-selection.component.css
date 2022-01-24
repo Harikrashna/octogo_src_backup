@@ -98,3 +98,9 @@ right:30px;}
       }
     
 }
+.cursor{
+    cursor: pointer;
+}
+.border-right{
+  border-right: 1px solid;
+}

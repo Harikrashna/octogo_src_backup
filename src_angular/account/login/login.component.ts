@@ -126,7 +126,6 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         this._accountService.checkPaymentAndAvailibility(input)
             .subscribe((result: CheckPaymentAvailabiltyDto) => {
                 //this.SubscriptionEndDateUtc= result.subscriptionEndDateUtc;
-                debugger
                 switch (result.states) {
                     case TenantPyamenteSateAndAvailability.NotCompleted:
                         this._router.navigate(["/account/buy"],{

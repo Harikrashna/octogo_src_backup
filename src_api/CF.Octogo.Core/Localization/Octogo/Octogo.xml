@@ -1157,7 +1157,8 @@
 		<text name="ModuleList">Module List</text>
 		<text name="ThereAreDependentEdition">There are dependent editions to this edition</text>
 		<text name="Addons">Addons</text>
-		<text name="CreatingNewAddon">Create Standalone Addon</text>
+		<text name="CreatingNewAddon">Create New Addon</text>
+		<text name="CreatingStandaloneAddon">Create Standalone Addon</text>
 		<text name="EditingAddon">Edit Addon</text>
 		<text name="DeletingAddon">Delete Addon</text>
 		<text name="AddonsHeaderInfo">Manage addons and standalone features of the application</text>
@@ -1310,6 +1311,44 @@
 		<text name="ProductWithEdition">Product With Edition</text>
 		<text name="FreeEditions">Free Editions</text>
 		<text name="PaidEditions">Paid Editions</text>
+		<text name="City">City</text>
+		<text name="CityHeaderInfo">Manage Cities</text>
+		<text name="CreateNewCity">Create New City</text>
+		<text name="EditCity">Edit City</text>
+		<text name="CityCode">City Code</text>
+		<text name="IsDayLightSaving">Is Daylight Saving</text>
+		<text name="CityName">City Name</text>
+		<text name="StateName">State Name</text>
+		<text name="Zone">Zone</text>
+		<text name="CountryName">Country Name</text>
+		<text name="TimeZone">Time Zone</text>
+		<text name="IataAreaCode">Iata Area Code</text>
+		<text name="Shc">Shc</text>
+		<text name="Dgclass">Dg class</text>
+		<text name="PriorApproval">Prior Approval</text>
+		<text name="VolumeConversionInch">Volume Conversion Inch</text>
+		<text name="VolumeConversionCM">Volume Conversion CM</text>
+		<text name="CityDeleteWarningMessage">City {0} will be deleted.</text>
+		<text name="Country">Country</text>
+		<text name="CountryHeaderInfo">Manage Countries</text>
+		<text name="CreateNewCountry">Create New Country</text>
+		<text name="CountryCode">Country Code</text>
+		<text name="CurrencyCode">Currency Code</text>
+		<text name="Continent">Continent</text>
+		<text name="Nationality">Nationality</text>
+		<text name="EditCountry">Edit Country</text>
+		<text name="IsdCode">ISD Code</text>
+		<text name="CountryDeleteWarningMessage">Are you sure to delete the Country {0}?</text>
+		<text name="SubModuleList">Sub Module List</text>
+		<text name="SubSubModuleList">Sub Sub-module List</text>
+		<text name="ShowTenantChange">Show tenant change on login</text>
+		<text name="PleaseSelectValidModuleAndSubModules">Please choose module and sub-modules properly</text>
+		<text name="EditionModuleChangeConfirmationMsg">Do you want to change the module because you didn't choose any sub-module of {0}?</text>
+		<text name="SelectProduct">Select Product</text>
+		<text name="SelectEdition">Select Edition</text>
+		<text name="CompairingWithThreeDot">Comparing...</text>
+		<text name="PleaseSelectMoreThanOneEditions">Please choose more than one edition to compare</text>
+		<text name="DuplicateEdition">Duplicate Edition</text>
 	</texts>
 </localizationDictionary>
 

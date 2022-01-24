@@ -3,7 +3,7 @@
         <sub-header [title]="'Addons' | localize" [description]="'AddonsHeaderInfo' | localize">
             <div role="actions">
                 <button *ngIf="'Pages.Addons.Create' | permission" class="btn btn-primary"
-                        (click)="CreateNewAddon()" disabled><i class="fa fa-plus"></i>
+                        (click)="CreateNewAddon()"><i class="fa fa-plus"></i>
                     {{"CreatingNewAddon" | localize}}</button>
             </div>
         </sub-header>
@@ -44,12 +44,8 @@
                                             <p-sortIcon field="AddonName"></p-sortIcon>
                                         </th>
                                         <th pSortableColumn="ForTheEdition">
-                                            {{'ForTheEdition' | localize}}
+                                            {{'Edition' | localize}}
                                             <p-sortIcon field="ForTheEdition"></p-sortIcon>
-                                        </th>
-                                        <th pSortableColumn="FromTheEdition">
-                                            {{'FromTheEdition' | localize}}
-                                            <p-sortIcon field="FromTheEdition"></p-sortIcon>
                                         </th>
                                         <th pSortableColumn="ProductName">
                                             {{'Product' | localize}}
@@ -78,7 +74,7 @@
                                                         <a href="javascript:;" class="dropdown-item"                                                           
                                                            (click)="EditAddon(record)">{{'Edit' | localize}}</a>
                                                     </li>
-                                                    <li *ngIf="false && ('Pages.Addons.Delete' | permission)" role="menuitem">
+                                                    <li *ngIf="'Pages.Addons.Delete' | permission" role="menuitem">
                                                         <a href="javascript:;" class="dropdown-item"                                                           
                                                            (click)="DeleteAddon(record)">{{'Delete' | localize}}</a>
                                                     </li>
@@ -90,12 +86,8 @@
                                             {{record.addonName}}
                                         </td>
                                         <td>
-                                            <span class="p-column-title">{{'ForTheEdition' | localize}}</span>
+                                            <span class="p-column-title">{{'Edition' | localize}}</span>
                                             {{record.forEditionName}}
-                                        </td>
-                                        <td>
-                                            <span class="p-column-title">{{'FromTheEdition' | localize}}</span>
-                                            {{record.fromEditionName}}
                                         </td>
                                         <td>
                                             <span class="p-column-title">{{'Product' | localize}}</span>

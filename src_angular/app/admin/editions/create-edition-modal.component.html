@@ -31,7 +31,7 @@
                                 <label for="EditionDisplayName">{{"EditionName" | localize}} *</label>
                                 <input id="EditionDisplayName" #editionNameInput="ngModel" class="form-control"
                                     type="text" name="EditionDisplayName" [(ngModel)]="edition.edition.displayName"
-                                    required maxlength="64">
+                                    required maxlength="64"  (keypress)="validationService.NameValidation($event)">
                                 <validation-messages [formCtrl]="editionNameInput"></validation-messages>
                             </div>
                             <fieldset [disabled]="isEdit" class="checkbox-list" *ngIf="ProductId > 0">
@@ -73,7 +73,8 @@
                         </tab>
                         <tab heading="{{'Modules' | localize}}" class="p-5">
                             <!-- <feature-tree #featureTree hidden></feature-tree> -->
-                            <app-add-edition-modules #editionModules></app-add-edition-modules>
+                            <!-- <app-add-edition-modules #editionModules></app-add-edition-modules> -->
+                            <app-edition-modules #editionModule></app-edition-modules>
                         </tab>
                         <tab heading="{{'Pricing' | localize}}" class="p-5" *ngIf="!isFree">
                             <div class="row" *ngIf="false">

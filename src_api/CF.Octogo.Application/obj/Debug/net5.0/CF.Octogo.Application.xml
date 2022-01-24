@@ -4,6 +4,25 @@
         <name>CF.Octogo.Application</name>
     </assembly>
     <members>
+        <member name="M:CF.Octogo.Editions.AddonAppService.GetModuleListByEditionForAddon(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="editionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Editions.EditionAppService.GetModuleList">
+            <summary>
+            to get Page module data
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Editions.EditionAppService.GetEditionDeatilsByEditionIdForCompare(System.String)">
+            <summary>
+            Get Edition details by comma seperated Edition Ids for compare editions
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:CF.Octogo.Editions.MoveTenantsToAnotherEditionJobArgs.SourceEditionId">
             <summary>
             Id of the source edition to move tenants from
@@ -126,6 +145,35 @@
             CREATED ON: 16/12/2021
             Add some additional information of user in existing user detail service 
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.GetTenantDataBaseDetails(System.Nullable{System.Int32})">
+            <summary>
+            
+            Desc:Get Tenant database details
+            Created by: Merajuddin khan
+            Created on:21-01-22
+            </summary>
+            <param name="tenantId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.InsertAdminDetailsOnTenantDataBase(CF.Octogo.Tenants.Dto.TenantDBDetailsDto)">
+            <summary>
+            
+            Desc:Insert Tenant admin details on their respective database connection
+            Created by: Merajuddin khan
+            Created on:21-01-22
+            </summary>
+            <param name="tenantId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSetUpPropcess(System.Int32)">
+            <summary>
+            Desc:Update tenant admin setup proccess complete 
+            Created by: Merajuddin khan
+            Created on:24-01-22
+            </summary>
+            <param name="tenantId"></param>
             <returns></returns>
         </member>
     </members>

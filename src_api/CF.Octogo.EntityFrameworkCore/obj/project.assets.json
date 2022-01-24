@@ -103,11 +103,11 @@
           "lib/netstandard2.0/Abp.MailKit.dll": {}
         }
       },
-      "Abp.Web.Common/6.0.0": {
+      "Abp.Web.Common/6.4.0": {
         "type": "package",
         "dependencies": {
-          "Abp": "6.0.0",
-          "NUglify": "1.9.11"
+          "Abp": "6.4.0",
+          "NUglify": "1.13.12"
         },
         "compile": {
           "lib/netstandard2.0/Abp.Web.Common.dll": {}
@@ -1222,7 +1222,7 @@
           "lib/netstandard2.1/Nito.Disposables.dll": {}
         }
       },
-      "NUglify/1.9.11": {
+      "NUglify/1.13.12": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/NUglify.dll": {}
@@ -1296,6 +1296,14 @@
         },
         "runtime": {
           "lib/netstandard1.0/_._": {}
+        }
+      },
+      "runtime.native.System.Data.SqlClient.sni/4.7.0": {
+        "type": "package",
+        "dependencies": {
+          "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni": "4.4.0",
+          "runtime.win-x64.runtime.native.System.Data.SqlClient.sni": "4.4.0",
+          "runtime.win-x86.runtime.native.System.Data.SqlClient.sni": "4.4.0"
         }
       },
       "runtime.native.System.IO.Compression/4.3.0": {
@@ -1426,6 +1434,33 @@
           "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so": {
             "assetType": "native",
             "rid": "ubuntu.16.10-x64"
+          }
+        }
+      },
+      "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/sni.dll": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          }
+        }
+      },
+      "runtime.win-x64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/win-x64/native/sni.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          }
+        }
+      },
+      "runtime.win-x86.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/win-x86/native/sni.dll": {
+            "assetType": "native",
+            "rid": "win-x86"
           }
         }
       },
@@ -1643,6 +1678,30 @@
         },
         "runtime": {
           "lib/netstandard1.2/System.Data.Common.dll": {}
+        }
+      },
+      "System.Data.SqlClient/4.8.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Win32.Registry": "4.7.0",
+          "System.Security.Principal.Windows": "4.7.0",
+          "runtime.native.System.Data.SqlClient.sni": "4.7.0"
+        },
+        "compile": {
+          "ref/netcoreapp2.1/System.Data.SqlClient.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/System.Data.SqlClient.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
         }
       },
       "System.Diagnostics.Debug/4.3.0": {
@@ -3207,6 +3266,21 @@
           "lib/netstandard2.0/Twilio.dll": {}
         }
       },
+      "CF.Octogo.Application.Shared/10.4.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "Abp.Web.Common": "6.4.0",
+          "CF.Octogo.Core.Shared": "10.4.0",
+          "System.ComponentModel.Annotations": "5.0.0"
+        },
+        "compile": {
+          "bin/placeholder/CF.Octogo.Application.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CF.Octogo.Application.Shared.dll": {}
+        }
+      },
       "CF.Octogo.Core/10.4.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
@@ -3216,7 +3290,9 @@
           "Abp.MailKit": "6.4.0",
           "Abp.Zero.Ldap": "6.4.0",
           "Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore": "6.4.0",
+          "CF.Octogo.Application.Shared": "10.4.0",
           "CF.Octogo.Core.Shared": "10.4.0",
+          "CF.Octogo.Data": "1.0.0",
           "Castle.Windsor.MsDependencyInjection": "3.4.0",
           "Microsoft.Extensions.Configuration.AzureKeyVault": "3.1.17",
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "5.0.0",
@@ -3225,6 +3301,7 @@
           "PayPalCheckoutSdk": "1.0.3",
           "PayPalHttp": "1.0.0",
           "Stripe.net": "39.59.0",
+          "System.Data.SqlClient": "4.8.2",
           "TimeZoneConverter": "3.5.0",
           "Twilio": "5.64.0"
         },
@@ -3247,6 +3324,22 @@
         },
         "runtime": {
           "bin/placeholder/CF.Octogo.Core.Shared.dll": {}
+        }
+      },
+      "CF.Octogo.Data/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "5.0.0",
+          "Microsoft.Extensions.Configuration.Json": "5.0.0",
+          "System.Data.SqlClient": "4.8.2"
+        },
+        "compile": {
+          "bin/placeholder/CF.Octogo.Data.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/CF.Octogo.Data.dll": {}
         }
       }
     }
@@ -3344,16 +3437,19 @@
         "lib/netstandard2.0/Abp.MailKit.xml"
       ]
     },
-    "Abp.Web.Common/6.0.0": {
-      "sha512": "GcR44uU5L9C65aFUDZJUpifEp6wXKnMr4lJn/hxeRTbwc3jEcX9rj0vRjMzJbmNJCW7vHkJ3VXmdKZq3mQJ6qQ==",
+    "Abp.Web.Common/6.4.0": {
+      "sha512": "oXA69YX1uNt4ibl91Gld7X0/SKufs6uMxjgWgzQcIsI+9GzswyPxW07fNqMfxf0b8BDp0RnuBK2uFxPFo4j5mg==",
       "type": "package",
-      "path": "abp.web.common/6.0.0",
+      "path": "abp.web.common/6.4.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "abp.web.common.6.0.0.nupkg.sha512",
+        "LICENSE.md",
+        "abp.web.common.6.4.0.nupkg.sha512",
         "abp.web.common.nuspec",
+        "abp_nupkg.png",
         "lib/netstandard2.0/Abp.Web.Common.dll",
+        "lib/netstandard2.0/Abp.Web.Common.pdb",
         "lib/netstandard2.0/Abp.Web.Common.xml"
       ]
     },
@@ -4948,10 +5044,10 @@
         "nito.disposables.nuspec"
       ]
     },
-    "NUglify/1.9.11": {
-      "sha512": "p/TNPrStsZgbvB0iFxoLhRVkzUtbbkvySwncVDy214oZvwoiteU32uBd6tHfv8r7VRBDgK/roa6h8GpiVb+V9g==",
+    "NUglify/1.13.12": {
+      "sha512": "+13YE9UjnXx4+NKP+j1Axiz/QAMtK++ZtG61u9iiR2/WzPzr7EfBDOwj+xHNyTEMS9Emq/mCyWaBGjCABhC0HQ==",
       "type": "package",
-      "path": "nuglify/1.9.11",
+      "path": "nuglify/1.13.12",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -4963,8 +5059,9 @@
         "lib/netstandard1.3/NUglify.xml",
         "lib/netstandard2.0/NUglify.dll",
         "lib/netstandard2.0/NUglify.xml",
-        "nuglify.1.9.11.nupkg.sha512",
-        "nuglify.nuspec"
+        "nuglify.1.13.12.nupkg.sha512",
+        "nuglify.nuspec",
+        "nuglify.png"
       ]
     },
     "PayPalCheckoutSdk/1.0.3": {
@@ -5060,6 +5157,21 @@
         "lib/netstandard1.0/_._",
         "runtime.native.system.4.3.0.nupkg.sha512",
         "runtime.native.system.nuspec"
+      ]
+    },
+    "runtime.native.System.Data.SqlClient.sni/4.7.0": {
+      "sha512": "9kyFSIdN3T0qjDQ2R0HRXYIhS3l5psBzQi6qqhdLz+SzFyEy4sVxNOke+yyYv8Cu8rPER12c3RDjLT8wF3WBYQ==",
+      "type": "package",
+      "path": "runtime.native.system.data.sqlclient.sni/4.7.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
+        "runtime.native.system.data.sqlclient.sni.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "runtime.native.System.IO.Compression/4.3.0": {
@@ -5228,6 +5340,54 @@
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.nuspec",
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
+      ]
+    },
+    "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "sha512": "LbrynESTp3bm5O/+jGL8v0Qg5SJlTV08lpIpFesXjF6uGNMWqFnUQbYBJwZTeua6E/Y7FIM1C54Ey1btLWupdg==",
+      "type": "package",
+      "path": "runtime.win-arm64.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+        "runtime.win-arm64.runtime.native.system.data.sqlclient.sni.nuspec",
+        "runtimes/win-arm64/native/sni.dll",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "runtime.win-x64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "sha512": "38ugOfkYJqJoX9g6EYRlZB5U2ZJH51UP8ptxZgdpS07FgOEToV+lS11ouNK2PM12Pr6X/PpT5jK82G3DwH/SxQ==",
+      "type": "package",
+      "path": "runtime.win-x64.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+        "runtime.win-x64.runtime.native.system.data.sqlclient.sni.nuspec",
+        "runtimes/win-x64/native/sni.dll",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "runtime.win-x86.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "sha512": "YhEdSQUsTx+C8m8Bw7ar5/VesXvCFMItyZF7G1AUY+OM0VPZUOeAVpJ4Wl6fydBGUYZxojTDR3I6Bj/+BPkJNA==",
+      "type": "package",
+      "path": "runtime.win-x86.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "ThirdPartyNotices.txt",
+        "dotnet_library_license.txt",
+        "runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+        "runtime.win-x86.runtime.native.system.data.sqlclient.sni.nuspec",
+        "runtimes/win-x86/native/sni.dll",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "Stripe.net/39.59.0": {
@@ -5930,6 +6090,92 @@
         "ref/xamarinwatchos10/_._",
         "system.data.common.4.3.0.nupkg.sha512",
         "system.data.common.nuspec"
+      ]
+    },
+    "System.Data.SqlClient/4.8.2": {
+      "sha512": "80vGtW6uLB4AkyrdVuKTXYUyuXDPAsSKbTVfvjndZaRAYxzFzWhJbvUfeAKrN+128ycWZjLIAl61dFUwWHOOTw==",
+      "type": "package",
+      "path": "system.data.sqlclient/4.8.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net451/System.Data.SqlClient.dll",
+        "lib/net46/System.Data.SqlClient.dll",
+        "lib/net461/System.Data.SqlClient.dll",
+        "lib/net461/System.Data.SqlClient.xml",
+        "lib/netcoreapp2.1/System.Data.SqlClient.dll",
+        "lib/netcoreapp2.1/System.Data.SqlClient.xml",
+        "lib/netstandard1.2/System.Data.SqlClient.dll",
+        "lib/netstandard1.2/System.Data.SqlClient.xml",
+        "lib/netstandard1.3/System.Data.SqlClient.dll",
+        "lib/netstandard1.3/System.Data.SqlClient.xml",
+        "lib/netstandard2.0/System.Data.SqlClient.dll",
+        "lib/netstandard2.0/System.Data.SqlClient.xml",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net451/System.Data.SqlClient.dll",
+        "ref/net46/System.Data.SqlClient.dll",
+        "ref/net461/System.Data.SqlClient.dll",
+        "ref/net461/System.Data.SqlClient.xml",
+        "ref/netcoreapp2.1/System.Data.SqlClient.dll",
+        "ref/netcoreapp2.1/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/System.Data.SqlClient.dll",
+        "ref/netstandard1.2/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/de/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/es/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/fr/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/it/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/ja/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/ko/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/ru/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/zh-hans/System.Data.SqlClient.xml",
+        "ref/netstandard1.2/zh-hant/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/System.Data.SqlClient.dll",
+        "ref/netstandard1.3/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/de/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/es/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/fr/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/it/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/ja/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/ko/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/ru/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/zh-hans/System.Data.SqlClient.xml",
+        "ref/netstandard1.3/zh-hant/System.Data.SqlClient.xml",
+        "ref/netstandard2.0/System.Data.SqlClient.dll",
+        "ref/netstandard2.0/System.Data.SqlClient.xml",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll",
+        "runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.xml",
+        "runtimes/unix/lib/netstandard1.3/System.Data.SqlClient.dll",
+        "runtimes/unix/lib/netstandard2.0/System.Data.SqlClient.dll",
+        "runtimes/unix/lib/netstandard2.0/System.Data.SqlClient.xml",
+        "runtimes/win/lib/net451/System.Data.SqlClient.dll",
+        "runtimes/win/lib/net46/System.Data.SqlClient.dll",
+        "runtimes/win/lib/net461/System.Data.SqlClient.dll",
+        "runtimes/win/lib/net461/System.Data.SqlClient.xml",
+        "runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll",
+        "runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.xml",
+        "runtimes/win/lib/netstandard1.3/System.Data.SqlClient.dll",
+        "runtimes/win/lib/netstandard2.0/System.Data.SqlClient.dll",
+        "runtimes/win/lib/netstandard2.0/System.Data.SqlClient.xml",
+        "runtimes/win/lib/uap10.0.16299/System.Data.SqlClient.dll",
+        "runtimes/win/lib/uap10.0.16299/System.Data.SqlClient.xml",
+        "system.data.sqlclient.4.8.2.nupkg.sha512",
+        "system.data.sqlclient.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
       ]
     },
     "System.Diagnostics.Debug/4.3.0": {
@@ -10254,6 +10500,11 @@
         "twilio.nuspec"
       ]
     },
+    "CF.Octogo.Application.Shared/10.4.0": {
+      "type": "project",
+      "path": "../CF.Octogo.Application.Shared/CF.Octogo.Application.Shared.csproj",
+      "msbuildProject": "../CF.Octogo.Application.Shared/CF.Octogo.Application.Shared.csproj"
+    },
     "CF.Octogo.Core/10.4.0": {
       "type": "project",
       "path": "../CF.Octogo.Core/CF.Octogo.Core.csproj",
@@ -10263,6 +10514,11 @@
       "type": "project",
       "path": "../CF.Octogo.Core.Shared/CF.Octogo.Core.Shared.csproj",
       "msbuildProject": "../CF.Octogo.Core.Shared/CF.Octogo.Core.Shared.csproj"
+    },
+    "CF.Octogo.Data/1.0.0": {
+      "type": "project",
+      "path": "../CF.Octogo.Data/CF.Octogo.Data.csproj",
+      "msbuildProject": "../CF.Octogo.Data/CF.Octogo.Data.csproj"
     }
   },
   "projectFileDependencyGroups": {

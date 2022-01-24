@@ -30,7 +30,6 @@ export class EditionsComponent extends AppComponentBase {
     }
 
     getEditions(event?): void {
-        debugger
         if (this.primengTableHelper.shouldResetPaging(event)) {
             this.paginator.changePage(0);
             return;

@@ -64,7 +64,7 @@
 </div>
 
 <div class="mt-5">
-    <div>
+    <!-- <div>
         <span>
             {{"NotAMemberYet" | localize}}
         </span>
@@ -72,7 +72,16 @@
     <span *ngIf="isSelfRegistrationAllowed">
         <a routerLink="/account/register">{{"CreateAnAccount" | localize}}</a>
         <span> | </span>
-    </span>
+    </span> -->
+    <div *ngIf="!multiTenancySideIsTeanant && isTenantSelfRegistrationAllowed">
+        <span>
+            {{"NotAMemberYet" | localize}}
+        </span>
+    </div>
+    <!-- <span *ngIf="isSelfRegistrationAllowed">
+        <a routerLink="/account/register">{{"CreateAnAccount" | localize}}</a>
+        <span> | </span>
+    </span> -->
     <span *ngIf="!multiTenancySideIsTeanant && isTenantSelfRegistrationAllowed">
         <!-- <a routerLink="/account/select-edition">{{"NewTenant" | localize}}</a> -->
         <a routerLink="/account/sign-up/user-sign-up">{{"CreateNewAccount" | localize}}</a>

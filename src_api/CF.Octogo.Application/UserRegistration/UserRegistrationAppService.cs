@@ -22,6 +22,8 @@ using CF.Octogo.Caching;
 using Abp.UI;
 using Abp.Application.Services.Dto;
 using System.Data;
+using Abp.Authorization;
+using CF.Octogo.Authorization;
 
 namespace CF.Octogo.UserRegistration
 {
@@ -102,7 +104,22 @@ namespace CF.Octogo.UserRegistration
                 user.Roles = new Collection<UserRole>();
                 // get "User" role  data
                 var role = _roleRepository.GetAll().Where(f => f.DisplayName == "User" && f.IsDeleted == false && f.TenantId == null).FirstOrDefault();
-                user.Roles.Add(new UserRole(AbpSession.TenantId, user.Id, role.Id));
+                var permission = new Permission(name: AppPermissions.Pages_isdefaultRegisterUser);
+                if (role != null && role.Id > 0)
+                {
+                    if(!_roleManager.IsGranted(role.Id, permission))
+                    {
+                        _roleManager.GrantPermissionAsync(role, permission);
+                    }
+                    user.Roles.Add(new UserRole(AbpSession.TenantId, user.Id, role.Id));
+                }
+                else
+                {
+                    int roleId = await TenantManager.SeedStaticRoles("User",null);
+                    role = _roleRepository.Get(roleId);
+                    _roleManager.GrantPermissionAsync(role, permission);
+                    user.Roles.Add(new UserRole(AbpSession.TenantId, user.Id, roleId));
+                }
 
                 // Create new User
                 CheckErrors(await UserManager.CreateAsync(user));

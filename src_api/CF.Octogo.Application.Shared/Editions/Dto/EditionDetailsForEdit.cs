@@ -93,7 +93,18 @@ namespace CF.Octogo.Editions.Dto
     public class SubModulesDto
     {
         public int ModuleId { get; set; }
-        public List<PageModulesDto> SubModuleList { get; set; }
+        public List<SubModuleListDto> SubModuleList { get; set; }
+    }
+    public class SubModuleListDto
+    {
+        public int Id { get; set; }
+        public string DisplayName { get; set; }
+        public List<SubSubModuleListDto> SubSubModuleList { get; set; }
+    }
+    public class SubSubModuleListDto
+    {
+        public int Id { get; set; }
+        public string DisplayName { get; set; }
     }
     public class PageModulesDto
     {

@@ -56,7 +56,7 @@ namespace CF.Octogo.MultiTenancy
         [UnitOfWork(IsDisabled = true)]
         public async Task CreateTenant(CreateTenantInput input)
         {
-            await TenantManager.CreateWithAdminUserAsync(input.TenancyName,
+            int tenantId = await TenantManager.CreateWithAdminUserAsync(input.TenancyName,
                 input.Name,
                 input.AdminPassword,
                 input.AdminEmailAddress,
@@ -69,6 +69,15 @@ namespace CF.Octogo.MultiTenancy
                 input.IsInTrialPeriod,
                 AppUrlService.CreateEmailActivationUrlFormat(input.TenancyName)
             );
+
+            // Insert Edition,Addon, Approach and pricing details for tenant
+            if (tenantId > 0 && input.EditionId.HasValue)
+            {
+                InsertTenantEditionAddonDto tenantEdition = new InsertTenantEditionAddonDto();
+                tenantEdition.TenantId = tenantId;
+                tenantEdition.EditionId = input.EditionId;
+                TenantManager.InsertUpdateTenantEditionAddonDetails(tenantEdition);
+            }
         }
 
         [AbpAuthorize(AppPermissions.Pages_Tenants_Edit)]

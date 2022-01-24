@@ -135,6 +135,16 @@ import { AccountRouteGuard } from './auth/account-route-guard';
                         loadChildren: () =>
                             import('./user-detailed-registration/user-detailed-registration.module').then((m) => m.UserDetailedRegistrationModule),
                     },
+                    {
+                        path: 'select-edition-new',
+                        loadChildren: () =>
+                            import('./edition-selection-comparison/edition-selection-comparison.module').then((m) => m.EditionSelectionComparisonModule),
+                    },
+                    {
+                        path: 'edition-compare',
+                        loadChildren: () =>
+                            import('./edition-compare/edition-compare.module').then((m) => m.EditionCompareModule),
+                    },
                     { path: '**', redirectTo: 'login' },
                 ],
             },

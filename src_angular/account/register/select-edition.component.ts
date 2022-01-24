@@ -1,13 +1,14 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppComponent } from '@app/app.component';
 import { accountModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { EditionPaymentType, EditionsSelectOutput, ProductWithEditionDto, SubscriptionStartType, TenantRegistrationServiceProxy } from '@shared/service-proxies/service-proxies';
+import { EditionPaymentType, EditionServiceProxy, EditionsSelectOutput, ProductWithEditionDto, SubscriptionStartType } from '@shared/service-proxies/service-proxies';
 
 
 @Component({
+    selector: 'app-select-edition',
      templateUrl: './select-edition.component.html',
      styleUrls: ['./select-edition.component.less'],
     animations: [accountModuleAnimation(),
@@ -28,7 +29,7 @@ import { EditionPaymentType, EditionsSelectOutput, ProductWithEditionDto, Subscr
       ]),]
 })
 export class SelectEditionComponent extends AppComponentBase implements OnInit {
-  ProductWithEditionList:ProductWithEditionDto[]
+  @Input() ProductWithEditionList:ProductWithEditionDto[]
   loading: boolean = true;
   editionsSelectOutput: EditionsSelectOutput = new EditionsSelectOutput();
   isUserLoggedIn: boolean = false;
@@ -36,12 +37,14 @@ export class SelectEditionComponent extends AppComponentBase implements OnInit {
   expanded:boolean=false;
   currentIndex=null;
   productName=null;
+  isAddonCollapsed = false;
+  addonIndex = null;
 
   subscriptionStartType: typeof SubscriptionStartType = SubscriptionStartType;
   editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
   editionIcons: string[] = ['flaticon-open-box', 'flaticon-rocket', 'flaticon-gift', 'flaticon-confetti', 'flaticon-cogwheel-2', 'flaticon-app', 'flaticon-coins', 'flaticon-piggy-bank', 'flaticon-bag', 'flaticon-lifebuoy', 'flaticon-technology-1', 'flaticon-cogwheel-1', 'flaticon-infinity', 'flaticon-interface-5', 'flaticon-squares-3', 'flaticon-interface-6', 'flaticon-mark', 'flaticon-business', 'flaticon-interface-7', 'flaticon-list-2', 'flaticon-bell', 'flaticon-technology', 'flaticon-squares-2', 'flaticon-notes', 'flaticon-profile', 'flaticon-layers', 'flaticon-interface-4', 'flaticon-signs', 'flaticon-menu-1', 'flaticon-symbol'];
 
-  constructor(private injector:Injector,private _tenantRegistrationService:TenantRegistrationServiceProxy,
+  constructor(private injector:Injector, private _editionService: EditionServiceProxy,
     private _router: Router) {
     super(injector);
    }
@@ -50,20 +53,13 @@ export class SelectEditionComponent extends AppComponentBase implements OnInit {
     if(this.appSession.user != null && this.appSession.user != undefined && this.appSession.user.id > 0){
       this.isUserLoggedIn = true;
     }
-    this._tenantRegistrationService.getProductWithEdition().subscribe(result=>{
-      this.loading=false;
+    if(this.ProductWithEditionList == null || this.ProductWithEditionList == undefined){
+      this.spinnerService.show();
+    this._editionService.getProductWithEdition().subscribe(result=>{
+      this.spinnerService.hide();
       this.ProductWithEditionList=result;
-      
-    
-      console.log(this.ProductWithEditionList);
-      console.log(this.ProductWithEditionList[0].edition);
     })
-
-    // for(let i=0;i<this.ProductWithEditionList.length;i++){
-    //   if(this.ProductWithEditionList[i]?.edition?.length > 0){
-    //     console.log(this.ProductWithEditionList)
-    //   }
-    // }
+    }
   }
   isFree(pricingData?): boolean{
     if(pricingData != null && pricingData.length > 0){
@@ -77,7 +73,6 @@ expandedTrue(i,product){
   this.currentIndex=i;
   this.productName=product;
   this.expanded=true;
-  // alert(product+","+i);
 }
 
 expandedFalse(i,product){
@@ -85,7 +80,6 @@ expandedFalse(i,product){
   this.productName=product;
   this.expanded=false;
   this.currentIndex=null
-  // alert(product+","+i);
 }
 getFilteredEditions(edition, type){
   if(edition != null){
@@ -107,9 +101,12 @@ DicountedPriceInput(item) {
  console.log(this.discountedPrice);  
 }
 upgrade(upgradeEdition, editionPaymentType: EditionPaymentType): void {
-    debugger
     this._router.navigate(['/account/upgrade'], { queryParams: { upgradeEditionId: upgradeEdition.editionID, editionPaymentType: editionPaymentType } });
 }
+expandAddons(index){
+  this.addonIndex = index;
+    this.isAddonCollapsed = !this.isAddonCollapsed;
+  }
 }
 
 export class expanded{

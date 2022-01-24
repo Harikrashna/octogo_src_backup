@@ -32,8 +32,6 @@ namespace CF.Octogo.Common
             string cacheKey = (Name != null && Name != "") ?  Name.Trim().ToUpper() : "MasterDataKey_All";
             var cache = _cacheManager.GetCache(OctogoCacheKeyConst.MasterDataCacheKey);       // create cache if not created before
             var cache_result = cache.GetOrDefault(cacheKey);        // get caching data
-            try
-            {
                 if (cache_result == null)                               // check cache data
             {
                 cache.SetAsync(cacheKey, GetMasterData(Name));    // create cache keys and set data in cache
@@ -41,11 +39,7 @@ namespace CF.Octogo.Common
             }
                 IList<MasterDataDto> objectList = cache_result as IList<MasterDataDto>;
                 return objectList;
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            
             return null;
         }
 

@@ -190,7 +190,7 @@
 
 
                                                                         <span class="d-flex flex-column"
-                                                                            *ngIf="isModuleCollapsed && i == moduleIndex">
+                                                                            *ngIf="!isModuleCollapsed && i == moduleIndex">
                                                                             <span
                                                                                 *ngFor="let feature of editionWithFeatures?.module ; let moduleDataIndex = index">
                                                                                 <span class="text-success text-left"
@@ -202,25 +202,29 @@
                                                                             </span>
                                                                         </span>
 
-                                                                        <a class="text-info" (click)="expandModules(i)" type="button">
-                                                                            <u class="text-right mx-4" *ngIf="!(isModuleCollapsed && i == moduleIndex) else showLess">
+                                                                        <a class="text-info" (click)="expandModules(i)" type="button" 
+                                                                        *ngIf="i != moduleIndex else showLess">
+                                                                            <u class="text-right mx-4">
                                                                                 {{ 'More' | localize }}
                                                                                 ({{editionWithFeatures.module.length -
                                                                                 showModules}})
                                                                                 </u>
                                                                             </a>
                                                                             <ng-template #showLess>
-                                                                               <u class="text-right mx-6">{{'Less' | localize}}</u> 
+                                                                                <a class="text-info" (click)="expandModules(i)" type="button" >
+                                                                               <u class="text-right mx-6 text-info" (click)="expandModules(-1)">
+                                                                                   {{'Less' | localize}}
+                                                                                </u> 
+                                                                            </a>
                                                                             </ng-template>
                                                                     </span>
 
                                                                 </p>
 
                                                                 <div *ngIf="editionWithFeatures?.addons?.length >0">
-                                                                    <label> <b class="text-danger">
+                                                                    <label (click)="expandAddons(i)"> <b class="text-danger cursor">
                                                                             &nbsp;
-                                                                            <i class="fa fa-angle-right cursor"
-                                                                                (click)="expandAddons(i)"></i>&nbsp;
+                                                                            <i class="fa fa-angle-right cursor"></i>&nbsp;
                                                                             {{ 'Addons' | localize }}
                                                                             ({{editionWithFeatures.addons.length}})
                                                                         </b></label>
@@ -230,31 +234,36 @@
                                                                             *ngFor="let addon of editionWithFeatures?.addons; let k=index">
                                                                             <b (click)="addons.toggle($event)"
                                                                                
-                                                                                class="text-success">{{addon.addOnName}}</b>
+                                                                                class="text-success cursor">{{addon.addOnName}}</b>
                                                                             <p-overlayPanel appendTo="body" #addons
-                                                                            (mousemove)="addons.hide()"
-                                                                            
-                                                                                >
+                                                                            (mousemove)="addons.hide()"  [style]="{width: '500px'}">
                                                                                 <ng-template pTemplate>
-                                                                                    <div>
-                                                                                        <p-panel 
-                                                                                            header="{{'ModuleName' | localize}} : {{addon.addOnName}}"
-                                                                                            [toggleable]="true"
-                                                                                            [collapsed]="false">
+                                                                                    <div class="col justify-content-center"
+                                                                                    *ngIf="addon?.moduleList?.length > 0">
+                                                                                    <div class="text-primary row">
+                                                                                        <div *ngFor="let addonModule of addon.moduleList; let i = index"
+                                                                                            class="col-sm-6" [ngClass]="i%2 == 0 && addon.moduleList.length > 1 ? 'border-right' : ''">
+                                                                                            ({{i+1}}) &nbsp;
+                                                                                            {{addonModule.moduleName}}
                                                                                             <ul
-                                                                                                *ngIf="addon.subModule?.length > 0">
+                                                                                                *ngIf="addonModule?.subModuleList?.length > 0">
                                                                                                 <li
-                                                                                                    *ngFor="let subModule of addon.subModule ; let i=index">
+                                                                                                    *ngFor="let subModule of addonModule.subModuleList">
                                                                                                     {{subModule.subModuleName}}
+                                                                                                    <ul
+                                                                                                        *ngIf="subModule.subSubModuleList?.length > 0">
+                                                                                                        <li
+                                                                                                            *ngFor="let subSubModule of subModule.subSubModuleList">
+                                                                                                            {{
+                                                                                                            subSubModule.subModuleName}}
+                                                                                                        </li>
+                                                                                                    </ul>
                                                                                                 </li>
                                                                                             </ul>
-                                                                                            <div
-                                                                                                *ngIf="addon.subModule== null || addon.subModule?.length == 0">
-                                                                                                {{'SubModuleNotExist' |
-                                                                                                localize}}
-                                                                                            </div>
-                                                                                        </p-panel>
+                                                                                        </div>
                                                                                     </div>
+                                                                                    <hr />
+                                                                                </div>
                                                                                     <p-table [responsive]="true" [resizableColumns]="true" [autoLayout]="true"
                                                                                         *ngIf="addon?.addonPrice?.length > 0"
                                                                                         id="tbl"
@@ -316,6 +325,11 @@
                                                                                             </tr>
                                                                                         </ng-template>
                                                                                     </p-table>
+                                                                                    <div *ngIf="!(addon?.addonPrice?.length > 0)" class="mt-4 text-center">
+                                                                                        <h5 class="font-size-h6 d-block d-block font-weight-bold text-primary">
+                                                                                        <span> {{"Free" | localize}}</span>
+                                                                                    </h5>
+                                                                                    </div>
                                                                                 </ng-template>
                                                                             </p-overlayPanel>
                                                                         </li>

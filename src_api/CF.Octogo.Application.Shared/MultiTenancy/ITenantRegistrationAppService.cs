@@ -15,7 +15,6 @@ namespace CF.Octogo.MultiTenancy
 
         Task<EditionSelectDto> GetEdition(int editionId);
         Task<EditionsSelectOutput> GetEditionsForSelectForRegisteredUser();
-        Task<List<ProductWithEditionDto>> GetProductWithEdition();
         Task<EditionDetailsForEditDto> GetEditionDetailsById(int EditionId);
     }
 }

@@ -7,7 +7,7 @@ import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { EditionModule } from '@app/admin/shared-models/Edition/EditionModule';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { DependEditionDto, EditionServiceProxy, PageModulesDto, SubModulesDto } from '@shared/service-proxies/service-proxies';
+import { DependEditionDto, EditionServiceProxy, PageModulesDto, SubModuleListDto, SubModulesDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-add-edition-modules',
@@ -142,7 +142,7 @@ export class AddEditionModulesComponent extends AppComponentBase implements OnIn
         );
       }
       this.ModulesList[ParentIndex].Collapse = false;
-      this.ModulesList[ParentIndex].SubModule = new PageModulesDto();
+      this.ModulesList[ParentIndex].SubModule = new SubModuleListDto();
       this.ModulesList[ParentIndex].CanAddSubModule = false;
       this.ModulesList[ParentIndex].selectedSubModuleIndex = null;
       this.isSubModuleEdit = false;
@@ -171,7 +171,7 @@ export class AddEditionModulesComponent extends AppComponentBase implements OnIn
     this.isSubModuleEdit = true;
     this.ModulesList[parentIndex].CanAddSubModule = true;
     this.ModulesList[parentIndex].selectedSubModuleIndex = index;
-    this.ModulesList[parentIndex].SubModule = new PageModulesDto();
+    this.ModulesList[parentIndex].SubModule = new SubModuleListDto();
     let tempModule = this.PageSubModuleList.filter(obj => obj.moduleId == this.ModulesList[parentIndex].PageModuleId);
     if (tempModule != null && tempModule != undefined && tempModule.length > 0) {
       let tempSubModule = tempModule[0].subModuleList.filter(obj => obj.id == this.ModulesList[parentIndex].SubModuleList[index].PageModuleId);

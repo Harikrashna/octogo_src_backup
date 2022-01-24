@@ -23,18 +23,18 @@ export class AppNavigationService {
             new AppMenuItem('Editions', 'Pages.Editions', 'flaticon-app', '/app/admin/editions'),
             new AppMenuItem('Addons', 'Pages.Addons', 'flaticon-app', '/app/admin/addons'),
             new AppMenuItem('Administration', '', 'flaticon-interface-8', '', [], [
-                new AppMenuItem('OrganizationUnits', 'Pages.Administration.OrganizationUnits', 'flaticon-map', '/app/admin/organization-units'),
-                new AppMenuItem('Roles', 'Pages.Administration.Roles', 'flaticon-suitcase', '/app/admin/roles'),
+                // new AppMenuItem('OrganizationUnits', 'Pages.Administration.OrganizationUnits', 'flaticon-map', '/app/admin/organization-units'),
+                // new AppMenuItem('Roles', 'Pages.Administration.Roles', 'flaticon-suitcase', '/app/admin/roles'),
                 new AppMenuItem('Users', 'Pages.Administration.Users', 'flaticon-users', '/app/admin/users'),
-                new AppMenuItem('Languages', 'Pages.Administration.Languages', 'flaticon-tabs', '/app/admin/languages', ['/app/admin/languages/{name}/texts']),
+                // new AppMenuItem('Languages', 'Pages.Administration.Languages', 'flaticon-tabs', '/app/admin/languages', ['/app/admin/languages/{name}/texts']),
                 new AppMenuItem('AuditLogs', 'Pages.Administration.AuditLogs', 'flaticon-folder-1', '/app/admin/auditLogs'),
                 new AppMenuItem('Maintenance', 'Pages.Administration.Host.Maintenance', 'flaticon-lock', '/app/admin/maintenance'),
                 new AppMenuItem('Subscription', 'Pages.Administration.Tenant.SubscriptionManagement', 'flaticon-refresh', '/app/admin/subscription-management'),
                 new AppMenuItem('VisualSettings', 'Pages.Administration.UiCustomization', 'flaticon-medical', '/app/admin/ui-customization'),
-                new AppMenuItem('WebhookSubscriptions', 'Pages.Administration.WebhookSubscription', 'flaticon2-world', '/app/admin/webhook-subscriptions'),
-                new AppMenuItem('DynamicProperties', 'Pages.Administration.DynamicProperties', 'flaticon-interface-8', '/app/admin/dynamic-property'),
+                // new AppMenuItem('WebhookSubscriptions', 'Pages.Administration.WebhookSubscription', 'flaticon2-world', '/app/admin/webhook-subscriptions'),
+                // new AppMenuItem('DynamicProperties', 'Pages.Administration.DynamicProperties', 'flaticon-interface-8', '/app/admin/dynamic-property'),
                 new AppMenuItem('Settings', 'Pages.Administration.Host.Settings', 'flaticon-settings', '/app/admin/hostSettings'),
-                new AppMenuItem('Settings', 'Pages.Administration.Tenant.Settings', 'flaticon-settings', '/app/admin/tenantSettings'),
+                // new AppMenuItem('Settings', 'Pages.Administration.Tenant.Settings', 'flaticon-settings', '/app/admin/tenantSettings'),
                 new AppMenuItem('Master', 'Pages.Administration.Master', 'flaticon-settings', '',[],[
                     new AppMenuItem('PricingType', 'Pages.Administration.PricingType', 'flaticon-user', '/app/admin/master/pricing-type'),
                     new AppMenuItem('PriceApproach', 'Pages.Administration.PriceApproach', 'flaticon-price-tag', '/app/admin/master/price-approach'),
@@ -45,10 +45,13 @@ export class AppNavigationService {
                     new AppMenuItem('Department','Pages.Administration.Department', 'flaticon-folder-1', '/app/admin/master/department'),
                     // new AppMenuItem('Airline','Pages.Administration.Airline','flaticon-line-graph','/app/admin/master/airline'),
                     new AppMenuItem('Industry','Pages.Administration.Industry', 'flaticon-folder-1', '/app/admin/master/industry'),
-                    new AppMenuItem('Designation', 'Pages.Administration.Designation', 'flaticon-medical', '/app/admin/master/designation')
+                    new AppMenuItem('Designation', 'Pages.Administration.Designation', 'flaticon-medical', '/app/admin/master/designation'),
+                    new AppMenuItem('City','Pages.Administration.City','flaticon-line-graph','/app/admin/master/city'),
+                    new AppMenuItem('Country', 'Pages.Administration.Country', 'flaticon-medical', '/app/admin/master/country')
                 ])
-            ]),
-            new AppMenuItem('DemoUiComponents', 'Pages.DemoUiComponents', 'flaticon-shapes', '/app/admin/demo-ui-components')
+            ])
+            // ,
+            // new AppMenuItem('DemoUiComponents', 'Pages.DemoUiComponents', 'flaticon-shapes', '/app/admin/demo-ui-components')
         ]);
     }
 

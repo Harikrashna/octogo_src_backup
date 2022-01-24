@@ -20,3 +20,7 @@ D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\obj\Debug\ne
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\obj\Debug\net5.0\ref\CF.Octogo.EntityFrameworkCore.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\obj\Debug\net5.0\CF.Octogo.EntityFrameworkCore.pdb
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\obj\Debug\net5.0\CF.Octogo.EntityFrameworkCore.genruntimeconfig.cache
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\bin\Debug\net5.0\CF.Octogo.Application.Shared.dll
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\bin\Debug\net5.0\CF.Octogo.Data.dll
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\bin\Debug\net5.0\CF.Octogo.Application.Shared.pdb
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.EntityFrameworkCore\bin\Debug\net5.0\CF.Octogo.Data.pdb

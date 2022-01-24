@@ -176,6 +176,16 @@ namespace CF.Octogo.Authorization
             designation.CreateChildPermission(AppPermissions.Pages_Administration_Designation_Create, L("CreatingNewDesignation"), multiTenancySides: MultiTenancySides.Host);
             designation.CreateChildPermission(AppPermissions.Pages_Administration_Designation_Edit, L("EditDesignation"), multiTenancySides: MultiTenancySides.Host);
             designation.CreateChildPermission(AppPermissions.Pages_Administration_Designation_Delete, L("DeleteDesignation"), multiTenancySides: MultiTenancySides.Host);
+
+            var city = masters.CreateChildPermission(AppPermissions.Pages_Administration_City, L("City"), multiTenancySides: MultiTenancySides.Host);
+            city.CreateChildPermission(AppPermissions.Pages_Administration_City_Create, L("CreatingNewAwbCostApproach"), multiTenancySides: MultiTenancySides.Host);
+            city.CreateChildPermission(AppPermissions.Pages_Administration_City_Edit, L("EditingAwbCostApproach"), multiTenancySides: MultiTenancySides.Host);
+            city.CreateChildPermission(AppPermissions.Pages_Administration_City_Delete, L("DeletingAwbCostApproach"), multiTenancySides: MultiTenancySides.Host);
+
+            var country = masters.CreateChildPermission(AppPermissions.Pages_Administration_Country, L("Country"), multiTenancySides: MultiTenancySides.Host);
+            country.CreateChildPermission(AppPermissions.Pages_Administration_Country_Create, L("CreateNewCountry"), multiTenancySides: MultiTenancySides.Host);
+            country.CreateChildPermission(AppPermissions.Pages_Administration_Country_Edit, L("EditCountry"), multiTenancySides: MultiTenancySides.Host);
+            country.CreateChildPermission(AppPermissions.Pages_Administration_Country_Delete, L("DeleteCountry"), multiTenancySides: MultiTenancySides.Host);
         }
 
         private static ILocalizableString L(string name)

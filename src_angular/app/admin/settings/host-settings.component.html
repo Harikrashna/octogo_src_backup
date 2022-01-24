@@ -409,6 +409,14 @@
                                     <span></span>
                                     {{"IsQuickThemeSelectEnabled" | localize}}
                                 </label>
+                                <h5>{{"ShowTenantChange" | localize}}</h5>
+                                    <label for="Settings_ShowTenantChange" class="checkbox">
+                                        <input id="Settings_ShowTenantChange" class="md-check" type="checkbox"
+                                               name="ShowTenantChange"
+                                               [(ngModel)]="hostSettings.additionalSettings.showTenantChange">
+                                        <span></span>
+                                        {{"ShowTenantChange" | localize}}
+                                    </label>
                             </div>
                         </tab>
                         <tab class="p-5" *ngIf="enabledSocialLoginSettings && enabledSocialLoginSettings.length" heading="{{'ExternalLoginSettings' | localize}}">

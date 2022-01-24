@@ -37,8 +37,15 @@ export class AccountComponent extends AppComponentBase implements OnInit {
         'session-locked',
         'sign-up/user-sign-up',
         'user-detailed-registration',
-        'confirm-email'
+        'confirm-email',
+        'edition-compare',
+        'select-edition-new'
     ];
+    fullWidthRoutes: string[] = [
+        '/account/select-edition',
+        '/account/select-edition-new',
+        '/account/edition-compare'
+    ]
 
     public constructor(
         injector: Injector,
@@ -53,12 +60,16 @@ export class AccountComponent extends AppComponentBase implements OnInit {
         // We need this small hack in order to catch application root view container ref for modals
         this.viewContainerRef = viewContainerRef;
     }
-
+    get canShowTenantChange(): boolean {
+        return this.setting.getBoolean('App.UserManagement.ShowTenantChange');
+    }
     showTenantChange(): boolean {
         if (!this._router.url) {
             return false;
         }
-
+        if(!this.canShowTenantChange){  // Added by Hari Krashna for Tenant change (06/01/2021)
+            return false;
+        }
         if (_filter(this.tenantChangeDisabledRoutes, route => this._router.url.indexOf('/account/' + route) >= 0).length) {
             return false;
         }
@@ -67,7 +78,11 @@ export class AccountComponent extends AppComponentBase implements OnInit {
     }
 
     useFullWidthLayout(): boolean {
-        return this._router.url.indexOf('/account/select-edition') >= 0;
+        if (_filter(this.fullWidthRoutes, route => this._router.url.indexOf(route) >= 0).length) {
+            return true;
+        }
+        return false;
+       // return this._router.url.indexOf('/account/select-edition') >= 0;
     }
 
     ngOnInit(): void {

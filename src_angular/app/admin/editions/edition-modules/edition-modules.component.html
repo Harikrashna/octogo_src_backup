@@ -1,0 +1,74 @@
+<div *ngIf="PageModuleList?.length > 0">
+    <!-- Module list start -->
+    <div class="moduleCard d-flex" id="module_content">
+        <i class="pi pi-chevron-left" (click)="ScrollLeft()" aria-hidden="true" *ngIf="IsScrollable && CanScrollLeft"></i>
+        <i class="pi pi-chevron-right" (click)="ScrollRight()" aria-hidden="true" *ngIf="IsScrollable && CanScrollRight"></i>
+        
+        <!-- Dependent edition module start -->
+        <div *ngFor="let depEdition of DependEditionData;let editionInx = index;" class="d-flex">
+            <div class="text-center module-card-width selected-module-card" 
+                        *ngFor="let module of depEdition?.moduleData;let i = index;" 
+                        (click)="SelectDependentEditionModule(module,editionInx,i)">
+                <i class=" fa fa-check selected-check text-muted disable"></i>
+                <div>
+                    <i class=" fa fa-cube iconSize">&nbsp;</i>
+                    <div class="moduleName">{{module.moduleName}}</div>
+                    <div class="text-danger">{{depEdition.displayName}}</div>
+                </div>
+            </div>
+        </div>
+        <!-- Dependent edition module end -->
+        <!-- Module list start -->
+        <div class="text-center module-card-width" *ngFor="let module of PageModuleList; let i=index"
+            [ngClass]="(module?.selected) ? (SelectedIndex == i) ? 'selected-module-card module-focus':'selected-module-card':'module-card'">
+            <i class=" fa fa-check selected-check" *ngIf="module?.selected" (click)="SelectModule(module, i, true)"></i>
+            <div (click)="SelectModule(module, i)" class="cursor">     <i class=" fa fa-cube iconSize">&nbsp;</i>
+                <div class="moduleName">{{module.displayName}}</div>
+            </div>
+        </div>
+    </div>
+     <!-- Module list end -->
+
+     <!-- Sub module list start -->
+    <div class="subModuleCard" *ngIf="SelectedModule != null">
+        <div class="col pl-0">
+            <span class="bold">{{'SubModuleList' | localize}}&nbsp;:-&nbsp;</span>
+            {{SelectedModule?.displayName}}
+        </div>
+        <hr />
+        <div  *ngIf="SubModuleList?.length > 0" class="row">
+            <div class="col-sm-4 subModuleCheck d-flex"
+                *ngFor="let subModule of SubModuleList; let subIndex = index">
+                <input type="checkbox" [checked]="subModule.selected" 
+                [disabled]="IsDependentEditionModuleSelected" (click)="SelectSubModule(subIndex)" />
+                &nbsp;&nbsp;{{subModule.displayName}}
+            </div>
+        </div>
+        <div *ngIf="SubModuleList == null || SubModuleList == undefined|| SubModuleList?.length == 0"
+            class="primeng-no-data text-danger">
+            {{'NoData' | localize}}
+        </div>
+    </div>
+    <!-- Sub module list end -->
+
+    <!-- Sub Sub module list start -->
+    <div class="subModuleCard" *ngIf="SubSubModuleList?.length > 0">
+        <div class="col pl-0">
+            <span class="bold">{{'SubSubModuleList' | localize}}</span>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-4 subModuleCheck d-flex"
+                *ngFor="let subSubModule of SubSubModuleList">
+                <input type="checkbox" [checked]="subSubModule.selected" 
+                [disabled]="IsDependentEditionModuleSelected" (click)="SelectSubSubModule(subSubModule.subModuleId)" />
+                &nbsp;&nbsp;{{subSubModule.subModuleName}}
+            </div>
+        </div>
+    </div>
+    <!-- Sub Sub module list end -->
+</div>
+<div *ngIf="PageModuleList == null || PageModuleList == undefined || PageModuleList?.length == 0"
+    class="primeng-no-data text-danger">
+    {{'NoData' | localize}}
+</div>

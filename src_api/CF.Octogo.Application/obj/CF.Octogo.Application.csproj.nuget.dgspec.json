@@ -256,8 +256,14 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj"
+              },
               "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
                 "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj"
+              },
+              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj": {
+                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj"
               }
             }
           }
@@ -323,6 +329,10 @@
             "Stripe.net": {
               "target": "Package",
               "version": "[39.59.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.2, )"
             },
             "TimeZoneConverter": {
               "target": "Package",

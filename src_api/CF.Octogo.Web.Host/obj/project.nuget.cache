@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+dyLDAjyr3pOqUrkWrk+cvaOYNV4Tt6Vx1PIaHXgoczJlJgVWhQ2j1rCi8A6ExO2Y/EoZ1i1ZRFH0+FzQ3zNSw==",
+  "dgSpecHash": "CKT1mkvGiMGXNwdjt0QP/LLM+0fO+WKjAhetLTE8fC5R95y9qCzbo4s3y4n1huFlbMnALtgdbfpSjgRI0kqPEA==",
   "success": true,
   "projectFilePath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Web.Host\\CF.Octogo.Web.Host.csproj",
   "expectedPackageFiles": [

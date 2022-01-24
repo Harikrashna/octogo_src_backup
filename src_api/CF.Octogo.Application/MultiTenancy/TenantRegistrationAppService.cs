@@ -9,12 +9,10 @@ using Abp.Timing;
 using Abp.UI;
 using Abp.Zero.Configuration;
 using CF.Octogo.Configuration;
-using CF.Octogo.Debugging;
 using CF.Octogo.Editions;
 using CF.Octogo.Editions.Dto;
 using CF.Octogo.Features;
 using CF.Octogo.MultiTenancy.Dto;
-using CF.Octogo.MultiTenancy.Payments.Dto;
 using CF.Octogo.Notifications;
 using CF.Octogo.Security.Recaptcha;
 using CF.Octogo.Url;
@@ -25,7 +23,6 @@ using System.Threading.Tasks;
 using CF.Octogo.MultiTenancy.Payments;
 using Newtonsoft.Json;
 using CF.Octogo.Data;
-using CF.Octogo.Dto;
 using System.Data.SqlClient;
 
 namespace CF.Octogo.MultiTenancy
@@ -39,7 +36,6 @@ namespace CF.Octogo.MultiTenancy
         private readonly EditionManager _editionManager;
         private readonly IAppNotifier _appNotifier;
         private readonly ILocalizationContext _localizationContext;
-        private readonly TenantManager _tenantManager;
         private readonly ISubscriptionPaymentRepository _subscriptionPaymentRepository;
 
         public TenantRegistrationAppService(
@@ -48,7 +44,6 @@ namespace CF.Octogo.MultiTenancy
             EditionManager editionManager,
             IAppNotifier appNotifier,
             ILocalizationContext localizationContext,
-            TenantManager tenantManager,
             ISubscriptionPaymentRepository subscriptionPaymentRepository)
         {
             _multiTenancyConfig = multiTenancyConfig;
@@ -56,7 +51,6 @@ namespace CF.Octogo.MultiTenancy
             _editionManager = editionManager;
             _appNotifier = appNotifier;
             _localizationContext = localizationContext;
-            _tenantManager = tenantManager;
             _subscriptionPaymentRepository = subscriptionPaymentRepository;
 
             AppUrlService = NullAppUrlService.Instance;
@@ -108,7 +102,7 @@ namespace CF.Octogo.MultiTenancy
                     }
                 }
 
-                var tenantId = await _tenantManager.CreateWithAdminUserAsync(
+                var tenantId = await TenantManager.CreateWithAdminUserAsync(
                     input.TenancyName,
                     input.Name,
                     input.AdminPassword,
@@ -135,6 +129,15 @@ namespace CF.Octogo.MultiTenancy
                     user.LastModifierUserId = user.Id;
                 }
                 await _appNotifier.NewTenantRegisteredAsync(tenant);
+
+                // Insert Edition,Addon, Approach and pricing details for tenant
+                if (input.EditionId.HasValue)
+                {
+                    InsertTenantEditionAddonDto tenantEdition = new InsertTenantEditionAddonDto();
+                    tenantEdition.TenantId = tenantId;
+                    tenantEdition.EditionId = input.EditionId;
+                    TenantManager.InsertUpdateTenantEditionAddonDetails(tenantEdition);
+                }
 
                 return new RegisterTenantOutput
                 {
@@ -195,7 +198,7 @@ namespace CF.Octogo.MultiTenancy
 
             if (AbpSession.UserId.HasValue)
             {
-                var currentEditionId = (await _tenantManager.GetByIdAsync(AbpSession.GetTenantId()))
+                var currentEditionId = (await TenantManager.GetByIdAsync(AbpSession.GetTenantId()))
                         .EditionId;
 
                 if (currentEditionId.HasValue)
@@ -371,54 +374,7 @@ namespace CF.Octogo.MultiTenancy
                 throw new UserFriendlyException(L("AdminEmailAdressDuplicate"));
             }
         }
-        public async Task<List<ProductWithEditionDto>> GetProductWithEdition()
-        {
-            int EditionId = 0;
-            if (AbpSession.UserId.HasValue && AbpSession.TenantId.HasValue)
-            {
-                var currentEditionId = (await _tenantManager.GetByIdAsync(AbpSession.GetTenantId())).EditionId;
 
-                if (currentEditionId.HasValue)
-                {
-                    EditionId = (int)currentEditionId;
-                }
-            }
-            List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
-            ProductWithEditionDto result = new ProductWithEditionDto();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("EditionId", EditionId);
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_GetProductWithEdition", parameters);
-
-            if (ds.Tables.Count > 0)
-            {
-                var ProductWithEditionDataRet = SqlHelper.ConvertDataTable<ProductWithEditionRet>(ds.Tables[0]);
-                var ProductWithEditionData = ProductWithEditionDataRet.Select(rs => new ProductWithEditionDto
-                {
-                    ProductID = rs.ProductID,
-                    ProductName = rs.ProductName,
-                    Edition = rs.Edition != null ? JsonConvert.DeserializeObject<List<EditionList>>(rs.Edition.ToString()) : null
-
-                }).ToList();
-
-
-                //  ProductWithEditionDto pro = new ProductWithEditionDto();
-                //  pro.ProductID=ProductWithEditionData.ProductID;
-
-                //list.Add(ProductWithEditionData);
-                return ProductWithEditionData;
-
-
-
-            }
-
-            else
-            {
-                return null;
-            }
-        }
         public async Task<EditionDetailsForEditDto> GetEditionDetailsById(int EditionId)
         {
             SqlParameter[] parameters = new SqlParameter[1];

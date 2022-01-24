@@ -14,7 +14,8 @@ import { TooltipModule } from 'primeng/tooltip';
         PanelModule,
         OverlayPanelModule,
         DividerModule,
-        TooltipModule]
+        TooltipModule],
+        exports: [SelectEditionComponent]
 })
 export class SelectEditionModule {
 }

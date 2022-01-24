@@ -4076,7 +4076,9 @@
           "Abp.MailKit": "6.4.0",
           "Abp.Zero.Ldap": "6.4.0",
           "Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore": "6.4.0",
+          "CF.Octogo.Application.Shared": "10.4.0",
           "CF.Octogo.Core.Shared": "10.4.0",
+          "CF.Octogo.Data": "1.0.0",
           "Castle.Windsor.MsDependencyInjection": "3.4.0",
           "Microsoft.Extensions.Configuration.AzureKeyVault": "3.1.17",
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "5.0.0",
@@ -4085,6 +4087,7 @@
           "PayPalCheckoutSdk": "1.0.3",
           "PayPalHttp": "1.0.0",
           "Stripe.net": "39.59.0",
+          "System.Data.SqlClient": "4.8.2",
           "TimeZoneConverter": "3.5.0",
           "Twilio": "5.64.0"
         },

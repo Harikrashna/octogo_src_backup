@@ -23,4 +23,23 @@ export class ValidationServiceService {
               (keyCode >= 48 && keyCode <= 57) || keyCode==45 || keyCode==47);
      return ret;
   }
+  IsNumericWithDot(e, value: any = "", num) {
+    value = value != null ? value.toString() : "";
+    if ((value.indexOf(".") >= 0) && (value.length - value.indexOf(".") > num)) {
+        return false
+    }
+    var keyCode = e.which ? e.which : e.keyCode
+    var ret = ((keyCode >= 48 && keyCode <= 57) || keyCode == 46 || keyCode == 0);
+    if (ret && value != null) {
+        let IsDoubleDot = value.includes('.');
+        if (IsDoubleDot) {
+            let input = String.fromCharCode(e.charCode);
+            const reg = /^\d*(?:[.,]\d{1,2})?$/;
+            if (!reg.test(input)) {
+                e.preventDefault();
+            }
+        }
+    }
+    return ret;
+}
 }

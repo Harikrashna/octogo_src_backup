@@ -6,11 +6,21 @@ namespace CF.Octogo.Editions.Dto
 {
     public class CreateAddonDto
     {
-        public List<PriceDiscount> priceDiscount { get; set; } = null;
-        public int? EditionID { get; set; }
+        public string AddonName { get; set; }
+        public int EditionID { get; set; }
         public int ProductId { get; set; }
         public int ApproachId { get; set; }
-        public int ModuleId { get; set; }
+        public bool IsStandAlone { get; set; } = false;
         public int? AddonId { get; set; }
+        public string Description { get; set; }
+        public List<AddonModulesDto> ModuleList { get; set; }
+        public List<PriceDiscount> priceDiscount { get; set; } = null;
+    }
+    public class AddonModulesDto
+    {
+        public int? EditionModuleId { get; set; }
+        public int? PageModuleId { get; set; }
+        public string ModuleName { get; set; }
+        public List<ModuleListDto> SubModuleList { get; set; }
     }
 }

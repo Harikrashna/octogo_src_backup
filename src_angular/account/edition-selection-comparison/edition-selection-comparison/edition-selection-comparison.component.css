@@ -1,0 +1,367 @@
+body {
+    background-color: #f2f3f8;
+}
+
+button:disabled,
+button[disabled] {
+    cursor: not-allowed !important;
+}
+
+.row-centered {
+    text-align: center;
+    display: block !important;
+}
+
+.col-centered {
+    display: inline-table;
+    float: none;
+    text-align: center;
+    margin-right: -4px;
+}
+
+.pricing-items .pricing-title {
+    font-size: 3rem;
+    font-weight: 700;
+    display: block;
+    margin-top: 5em;
+    color: #6c7293;
+}
+
+.pricing-items .pricing-subtitle {
+    font-size: 1.1rem;
+    color: #adb1c7;
+    font-weight: 500;
+    min-height: 15px;
+}
+
+.pricing-items .pricing-item-icon {
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    position: absolute;
+}
+
+.pricing-items .pricing-item-icon > i {
+    font-size: 8.57rem;
+}
+.customCard{
+    z-index: 1000;
+    box-shadow: 5px 5px red .5;
+    box-shadow: 3px 3px 5px 0px;
+    padding: 5px;
+  }
+
+  #price{
+    font-size: 10px;
+    color: rgb(68, 129, 53)
+  }
+
+  th ,td
+{
+    text-align: center;
+    /* width:20% !important; */
+    white-space: nowrap;
+} 
+
+h3{
+    font-size: 24px
+}
+
+h4{
+    margin-top: 20px;
+}
+.addon-price {
+font-size: 12px;
+    color: rgb(54, 28, 199);
+}
+
+.addon{
+    font-weight: 600;
+    font-size: 14px;
+}
+
+#addons{
+    border: 1px solid black; 
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+     text-align: center;
+    border: 1px solid #f3f2f1;
+    padding: 0.75rem 0.75rem;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+     text-align: center;
+    border: 1px solid #f3f2f1;
+    font-weight: 600;
+    color: #323130;
+    background: #ffffff;
+    transition: box-shadow 0.2s;
+}
+.card {
+    border-radius: 5px;
+    box-shadow: 1px 7px 10px 1px grey;
+    border: 1px solid rgb(175, 153, 153);
+    margin: 10px;
+    padding: 10px;
+}
+
+.card-body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 0;
+}
+
+.card-header {
+    padding: 5px;
+    margin-bottom: 0;
+    background-color: #ffffff;
+    border-bottom: 1px solid #EBEDF3;
+}
+
+.fa, .fas {
+    font-weight: 600;
+}
+
+.col-id-no{
+    left:0px;
+    position: sticky;
+}
+
+.fixed-header{
+    z-index: 50;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    text-align: center;
+    border: 1px solid #f3f2f1;
+    padding: 0.75rem 0.75rem;
+    background: #ffffff;
+}
+
+.column-width{
+    width:200px !important
+}
+
+
+
+
+@media screen and (max-width: 40em){
+    .p-datatable.p-datatable-responsive .p-datatable-tbody>tr>td .p-column-title {
+        padding: 0 rem;
+      
+    }
+
+    .p-datatable.p-datatable-responsive .p-datatable-tbody>tr>td {
+        text-align: left;
+        display: block;
+        width: 100%;
+        float: left;
+        clear: left;
+    }
+}
+
+
+.table-data{
+    border: 1px solid #ddd;
+    padding: 9px;
+    /* line-height: 1.42857143; */
+    vertical-align: top;
+}
+
+.table-modules{
+    padding: 9px;
+    line-height: 1.66;
+    vertical-align: top;
+}
+
+.card-modules {
+    border-radius: 0px; 
+    box-shadow: 1px 7px 10px 1px grey;
+     border: none;
+    margin: none; 
+    padding: none;
+}
+ .table-bordered td {
+    border:none;
+}
+ .table td
+{ 
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: none;
+}
+
+
+
+.editions{
+    width:230px !important;
+}
+
+#btn{position: absolute;
+    right:0px;
+top:5px
+}
+
+.editionHeading{
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-bottom-width: 2px;
+    vertical-align: bottom;
+    height:115px;
+}
+
+.scrolling-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    width:90vw;
+    display:flex;
+}
+
+h2{
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 30px;
+}
+  
+.scrolling-wrapper .editionColumn {
+      display: inline-block;
+    }
+
+    .row{
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap:nowrap; 
+         margin-right: 0px; 
+         margin-left: 0px; 
+    }
+    
+
+  
+
+
+    .pi-chevron-left{
+        font-size: 20px;
+        position: absolute;
+        cursor: pointer;
+        margin-top: 45px;
+        margin-left: -6px;
+        z-index: 1000;
+    }
+    .pi-chevron-right{
+        font-size: 20px;
+        position: absolute;
+        cursor: pointer;
+        margin-top: 45px;
+        z-index: 1000;
+        right: 52px;
+    }
+
+    .custom-card{
+        box-shadow: 1px 6px 3px 1px lightgrey !important;
+        border-radius: 0px !important;
+         transition: transform .2s; 
+        
+    }
+
+    .custom-card:hover{
+        z-index: 800;
+        /* transform: scale(1.01); */
+    
+}
+.table-addons::-webkit-scrollbar {
+    width: 5em;
+  }
+
+  .prev{
+    width: 25px;
+    top: 40%;
+    position: absolute;
+    left:-15px;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    font-weight: bolder;
+    color:#323130
+}
+
+.next{
+    width: 25px;
+    top: 40%;
+    right:-10px;
+    position: absolute;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    font-weight: bolder;
+    color:#323130;
+    margin-right: 9px;
+}
+
+.next i{
+    color:#f2f0ed;
+    font-size: 2.4rem;
+}
+.next i:hover{
+    color:black;
+}
+.prev i:hover{
+    color:black;
+}
+
+.prev i{
+    color:#f2f0ed;
+    font-size: 2.4rem;
+}
+.pi-chevron-right {
+    font-size: 20px;
+    position: relative; 
+    cursor: pointer;
+    margin-top:0px;
+    z-index: 1000;
+    right: 0px;
+}
+
+.pi-chevron-left {
+    font-size: 20px;
+     position: relative;
+    cursor: pointer;
+    margin-top: 0px;
+    margin-left: 0px;
+    z-index: 1000;
+}
+    
+.table-addons{
+    padding: 9px;
+    height: 215px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    overflow-y: auto;
+}
+
+.d-none{
+    display: none;
+}
+.cursor{
+    cursor: pointer;
+}
+#AccountModuleRoot{
+     display: block !important;
+ }
+ .text-10{
+     font-size: 10px;
+ }
+ .color-green{
+    color:green;
+ }
+ .line-height{
+    line-height: 1.66;
+ }
+ .padding-bottom-25{
+     padding-bottom: 25px;
+ }

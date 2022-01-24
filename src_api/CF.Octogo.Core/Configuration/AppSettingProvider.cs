@@ -176,7 +176,10 @@ namespace CF.Octogo.Configuration
                     clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.Application | SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.UserManagement.UseGravatarProfilePicture,
                     GetFromAppSettings(AppSettings.UserManagement.UseGravatarProfilePicture, "false"),
-                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.User)
+                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.User),
+                new SettingDefinition(AppSettings.TenantManagement.ShowTenantChange,
+                    GetFromAppSettings(AppSettings.TenantManagement.ShowTenantChange, "true"),
+                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.Application),
             };
         }
 

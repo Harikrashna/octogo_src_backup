@@ -2,11 +2,11 @@
     aria-labelledby="createUpdateModal" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form *ngIf="active" #addonForm="ngForm" novalidate (ngSubmit)="save()">
+            <form *ngIf="active" #addonForm="ngForm" novalidate (ngSubmit)="save()" >
                 <div class="modal-header">
                     <h5 class="modal-title">
                         <span *ngIf="!isEdit">{{"CreatingNewAddon" | localize}}</span>
-                        <span *ngIf="isEdit">{{l("EditingAddon")}}: {{AddonName}} </span>
+                        <span *ngIf="isEdit">{{l("EditingAddon")}}: {{AddonDataForEdit.addonName}} </span>
                     </h5>
                     <button type="button" class="close" (click)="Reset()" [attr.aria-label]="l('Close')"
                         [disabled]="saving">
@@ -19,14 +19,39 @@
                             <div class="form-group">
                                 <label for="product">{{"Product" | localize}} *</label>
                                 <select class="form-control" [(ngModel)]="ProductId" required name="product"
-                                    id="product" #productNameSelect="ngModel" [disabled]="isEdit">
+                                    id="ddl_Product" #productNameSelect="ngModel" [disabled]="isEdit"
+                                    (ngModelChange)="GetEditionListForAddon()">
                                     <option disabled>{{ "Select" | localize}}</option>
                                     <option *ngFor="let product of ProductList" [value]="product.id">
                                         {{product.productName}}</option>
                                 </select>
                                 <validation-messages [formCtrl]="productNameSelect"></validation-messages>
                             </div>
-                            <div class="form-group" *ngIf="isStandAlone && !isEdit">
+                            <div class="form-group">
+                                <label for="EditionDisplayName">{{"EditionName" | localize}} *</label>
+                                <select class="form-control" [(ngModel)]="EditionID" [required]="true"
+                                    name="EditionDisplayName" (ngModelChange)="GetModuleListByEditionForAddon(EditionID)"
+                                    #editionName="ngModel" [disabled]="isEdit">
+                                    <option disabled>{{ "Select" | localize}}</option>
+                                    <option *ngFor="let edition of EditionList" [value]="edition.id">
+                                        {{edition.displayName}}</option>
+                                </select>
+                                <validation-messages [formCtrl]="editionName"></validation-messages>
+                            </div>
+                            <div class="form-group">
+                                <label for="AddonDisplayName">{{"AddonName" | localize}} *</label>
+                                <input id="txt_Addon" #addonNameInput="ngModel" class="form-control" type="text"
+                                    name="AddonDisplayName" [(ngModel)]="AddonName" required maxlength="100"
+                                    (keypress)="validationService.NameValidation($event)">
+                                <validation-messages [formCtrl]="addonNameInput"></validation-messages>
+                            </div>
+                            <div class="form-group">
+                                <label for="DescriptionName">{{"Description" | localize}}</label>
+                                <input id="txt_Description" #descriptionInput="ngModel" class="form-control" type="text"
+                                    name="DescriptionName" [(ngModel)]="Description" maxlength="250"
+                                    (keypress)="validationService.NameValidation($event)">
+                            </div>
+                            <!-- <div class="form-group">
                                 <label for="AddonDisplayName">{{"AddonName" | localize}} *</label>
                                 <p-autoComplete [(ngModel)]="SelectedAddon" id="AddonDisplayName" class="pl-0"
                                     [suggestions]="filteredPageModuleList" (completeMethod)="SearchAddonModule($event)"
@@ -37,7 +62,7 @@
                                 </p-autoComplete>
                                 <validation-messages [formCtrl]="AddonName"></validation-messages>
                             </div>
-                            <div class="form-group" *ngIf="isEdit">
+                             <div class="form-group" *ngIf="isEdit">
                                 <div class="form-group" *ngIf="!isStandAlone">
                                     <label for="FromEditionDisplayName">{{"FromTheEdition" | localize}} *</label>
                                     <input id="FromEditionDisplayName" class="form-control"
@@ -56,10 +81,10 @@
                                         type="text" name="addonDisplayName" [(ngModel)]="AddonName"
                                         [attr.disabled]="true">
                                 </div>
-                            </div>
+                            </div> -->
                             <label>{{"SubscriptionPrice" | localize}}</label>
                             <fieldset class="radio-inline">
-                            <!-- [disabled]="AddonDataForEdit?.addonId > 0 && !AddonDataForEdit?.isFree" -->
+                                <!-- [disabled]="AddonDataForEdit?.addonId > 0 && !AddonDataForEdit?.isFree" -->
                                 <label for="IsFree" class="radio">
                                     <input id="IsFree" name="AddonPrice" [(ngModel)]="isFree"
                                         (ngModelChange)="resetPrices($event)" [value]="true" type="radio">
@@ -74,7 +99,7 @@
                                 </label>
                             </fieldset>
                         </tab>
-                        <tab heading="{{'AddonDetails' | localize}}" class="p-5">
+                        <!-- <tab heading="{{'AddonDetails' | localize}}" class="p-5">
                             <div *ngIf="AddonModuleDetails?.moduleId > 0">
                                         <p-panel header="{{'ModuleName' | localize}} : {{AddonModuleDetails.moduleName}}" [toggleable]="true" [collapsed]="false">
                                             <ul *ngIf="AddonModuleDetails.subModuleList?.length > 0">
@@ -89,6 +114,66 @@
                                         </p-panel>
                             </div>
                             <div *ngIf="AddonModuleDetails == null || AddonModuleDetails == undefined" class="primeng-no-data text-danger">
+                                {{'NoData' | localize}}
+                            </div>
+                        </tab> -->
+                        <tab heading="{{'Modules' | localize}}" class="p-5">
+                            <div *ngIf="ModulesList?.length > 0">
+                                <!-- Module list start -->
+                                <div class="moduleCard d-flex" id="module_content">
+                                    <i class="pi pi-chevron-left" (click)="ScrollLeft()" aria-hidden="true" *ngIf="IsScrollable && CanScrollLeft"></i>
+                                    <i class="pi pi-chevron-right" (click)="ScrollRight()"  aria-hidden="true" *ngIf="IsScrollable && CanScrollRight"></i>
+                                    <div class="text-center module-card-width"
+                                        *ngFor="let module of ModulesList; let i=index"
+                                        [ngClass]="(module?.selected) ? (SelectedIndex == i) ? 'selected-module-card module-focus':'selected-module-card':'module-card'">
+                                        <i class=" fa fa-check selected-check" *ngIf="module?.selected"
+                                            (click)="SelectModule(null, i)"></i>
+                                        <div (click)="SelectModule(module, i)" class="cursor">
+                                            <i class=" fa fa-cube iconSize">&nbsp;</i>
+                                            <div class="moduleName">{{module.moduleName}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <!-- Module list end -->
+
+                                 <!-- Sub module list start -->
+                                <div class="subModuleCard" *ngIf="SelectedModule != null">
+                                    <div class="col pl-0">
+                                        <span class="bold">{{'SubModuleList' | localize}}&nbsp;:-&nbsp;</span>
+                                        {{SelectedModule?.moduleName}}
+                                    </div>
+                                    <hr />
+                                    <div *ngIf="SelectedModule?.subModuleList?.length > 0" class="row">
+                                        <div class="col-sm-4 subModuleCheck d-flex"
+                                            *ngFor="let subModule of SelectedModule.subModuleList; let subIndex = index">
+                                            <input type="checkbox" [checked]="subModule.selected" (click)="SelectSubModule(subIndex)" />&nbsp;&nbsp;{{subModule.subModuleName}}
+                                        </div>
+                                    </div>
+                                    <div *ngIf="SelectedModule == null || SelectedModule?.subModuleList == null || SelectedModule?.subModuleList?.length == 0"
+                                        class="primeng-no-data text-danger">
+                                        {{'NoData' | localize}}
+                                    </div>
+                                </div>
+                                <!-- Sub module list end -->
+
+                                <!-- Sub Sub module list start -->
+                                <div class="subModuleCard" *ngIf="SubSubModuleList?.length > 0">
+                                    <div class="col pl-0">
+                                        <span class="bold">{{'SubSubModuleList' | localize}}</span>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-sm-4 subModuleCheck d-flex"
+                                            *ngFor="let subSubModule of SubSubModuleList">
+                                            <input type="checkbox" [checked]="subSubModule.selected" (click)="SelectSubSubModule(subSubModule.subModuleId)" />
+                                            &nbsp;&nbsp;{{subSubModule.subModuleName}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Sub Sub module list end -->
+                            </div>
+                            <div *ngIf="ModulesList == null || ModulesList == undefined || ModulesList?.length == 0"
+                                class="primeng-no-data text-danger">
                                 {{'NoData' | localize}}
                             </div>
                         </tab>
@@ -137,7 +222,7 @@
                                                         [ngClass]="(item.ActualPrice==null || item.ActualPrice <=0) && priceFormInvalid ? 'field-required':''"
                                                         (blur)="ActualPriceInput(item)"
                                                         (keydown.enter)="ActualPriceInput(item)"
-                                                        (keypress)="IsNumericWithDot($event,item.ActualPrice,2)" />
+                                                        (keypress)="validationService.IsNumericWithDot($event,item.ActualPrice,2)" />
                                                 </div>
                                             </td>
                                             <td>
@@ -148,7 +233,7 @@
                                                     [ngClass]="(item.DiscountPercentage==null || item.DiscountPercentage < 0 || item.DiscountPercentage >100) && priceFormInvalid ? 'field-required':''"
                                                     (blur)="DiscountPercentageInput(item)"
                                                     (keydown.enter)="DiscountPercentageInput(item)"
-                                                    (keypress)="IsNumericWithDot($event,item.DiscountPercentage,2)" />
+                                                    (keypress)="validationService.IsNumericWithDot($event,item.DiscountPercentage,2)" />
                                             </td>
                                             <td>
                                                 <div class="input-group">
@@ -162,7 +247,7 @@
                                                         [ngClass]="(item.DiscountedPrice==null || item.DiscountedPrice <=0) && priceFormInvalid ? 'field-required':''"
                                                         (blur)="DicountedPriceInput(item)"
                                                         (keydown.enter)="DicountedPriceInput(item)"
-                                                        (keypress)="IsNumericWithDot($event,item.DiscountedPrice,2)" />
+                                                        (keypress)="validationService.IsNumericWithDot($event,item.DiscountedPrice,2)" />
                                                 </div>
                                             </td>
                                         </tr>

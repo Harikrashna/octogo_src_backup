@@ -24,6 +24,7 @@ namespace CF.Octogo.Configuration.Host.Dto
         public HostBillingSettingsEditDto Billing { get; set; }
 
         public OtherSettingsEditDto OtherSettings { get; set; }
+        public AdditionalSettingEditDto AdditionalSettings { get; set; }
 
         public ExternalLoginProviderSettingsEditDto ExternalLoginProviderSettings { get; set; }
     }

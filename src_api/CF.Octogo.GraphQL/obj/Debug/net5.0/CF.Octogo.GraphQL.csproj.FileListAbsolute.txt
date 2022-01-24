@@ -19,3 +19,5 @@ D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.GraphQL\obj\Debug\net5.0\CF.Octo
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.GraphQL\obj\Debug\net5.0\CF.Octogo.GraphQL.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.GraphQL\obj\Debug\net5.0\ref\CF.Octogo.GraphQL.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.GraphQL\obj\Debug\net5.0\CF.Octogo.GraphQL.pdb
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.GraphQL\bin\Debug\net5.0\CF.Octogo.Data.dll
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.GraphQL\bin\Debug\net5.0\CF.Octogo.Data.pdb

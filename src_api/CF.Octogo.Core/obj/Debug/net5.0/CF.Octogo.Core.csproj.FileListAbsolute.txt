@@ -13,3 +13,7 @@ D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\obj\Debug\net5.0\CF.Octogo.
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\obj\Debug\net5.0\CF.Octogo.Core.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\obj\Debug\net5.0\ref\CF.Octogo.Core.dll
 D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\obj\Debug\net5.0\CF.Octogo.Core.pdb
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\bin\Debug\net5.0\CF.Octogo.Application.Shared.dll
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\bin\Debug\net5.0\CF.Octogo.Data.dll
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\bin\Debug\net5.0\CF.Octogo.Application.Shared.pdb
+D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core\bin\Debug\net5.0\CF.Octogo.Data.pdb
