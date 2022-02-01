@@ -19,8 +19,15 @@ namespace CF.Octogo.Editions.Dto
     public class AddonModulesDto
     {
         public int? EditionModuleId { get; set; }
-        public int? PageModuleId { get; set; }
+        public int PageModuleId { get; set; }
         public string ModuleName { get; set; }
-        public List<ModuleListDto> SubModuleList { get; set; }
+        public List<AddonSubListDto> SubModuleList { get; set; }
+    }
+    public class AddonSubListDto
+    {
+        public int? EditionModuleId { get; set; }
+        public int PageModuleId { get; set; }
+        public string ModuleName { get; set; }
+        public List<AddonSubListDto> SubModuleList { get; set; }
     }
 }

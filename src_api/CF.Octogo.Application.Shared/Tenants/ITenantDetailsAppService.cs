@@ -9,7 +9,9 @@ namespace CF.Octogo.Tenants
 {
     public interface ITenantDetailsAppService : IApplicationService
     {
-        Task<List<TenantPageSnoListDto>> GetPageSnoByTenantAndProductId(TenantProductInputDto input);
+        Task<PageDetailsWithProduct> GetPageSnoByTenantAndProductId(TenantProductInputDto input);
         Task<List<TenantPageSnoListDto>> EditionModuleAndPagesByUserId(UserProductInputDto input);
+        Task<TenantDBDetailsDto> CreateAdminUserOnTenantDB(int? tenantId = null);
+        Task UpdateTenantSyetemSettingForEditionUpdate(int editionId, int? tenantId, int? addonId = null);
     }
 }

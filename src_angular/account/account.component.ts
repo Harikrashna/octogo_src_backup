@@ -38,13 +38,11 @@ export class AccountComponent extends AppComponentBase implements OnInit {
         'sign-up/user-sign-up',
         'user-detailed-registration',
         'confirm-email',
-        'edition-compare',
         'select-edition-new'
     ];
     fullWidthRoutes: string[] = [
         '/account/select-edition',
-        '/account/select-edition-new',
-        '/account/edition-compare'
+        '/account/select-edition-new'
     ]
 
     public constructor(

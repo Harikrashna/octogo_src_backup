@@ -140,11 +140,6 @@ import { AccountRouteGuard } from './auth/account-route-guard';
                         loadChildren: () =>
                             import('./edition-selection-comparison/edition-selection-comparison.module').then((m) => m.EditionSelectionComparisonModule),
                     },
-                    {
-                        path: 'edition-compare',
-                        loadChildren: () =>
-                            import('./edition-compare/edition-compare.module').then((m) => m.EditionCompareModule),
-                    },
                     { path: '**', redirectTo: 'login' },
                 ],
             },

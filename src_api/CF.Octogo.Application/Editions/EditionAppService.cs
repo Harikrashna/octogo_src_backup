@@ -24,6 +24,7 @@ using Abp.Domain.Uow;
 using CF.Octogo.UserRegistration.Dto;
 using CF.Octogo.Common.Dto;
 using CF.Octogo.Dto;
+using CF.Octogo.Tenants;
 
 namespace CF.Octogo.Editions
 {
@@ -34,6 +35,7 @@ namespace CF.Octogo.Editions
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IBackgroundJobManager _backgroundJobManager;
         private readonly TenantManager _tenantManager;
+        private readonly ITenantDetailsAppService _tenantDetailsService;
         public IAbpSession AbpSession { get; set; }
 
         public EditionAppService(
@@ -41,7 +43,8 @@ namespace CF.Octogo.Editions
             IRepository<SubscribableEdition> editionRepository,
             IRepository<Tenant> tenantRepository,
             IBackgroundJobManager backgroundJobManager,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            ITenantDetailsAppService tenantDetailsService)
         {
             _editionManager = editionManager;
             _editionRepository = editionRepository;
@@ -49,6 +52,7 @@ namespace CF.Octogo.Editions
             _backgroundJobManager = backgroundJobManager;
             AbpSession = NullAbpSession.Instance;
             _tenantManager = tenantManager;
+            _tenantDetailsService = tenantDetailsService;
         }
 
         [AbpAuthorize(AppPermissions.Pages_Editions)]
@@ -223,32 +227,41 @@ namespace CF.Octogo.Editions
         }
         protected virtual async Task InsertUpdateEdition(CreateEditionDto input)
         {
-            bool isEdit = false;
-            if(input.Edition.Id > 0)
-            {
-                isEdit = true;
-            }
-            input.isEdit = isEdit;
-            if (input.Edition.ExpiringEditionId > 0)
-            {
-                var expiringEdition = GetEditionsByProductId(input.ProductId, input.Edition.ExpiringEditionId, "PAID");
-                if (expiringEdition.Result.Items.Count > 0)
-                {
-                    throw new UserFriendlyException(L("ExpiringEditionMustBeAFreeEdition"));
-                }
-            }
-            var edition = ObjectMapper.Map<SubscribableEdition>(input.Edition);
-            if (isEdit == false)
-            {
-                await _editionManager.CreateAsync(edition);
-                // CurrentUnitOfWork.SaveChanges(); //It's done to get Id of the edition.
+            var Duplicacy = CheckEditionDuplicacy(input);
 
-                input.Edition.Id = edition.Id;
-            }
-            await InsertUpdateEditionModuleAndPricing(input);
-            if (edition.Id > 0)
+            if (Duplicacy.Result != null)
             {
-               // _editionManager.SetFeatureValuesAsync((int)input.Edition.Id, input.FeatureValues.Select(fv => new NameValue(fv.Name, fv.Value)).ToArray());
+                throw new UserFriendlyException(L("ProductEditionDuplicate"));
+            }
+            else
+            {
+                bool isEdit = false;
+                if (input.Edition.Id > 0)
+                {
+                    isEdit = true;
+                }
+                input.isEdit = isEdit;
+                if (input.Edition.ExpiringEditionId > 0)
+                {
+                    var expiringEdition = GetEditionsByProductId(input.ProductId, input.Edition.ExpiringEditionId, "PAID");
+                    if (expiringEdition.Result.Items.Count > 0)
+                    {
+                        throw new UserFriendlyException(L("ExpiringEditionMustBeAFreeEdition"));
+                    }
+                }
+                var edition = ObjectMapper.Map<SubscribableEdition>(input.Edition);
+                if (isEdit == false)
+                {
+                    await _editionManager.CreateAsync(edition);
+                    // CurrentUnitOfWork.SaveChanges(); //It's done to get Id of the edition.
+
+                    input.Edition.Id = edition.Id;
+                }
+                await InsertUpdateEditionModuleAndPricing(input);
+                if (edition.Id > 0)
+                {
+                    // _editionManager.SetFeatureValuesAsync((int)input.Edition.Id, input.FeatureValues.Select(fv => new NameValue(fv.Name, fv.Value)).ToArray());
+                }
             }
         }
 
@@ -291,13 +304,13 @@ namespace CF.Octogo.Editions
 
         public async Task<int> InsertUpdateEditionModuleAndPricing(CreateEditionDto input)
         {
-            var edition = GetEditionsByProductId(input.ProductId, input.Edition.Id);
-            if (edition.Result.Items.Where(o => o.DisplayName.ToLower() == input.Edition.DisplayName.ToLower()).ToList().Count > 0)
-            {
-                throw new UserFriendlyException(L("ProductEditionDuplicate"));
-            }
-            else
-            {
+            //var edition = GetEditionsByProductId(input.ProductId, input.Edition.Id);
+            //if (edition.Result.Items.Where(o => o.DisplayName.ToLower() == input.Edition.DisplayName.ToLower()).ToList().Count > 0)
+            //{
+            //    throw new UserFriendlyException(L("ProductEditionDuplicate"));
+            //}
+            //else
+            //{
                     SqlParameter[] parameters = new SqlParameter[12];
                     parameters[0] = new SqlParameter("ProductId", input.ProductId);
                     parameters[1] = new SqlParameter("ModuleData", JsonConvert.SerializeObject(input.ModuleList));
@@ -316,14 +329,18 @@ namespace CF.Octogo.Editions
                             "USP_InsertEditionModulesANDPricing", parameters);
                     if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                     {
+                    if (input.Edition.Id > 0)
+                    {
+                        _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)input.Edition.Id, null);
+                    }
                         return (int)ds.Tables[0].Rows[0]["Id"];
                     }
                     else
                     {
                         return 0;
                     }
-            }
-            return 0;
+            // }
+            // return 0;
         }
         public async Task<EditionDetailsForEditDto> getEditionDetailsForEdit(int EditionId)
         {
@@ -382,7 +399,7 @@ namespace CF.Octogo.Editions
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GETEDITIONMODULES", parameters
+                    "USP_GetEditionModules", parameters
                     );
             if (ds.Tables.Count > 0)
             {
@@ -608,5 +625,52 @@ namespace CF.Octogo.Editions
                 return null;
             }
         }
+        private async Task<DataSet> CheckEditionDuplicacy(CreateEditionDto input)
+        {
+            List<int> ModulePageSnoList = new List<int>();
+            input.ModuleList.ForEach(module =>
+            {
+                if (module.PageModuleId > 0)
+                {
+                    ModulePageSnoList.Add((int)module.PageModuleId);
+                    if (module.SubModuleList != null && module.SubModuleList.Count > 0)
+                    {
+                        module.SubModuleList.ForEach(subModule =>
+                        {
+                            ModulePageSnoList.Add((int)subModule.PageModuleId);
+                            if (subModule.SubModuleList != null && subModule.SubModuleList.Count > 0)
+                            {
+                                subModule.SubModuleList.ForEach(subSubModule =>
+                                {
+                                    ModulePageSnoList.Add((int)subSubModule.PageModuleId);
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+            ModulePageSnoList.Sort();
+            SqlParameter[] parameters = new SqlParameter[6];
+            parameters[0] = new SqlParameter("ProductId", input.ProductId);
+            parameters[1] = new SqlParameter("EditionName", input.Edition.DisplayName.Trim());
+            parameters[2] = new SqlParameter("EditionId", input.Edition.Id);
+            parameters[3] = new SqlParameter("IsFree", input.priceDiscount != null ? false : true);
+            parameters[4] = new SqlParameter("SelectedPageSno", String.Join(",", ModulePageSnoList));
+            parameters[5] = new SqlParameter("DependentEditionId", String.Join(",", input.DependantEditionID));
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_CheckEditionDuplicacy", parameters
+            );
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                return ds;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
+    
 }

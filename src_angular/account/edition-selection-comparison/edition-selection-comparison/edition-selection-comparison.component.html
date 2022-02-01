@@ -16,7 +16,7 @@
                     <h3 class="d-block d-block font-weight-bold text-primary">
                         {{product.productName}}</h3>
                     <p-table #table [value]="[{}]" class="table table-hover table-bordered" scrollDirection="both"
-                        [scrollable]="true" [style]="{width:'90vw'}">
+                        [scrollable]="true" [style]="{width:'90vw'}" id="dataTable">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th class="col-id-no fixed-header" pFrozenColumn style="width:200px !important">&nbsp;

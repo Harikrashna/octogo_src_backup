@@ -190,6 +190,12 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
                         loadChildren: () => import('./masters/country/country.module').then(m => m.CountryModule),
                         data: { permission: 'Pages.Administration.Country' }
                     },
+                    {
+                        path: 'edition-compare',
+                        loadChildren: () =>
+                            import('./editions/edition-compare/edition-compare.module').then((m) => m.EditionCompareModule),
+                        data: { permission: 'Pages.Editions' }
+                    },
                     { path: '', redirectTo: 'hostDashboard', pathMatch: 'full' },
                     { path: '**', redirectTo: 'hostDashboard' }
                 ]

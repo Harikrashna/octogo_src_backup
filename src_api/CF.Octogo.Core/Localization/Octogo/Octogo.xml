@@ -1347,8 +1347,9 @@
 		<text name="SelectProduct">Select Product</text>
 		<text name="SelectEdition">Select Edition</text>
 		<text name="CompairingWithThreeDot">Comparing...</text>
-		<text name="PleaseSelectMoreThanOneEditions">Please choose more than one edition to compare</text>
+		<text name="PleaseSelectMoreThanOneEditions">Please choose minimum two editions to compare</text>
 		<text name="DuplicateEdition">Duplicate Edition</text>
+		<text name="EditionCompare">Compare Edition</text>
 	</texts>
 </localizationDictionary>
 

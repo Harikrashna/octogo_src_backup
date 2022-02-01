@@ -17,6 +17,7 @@ using CF.Octogo.Authorization;
 using CF.Octogo.Editions.Dto;
 using CF.Octogo.MultiTenancy.Dto;
 using CF.Octogo.Url;
+using CF.Octogo.Tenants;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -25,11 +26,13 @@ namespace CF.Octogo.MultiTenancy
     {
         public IAppUrlService AppUrlService { get; set; }
         public IEventBus EventBus { get; set; }
+        private readonly ITenantDetailsAppService _tenantDetailsService;
 
-        public TenantAppService()
+        public TenantAppService(ITenantDetailsAppService tenantDetailsService)
         {
             AppUrlService = NullAppUrlService.Instance;
             EventBus = NullEventBus.Instance;
+            _tenantDetailsService = tenantDetailsService;
         }
 
         public async Task<PagedResultDto<TenantListDto>> GetTenants(GetTenantsInput input)
@@ -104,6 +107,8 @@ namespace CF.Octogo.MultiTenancy
                     OldEditionId = tenant.EditionId,
                     NewEditionId = input.EditionId
                 });
+
+                _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)tenant.EditionId, input.Id);
             }
 
             ObjectMapper.Map(input, tenant);

@@ -8,6 +8,7 @@ using CF.Octogo.Data;
 using CF.Octogo.Tenants.Dto;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -32,25 +33,34 @@ namespace CF.Octogo.Tenants
             _roleManager = roleManager;
             _userManager = userManager;
         }
-        public async Task<List<TenantPageSnoListDto>> GetPageSnoByTenantAndProductId(TenantProductInputDto input)
+        public async Task<PageDetailsWithProduct> GetPageSnoByTenantAndProductId(TenantProductInputDto input)
         {
-                SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("TenantId", input.TenantId);
-                parameters[1] = new SqlParameter("ProductId", input.ProductId);
-                var ds = await SqlHelper.ExecuteDatasetAsync(
-                        Connection.GetSqlConnection("DefaultOctoGo"),
-                        System.Data.CommandType.StoredProcedure,
-                        "USP_GetPageSnoByTenantAndProductId", parameters
-                        );
-                if (ds.Tables.Count > 0)
-                {
-                    return SqlHelper.ConvertDataTable<TenantPageSnoListDto>(ds.Tables[0]);
-                }
-                else
-                {
-                    return null;
-                }
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("TenantId", input.TenantId);
+            parameters[1] = new SqlParameter("ProductId", input.ProductId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetPageSnoByTenantAndProductId", parameters
+                    );
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                PageDetailsWithProduct pageDetailsWithProduct = new PageDetailsWithProduct();
+                pageDetailsWithProduct.TenantID = input.TenantId;
+                pageDetailsWithProduct.PackageID = Convert.ToInt32(ds.Tables[0].Rows[0]["EditionId"]);
+                    var pageList = ds.Tables[0].AsEnumerable().Select(e => new PageDetails
+                    {
+                        PageSno = Convert.ToInt32(e["pageSno"])
+                    });
+                    pageDetailsWithProduct.PageDetails = pageList.ToList();
+                return pageDetailsWithProduct;
+            }
+            else
+            {
+                return null;
+            }
         }
+
         public async Task<List<TenantPageSnoListDto>> EditionModuleAndPagesByUserId(UserProductInputDto input)
         {
             SqlParameter[] parameters = new SqlParameter[2];
@@ -79,10 +89,13 @@ namespace CF.Octogo.Tenants
         /// </summary>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        public async Task<TenantDBDetailsDto> GetTenantDataBaseDetails(int? tenantId)
+        /// 
+        [UnitOfWork]
+        public async Task<TenantDBDetailsDto> CreateAdminUserOnTenantDB(int? tenantId = null)
         {
-            SqlParameter[] parameters = new SqlParameter[1];
+            SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("TenantId", tenantId);
+            parameters[1] = new SqlParameter("AdminCreationCompleted", false);
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
@@ -93,11 +106,10 @@ namespace CF.Octogo.Tenants
                 var result = SqlHelper.ConvertDataTable<TenantDBDetailsDto>(ds.Tables[0]);
                 if (result.Count > 0)
                 {
-                    var tenantDetails = new ListResultDto<TenantDBDetailsDto>(result);
 
-                    foreach (var tenantDetailss in result)
+                   foreach (var tenantDetails in result)
                     {
-                        using (_unitOfWorkManager.Current.SetTenantId(tenantDetailss.TenantId))
+                        using (_unitOfWorkManager.Current.SetTenantId(tenantDetails.TenantId))
                         {
                             //var userData = _userRolesRepository.GetAll().Where(obj => obj.);
                             var roleId = _roleManager.Roles.Where(obj => obj.DisplayName.ToLower() == "admin").FirstOrDefault().Id;
@@ -107,9 +119,12 @@ namespace CF.Octogo.Tenants
                             {
                                 UserName = userData.UserName,
                                 Password = userData.Password,
-                                ConnectionString = tenantDetailss.ConnectionString,
+                                TenantId = (int)userData.TenantId,
+                                ConnectionString = tenantDetails.ConnectionString,
                                 FirstName = userData.Name,
-                                LastName = userData.Surname
+                                LastName = userData.Surname,
+                                EMailID = userData.EmailAddress
+
                             }).FirstOrDefault();
 
                             await InsertAdminDetailsOnTenantDataBase(tenantadminDetails);
@@ -117,6 +132,7 @@ namespace CF.Octogo.Tenants
                         }
                     }
                 }
+
             }
 
             return null;
@@ -127,7 +143,6 @@ namespace CF.Octogo.Tenants
         /// Created by: Merajuddin khan
         /// Created on:21-01-22
         /// </summary>
-        /// <param name="tenantId"></param>
         /// <returns></returns>
         private async Task<string> InsertAdminDetailsOnTenantDataBase(TenantDBDetailsDto admindata)
         {
@@ -138,38 +153,49 @@ namespace CF.Octogo.Tenants
                 LastName = admindata.LastName,
                 UserName = admindata.UserName,
                 EMailID = admindata.EMailID,
-                AirlineSNo = 0,
-                AirportSNo = 0,
-                CitySNo = 0,
-                GroupSNo = 0
+                CitySNo = 1692,
+                GroupSNo = 14,
+                AirlineSNo = 1,
+                AirportSNo = 1703,
             });
             SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@NewPwd", admindata.Password);
-            parameters[1] = new SqlParameter("@UserCollection", Newtonsoft.Json.JsonConvert.SerializeObject(users));
+            parameters[0] = new SqlParameter("@UsersTable", Newtonsoft.Json.JsonConvert.SerializeObject(users));
+            parameters[1] = new SqlParameter("@NewPwd", admindata.Password);
+            var jasonFormatData = Newtonsoft.Json.JsonConvert.SerializeObject(users);
 
-            var ds = await SqlHelper.ExecuteDatasetAsync(admindata.ConnectionString,
-                        System.Data.CommandType.StoredProcedure,
-                        "CreateUsersFromSubscription", parameters);
-
-            if (ds.Tables[0].Rows[0][0] == "0")
+            try
             {
-                await UpdateTenantSetUpPropcess(admindata.TenantId);
-            }
+                var ds = await SqlHelper.ExecuteDatasetAsync(admindata.ConnectionString.Trim(),
+                            System.Data.CommandType.StoredProcedure,
+                            "CreateUsersFromSubscription", parameters);
 
+                if (ds.Tables[0].Rows[0][0].ToString() == "0")
+                {
+                    // set flag for Admin user details insert successfully to Tenant database
+                    await UpdateTenantSetUpProcess(admindata.TenantId);
+                }
+                else
+                {
+                    return "failed to insert admin data";
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
             return "Success";
         }
 
         /// <summary>
-        /// Desc:Update tenant admin setup proccess complete 
+        /// Desc:Update tenant admin setup proccess completed
         /// Created by: Merajuddin khan
         /// Created on:24-01-22
         /// </summary>
         /// <param name="tenantId"></param>
         /// <returns></returns>
-        private async Task<string> UpdateTenantSetUpPropcess(int tenantId)
+        private async Task UpdateTenantSetUpProcess(int tenantId)
         {
-            try
-            {
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("TenantId", tenantId);
                 parameters[1] = new SqlParameter("AdminCreationCompleted", true);
@@ -177,14 +203,74 @@ namespace CF.Octogo.Tenants
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                         System.Data.CommandType.StoredProcedure,
                         "USP_UpdateTenantSetupProcess", parameters);
-                return "success";
-            }
-            catch (Exception e)
+        }
+        /// <summary>
+        /// Update SystemSettings for Package Update status after Tenant edition update or Edition update
+        /// </summary>
+        /// <param name="editionId"></param>
+        /// <param name="tenantId"></param>
+        /// <returns></returns>
+        public async Task UpdateTenantSyetemSettingForEditionUpdate(int editionId, int? tenantId, int? addonId = null)
+        {
+            await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
             {
-                Console.WriteLine(e.Message);
+                List<int> tenantIds = new List<int>();
+                if (!tenantId.HasValue)
+                {
+                    // get all Tenants linked with updated Edition or Addon
+                    List<TenantDetailResultDto> tenantResult = await GetTenantLinkedWithEdition(editionId, addonId);
+                    if (tenantResult != null)
+                    {
+                        tenantIds = tenantResult.Select(obj => obj.TenantId).ToList();
+                    }
+                }
+                else
+                {
+                    tenantIds.Add((int)tenantId);
+                }
+                foreach (int Id in tenantIds)
+                {
+                    SqlParameter[] parameters = new SqlParameter[2];
+                    parameters[0] = new SqlParameter("TenantId", Id);
+                    parameters[1] = new SqlParameter("AdminCreationCompleted", true);
+                    var ds = await SqlHelper.ExecuteDatasetAsync(
+                            Connection.GetSqlConnection("DefaultOctoGo"),
+                            System.Data.CommandType.StoredProcedure,
+                            "USP_GetTenantDataBaseDetails", parameters
+                            );
+                    if (ds.Tables.Count > 0)
+                    {
+                        var result = SqlHelper.ConvertDataTable<TenantDBDetailsDto>(ds.Tables[0]).FirstOrDefault();
+                        if (result != null && result.TenantId > 0)
+                        {
+                            string connectionString = result.ConnectionString;
+                            await SqlHelper.ExecuteDatasetAsync(
+                                    Connection.GetSqlConnection(connectionString),
+                                    System.Data.CommandType.Text,
+                                    "UPDATE SystemSettings SET SysValue = 0 WHERE SysKey='IsPackageUpdated'"
+                                    );
+                        }
+                    }
+                }
+            });
+        }
+        private async Task<List<TenantDetailResultDto>> GetTenantLinkedWithEdition(int editionId, int? addonId)
+        {
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("EditionId", editionId);;
+                parameters[1] = new SqlParameter("AddonId", addonId); ;
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                        Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetTenantsLinkedWithEdition", parameters);
+            if (ds.Tables.Count > 0)
+            {
+                return SqlHelper.ConvertDataTable<TenantDetailResultDto>(ds.Tables[0]);
             }
-
-            return "success";
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -41,9 +41,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
     EditionID: number;
     pricingTypes: EditionPricing[] = [];
     priceFormInvalid: boolean = false;
-    // ActualAddonDataList = [];
-    // AddonDataList = [];
-    // SelectedAddonList = [];
+    scrollLength = 500;
     SelectedAddon: PageModulesDto;
     PageModuleList: PageModulesDto[];
     filteredPageModuleList: PageModulesDto[];
@@ -95,7 +93,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             this.EditionID = this.AddonDataForEdit.forEditionId;
             this.Description = this.AddonDataForEdit.description;
             this.GetModuleListByEditionForAddon(this.EditionID);
-            this.GetEditionListForAddon();
+            this.GetEditionListForAddon(this.AddonDataForEdit.forEditionId);
         }
         this.GetOtherDataForEdition();
         // if (!this.isEdit) {
@@ -110,6 +108,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
         this.ModulesList = new Array<ModuleListForAddonDto>();
         this.SubSubModuleList = [];
         this.SelectedModule = null;
+        this.SelectedIndex = -1;
         this.IsScrollable = false;
         if (EditionId > 0) {
             this.addonServiceProxy.getModuleListByEditionForAddon(EditionId)
@@ -156,17 +155,18 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                             }
                         })
                     }
+                    this.CheckScrollable();
                     if (this.isEdit) {
                         this.GetAddonModuleAndPricing(this.AddonDataForEdit.addonId);
                     }
-                    this.CheckScrollable();
                 });
         }
     }
-    GetEditionListForAddon() {
+    GetEditionListForAddon(editionID = null) {
         this.EditionList = [];
         this.ModulesList = [];
         this.SubSubModuleList = [];
+        this.EditionID = editionID;
         this.SelectedModule = null;
         if (this.ProductId > 0) {
             this.addonServiceProxy.getEditionListForAddon(this.ProductId)
@@ -229,14 +229,14 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             });
     }
     ScrollLeft() {
-        let scroll = 100;
+        let scroll = this.scrollLength;
         let ele = document.getElementById('module_content')
         ele.scrollLeft -= scroll;
         this.CanScrollRight = true;
         this.CanScrollLeft = ele.scrollLeft > 0;
     }
     ScrollRight() {
-        let scroll = 100;
+        let scroll = this.scrollLength;
         let ele = document.getElementById('module_content')
         this.CanScrollLeft = true;
         if ((ele.scrollWidth - ele.clientWidth) - ele.scrollLeft > scroll) {
@@ -258,6 +258,16 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                 this.IsScrollable = hasScrollableContent;
                 this.CanScrollLeft = false;
                 this.CanScrollRight = this.IsScrollable;
+                if(this.ModulesList != null && this.ModulesList.length > 0)
+                {
+                    let firstSelectedIndex = this.ModulesList.findIndex(obj => obj["selected"] == true);
+                    if(firstSelectedIndex >= 0){
+                    this.SelectModule(this.ModulesList[firstSelectedIndex], firstSelectedIndex);
+                    let ele = document.getElementById('module_content');
+                    this.CanScrollLeft = firstSelectedIndex > 4 ? true :false;
+                    ele.scrollLeft += this.scrollLength * firstSelectedIndex/4;
+                    }
+                }
                 if (ele.clientWidth > 0) {
                     clearInterval(timer);
                 }
@@ -399,21 +409,23 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             selectedModules = this.ModulesList.filter(obj => obj["selected"] == true);
             if (selectedModules != null && selectedModules.length > 0) 
             {
-                selectedModules.forEach(obj => {
-                    if (obj.subModuleList != null && obj.subModuleList.length > 0) 
+                for(let i = 0; i < selectedModules.length; i++)
                     {
-                        let tempIndex = obj.subModuleList.findIndex(x => x["selected"] == true);
+                    debugger
+                    if (selectedModules[i].subModuleList != null && selectedModules[i].subModuleList.length > 0) 
+                    {
+                        let tempIndex = selectedModules[i].subModuleList.findIndex(x => x["selected"] == true);
                         isModuleSubModuleSelected = true;
                         if(tempIndex < 0){
                             isModuleSubModuleSelected = false;
-                            return;
+                            break;
                         }
                     }
                     else{
                         isModuleSubModuleSelected = false;
-                        return;
+                        break;
                     }
-                })
+                }
             }
         }
         if (isModuleSubModuleSelected) {

@@ -1,6 +1,7 @@
 ﻿using Abp.Dependency;
 using Abp.Threading.BackgroundWorkers;
 using Abp.Threading.Timers;
+using CF.Octogo.Tenants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +12,17 @@ namespace CF.Octogo.HangfireJobs
 {
     public class TenantChangesSyncWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
     {
-        private const int CheckPeriodAsMilliseconds = 20000; //1 * 60 * 60 * 1000 * 24; //1 day
-        public TenantChangesSyncWorker(AbpTimer timer) : base(timer)
+        private readonly ITenantDetailsAppService _tenantDetailsService;
+        private const int CheckPeriodAsMilliseconds = 1 * 30 * 60 * 1000; // 30 mins
+        public TenantChangesSyncWorker(AbpTimer timer, ITenantDetailsAppService tenantDetailsService) : base(timer)
         {
             Timer.Period = CheckPeriodAsMilliseconds;
             Timer.RunOnStart = true;
+            _tenantDetailsService = tenantDetailsService;
         }
         protected override void DoWork()
         {
-
+            _tenantDetailsService.CreateAdminUserOnTenantDB();
         }
 
     }

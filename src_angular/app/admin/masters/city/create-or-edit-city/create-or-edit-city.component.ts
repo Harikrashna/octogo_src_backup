@@ -25,7 +25,7 @@ export class CreateOrEditCityComponent extends AppComponentBase implements OnIni
   active = false;
   isActive: boolean;
   priorApproval: boolean; 
-  isDayLightSaving: string; 
+  isDayLightSaving: boolean; 
   saving = false;
   isEdit = false;
   cityName = '';

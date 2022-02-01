@@ -84,13 +84,13 @@ font-size: 12px;
     border: 1px solid black; 
 }
 
-.p-datatable .p-datatable-tbody > tr > td {
+#dataTable .p-datatable .p-datatable-tbody > tr > td {
      text-align: center;
     border: 1px solid #f3f2f1;
     padding: 0.75rem 0.75rem;
 }
 
-.p-datatable .p-datatable-thead > tr > th {
+#dataTable .p-datatable .p-datatable-thead > tr > th {
      text-align: center;
     border: 1px solid #f3f2f1;
     font-weight: 600;
@@ -365,3 +365,7 @@ h2{
  .padding-bottom-25{
      padding-bottom: 25px;
  }
+ ol, ul, dl {
+    margin-top: 0;
+    margin-bottom: 0;
+}

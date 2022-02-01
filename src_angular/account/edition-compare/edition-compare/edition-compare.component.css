@@ -83,20 +83,20 @@ i {
     border: 1px solid #ccc;
 }
 
-.p-datatable .p-datatable-tbody > tr > td {
+#dataTable .p-datatable .p-datatable-tbody > tr > td {
     text-align: center;
     border: 1px solid #f3f2f1;
     padding: 0.75rem 0.75rem;
     background: #ffffff;
 }
 
-.p-datatable .p-datatable-tbody > tr > td {
+#dataTable .p-datatable .p-datatable-tbody > tr > td {
     text-align: center;
    border: 1px solid #f3f2f1;
    padding: 0.75rem 0.75rem;
 }
 
-.p-datatable .p-datatable-thead > tr > th {
+#dataTable .p-datatable .p-datatable-thead > tr > th {
     text-align: center;
    border: 1px solid #f3f2f1;
    font-weight: 600;

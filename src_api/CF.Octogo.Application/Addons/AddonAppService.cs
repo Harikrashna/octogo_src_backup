@@ -12,13 +12,18 @@ using System;
 using System.Linq;
 using Newtonsoft.Json;
 using Abp.UI;
+using CF.Octogo.Tenants;
 
 namespace CF.Octogo.Editions
 {
     [AbpAuthorize(AppPermissions.Pages_Addons)]
     public class AddonAppService : OctogoAppServiceBase, IAddonAppService
     {
-        public AddonAppService() { }
+        private readonly ITenantDetailsAppService _tenantDetailsService;
+        public AddonAppService(ITenantDetailsAppService tenantDetailsService) 
+        {
+            _tenantDetailsService = tenantDetailsService;
+        }
 
         [HttpPost]
         public async Task<PagedResultDto<AddonListDto>> GetAddonList(GetAddonInput input)
@@ -117,7 +122,7 @@ namespace CF.Octogo.Editions
         [AbpAuthorize(AppPermissions.Pages_Addons_Create, AppPermissions.Pages_Addons_Edit)]
         public async Task<int> InsertUpdateAddonModuleAndPricing(CreateAddonDto input)
         {
-                var Duplicacy = CheckAddonDuplicacy(input.EditionID, input.AddonName, input.AddonId);
+                var Duplicacy = CheckAddonDuplicacy(input);
 
                 if (Duplicacy.Result != null)
                 {
@@ -132,7 +137,6 @@ namespace CF.Octogo.Editions
                 parameters[5] = new SqlParameter("EditionID", input.EditionID);
                 parameters[6] = new SqlParameter("AddonName", input.AddonName);
                 parameters[7] = new SqlParameter("IsStandAlone", input.IsStandAlone);
-                var x = JsonConvert.SerializeObject(input.ModuleList);
                 parameters[8] = new SqlParameter("ModuleList", JsonConvert.SerializeObject(input.ModuleList));
                 parameters[9] = new SqlParameter("Description", input.Description);
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
@@ -140,19 +144,45 @@ namespace CF.Octogo.Editions
                         "USP_InsertUpdateAddonAndPricing", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    return (int)ds.Tables[0].Rows[0]["Id"];
+                if (input.AddonId > 0) 
+                {
+                    _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate(input.EditionID, null, input.AddonId);
+                }
+                return (int)ds.Tables[0].Rows[0]["Id"];
                 }
                 else
                 {
                     return 0;
                 }
         }
-        private async Task<DataSet> CheckAddonDuplicacy(int EditionId, string AddonName, int? AddonId)
+        private async Task<DataSet> CheckAddonDuplicacy(CreateAddonDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[3];
-            parameters[0] = new SqlParameter("EditionId", EditionId);
-            parameters[1] = new SqlParameter("AddonName", AddonName.Trim());
-            parameters[2] = new SqlParameter("AddonId", AddonId);
+            List<int> ModulePageSnoList = new List<int>();
+            input.ModuleList.ForEach(module =>
+            {
+                ModulePageSnoList.Add(module.PageModuleId);
+                if(module.SubModuleList != null && module.SubModuleList.Count > 0)
+                {
+                    module.SubModuleList.ForEach(subModule =>
+                    {
+                        ModulePageSnoList.Add(subModule.PageModuleId);
+                        if (subModule.SubModuleList != null && subModule.SubModuleList.Count > 0)
+                        {
+                            subModule.SubModuleList.ForEach(subSubModule =>
+                            {
+                                ModulePageSnoList.Add(subSubModule.PageModuleId);
+                            });
+                        }
+                    });
+                }
+            });
+            ModulePageSnoList.Sort();
+            SqlParameter[] parameters = new SqlParameter[5];
+            parameters[0] = new SqlParameter("EditionId", input.EditionID);
+            parameters[1] = new SqlParameter("AddonName", input.AddonName.Trim());
+            parameters[2] = new SqlParameter("AddonId", input.AddonId);
+            parameters[3] = new SqlParameter("IsFree", input.priceDiscount != null ? false : true);
+            parameters[4] = new SqlParameter("SelectedPageSno", String.Join(",",ModulePageSnoList));
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,

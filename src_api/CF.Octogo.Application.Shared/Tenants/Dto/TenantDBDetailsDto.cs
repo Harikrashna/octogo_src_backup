@@ -17,6 +17,7 @@ namespace CF.Octogo.Tenants.Dto
         public string ConnectionString { get; set; }
         public string Password { get; set; }
         public int TenantId { get; set; }
+
     }
     public class UserCollectionForSubscription
     {

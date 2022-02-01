@@ -44,8 +44,8 @@ namespace CF.Octogo.Master
                                     CityName = dr["CityName"].ToString(),
                                     StateName = dr["StateName"].ToString(),
                                     CountryName = dr["CountryName"].ToString(),
-                                    PriorApproval = Convert.ToBoolean(dr["PriorApproval"]),
-                                    IsDayLightSaving = Convert.ToBoolean(dr["IsDayLightSaving"]),
+                                    PriorApproval = Convert.ToBoolean(string.IsNullOrEmpty(dr["PriorApproval"].ToString()) ? 0 : dr["PriorApproval"]),
+                                    IsDayLightSaving = Convert.ToBoolean(string.IsNullOrEmpty(dr["IsDayLightSaving"].ToString()) ? 0 : dr["IsDayLightSaving"]),
                                     IsActive = Convert.ToBoolean(dr["IsActive"])
                                 }).ToList();
                     return new PagedResultDto<CityListDto>(totalCount, CityList);

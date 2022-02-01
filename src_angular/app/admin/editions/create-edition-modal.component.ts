@@ -160,7 +160,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                                 moduleData: result.modulesData,
                             });
                         }
-                        this.editionModule.RemoveDependentEditionModules();
+                        this.editionModule.RemoveDependentEditionModules(ForEdit);
                         // if (this.editionModules.DependEditionData != null && this.editionModules.DependEditionData.length > 0) {
                         //     this.editionModules.DependEditionData.forEach(obj => {
                         //         obj["Collapse"] = true;
@@ -266,22 +266,23 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
             selectedModules = this.editionModule.PageModuleList.filter(obj => obj["selected"] == true);
             if (selectedModules != null && selectedModules.length > 0) 
             {
-                selectedModules.forEach(obj => {
-                    let subModule = this.editionModule.PageSubModuleList.filter(x => x.moduleId == obj.id);
+                for(let i = 0; i < selectedModules.length; i++)
+                {
+                    let subModule = this.editionModule.PageSubModuleList.filter(x => x.moduleId == selectedModules[i].id);
                     if (subModule != null && subModule.length > 0 && subModule[0].subModuleList != null && subModule[0].subModuleList.length > 0) 
                     {
                         let tempIndex = subModule[0].subModuleList.findIndex(x => x["selected"] == true);
                         isModuleSubModuleSelected = true;
                         if(tempIndex < 0){
                             isModuleSubModuleSelected = false;
-                            return;
+                            break;
                         }
                     }
                     else{
                         isModuleSubModuleSelected = false;
-                        return;
+                        break;
                     }
-                })
+                }
             }
         }
         if (isModuleSubModuleSelected) {

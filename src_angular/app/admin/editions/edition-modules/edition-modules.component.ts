@@ -18,8 +18,10 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
   SubModuleList: SubModuleListDto[] = [];
   SubSubModuleList: SubSubModuleListDto[] = [];
   PageModuleList: PageModulesDto[];
+  TempPageModuleList: PageModulesDto[] = [];
   PageSubModuleList: SubModulesDto[];
   IsDependentEditionModuleSelected: boolean = false;
+  scrollLength = 500;
 
   constructor(injector: Injector, private _editionService: EditionServiceProxy) {
     super(injector);
@@ -32,9 +34,11 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
   GetModuleList() {
     this.PageModuleList = [];
     this.PageSubModuleList = [];
+    this.TempPageModuleList = new Array<PageModulesDto>();
     this._editionService.getModuleList().subscribe(result => {
       if (result != null) {
         this.PageModuleList = result.moduleList;
+        this.TempPageModuleList = this.PageModuleList;
         this.PageSubModuleList = result.subModuleList;
         this.CheckScrollable();
       }
@@ -96,7 +100,11 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
       }
     });
   }
-  RemoveDependentEditionModules() {
+  RemoveDependentEditionModules(forEdit = true) {
+    debugger
+    if(!forEdit){
+      this.PageModuleList = this.TempPageModuleList;
+    }
     if (this.DependEditionData != null && this.DependEditionData.length > 0) {
       this.DependEditionData.forEach(edition => {
         if (edition.moduleData != null && edition.moduleData.length > 0) {
@@ -111,14 +119,14 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     }
   }
   ScrollLeft() {
-    let scroll = 100;
+    let scroll = this.scrollLength;
     let ele = document.getElementById('module_content')
     ele.scrollLeft -= scroll;
     this.CanScrollRight = true;
     this.CanScrollLeft = ele.scrollLeft > 0;
   }
   ScrollRight() {
-    let scroll = 100;
+    let scroll = this.scrollLength;
     let ele = document.getElementById('module_content')
     this.CanScrollLeft = true;
     if ((ele.scrollWidth - ele.clientWidth) - ele.scrollLeft > scroll) {
@@ -138,8 +146,20 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
       if (ele != null && ele != undefined) {
         const hasScrollableContent = ele.scrollWidth > ele.clientWidth;
         this.IsScrollable = hasScrollableContent;
-        this.CanScrollLeft = false;
+        
         this.CanScrollRight = this.IsScrollable;
+        this.CanScrollLeft = false;
+        // set auto selected in edit mode
+        if(this.PageModuleList != null && this.PageModuleList.length > 0)
+        {
+            let firstSelectedIndex = this.PageModuleList.findIndex(obj => obj["selected"] == true);
+            if(firstSelectedIndex >= 0)
+            {
+            this.SelectModule(this.PageModuleList[firstSelectedIndex], firstSelectedIndex);
+            this.CanScrollLeft = firstSelectedIndex > 4 ? true :false;
+            ele.scrollLeft += this.scrollLength * firstSelectedIndex/4;
+            }
+        }
         if (ele.clientWidth > 0) {
           clearInterval(timer);
         }
@@ -177,7 +197,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
         }
         else {
           this.message.confirm(
-            this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.displayName),
+            this.l('EditionModuleChangeConfirmationMsg', module.displayName),
             this.l('AreYouSure'),
             isConfirmed => {
               if(isConfirmed){

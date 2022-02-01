@@ -23,6 +23,11 @@
                                                 class="flaticon-search-1"
                                                 [attr.aria-label]="l('Search')"></i></button>
                                     </div>
+                                    &nbsp;
+                                    <button [routerLink]="['/app/admin/edition-compare']" [queryParams]="{canBack: true}"
+                                    class="btn btn-primary" type="submit">
+                                        {{ 'Compare' | localize }}
+                                    </button>
                                 </div>
                             </div>
                         </div>

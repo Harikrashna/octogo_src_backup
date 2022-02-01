@@ -65,7 +65,7 @@
 
         <div class="mt-5"
             *ngIf="ProductEditionCompareList != null && ProductEditionCompareList != undefined &&  ProductEditionCompareList.length > 0 ">
-            <p-table [value]="[{}]">
+            <p-table [value]="[{}]" id="dataTable">
                 <ng-template pTemplate="header">
                     <tr>
                         <th></th>

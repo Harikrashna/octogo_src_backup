@@ -147,7 +147,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.GetTenantDataBaseDetails(System.Nullable{System.Int32})">
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.CreateAdminUserOnTenantDB(System.Nullable{System.Int32})">
             <summary>
             
             Desc:Get Tenant database details
@@ -156,6 +156,7 @@
             </summary>
             <param name="tenantId"></param>
             <returns></returns>
+            
         </member>
         <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.InsertAdminDetailsOnTenantDataBase(CF.Octogo.Tenants.Dto.TenantDBDetailsDto)">
             <summary>
@@ -164,15 +165,22 @@
             Created by: Merajuddin khan
             Created on:21-01-22
             </summary>
-            <param name="tenantId"></param>
             <returns></returns>
         </member>
-        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSetUpPropcess(System.Int32)">
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSetUpProcess(System.Int32)">
             <summary>
-            Desc:Update tenant admin setup proccess complete 
+            Desc:Update tenant admin setup proccess completed
             Created by: Merajuddin khan
             Created on:24-01-22
             </summary>
+            <param name="tenantId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSyetemSettingForEditionUpdate(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Update SystemSettings for Package Update status after Tenant edition update or Edition update
+            </summary>
+            <param name="editionId"></param>
             <param name="tenantId"></param>
             <returns></returns>
         </member>

@@ -20,4 +20,14 @@ namespace CF.Octogo.Tenants.Dto
         public int UserId { get; set; }
         public int ProductId { get; set; }
     }
+    public class PageDetailsWithProduct
+    {
+        public int PackageID { get; set; }
+        public int TenantID { get; set; }
+        public List<PageDetails> PageDetails { get; set; }
+    }
+    public class PageDetails
+    {
+        public int PageSno { get; set; }
+    }
 }

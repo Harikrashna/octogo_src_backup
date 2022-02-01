@@ -1,8 +1,8 @@
 <div *ngIf="PageModuleList?.length > 0">
     <!-- Module list start -->
     <div class="moduleCard d-flex" id="module_content">
-        <i class="pi pi-chevron-left" (click)="ScrollLeft()" aria-hidden="true" *ngIf="IsScrollable && CanScrollLeft"></i>
-        <i class="pi pi-chevron-right" (click)="ScrollRight()" aria-hidden="true" *ngIf="IsScrollable && CanScrollRight"></i>
+        <i class="pi pi-chevron-left p-1" (click)="ScrollLeft()" aria-hidden="true" *ngIf="IsScrollable && CanScrollLeft"></i>
+        <i class="pi pi-chevron-right p-1" (click)="ScrollRight()" aria-hidden="true" *ngIf="IsScrollable && CanScrollRight"></i>
         
         <!-- Dependent edition module start -->
         <div *ngFor="let depEdition of DependEditionData;let editionInx = index;" class="d-flex">
