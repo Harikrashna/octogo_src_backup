@@ -6,10 +6,18 @@ namespace CF.Octogo.Tenants.Dto
 {
     public class TenantDBDetailsDto
     {
+        public int SetupId { get; set; }
         public int ProductId { get; set; }
         public string ConnectionStringName { get; set; }
         public string DbName { get; set; }
         public string ProciderName { get; set; }
+        public string ConnectionString { get; set; }
+        public int TenantId { get; set; }
+        
+
+    }
+    public class TenantDbAndUserDetailsDto
+    {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
@@ -17,7 +25,7 @@ namespace CF.Octogo.Tenants.Dto
         public string ConnectionString { get; set; }
         public string Password { get; set; }
         public int TenantId { get; set; }
-
+        
     }
     public class UserCollectionForSubscription
     {

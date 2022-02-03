@@ -9,6 +9,7 @@ import {
 import { filter as _filter } from 'lodash-es';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { finalize } from 'rxjs/operators';
+import { ValidationServiceService } from '../validation-service.service';
 
 @Component({
     selector: 'createTenantModal',
@@ -37,7 +38,8 @@ export class CreateTenantModalComponent extends AppComponentBase {
         private _tenantService: TenantServiceProxy,
         private _commonLookupService: CommonLookupServiceProxy,
         private _profileService: ProfileServiceProxy,
-        private _dateTimeService: DateTimeService
+        private _dateTimeService: DateTimeService,
+        public _validationService: ValidationServiceService
     ) {
         super(injector);
     }

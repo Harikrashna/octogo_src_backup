@@ -1,3 +1,4 @@
+import { InputValidationService } from '@account/shared/input-validation.service';
 import { Component, Injector, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -60,7 +61,8 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
 
   constructor(injector: Injector, private _userDetailRegistration: UserRegistrationServiceProxy,
     private _router: Router, private _activatedRoute: ActivatedRoute,
-    private _commonServiceProxy: CommonServiceProxy) {
+    private _commonServiceProxy: CommonServiceProxy,
+    public _validationService:InputValidationService) {
     super(injector)
     this.UserRegistration = new UserRegistrationInput();
     this.UserType = new AutoComplete();
@@ -92,7 +94,8 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
       this.UserRegistration.userId = parseInt(result.filter(obj => obj.key == "userId")[0].value)
     });
   }
-  getMasterData(masterName?: string) {
+  getMasterData() {
+    let masterName = "AIRLINE,SERVICE,DEPARTMENT,DESIGNATION,INDUSTRY,CITY,COUNTRY";
     this._commonServiceProxy.getMasterData_Cache(masterName).subscribe(result => {
       this.airlineNameArray = this.fillMasterData(result, 'AIRLINE');
       this.servicesArray = this.fillMasterData(result, 'SERVICE');
@@ -233,46 +236,10 @@ export class UserDetailedRegistrationComponent extends AppComponentBase implemen
     })
   }
 
-  //Methods Restricting User - Input
-  //START
-  IsNumeric(e) {
-    if (e.target.value == "" && e.keyCode == 48) {
-      return false
-    }
-    var keyCode = e.which ? e.which : e.keyCode
-    var ret = ((keyCode >= 48 && keyCode <= 57));
-    return ret
 
-  }
 
-  IsAlphabet(e) {
 
-    if (e.target.value == "" && e.keyCode == 32) {
-      return false
-    }
-    var keyCode = e.which ? e.which : e.keyCode
-    var ret = ((keyCode >= 65 && keyCode <= 120) || (keyCode == 32));
-    return ret
 
-  }
-
-  IsAlphabetWithoutWhiteSpace(e) {
-    if (e.target.value == "" && e.keyCode == 32) {
-      return false
-    }
-    var keyCode = e.which ? e.which : e.keyCode
-    var ret = ((keyCode >= 65 && keyCode <= 120));
-    return ret
-  }
-
-  IsAlphanumeric(e) {
-    if (e.target.value == "" && e.keyCode == 32) {
-      return false
-    }
-    var keyCode = e.which ? e.which : e.keyCode
-    var ret = ((keyCode >= 65 && keyCode <= 120) || (keyCode == 32) || (keyCode >= 48 && keyCode <= 57));
-    return ret
-  }
 
   //END
 

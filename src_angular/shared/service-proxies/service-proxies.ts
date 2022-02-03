@@ -7427,7 +7427,7 @@ export class EditionServiceProxy {
      * @return Success
      */
     getEditionDetailsForEdit(editionId: number | undefined): Observable<EditionDetailsForEditDto> {
-        let url_ = this.baseUrl + "/api/services/app/Edition/getEditionDetailsForEdit?";
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetEditionDetailsForEdit?";
         if (editionId === null)
             throw new Error("The parameter 'editionId' cannot be null.");
         else if (editionId !== undefined)
@@ -7481,8 +7481,8 @@ export class EditionServiceProxy {
     /**
      * @return Success
      */
-    getOtherDataForEdition(): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Edition/GetOtherDataForEdition";
+    getMasterDataForEdition(): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetMasterDataForEdition";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -7494,11 +7494,11 @@ export class EditionServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetOtherDataForEdition(response_);
+            return this.processGetMasterDataForEdition(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetOtherDataForEdition(<any>response_);
+                    return this.processGetMasterDataForEdition(<any>response_);
                 } catch (e) {
                     return <Observable<any>><any>_observableThrow(e);
                 }
@@ -7507,7 +7507,7 @@ export class EditionServiceProxy {
         }));
     }
 
-    protected processGetOtherDataForEdition(response: HttpResponseBase): Observable<any> {
+    protected processGetMasterDataForEdition(response: HttpResponseBase): Observable<any> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -7534,7 +7534,7 @@ export class EditionServiceProxy {
      * @return Success
      */
     getEditionModules(editionId: number | undefined): Observable<EditionModulesDto> {
-        let url_ = this.baseUrl + "/api/services/app/Edition/getEditionModules?";
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetEditionModules?";
         if (editionId === null)
             throw new Error("The parameter 'editionId' cannot be null.");
         else if (editionId !== undefined)
@@ -16030,7 +16030,7 @@ export class TenantDetailsServiceProxy {
      * @param productId (optional) 
      * @return Success
      */
-    getPageSnoByTenantAndProductId(tenantId: number | undefined, productId: number | undefined): Observable<TenantPageSnoListDto[]> {
+    getPageSnoByTenantAndProductId(tenantId: number | undefined, productId: number | undefined): Observable<PageDetailsWithProduct> {
         let url_ = this.baseUrl + "/api/services/app/TenantDetails/GetPageSnoByTenantAndProductId?";
         if (tenantId === null)
             throw new Error("The parameter 'tenantId' cannot be null.");
@@ -16057,6 +16057,62 @@ export class TenantDetailsServiceProxy {
                 try {
                     return this.processGetPageSnoByTenantAndProductId(<any>response_);
                 } catch (e) {
+                    return <Observable<PageDetailsWithProduct>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PageDetailsWithProduct>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPageSnoByTenantAndProductId(response: HttpResponseBase): Observable<PageDetailsWithProduct> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PageDetailsWithProduct.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PageDetailsWithProduct>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    editionModuleAndPagesByUserId(body: UserProductInputDto | undefined): Observable<TenantPageSnoListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/TenantDetails/EditionModuleAndPagesByUserId";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditionModuleAndPagesByUserId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditionModuleAndPagesByUserId(<any>response_);
+                } catch (e) {
                     return <Observable<TenantPageSnoListDto[]>><any>_observableThrow(e);
                 }
             } else
@@ -16064,7 +16120,7 @@ export class TenantDetailsServiceProxy {
         }));
     }
 
-    protected processGetPageSnoByTenantAndProductId(response: HttpResponseBase): Observable<TenantPageSnoListDto[]> {
+    protected processEditionModuleAndPagesByUserId(response: HttpResponseBase): Observable<TenantPageSnoListDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -16091,6 +16147,124 @@ export class TenantDetailsServiceProxy {
             }));
         }
         return _observableOf<TenantPageSnoListDto[]>(<any>null);
+    }
+
+    /**
+     * @param tenantId (optional) 
+     * @return Success
+     */
+    createAdminUserOnTenantDB(tenantId: number | undefined): Observable<TenantDBDetailsDto> {
+        let url_ = this.baseUrl + "/api/services/app/TenantDetails/CreateAdminUserOnTenantDB?";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            url_ += "tenantId=" + encodeURIComponent("" + tenantId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateAdminUserOnTenantDB(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateAdminUserOnTenantDB(<any>response_);
+                } catch (e) {
+                    return <Observable<TenantDBDetailsDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TenantDBDetailsDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateAdminUserOnTenantDB(response: HttpResponseBase): Observable<TenantDBDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TenantDBDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TenantDBDetailsDto>(<any>null);
+    }
+
+    /**
+     * @param editionId (optional) 
+     * @param tenantId (optional) 
+     * @param addonId (optional) 
+     * @return Success
+     */
+    updateTenantSyetemSettingForEditionUpdate(editionId: number | undefined, tenantId: number | undefined, addonId: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/TenantDetails/UpdateTenantSyetemSettingForEditionUpdate?";
+        if (editionId === null)
+            throw new Error("The parameter 'editionId' cannot be null.");
+        else if (editionId !== undefined)
+            url_ += "editionId=" + encodeURIComponent("" + editionId) + "&";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            url_ += "tenantId=" + encodeURIComponent("" + tenantId) + "&";
+        if (addonId === null)
+            throw new Error("The parameter 'addonId' cannot be null.");
+        else if (addonId !== undefined)
+            url_ += "addonId=" + encodeURIComponent("" + addonId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateTenantSyetemSettingForEditionUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateTenantSyetemSettingForEditionUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdateTenantSyetemSettingForEditionUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -18295,62 +18469,6 @@ export class UserServiceProxy {
             }));
         }
         return _observableOf<void>(<any>null);
-    }
-
-    /**
-     * @param userId (optional) 
-     * @return Success
-     */
-    editionModuleAndPagesByUserId(userId: number | undefined): Observable<ListResultDtoOfEditionModuePageDto> {
-        let url_ = this.baseUrl + "/api/services/app/User/EditionModuleAndPagesByUserId?";
-        if (userId === null)
-            throw new Error("The parameter 'userId' cannot be null.");
-        else if (userId !== undefined)
-            url_ += "UserId=" + encodeURIComponent("" + userId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processEditionModuleAndPagesByUserId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processEditionModuleAndPagesByUserId(<any>response_);
-                } catch (e) {
-                    return <Observable<ListResultDtoOfEditionModuePageDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ListResultDtoOfEditionModuePageDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processEditionModuleAndPagesByUserId(response: HttpResponseBase): Observable<ListResultDtoOfEditionModuePageDto> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfEditionModuePageDto.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ListResultDtoOfEditionModuePageDto>(<any>null);
     }
 }
 
@@ -20920,9 +21038,9 @@ export interface IAddonModules {
 
 export class AddonModulesDto implements IAddonModulesDto {
     editionModuleId!: number | undefined;
-    pageModuleId!: number | undefined;
+    pageModuleId!: number;
     moduleName!: string | undefined;
-    subModuleList!: ModuleListDto[] | undefined;
+    subModuleList!: AddonSubListDto[] | undefined;
 
     constructor(data?: IAddonModulesDto) {
         if (data) {
@@ -20941,7 +21059,7 @@ export class AddonModulesDto implements IAddonModulesDto {
             if (Array.isArray(_data["subModuleList"])) {
                 this.subModuleList = [] as any;
                 for (let item of _data["subModuleList"])
-                    this.subModuleList!.push(ModuleListDto.fromJS(item));
+                    this.subModuleList!.push(AddonSubListDto.fromJS(item));
             }
         }
     }
@@ -20969,9 +21087,65 @@ export class AddonModulesDto implements IAddonModulesDto {
 
 export interface IAddonModulesDto {
     editionModuleId: number | undefined;
-    pageModuleId: number | undefined;
+    pageModuleId: number;
     moduleName: string | undefined;
-    subModuleList: ModuleListDto[] | undefined;
+    subModuleList: AddonSubListDto[] | undefined;
+}
+
+export class AddonSubListDto implements IAddonSubListDto {
+    editionModuleId!: number | undefined;
+    pageModuleId!: number;
+    moduleName!: string | undefined;
+    subModuleList!: AddonSubListDto[] | undefined;
+
+    constructor(data?: IAddonSubListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.editionModuleId = _data["editionModuleId"];
+            this.pageModuleId = _data["pageModuleId"];
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModuleList"])) {
+                this.subModuleList = [] as any;
+                for (let item of _data["subModuleList"])
+                    this.subModuleList!.push(AddonSubListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AddonSubListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddonSubListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["editionModuleId"] = this.editionModuleId;
+        data["pageModuleId"] = this.pageModuleId;
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModuleList)) {
+            data["subModuleList"] = [];
+            for (let item of this.subModuleList)
+                data["subModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAddonSubListDto {
+    editionModuleId: number | undefined;
+    pageModuleId: number;
+    moduleName: string | undefined;
+    subModuleList: AddonSubListDto[] | undefined;
 }
 
 export class AddonSubModuleList implements IAddonSubModuleList {
@@ -22098,54 +22272,14 @@ export interface ICheckPaymentAvailabiltyDto {
     ediEditionId: number | undefined;
 }
 
-export class ChildPagesDto implements IChildPagesDto {
-    pageId!: number;
-    pageName!: string | undefined;
-
-    constructor(data?: IChildPagesDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.pageId = _data["pageId"];
-            this.pageName = _data["pageName"];
-        }
-    }
-
-    static fromJS(data: any): ChildPagesDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ChildPagesDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["pageId"] = this.pageId;
-        data["pageName"] = this.pageName;
-        return data; 
-    }
-}
-
-export interface IChildPagesDto {
-    pageId: number;
-    pageName: string | undefined;
-}
-
 export class CityListDto implements ICityListDto {
     sNo!: number;
     cityCode!: string | undefined;
     cityName!: string | undefined;
     stateName!: string | undefined;
     countryName!: string | undefined;
-    priorApproval!: boolean;
-    isDayLightSaving!: boolean;
+    priorApproval!: boolean | undefined;
+    isDayLightSaving!: boolean | undefined;
     isActive!: boolean;
 
     constructor(data?: ICityListDto) {
@@ -22197,8 +22331,8 @@ export interface ICityListDto {
     cityName: string | undefined;
     stateName: string | undefined;
     countryName: string | undefined;
-    priorApproval: boolean;
-    isDayLightSaving: boolean;
+    priorApproval: boolean | undefined;
+    isDayLightSaving: boolean | undefined;
     isActive: boolean;
 }
 
@@ -25083,58 +25217,6 @@ export interface IEditionListDtoNew {
     productName: string | undefined;
     isFree: boolean;
     id: number;
-}
-
-export class EditionModuePageDto implements IEditionModuePageDto {
-    pageId!: number;
-    pageName!: string | undefined;
-    childPages!: ChildPagesDto[] | undefined;
-
-    constructor(data?: IEditionModuePageDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.pageId = _data["pageId"];
-            this.pageName = _data["pageName"];
-            if (Array.isArray(_data["childPages"])) {
-                this.childPages = [] as any;
-                for (let item of _data["childPages"])
-                    this.childPages!.push(ChildPagesDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): EditionModuePageDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new EditionModuePageDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["pageId"] = this.pageId;
-        data["pageName"] = this.pageName;
-        if (Array.isArray(this.childPages)) {
-            data["childPages"] = [];
-            for (let item of this.childPages)
-                data["childPages"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IEditionModuePageDto {
-    pageId: number;
-    pageName: string | undefined;
-    childPages: ChildPagesDto[] | undefined;
 }
 
 export class EditionModuleList implements IEditionModuleList {
@@ -30350,50 +30432,6 @@ export interface IListResultDtoOfEditionListDto {
     items: EditionListDto[] | undefined;
 }
 
-export class ListResultDtoOfEditionModuePageDto implements IListResultDtoOfEditionModuePageDto {
-    items!: EditionModuePageDto[] | undefined;
-
-    constructor(data?: IListResultDtoOfEditionModuePageDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(EditionModuePageDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): ListResultDtoOfEditionModuePageDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ListResultDtoOfEditionModuePageDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IListResultDtoOfEditionModuePageDto {
-    items: EditionModuePageDto[] | undefined;
-}
-
 export class ListResultDtoOfFlatPermissionWithLevelDto implements IListResultDtoOfFlatPermissionWithLevelDto {
     items!: FlatPermissionWithLevelDto[] | undefined;
 
@@ -32208,6 +32246,94 @@ export interface IPage {
     id: string | undefined;
     name: string | undefined;
     widgets: Widget[] | undefined;
+}
+
+export class PageDetails implements IPageDetails {
+    pageSno!: number;
+
+    constructor(data?: IPageDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageSno = _data["pageSno"];
+        }
+    }
+
+    static fromJS(data: any): PageDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new PageDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageSno"] = this.pageSno;
+        return data; 
+    }
+}
+
+export interface IPageDetails {
+    pageSno: number;
+}
+
+export class PageDetailsWithProduct implements IPageDetailsWithProduct {
+    packageID!: number;
+    tenantID!: number;
+    pageDetails!: PageDetails[] | undefined;
+
+    constructor(data?: IPageDetailsWithProduct) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.packageID = _data["packageID"];
+            this.tenantID = _data["tenantID"];
+            if (Array.isArray(_data["pageDetails"])) {
+                this.pageDetails = [] as any;
+                for (let item of _data["pageDetails"])
+                    this.pageDetails!.push(PageDetails.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PageDetailsWithProduct {
+        data = typeof data === 'object' ? data : {};
+        let result = new PageDetailsWithProduct();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["packageID"] = this.packageID;
+        data["tenantID"] = this.tenantID;
+        if (Array.isArray(this.pageDetails)) {
+            data["pageDetails"] = [];
+            for (let item of this.pageDetails)
+                data["pageDetails"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPageDetailsWithProduct {
+    packageID: number;
+    tenantID: number;
+    pageDetails: PageDetails[] | undefined;
 }
 
 export class PagedResultDtoOfAddonListDto implements IPagedResultDtoOfAddonListDto {
@@ -36213,6 +36339,82 @@ export interface ITenantBillingSettingsEditDto {
     taxVatNo: string | undefined;
 }
 
+export class TenantDBDetailsDto implements ITenantDBDetailsDto {
+    productId!: number;
+    connectionStringName!: string | undefined;
+    dbName!: string | undefined;
+    prociderName!: string | undefined;
+    firstName!: string | undefined;
+    lastName!: string | undefined;
+    userName!: string | undefined;
+    eMailID!: string | undefined;
+    connectionString!: string | undefined;
+    password!: string | undefined;
+    tenantId!: number;
+
+    constructor(data?: ITenantDBDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.productId = _data["productId"];
+            this.connectionStringName = _data["connectionStringName"];
+            this.dbName = _data["dbName"];
+            this.prociderName = _data["prociderName"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.userName = _data["userName"];
+            this.eMailID = _data["eMailID"];
+            this.connectionString = _data["connectionString"];
+            this.password = _data["password"];
+            this.tenantId = _data["tenantId"];
+        }
+    }
+
+    static fromJS(data: any): TenantDBDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantDBDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["productId"] = this.productId;
+        data["connectionStringName"] = this.connectionStringName;
+        data["dbName"] = this.dbName;
+        data["prociderName"] = this.prociderName;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["userName"] = this.userName;
+        data["eMailID"] = this.eMailID;
+        data["connectionString"] = this.connectionString;
+        data["password"] = this.password;
+        data["tenantId"] = this.tenantId;
+        return data; 
+    }
+}
+
+export interface ITenantDBDetailsDto {
+    productId: number;
+    connectionStringName: string | undefined;
+    dbName: string | undefined;
+    prociderName: string | undefined;
+    firstName: string | undefined;
+    lastName: string | undefined;
+    userName: string | undefined;
+    eMailID: string | undefined;
+    connectionString: string | undefined;
+    password: string | undefined;
+    tenantId: number;
+}
+
 export class TenantEditDto implements ITenantEditDto {
     tenancyName!: string;
     name!: string;
@@ -38513,6 +38715,46 @@ export interface IUserNotification {
 export enum UserNotificationState {
     Unread = 0,
     Read = 1,
+}
+
+export class UserProductInputDto implements IUserProductInputDto {
+    userId!: number;
+    productId!: number;
+
+    constructor(data?: IUserProductInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.productId = _data["productId"];
+        }
+    }
+
+    static fromJS(data: any): UserProductInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserProductInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["productId"] = this.productId;
+        return data; 
+    }
+}
+
+export interface IUserProductInputDto {
+    userId: number;
+    productId: number;
 }
 
 export class UserRegistrationInput implements IUserRegistrationInput {

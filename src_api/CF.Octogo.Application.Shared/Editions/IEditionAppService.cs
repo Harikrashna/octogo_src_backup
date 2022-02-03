@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
@@ -25,8 +26,10 @@ namespace CF.Octogo.Editions
 
         Task<int> GetTenantCount(int editionId);
         Task<PagedResultDto<EditionListDtoNew>> GetEditionsList(GetEditionInput input);
-        Task<EditionDetailsForEditDto> getEditionDetailsForEdit(int EditionId);
+        Task<EditionDetailsForEditDto> GetEditionDetailsForEdit(int EditionId);
         Task<List<EditionCompareResultDto>> GetEditionDeatilsByEditionIdForCompare(string EditionIds);
         Task<List<ProductWithEditionDto>> GetProductWithEdition();
+        Task<DataSet> GetMasterDataForEdition();
+        Task<EditionModulesDto> GetEditionModules(int EditionId);
     }
 }

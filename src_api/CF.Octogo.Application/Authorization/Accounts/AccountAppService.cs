@@ -288,7 +288,7 @@ namespace CF.Octogo.Authorization.Accounts
                 return new CheckPaymentAvailabiltyDto(TenantPyamenteSateAndAvailability.NotFound);
             }
             //var tenantEditionInfo = await _tenantRegistrationAppService.GetEdition((int)tenant.EditionId);
-            var tenantEditionInfo = await _editionAppService.getEditionDetailsForEdit((int)tenant.EditionId);
+            var tenantEditionInfo = await _editionAppService.GetEditionDetailsForEdit((int)tenant.EditionId);
 
             var paymentCompleteInfo = await _subscriptionPaymentRepository.GetLastCompletedPaymentOrDefaultAsync(
                    tenantId: tenant.Id,

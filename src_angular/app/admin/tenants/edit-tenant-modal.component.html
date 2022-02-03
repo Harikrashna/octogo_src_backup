@@ -22,7 +22,8 @@
                     <div class="form-group">
                         <label for="Name">{{"TenantName" | localize}} *</label>
                         <input id="Name" #nameInput="ngModel" type="text" name="Name" class="form-control"
-                            [ngClass]="{'edited':tenant.name}" [(ngModel)]="tenant.name" required maxlength="128">
+                            [ngClass]="{'edited':tenant.name}" [(ngModel)]="tenant.name" required maxlength="128"
+                            (keypress)="_validationService.NameValidation($event)">
                         <validation-messages [formCtrl]="nameInput"></validation-messages>
                     </div>
 

@@ -6,6 +6,7 @@ using CF.Octogo.Authorization.Roles;
 using CF.Octogo.Authorization.Users;
 using CF.Octogo.Data;
 using CF.Octogo.Tenants.Dto;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -48,11 +49,11 @@ namespace CF.Octogo.Tenants
                 PageDetailsWithProduct pageDetailsWithProduct = new PageDetailsWithProduct();
                 pageDetailsWithProduct.TenantID = input.TenantId;
                 pageDetailsWithProduct.PackageID = Convert.ToInt32(ds.Tables[0].Rows[0]["EditionId"]);
-                    var pageList = ds.Tables[0].AsEnumerable().Select(e => new PageDetails
-                    {
-                        PageSno = Convert.ToInt32(e["pageSno"])
-                    });
-                    pageDetailsWithProduct.PageDetails = pageList.ToList();
+                    //var pageList = ds.Tables[0].AsEnumerable().Select(e => new PageDetails
+                    //{
+                    //    PageSno = Convert.ToInt32(e["pageSno"])
+                    //});
+                    pageDetailsWithProduct.PageDetails = JsonConvert.DeserializeObject<List<PageDetails>>(ds.Tables[0].Rows[0]["Pages"].ToString()).ToList();
                 return pageDetailsWithProduct;
             }
             else
@@ -91,7 +92,7 @@ namespace CF.Octogo.Tenants
         /// <returns></returns>
         /// 
         [UnitOfWork]
-        public async Task<TenantDBDetailsDto> CreateAdminUserOnTenantDB(int? tenantId = null)
+        public async Task<string> CreateAdminUserOnTenantDB(int? tenantId = null)
         {
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("TenantId", tenantId);
@@ -106,16 +107,15 @@ namespace CF.Octogo.Tenants
                 var result = SqlHelper.ConvertDataTable<TenantDBDetailsDto>(ds.Tables[0]);
                 if (result.Count > 0)
                 {
-
                    foreach (var tenantDetails in result)
-                    {
+                   {
                         using (_unitOfWorkManager.Current.SetTenantId(tenantDetails.TenantId))
                         {
                             //var userData = _userRolesRepository.GetAll().Where(obj => obj.);
                             var roleId = _roleManager.Roles.Where(obj => obj.DisplayName.ToLower() == "admin").FirstOrDefault().Id;
                             var userId = _userRolesRepository.GetAll().Where(obj => obj.RoleId == roleId).FirstOrDefault().UserId;
                             var userData = _userManager.GetUserById(userId);
-                            var tenantadminDetails = result.Select(rw => new TenantDBDetailsDto
+                            var tenantadminDetails = result.Select(rw => new TenantDbAndUserDetailsDto
                             {
                                 UserName = userData.UserName,
                                 Password = userData.Password,
@@ -127,8 +127,13 @@ namespace CF.Octogo.Tenants
 
                             }).FirstOrDefault();
 
-                            await InsertAdminDetailsOnTenantDataBase(tenantadminDetails);
-
+                            string ret_str =  await InsertAdminDetailsOnTenantDataBase(tenantadminDetails);
+                            if (ret_str == "Success")
+                            {
+                                // set flag for Admin user details insert successfully to Tenant database
+                                await UpdateTenantSetUpProcess(tenantDetails.SetupId);
+                            }
+                            return ret_str;
                         }
                     }
                 }
@@ -144,7 +149,7 @@ namespace CF.Octogo.Tenants
         /// Created on:21-01-22
         /// </summary>
         /// <returns></returns>
-        private async Task<string> InsertAdminDetailsOnTenantDataBase(TenantDBDetailsDto admindata)
+        private async Task<string> InsertAdminDetailsOnTenantDataBase(TenantDbAndUserDetailsDto admindata)
         {
             List<UserCollectionForSubscription> users = new List<UserCollectionForSubscription>();
             users.Add(new UserCollectionForSubscription
@@ -163,28 +168,19 @@ namespace CF.Octogo.Tenants
             parameters[1] = new SqlParameter("@NewPwd", admindata.Password);
             var jasonFormatData = Newtonsoft.Json.JsonConvert.SerializeObject(users);
 
-            try
-            {
                 var ds = await SqlHelper.ExecuteDatasetAsync(admindata.ConnectionString.Trim(),
                             System.Data.CommandType.StoredProcedure,
                             "CreateUsersFromSubscription", parameters);
 
                 if (ds.Tables[0].Rows[0][0].ToString() == "0")
                 {
-                    // set flag for Admin user details insert successfully to Tenant database
-                    await UpdateTenantSetUpProcess(admindata.TenantId);
+                    return "Success";
                 }
                 else
                 {
                     return "failed to insert admin data";
                 }
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
-            }
-            return "Success";
+            
         }
 
         /// <summary>
@@ -192,12 +188,12 @@ namespace CF.Octogo.Tenants
         /// Created by: Merajuddin khan
         /// Created on:24-01-22
         /// </summary>
-        /// <param name="tenantId"></param>
+        /// <param name="setupId"></param>
         /// <returns></returns>
-        private async Task UpdateTenantSetUpProcess(int tenantId)
+        private async Task UpdateTenantSetUpProcess(int setupId)
         {
                 SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("TenantId", tenantId);
+                parameters[0] = new SqlParameter("SetupId", setupId);
                 parameters[1] = new SqlParameter("AdminCreationCompleted", true);
 
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
@@ -247,7 +243,7 @@ namespace CF.Octogo.Tenants
                             await SqlHelper.ExecuteDatasetAsync(
                                     Connection.GetSqlConnection(connectionString),
                                     System.Data.CommandType.Text,
-                                    "UPDATE SystemSettings SET SysValue = 0 WHERE SysKey='IsPackageUpdated'"
+                                    "UPDATE SystemSettings SET SysValue = 1 WHERE SysKey='IsPackageUpdated'"
                                     );
                         }
                     }

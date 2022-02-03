@@ -23,7 +23,7 @@
             <input #FirstNameInput="ngModel"
                 class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text"
                 placeholder="{{'FirstName' | localize}} *" (keypress)="spaceBar($event) "[(ngModel)]="model.firstName" name="FirstName" required
-                maxlength="64" />
+                maxlength="64" (keypress)="_validationService.NameValidation($event)" />
             <validation-messages [formCtrl]="FirstNameInput"></validation-messages>
         </div>
 
@@ -31,7 +31,7 @@
             <input #LastNameInput="ngModel"
                 class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text"
                 placeholder="{{'LastName' | localize}} *" (keypress)="spaceBar($event)" [(ngModel)]="model.lastName" name="LastName" required
-                maxlength="64" />
+                maxlength="64" (keypress)="_validationService.NameValidation($event)" />
             <validation-messages [formCtrl]="LastNameInput"></validation-messages>
         </div>
 
@@ -47,7 +47,7 @@
             <input #UserNameInput="ngModel"
                 class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text"
                 placeholder="{{'UserName' | localize}} *" (keypress)="spaceBars($event)" [(ngModel)]="model.userName" name="UserName" required
-                maxlength="64" />
+                maxlength="64" (keypress)="_validationService.NameValidation($event)" />
             <validation-messages [formCtrl]="UserNameInput"></validation-messages>
         </div>
 

@@ -6,8 +6,10 @@ import { AppComponentBase } from '@shared/common/app-component-base';
 import { AddonListDto, AddonServiceProxy, CreateAddonDto, EditionServiceProxy, ModuleListDto, ModuleListForAddonDto, ModulePricingDto, PageModulesDto, PriceDiscount, SubModuleForAddonDto, SubModulesDto } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
-import { finalize } from 'rxjs/operators';
+import  { finalize }  from 'rxjs/operators';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+
+
 
 const roundTo = function (num: number, places: number) {
     const factor = 10 ** places;
@@ -95,7 +97,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             this.GetModuleListByEditionForAddon(this.EditionID);
             this.GetEditionListForAddon(this.AddonDataForEdit.forEditionId);
         }
-        this.GetOtherDataForEdition();
+        this.getMasterDataForEdition();
         // if (!this.isEdit) {
         //     this.GetAddonModuleList();
         // }
@@ -175,10 +177,10 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                 });
         }
     }
-    GetOtherDataForEdition() {
+    getMasterDataForEdition() {
         this.ProductList = [];
         this.ApproachList = [];
-        this._editionService.getOtherDataForEdition().subscribe(result => {
+        this._editionService.getMasterDataForEdition().subscribe(result => {
             if (result != null) {
                 this.ApproachList = result.table;
                 this.ProductList = result.table1;
@@ -306,24 +308,57 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             this.SelectModuleAction(module, index, true);
           }
           else {
-            let selectedSubModule = this.ModulesList[this.SelectedIndex].subModuleList.findIndex(obj => obj["selected"] == true);
-            if (selectedSubModule >= 0) {
-              this.SelectModuleAction(module, index);
-            }
-            else {
-              this.message.confirm(
-                this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.moduleName),
-                this.l('AreYouSure'),
-                isConfirmed => {
-                  if(isConfirmed){
-                    this.SelectModuleAction(module, index, true);
-                  }
-                  else{
-                    return;
+            let moduleChangeConfirmation = false;
+            let selectedSubModule = this.ModulesList[this.SelectedIndex].subModuleList.filter(obj => obj["selected"] == true);
+            if (selectedSubModule != null && selectedSubModule != undefined && selectedSubModule.length > 0){
+              selectedSubModule.forEach(subModule =>{
+                if(subModule.subSubModuleList != null && subModule.subSubModuleList != undefined){
+                  let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true);
+                  if(selectedSubSubModIndex < 0){
+                    moduleChangeConfirmation = true;
                   }
                 }
-              );
+              })
             }
+            else {
+              moduleChangeConfirmation = true;
+            }
+            // let selectedSubModule = this.ModulesList[this.SelectedIndex].subModuleList.findIndex(obj => obj["selected"] == true);
+            // if (selectedSubModule >= 0) {
+            //   this.SelectModuleAction(module, index);
+            // }
+            // else {
+            //   this.message.confirm(
+            //     this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.moduleName),
+            //     this.l('AreYouSure'),
+            //     isConfirmed => {
+            //       if(isConfirmed){
+            //         this.SelectModuleAction(module, index, true);
+            //       }
+            //       else{
+            //         return;
+            //       }
+            //     }
+            //   );
+            // }
+
+            if(moduleChangeConfirmation == true){
+                this.message.confirm(
+                    this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.moduleName),
+                    this.l('AreYouSure'),
+                    isConfirmed => {
+                      if(isConfirmed){
+                        this.SelectModuleAction(module, index, true);
+                      }
+                      else{
+                        return;
+                      }
+                    }
+                  );
+              }
+              else{
+                this.SelectModuleAction(module, index);
+              }
           }
         }
         else{
@@ -341,7 +376,12 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
         this.SubSubModuleList = [];
         let selectedSubModules = this.ModulesList[this.SelectedIndex].subModuleList.filter(obj => obj["selected"] == true);
         selectedSubModules.forEach(obj => {
-            this.SubSubModuleList.concat(obj.subSubModuleList);
+            // this.SubSubModuleList.concat(obj.subSubModuleList);
+            if(obj.subSubModuleList != null && obj.subSubModuleList != undefined && obj.subSubModuleList.length > 0){
+                obj.subSubModuleList.forEach(subSubModule =>{
+                  this.SubSubModuleList.push(subSubModule);
+                })
+              }
         });
     }
     SelectSubSubModule(subSubModuleId) {
@@ -409,23 +449,44 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             selectedModules = this.ModulesList.filter(obj => obj["selected"] == true);
             if (selectedModules != null && selectedModules.length > 0) 
             {
+                // for(let i = 0; i < selectedModules.length; i++)
+                //     {
+                //     if (selectedModules[i].subModuleList != null && selectedModules[i].subModuleList.length > 0) 
+                //     {
+                //         let tempIndex = selectedModules[i].subModuleList.findIndex(x => x["selected"] == true);
+                //         isModuleSubModuleSelected = true;
+                //         if(tempIndex < 0){
+                //             isModuleSubModuleSelected = false;
+                //             break;
+                //         }
+                //     }
+                //     else{
+                //         isModuleSubModuleSelected = false;
+                //         break;
+                //     }
+                // }
                 for(let i = 0; i < selectedModules.length; i++)
-                    {
-                    debugger
-                    if (selectedModules[i].subModuleList != null && selectedModules[i].subModuleList.length > 0) 
-                    {
-                        let tempIndex = selectedModules[i].subModuleList.findIndex(x => x["selected"] == true);
+                {
+                    if (selectedModules[i].subModuleList != null && selectedModules[i].subModuleList.length > 0){ 
                         isModuleSubModuleSelected = true;
-                        if(tempIndex < 0){
-                            isModuleSubModuleSelected = false;
-                            break;
+                        let selectedSubModule = selectedModules[i].subModuleList.filter(obj => obj["selected"] == true);
+                        if (selectedSubModule != null && selectedSubModule != undefined && selectedSubModule.length > 0){
+                          selectedSubModule.forEach(subModule =>{
+                            if(subModule.subSubModuleList != null && subModule.subSubModuleList != undefined){
+                              let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true);
+                              if(selectedSubSubModIndex < 0){
+                                isModuleSubModuleSelected = false;
+                              }
+                            }
+                          })
                         }
                     }
-                    else{
-                        isModuleSubModuleSelected = false;
-                        break;
-                    }
+                
+                else{
+                    isModuleSubModuleSelected = false;
+                    break;
                 }
+            }
             }
         }
         if (isModuleSubModuleSelected) {

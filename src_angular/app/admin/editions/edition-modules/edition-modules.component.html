@@ -61,8 +61,8 @@
             <div class="col-sm-4 subModuleCheck d-flex"
                 *ngFor="let subSubModule of SubSubModuleList">
                 <input type="checkbox" [checked]="subSubModule.selected" 
-                [disabled]="IsDependentEditionModuleSelected" (click)="SelectSubSubModule(subSubModule.subModuleId)" />
-                &nbsp;&nbsp;{{subSubModule.subModuleName}}
+                [disabled]="IsDependentEditionModuleSelected" (click)="SelectSubSubModule(subSubModule.id)" />
+                &nbsp;&nbsp;{{subSubModule.displayName}}
             </div>
         </div>
     </div>

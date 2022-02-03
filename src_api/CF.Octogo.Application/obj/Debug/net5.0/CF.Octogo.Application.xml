@@ -158,7 +158,7 @@
             <returns></returns>
             
         </member>
-        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.InsertAdminDetailsOnTenantDataBase(CF.Octogo.Tenants.Dto.TenantDBDetailsDto)">
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.InsertAdminDetailsOnTenantDataBase(CF.Octogo.Tenants.Dto.TenantDbAndUserDetailsDto)">
             <summary>
             
             Desc:Insert Tenant admin details on their respective database connection
@@ -173,7 +173,7 @@
             Created by: Merajuddin khan
             Created on:24-01-22
             </summary>
-            <param name="tenantId"></param>
+            <param name="setupId"></param>
             <returns></returns>
         </member>
         <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSyetemSettingForEditionUpdate(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32})">

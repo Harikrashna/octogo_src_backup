@@ -8,6 +8,7 @@ import { PasswordComplexitySetting, CommonServiceProxy } from '@shared/service-p
 import { Router } from '@angular/router';
 import { LazyLoadEvent } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
+import { InputValidationService } from '@account/shared/input-validation.service';
 
 @Component({
   selector: 'app-user-signup',
@@ -24,7 +25,8 @@ export class UserSignUpComponent extends AppComponentBase implements OnInit {
   saving = false;
   constructor(injector: Injector, private _userRegistrationService: UserRegistrationServiceProxy
     ,private _commonServiceProxy: CommonServiceProxy,
-     private _router: Router) {
+     private _router: Router,
+     public _validationService:InputValidationService) {
     super(injector);
   }
   usertypes:any = [];

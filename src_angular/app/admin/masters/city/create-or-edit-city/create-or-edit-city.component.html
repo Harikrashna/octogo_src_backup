@@ -147,8 +147,8 @@
                         (click)="close(CityForm)">{{"Cancel" | localize}}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!CityForm.form.valid"
                         [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"
-                        (click)="save(CityForm , CityForm.value)"><i class="fa fa-save"></i>
-                        <span>{{"Save" | localize}}</span></button>
+                        (click)="save(CityForm,CityForm.value)"><i class="fa fa-save"></i> <span>{{"Save" |
+                            localize}}</span></button>
                 </div>
             </form>
         </div>

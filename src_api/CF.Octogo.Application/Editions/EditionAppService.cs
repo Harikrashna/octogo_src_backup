@@ -249,19 +249,22 @@ namespace CF.Octogo.Editions
                         throw new UserFriendlyException(L("ExpiringEditionMustBeAFreeEdition"));
                     }
                 }
-                var edition = ObjectMapper.Map<SubscribableEdition>(input.Edition);
-                if (isEdit == false)
-                {
-                    await _editionManager.CreateAsync(edition);
-                    // CurrentUnitOfWork.SaveChanges(); //It's done to get Id of the edition.
+                // var edition = ObjectMapper.Map<SubscribableEdition>(input.Edition);
+                //if (isEdit == false)
+                // {
+                //await _editionManager.CreateAsync(edition);
+                // CurrentUnitOfWork.SaveChanges(); //It's done to get Id of the edition.
 
-                    input.Edition.Id = edition.Id;
-                }
+                //input.Edition.Id = edition.Id;
+                // }
+                    
                 await InsertUpdateEditionModuleAndPricing(input);
-                if (edition.Id > 0)
-                {
+
+
+                // if (edition.Id > 0)
+                // {
                     // _editionManager.SetFeatureValuesAsync((int)input.Edition.Id, input.FeatureValues.Select(fv => new NameValue(fv.Name, fv.Value)).ToArray());
-                }
+                // }
             }
         }
 
@@ -311,45 +314,44 @@ namespace CF.Octogo.Editions
             //}
             //else
             //{
-                    SqlParameter[] parameters = new SqlParameter[12];
-                    parameters[0] = new SqlParameter("ProductId", input.ProductId);
-                    parameters[1] = new SqlParameter("ModuleData", JsonConvert.SerializeObject(input.ModuleList));
-                    parameters[2] = new SqlParameter("PricingData", input.priceDiscount != null ? JsonConvert.SerializeObject(input.priceDiscount) : null);
-                    parameters[3] = new SqlParameter("DependantEditionID", input.DependantEditionID);
-                    parameters[4] = new SqlParameter("LoginUserId", AbpSession.UserId);
-                    parameters[5] = new SqlParameter("ApproachId", input.ApproachId);
-                    parameters[6] = new SqlParameter("EditionId", input.Edition.Id);
-                    parameters[7] = new SqlParameter("Name", input.Edition.DisplayName);
-                    parameters[8] = new SqlParameter("ExpiringEditionId", input.Edition.ExpiringEditionId);
-                    parameters[9] = new SqlParameter("TrialDayCount", input.Edition.TrialDayCount);
-                    parameters[10] = new SqlParameter("WaitingDayAfterExpire", input.Edition.WaitingDayAfterExpire);
-                    parameters[11] = new SqlParameter("isEdit", input.isEdit);
-                    var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                            System.Data.CommandType.StoredProcedure,
-                            "USP_InsertEditionModulesANDPricing", parameters);
-                    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                    {
-                    if (input.Edition.Id > 0)
-                    {
-                        _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)input.Edition.Id, null);
-                    }
-                        return (int)ds.Tables[0].Rows[0]["Id"];
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-            // }
-            // return 0;
+                // var x = JsonConvert.SerializeObject(input.ModuleList);
+                SqlParameter[] parameters = new SqlParameter[12];
+                parameters[0] = new SqlParameter("ProductId", input.ProductId);
+                parameters[1] = new SqlParameter("ModuleData", JsonConvert.SerializeObject(input.ModuleList));
+                parameters[2] = new SqlParameter("PricingData", input.priceDiscount != null ? JsonConvert.SerializeObject(input.priceDiscount) : null);
+                parameters[3] = new SqlParameter("DependantEditionID", input.DependantEditionID);
+                parameters[4] = new SqlParameter("LoginUserId", AbpSession.UserId);
+                parameters[5] = new SqlParameter("ApproachId", input.ApproachId);
+                parameters[6] = new SqlParameter("EditionId", input.Edition.Id);
+                parameters[7] = new SqlParameter("Name", input.Edition.DisplayName);
+                parameters[8] = new SqlParameter("ExpiringEditionId", input.Edition.ExpiringEditionId);
+                parameters[9] = new SqlParameter("TrialDayCount", input.Edition.TrialDayCount);
+                parameters[10] = new SqlParameter("WaitingDayAfterExpire", input.Edition.WaitingDayAfterExpire);
+                parameters[11] = new SqlParameter("isEdit", input.isEdit);
+                var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_InsertEditionModulesANDPricing_Test", parameters);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    //if (input.Edition.Id > 0)
+                    //{
+                    //    _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)input.Edition.Id, null);
+                    //}
+                    return (int)ds.Tables[0].Rows[0]["Id"];
+                }
+                else
+                {
+                    return 0;
+                }
         }
-        public async Task<EditionDetailsForEditDto> getEditionDetailsForEdit(int EditionId)
+        public async Task<EditionDetailsForEditDto> GetEditionDetailsForEdit(int EditionId)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("EditionId", EditionId);
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GETEDITIONDATAFOREDIT", parameters
+                    "USP_GetEditionDataForEdit", parameters
                     );
             if (ds.Tables.Count > 0)
             {
@@ -376,12 +378,12 @@ namespace CF.Octogo.Editions
             }
         }
 
-        public async Task<DataSet> GetOtherDataForEdition()
+        public async Task<DataSet> GetMasterDataForEdition()
         {
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GETMASTERSDATAFOREDITION"
+                    "USP_GetMastersDataForEdition"
                     );
             if (ds.Tables.Count > 0)
             {
@@ -392,14 +394,14 @@ namespace CF.Octogo.Editions
                 return null;
             }
         }
-        public async Task<EditionModulesDto> getEditionModules(int EditionId)
+        public async Task<EditionModulesDto> GetEditionModules(int EditionId)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("EditionId", EditionId);
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GetEditionModules", parameters
+                    "USP_GetEditionModules_Test", parameters
                     );
             if (ds.Tables.Count > 0)
             {
@@ -521,7 +523,7 @@ namespace CF.Octogo.Editions
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GetPageModulesList"
+                    "USP_GetPageModulesList_Test"
                     );
             if (ds.Tables.Count > 0)
             {

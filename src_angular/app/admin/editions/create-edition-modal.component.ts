@@ -74,10 +74,10 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     ngOnInit(): void {
     }
     // get Product list, Approach List
-    getOtherDataForEdition() {
+    GetMasterDataForEdition() {
         this.ProductList = [];
         this.ApproachList = [];
-        this._editionService.getOtherDataForEdition().subscribe(result => {
+        this._editionService.getMasterDataForEdition().subscribe(result => {
             if (result != null) {
                 this.ApproachList = result.table;
                 this.ProductList = result.table1;
@@ -132,7 +132,10 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     // Get Edition Modules data for Dependent Edition OR for Edit mode of Edition
     getEditionModulesData(EditionId, ForEdit: boolean = true) {
         if (this.editionModule != undefined && this.editionModule != null) {
-            // this.editionModules.ModulesList = [];
+            this.editionModule.SubSubModuleList = [];
+            this.editionModule.SubModuleList = [];
+            this.editionModule.SelectedModule = null;
+            this.editionModule.SelectedIndex = -1;
             this.editionModule.DependEditionData = [];
             if (EditionId > 0) {
                 this._editionService.getEditionModules(EditionId).subscribe(result => {
@@ -161,16 +164,6 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                             });
                         }
                         this.editionModule.RemoveDependentEditionModules(ForEdit);
-                        // if (this.editionModules.DependEditionData != null && this.editionModules.DependEditionData.length > 0) {
-                        //     this.editionModules.DependEditionData.forEach(obj => {
-                        //         obj["Collapse"] = true;
-                        //         if (obj.moduleData != null && obj.moduleData.length) {
-                        //             obj.moduleData.forEach(ele => {
-                        //                 ele["Collapse"] = true;
-                        //             })
-                        //         }
-                        //     })
-                        // }
                     }
                 });
             }
@@ -217,7 +210,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     }
     show(editionId?: number): void {
         this.active = true;
-        this.getOtherDataForEdition();
+        this.GetMasterDataForEdition();
         // this._commonLookupService.getEditionsForCombobox(true).subscribe(editionsResult => {
         //     this.expiringEditions = editionsResult.items;
         //     this.expiringEditions.unshift(new ComboboxItemDto({ value: null, displayText: this.l('NotAssigned'), isSelected: true }));
@@ -260,7 +253,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         //     return;
         // }
         this.priceFormInvalid = this.ValidatePriceForm();
-        let isModuleSubModuleSelected = false;
+        let isModuleSubModuleSelected:boolean = false;
         let selectedModules = [];
         if (this.editionModule != undefined && this.editionModule.PageModuleList != null && this.editionModule.PageModuleList.length > 0) {
             selectedModules = this.editionModule.PageModuleList.filter(obj => obj["selected"] == true);
@@ -271,11 +264,25 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                     let subModule = this.editionModule.PageSubModuleList.filter(x => x.moduleId == selectedModules[i].id);
                     if (subModule != null && subModule.length > 0 && subModule[0].subModuleList != null && subModule[0].subModuleList.length > 0) 
                     {
-                        let tempIndex = subModule[0].subModuleList.findIndex(x => x["selected"] == true);
+                        // let tempIndex = subModule[0].subModuleList.findIndex(x => x["selected"] == true);
                         isModuleSubModuleSelected = true;
-                        if(tempIndex < 0){
+                        // if(tempIndex < 0){
+                        //     isModuleSubModuleSelected = false;
+                        //     break;
+                        // }
+                        let selectedSubModule = subModule[0].subModuleList.filter(obj => obj["selected"] == true);
+                        if (selectedSubModule != null && selectedSubModule != undefined && selectedSubModule.length > 0){
+                          selectedSubModule.forEach(subModule =>{
+                            if(subModule.subSubModuleList != null && subModule.subSubModuleList != undefined){
+                              let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true);
+                              if(selectedSubSubModIndex < 0){
+                                isModuleSubModuleSelected = false;
+                              }
+                            }
+                          })
+                        }
+                        else{
                             isModuleSubModuleSelected = false;
-                            break;
                         }
                     }
                     else{

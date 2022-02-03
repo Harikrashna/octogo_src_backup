@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Domain.Repositories;
 using Abp.MultiTenancy;
 using Abp.Runtime.Session;
 using Abp.UI;
+using CF.Octogo.Authorization.Users;
 using CF.Octogo.Configuration;
 using CF.Octogo.DashboardCustomization.Definitions;
 using CF.Octogo.DashboardCustomization.Dto;
@@ -19,10 +23,11 @@ namespace CF.Octogo.DashboardCustomization
     public class DashboardCustomizationAppService : OctogoAppServiceBase, IDashboardCustomizationAppService
     {
         private readonly DashboardConfiguration _dashboardConfiguration;
-
-        public DashboardCustomizationAppService(DashboardConfiguration dashboardConfiguration)
+        private readonly IRepository<User, long> _userRepository;
+        public DashboardCustomizationAppService(DashboardConfiguration dashboardConfiguration, IRepository<User, long> userRepository)
         {
             _dashboardConfiguration = dashboardConfiguration;
+            _userRepository = userRepository;
         }
 
         public async Task<Dashboard> GetUserDashboard(GetDashboardInput input)
@@ -283,6 +288,7 @@ namespace CF.Octogo.DashboardCustomization
 
         public async Task<ListResultDto<EditionAndProductListDto>> GetProductAndEditionDetailByUserId(int userId)
         {
+            var user = _userRepository.Get(userId);
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("UserId", userId);
             var ds = await SqlHelper.ExecuteDatasetAsync(
@@ -294,6 +300,22 @@ namespace CF.Octogo.DashboardCustomization
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 EditionProductData = SqlHelper.ConvertDataTable<EditionAndProductListDto>(ds.Tables[0]);
+                if(EditionProductData != null && EditionProductData.Count > 0)
+                {
+                    for(int i = 0; i< EditionProductData.Count; i++)
+                    {
+                        if(EditionProductData[i].ProductUrl.IndexOf("?") == -1)
+                        {
+                            EditionProductData[i].ProductUrl = EditionProductData[i].ProductUrl + "?t=";
+                        }
+                        if (EditionProductData[i].ProductUrl.IndexOf("http") == -1)
+                        {
+                            EditionProductData[i].ProductUrl = "https://" + EditionProductData[i].ProductUrl;
+                        }
+                        string url = EditionProductData[i].ProductUrl + Convert.ToBase64String(Encoding.UTF8.GetBytes(user.UserName.ToString() + ':' + user.Password.ToString()));
+                        EditionProductData[i].ProductUrl = url;
+                    }
+                }
                 return new ListResultDto<EditionAndProductListDto>(EditionProductData);
 
             }

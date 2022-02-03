@@ -14,7 +14,7 @@
                         [ngClass]="{'p-filled':UserRegistration.company?.length > 0}"
                         class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                         name="companyName" #companyName="ngModel" type="text" [(ngModel)]="UserRegistration.company"
-                        maxlength="50" (keypress)="IsAlphanumeric($event)" pInputText required>
+                        maxlength="50" (keypress)="_validationService.NameValidation($event)" pInputText required>
                     <label for="companyName">{{"CompanyName" | localize}}<span class="text-danger"
                             id="req">*</span></label>
                 </span>
@@ -28,7 +28,7 @@
                 <p-autoComplete id="airlineName"
                     inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                     #airlineName="ngModel" name="airlineName" [(ngModel)]="UserRegistration.airlineId" [size]="60"
-                    [suggestions]="airlineResult" (keypress)="IsAlphabet($event)" (completeMethod)="getAirline($event)"
+                    [suggestions]="airlineResult" (keypress)="_validationService.NameValidation($event)" (completeMethod)="getAirline($event)"
                     maxlength="50" [forceSelection]="true" field="name" required>
                 </p-autoComplete>
                 <label for="airlineName">{{"AirlineName" | localize}}<span class="text-danger" id="req">*</span></label>
@@ -43,7 +43,7 @@
                     inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                     id="industry" #industry="ngModel" name="industry" [size]="60"
                     [(ngModel)]="UserRegistration.industryId" [suggestions]="industryResult"
-                    (keypress)="IsAlphabet($event)" (completeMethod)="getIndustry($event)"
+                    (keypress)="_validationService.NameValidation($event)" (completeMethod)="getIndustry($event)"
                     (onSelect)="selectIndustry(UserRegistration.industryId)" [forceSelection]="true" maxlength="50"
                     field="name" required>
                 </p-autoComplete>
@@ -74,7 +74,7 @@
                     id="department" #department="ngModel" [forceSelection]="true" name="department"
                     [(ngModel)]="UserRegistration.departmentId" [size]="60" [suggestions]="departmentResult"
                     (completeMethod)="getDepartment($event)" maxlength="50" field="name"
-                    (onSelect)="selectDepartment(UserRegistration.departmentId)" (keypress)="IsAlphabet($event)"
+                    (onSelect)="selectDepartment(UserRegistration.departmentId)" (keypress)="_validationService.NameValidation($event)"
                     required>
                 </p-autoComplete>
                 <label for="department">{{"Department" | localize}}<span class="text-danger" id="req">*</span></label>
@@ -92,7 +92,7 @@
                     [(ngModel)]="UserRegistration.department" minlength="2"
                     (input)="checkDuplicateDepartment(UserRegistration.department)"
                     [ngClass]="{'p-filled':UserRegistration.department?.length > 0}" maxlength="50"
-                    (keypress)="IsAlphabet($event)" pInputText required>
+                    (keypress)="_validationService.NameValidation($event)" pInputText required>
                 <label for="departmentName">{{"DepartmentName" | localize}}<span class="text-danger"
                         id="req">*</span></label>
             </span>
@@ -109,7 +109,7 @@
                     id="designation" #designation="ngModel" [forceSelection]="true" name="designation" size="50"
                     minlength="2" [(ngModel)]="UserRegistration.designationId" (completeMethod)="getDesignation($event)"
                     [size]="60" [suggestions]="designationResult" maxlength="50" field="name"
-                    (onSelect)="selectDesignation(UserRegistration.designationId)" (keypress)="IsAlphabet($event)"
+                    (onSelect)="selectDesignation(UserRegistration.designationId)" (keypress)="_validationService.NameValidation($event)"
                     required>
                 </p-autoComplete>
                 <label for="designation">{{"Designation" | localize}}<span class="text-danger" id="req">*</span></label>
@@ -125,7 +125,7 @@
                     class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                     name="designationName" #designationName="ngModel" type="text"  [ngClass]="{'p-filled':UserRegistration.designation?.length > 0}"
                     (input)="checkDuplicateDesignation(UserRegistration.designation)"[(ngModel)]="UserRegistration.designation" minlength="2" maxlength="50"
-                    (keypress)="IsAlphabet($event)" pInputText required>
+                    (keypress)="_validationService.NameValidation($event)" pInputText required>
                 <label for="designationName">{{"DesignationName" | localize}}<span class="text-danger"
                         id="req">*</span></label>
             </span>
@@ -149,7 +149,7 @@
                                 [multiple]="true"
                                 inputStyleClass="form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                                 styleClass="width-percent-100"
-                                (keypress)="IsAlphabet($event)" 
+                                (keypress)="_validationService.NameValidation($event)" 
                                 [forceSelection]="true"
                                 (onSelect)="onSelectService()">
                 </p-autoComplete>
@@ -178,7 +178,7 @@
                     [minLength]="1" maxlength="50" id="representingAirlines"
                     [multiple]="true" [forceSelection]="true"
                     inputStyleClass="form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
-                    styleClass="width-percent-100" (keypress)="IsAlphabet($event)" required>
+                    styleClass="width-percent-100" (keypress)="_validationService.NameValidation($event)" required>
                 </p-autoComplete>
                 <label for="representingAirlines">{{"RepresentingAirlines" | localize}} <span class="text-danger"
                         id="req">*</span></label>
@@ -193,7 +193,7 @@
                     field="name" [minLength]="1" #presenceAndRepresentingCountries="ngModel" [forceSelection]="true"
                     name="presenceOrRepresentingCountries" id="presenceOrRepresentingCountries" [multiple]="true"
                     inputStyleClass="form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
-                    styleClass="width-percent-100" maxlength="50" (keypress)="IsAlphabet($event)">
+                    styleClass="width-percent-100" maxlength="50" (keypress)="_validationService.NameValidation($event)">
                 </p-autoComplete>
                 <label for="presenceOrRepresentingCountries">{{"PresenceOrRepresentingCountries" |
                     localize}}</label>
@@ -206,7 +206,7 @@
                     inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" id="city"
                     #cityCode="ngModel" name="city" size="50"  [(ngModel)]="UserRegistration.city" [size]="60"
                     [suggestions]="cityCodeResult" (completeMethod)="getCity($event)" [forceSelection]="true"
-                    (keypress)="IsAlphabet($event)" (onSelect)="fillCountry(UserRegistration.city)"
+                    (keypress)="_validationService.NameValidation($event)" (onSelect)="fillCountry(UserRegistration.city)"
                     field="name" maxlength="50" required [forceSelection]="true" (input)="resetCountry()">
                 </p-autoComplete>
                 <label for="city">{{"City" | localize}}<span class="text-danger" id="req">*</span></label>
@@ -218,7 +218,7 @@
             <span class="p-float-label">
                 <p-autoComplete id="country" inputId="country"
                     inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
-                    #country="ngModel" name="country" (keypress)="IsAlphabet($event)" [forceSelection]="true"
+                    #country="ngModel" name="country" (keypress)="_validationService.NameValidation($event)" [forceSelection]="true"
                     (completeMethod)="getCountry($event)" field="name" [(ngModel)]="UserRegistration.country"
                     [size]="60" [suggestions]="countryCodeResult" maxlength="50" required [forceSelection]="true">
                 </p-autoComplete>
@@ -240,7 +240,7 @@
                 
                     <input id="phone" inputId="phone"  [ngClass]="{'p-filled': UserRegistration.contact?.length > 0}"
                         class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
-                        name="phone" (keypress)="IsNumeric($event)" #phone="ngModel" type="text" placeholder="{{'Contact' | localize}} *"
+                        name="phone" (keypress)="_validationService.NameValidation($event)" #phone="ngModel" type="text" placeholder="{{'Contact' | localize}} *"
                         [(ngModel)]="UserRegistration.contact" maxlength="10" minlength="8" pInputText
                         required>
 

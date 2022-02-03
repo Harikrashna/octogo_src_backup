@@ -6,6 +6,7 @@ import { filter as _filter } from 'lodash-es';
 import { DateTime } from 'luxon';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { finalize } from 'rxjs/operators';
+import { ValidationServiceService } from '../validation-service.service';
 
 @Component({
     selector: 'editTenantModal',
@@ -33,7 +34,8 @@ export class EditTenantModalComponent extends AppComponentBase {
         injector: Injector,
         private _tenantService: TenantServiceProxy,
         private _commonLookupService: CommonLookupServiceProxy,
-        private _dateTimeService: DateTimeService
+        private _dateTimeService: DateTimeService,
+        public _validationService: ValidationServiceService
     ) {
         super(injector);
     }

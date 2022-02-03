@@ -3,6 +3,7 @@ import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild } f
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgForm } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
 import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { CityListDto, CityServiceProxy, CommonServiceProxy, CreateOrUpdateCityInput, MasterDataDto } from '@shared/service-proxies/service-proxies';
 
@@ -116,50 +117,58 @@ export class CreateOrEditCityComponent extends AppComponentBase implements OnIni
       })
     }
   }
-  save(form, values): void {
+ save(form: NgForm, values): void {
     this.Duplicacy = this.perCity.some((x) => x.cityName.trim().toUpperCase() == this.createCity.cityName.trim().toUpperCase() && x.cityCode.trim().toUpperCase() == this.createCity.cityCode.trim().toUpperCase() && x.countryName == values.countryName.name && x.sNo != this.createCity.sNo || (x.cityName.trim().toUpperCase() == this.createCity.cityName.trim().toUpperCase() || x.cityCode.trim().toUpperCase() == this.createCity.cityCode.trim().toUpperCase()) && x.sNo != this.createCity.sNo);
     if (this.Duplicacy) {
       this.notify.warn(this.l('DuplicateMessage'));
       return;
     }
+    let inputData = new CreateOrUpdateCityInput();
     if (values.countryName != undefined || values.countryName != null) {
-      this.createCity.countryName = values.countryName.name;
-      this.createCity.countrySNo = values.countryName.id;
-      this.createCity.countryCode = values.countryName.code;
+      inputData.countryName = values.countryName.name;
+      inputData.countrySNo = values.countryName.id;
+      inputData.countryCode = values.countryName.code;
     }
     if (values.timezoneName != undefined || values.timezoneName != null) {
-      this.createCity.timeZoneSNo = values.timezoneName.id;
+      inputData.timeZoneSNo = values.timezoneName.id;
     }
     if (values.dgclass != undefined || values.dgclass != null) {
-      this.createCity.dgClassSNo = values.dgclass.id;
+      inputData.dgClassSNo = values.dgclass.id;
     }
     if (values.shc != undefined || values.shc != null) {
-      this.createCity.shcSNo = values.shc.id;
+      inputData.shcSNo = values.shc.id;
     }
     if (values.iataAreaCode != undefined || values.iataAreaCode != null) {
-      this.createCity.iataAreaCode = values.iataAreaCode.id;
+      inputData.iataAreaCode = values.iataAreaCode.id;
     }
     if (values.zone != undefined || values.zone != null) {
-      this.createCity.zoneSNo = values.zone.id;
-      this.createCity.zoneName = values.zone.name
+      inputData.zoneSNo = values.zone.id;
+      inputData.zoneName = values.zone.name
     }
     if (values.stateName != undefined || values.stateName != null) {
-      this.createCity.stateName = values.stateName.name;
-      this.createCity.stateSNo = values.stateName.id
+      inputData.stateName = values.stateName.name;
+      inputData.stateSNo = values.stateName.id
     }
-
-    if (this.createCity.sNo == null || this.createCity.sNo == 0) {
-      this._cityService.createOrUpdateCityType(this.createCity).subscribe(e => {
+    inputData.sNo = this.createCity.sNo;
+    inputData.cityCode=this.createCity.cityCode;
+    inputData.cityName=this.createCity.cityName;
+    inputData.priorApproval=this.createCity.priorApproval;
+    inputData.isDayLightSaving=this.createCity.isDayLightSaving;
+    inputData.isActive=this.createCity.isActive;
+    if (inputData.sNo == null || inputData.sNo == 0) {
+      this.saving = true;
+      this._cityService.createOrUpdateCityType(inputData).pipe(finalize(() => { this.saving = false; })).subscribe(e => {
         this.notify.info(this.l('SavedSuccessfully'));
-        this.close(form)
+        this.close(form);
         this.modalSave.emit(null);
       })
     }
 
     else {
-      this._cityService.createOrUpdateCityType(this.createCity).subscribe(e => {
+      this.saving = true;
+      this._cityService.createOrUpdateCityType(inputData).pipe(finalize(() => { this.saving = false; })).subscribe(e => {
         this.notify.info(this.l('Updated'));
-        this.close(form)
+        this.close(form);
         this.modalSave.emit(null);
       })
     }

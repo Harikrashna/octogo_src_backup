@@ -128,6 +128,7 @@ namespace CF.Octogo.Editions
                 {
                     throw new UserFriendlyException(L("DuplicateRecord"));
                 }
+            var x = JsonConvert.SerializeObject(input.ModuleList);
                 SqlParameter[] parameters = new SqlParameter[10];
                 parameters[0] = new SqlParameter("ProductId", input.ProductId);
                 parameters[1] = new SqlParameter("PricingData", input.priceDiscount != null ? JsonConvert.SerializeObject(input.priceDiscount) : null);
