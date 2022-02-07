@@ -330,7 +330,7 @@ namespace CF.Octogo.Editions
                 parameters[11] = new SqlParameter("isEdit", input.isEdit);
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                         System.Data.CommandType.StoredProcedure,
-                        "USP_InsertEditionModulesANDPricing_Test", parameters);
+                        "USP_InsertEditionModulesANDPricing", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     //if (input.Edition.Id > 0)
@@ -401,7 +401,7 @@ namespace CF.Octogo.Editions
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GetEditionModules_Test", parameters
+                    "USP_GetEditionModules", parameters
                     );
             if (ds.Tables.Count > 0)
             {
@@ -523,7 +523,7 @@ namespace CF.Octogo.Editions
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GetPageModulesList_Test"
+                    "USP_GetPageModulesList"
                     );
             if (ds.Tables.Count > 0)
             {

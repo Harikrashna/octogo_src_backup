@@ -16153,7 +16153,7 @@ export class TenantDetailsServiceProxy {
      * @param tenantId (optional) 
      * @return Success
      */
-    createAdminUserOnTenantDB(tenantId: number | undefined): Observable<TenantDBDetailsDto> {
+    createAdminUserOnTenantDB(tenantId: number | undefined): Observable<TenantAdminCreationStatusDto[]> {
         let url_ = this.baseUrl + "/api/services/app/TenantDetails/CreateAdminUserOnTenantDB?";
         if (tenantId === null)
             throw new Error("The parameter 'tenantId' cannot be null.");
@@ -16176,14 +16176,14 @@ export class TenantDetailsServiceProxy {
                 try {
                     return this.processCreateAdminUserOnTenantDB(<any>response_);
                 } catch (e) {
-                    return <Observable<TenantDBDetailsDto>><any>_observableThrow(e);
+                    return <Observable<TenantAdminCreationStatusDto[]>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<TenantDBDetailsDto>><any>_observableThrow(response_);
+                return <Observable<TenantAdminCreationStatusDto[]>><any>_observableThrow(response_);
         }));
     }
 
-    protected processCreateAdminUserOnTenantDB(response: HttpResponseBase): Observable<TenantDBDetailsDto> {
+    protected processCreateAdminUserOnTenantDB(response: HttpResponseBase): Observable<TenantAdminCreationStatusDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -16194,7 +16194,14 @@ export class TenantDetailsServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = TenantDBDetailsDto.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TenantAdminCreationStatusDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -16202,7 +16209,7 @@ export class TenantDetailsServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<TenantDBDetailsDto>(<any>null);
+        return _observableOf<TenantAdminCreationStatusDto[]>(<any>null);
     }
 
     /**
@@ -36289,6 +36296,46 @@ export interface ISwitchToLinkedAccountOutput {
     tenancyName: string | undefined;
 }
 
+export class TenantAdminCreationStatusDto implements ITenantAdminCreationStatusDto {
+    message!: string | undefined;
+    tenantId!: number;
+
+    constructor(data?: ITenantAdminCreationStatusDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.message = _data["message"];
+            this.tenantId = _data["tenantId"];
+        }
+    }
+
+    static fromJS(data: any): TenantAdminCreationStatusDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantAdminCreationStatusDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["message"] = this.message;
+        data["tenantId"] = this.tenantId;
+        return data; 
+    }
+}
+
+export interface ITenantAdminCreationStatusDto {
+    message: string | undefined;
+    tenantId: number;
+}
+
 export enum TenantAvailabilityState {
     Available = 1,
     InActive = 2,
@@ -36337,82 +36384,6 @@ export interface ITenantBillingSettingsEditDto {
     legalName: string | undefined;
     address: string | undefined;
     taxVatNo: string | undefined;
-}
-
-export class TenantDBDetailsDto implements ITenantDBDetailsDto {
-    productId!: number;
-    connectionStringName!: string | undefined;
-    dbName!: string | undefined;
-    prociderName!: string | undefined;
-    firstName!: string | undefined;
-    lastName!: string | undefined;
-    userName!: string | undefined;
-    eMailID!: string | undefined;
-    connectionString!: string | undefined;
-    password!: string | undefined;
-    tenantId!: number;
-
-    constructor(data?: ITenantDBDetailsDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.productId = _data["productId"];
-            this.connectionStringName = _data["connectionStringName"];
-            this.dbName = _data["dbName"];
-            this.prociderName = _data["prociderName"];
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.userName = _data["userName"];
-            this.eMailID = _data["eMailID"];
-            this.connectionString = _data["connectionString"];
-            this.password = _data["password"];
-            this.tenantId = _data["tenantId"];
-        }
-    }
-
-    static fromJS(data: any): TenantDBDetailsDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TenantDBDetailsDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["productId"] = this.productId;
-        data["connectionStringName"] = this.connectionStringName;
-        data["dbName"] = this.dbName;
-        data["prociderName"] = this.prociderName;
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["userName"] = this.userName;
-        data["eMailID"] = this.eMailID;
-        data["connectionString"] = this.connectionString;
-        data["password"] = this.password;
-        data["tenantId"] = this.tenantId;
-        return data; 
-    }
-}
-
-export interface ITenantDBDetailsDto {
-    productId: number;
-    connectionStringName: string | undefined;
-    dbName: string | undefined;
-    prociderName: string | undefined;
-    firstName: string | undefined;
-    lastName: string | undefined;
-    userName: string | undefined;
-    eMailID: string | undefined;
-    connectionString: string | undefined;
-    password: string | undefined;
-    tenantId: number;
 }
 
 export class TenantEditDto implements ITenantEditDto {

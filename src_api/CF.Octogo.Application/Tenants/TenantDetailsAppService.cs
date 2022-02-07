@@ -92,8 +92,9 @@ namespace CF.Octogo.Tenants
         /// <returns></returns>
         /// 
         [UnitOfWork]
-        public async Task<string> CreateAdminUserOnTenantDB(int? tenantId = null)
+        public async Task<List<TenantAdminCreationStatusDto>> CreateAdminUserOnTenantDB(int? tenantId = null)
         {
+            List<TenantAdminCreationStatusDto> response = new List<TenantAdminCreationStatusDto>();
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("TenantId", tenantId);
             parameters[1] = new SqlParameter("AdminCreationCompleted", false);
@@ -126,21 +127,34 @@ namespace CF.Octogo.Tenants
                                 EMailID = userData.EmailAddress
 
                             }).FirstOrDefault();
-
-                            string ret_str =  await InsertAdminDetailsOnTenantDataBase(tenantadminDetails);
-                            if (ret_str == "Success")
+                            try
                             {
-                                // set flag for Admin user details insert successfully to Tenant database
-                                await UpdateTenantSetUpProcess(tenantDetails.SetupId);
+                                string ret_str = await InsertAdminDetailsOnTenantDataBase(tenantadminDetails);
+                                if (ret_str == "Success")
+                                {
+                                    // set flag for Admin user details insert successfully to Tenant database
+                                    await UpdateTenantSetUpProcess(tenantDetails.SetupId);
+                                }
+                                response.Add(new TenantAdminCreationStatusDto
+                                {
+                                    TenantId = tenantDetails.TenantId,
+                                    Message = ret_str
+                                });
                             }
-                            return ret_str;
+                            catch(Exception e)
+                            {
+                                response.Add(new TenantAdminCreationStatusDto
+                                {
+                                    TenantId = tenantDetails.TenantId,
+                                    Message = e.Message
+                                });
+                            }
                         }
                     }
                 }
 
             }
-
-            return null;
+            return response;
         }
         /// <summary>
         /// 
@@ -178,7 +192,7 @@ namespace CF.Octogo.Tenants
                 }
                 else
                 {
-                    return "failed to insert admin data";
+                    return "failed to insert admin data. Response code is: " + ds.Tables[0].Rows[0][0].ToString();
                 }
             
         }
@@ -190,7 +204,7 @@ namespace CF.Octogo.Tenants
         /// </summary>
         /// <param name="setupId"></param>
         /// <returns></returns>
-        private async Task UpdateTenantSetUpProcess(int setupId)
+        private async Task UpdateTenantSetUpProcess(long setupId)
         {
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("SetupId", setupId);

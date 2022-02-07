@@ -157,9 +157,12 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                             }
                         })
                     }
-                    this.CheckScrollable();
+                    
                     if (this.isEdit) {
                         this.GetAddonModuleAndPricing(this.AddonDataForEdit.addonId);
+                    }
+                    else{
+                        this.CheckScrollable();
                     }
                 });
         }
@@ -214,7 +217,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                                             if (subModule.subSubModuleList != null && subModule.subSubModuleList.length > 0) {
                                                 subModule.subSubModuleList.forEach(subSubModule => {
                                                     if (this.ModulesList[moduleIndex].subModuleList[subModuleIndex].subSubModuleList != null && this.ModulesList[moduleIndex].subModuleList[subModuleIndex].subSubModuleList.length > 0) {
-                                                        let subSubModuleIndex = this.ModulesList[moduleIndex].subModuleList.findIndex(obj => obj.pageId == subSubModule.pageId);
+                                                        let subSubModuleIndex = this.ModulesList[moduleIndex].subModuleList[subModuleIndex].subSubModuleList.findIndex(obj => obj.pageId == subSubModule.pageId);
                                                         if (subSubModuleIndex >= 0) {
                                                             this.ModulesList[moduleIndex].subModuleList[subModuleIndex].subSubModuleList[subSubModuleIndex]["selected"] = true;
                                                         }
@@ -227,6 +230,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                             }
                         }
                     })
+                    this.CheckScrollable();
                 }
             });
     }
@@ -300,6 +304,16 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             this.ModulesList[index]["selected"] = true;
             this.SelectedIndex = index;
             this.SelectedModule = module;
+            if(this.SelectedModule.subModuleList != null && this.SelectedModule.subModuleList != undefined){
+                this.SelectedModule.subModuleList.forEach(subModule =>{
+                   if(subModule["selected"] == true && subModule.subSubModuleList != null && subModule.subSubModuleList != undefined) 
+                   {
+                    subModule.subSubModuleList.forEach(subSubModule => {
+                        this.SubSubModuleList.push(subSubModule);
+                    })
+                   }
+                })
+            }
         }
     }
     SelectModule(module, index) {
@@ -381,7 +395,7 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                 obj.subSubModuleList.forEach(subSubModule =>{
                   this.SubSubModuleList.push(subSubModule);
                 })
-              }
+            }
         });
     }
     SelectSubSubModule(subSubModuleId) {
@@ -389,10 +403,12 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             if (obj.subSubModuleList != null && obj.subSubModuleList != undefined && obj.subSubModuleList.length > 0)
                 obj.subSubModuleList.forEach(subModule => {
                     if (subModule.subModuleId == subSubModuleId) {
-                        subModule["selected"] = true;
-                    }
-                    else {
-                        subModule["selected"] = false;
+                        if (subModule["selected"] == true) {
+                            subModule["selected"] = false;
+                        }
+                        else {
+                            subModule["selected"] = true;
+                        }
                     }
                 });
         });
@@ -628,10 +644,10 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
         if (this.pricingTypes != null && this.pricingTypes.length > 0) {
             for (let i = 0; i < this.pricingTypes.length; i++) {
                 let element = this.pricingTypes[i];
-                if ((element.ActualPrice == null || element.ActualPrice <= 0)
+                if (!((element.ActualPrice == null || element.ActualPrice <= 0)
                     || (element.DiscountPercentage == null || element.DiscountPercentage < 0 || element.DiscountPercentage > 100)
-                    || (element.DiscountedPrice == null || element.DiscountedPrice <= 0)) {
-                    this.priceFormInvalid = true;
+                    || (element.DiscountedPrice == null || element.DiscountedPrice <= 0))) {
+                    this.priceFormInvalid = false;
                     break;
                 }
             }

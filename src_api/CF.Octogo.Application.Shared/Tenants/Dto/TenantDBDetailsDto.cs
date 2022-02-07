@@ -6,7 +6,7 @@ namespace CF.Octogo.Tenants.Dto
 {
     public class TenantDBDetailsDto
     {
-        public int SetupId { get; set; }
+        public long SetupId { get; set; }
         public int ProductId { get; set; }
         public string ConnectionStringName { get; set; }
         public string DbName { get; set; }
@@ -37,5 +37,10 @@ namespace CF.Octogo.Tenants.Dto
         public int GroupSNo { get; set; }
         public int AirlineSNo { get; set; }
         public int AirportSNo { get; set; }
+    }
+    public class TenantAdminCreationStatusDto
+    {
+        public string Message { get; set; }
+        public int TenantId { get; set; }
     }
 }

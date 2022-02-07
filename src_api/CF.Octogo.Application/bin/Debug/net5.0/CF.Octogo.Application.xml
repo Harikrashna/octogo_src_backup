@@ -167,7 +167,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSetUpProcess(System.Int32)">
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSetUpProcess(System.Int64)">
             <summary>
             Desc:Update tenant admin setup proccess completed
             Created by: Merajuddin khan

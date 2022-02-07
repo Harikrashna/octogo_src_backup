@@ -128,7 +128,6 @@ namespace CF.Octogo.Editions
                 {
                     throw new UserFriendlyException(L("DuplicateRecord"));
                 }
-            var x = JsonConvert.SerializeObject(input.ModuleList);
                 SqlParameter[] parameters = new SqlParameter[10];
                 parameters[0] = new SqlParameter("ProductId", input.ProductId);
                 parameters[1] = new SqlParameter("PricingData", input.priceDiscount != null ? JsonConvert.SerializeObject(input.priceDiscount) : null);
@@ -232,15 +231,20 @@ namespace CF.Octogo.Editions
             }
         }
         [AbpAuthorize(AppPermissions.Pages_Addons_Delete)]
-        public async Task DeleteAddon(EntityDto input)
+        public async Task<string> DeleteAddon(EntityDto input)
         {
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("AddonId", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
 
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteAddon", parameters);
+            if(ds.Tables.Count > 0 && ds.Tables[0].Rows[0]["Msg"].ToString() == "ThereAreTenantsSubscribedToThisAddon")
+            {
+                throw new UserFriendlyException(L(ds.Tables[0].Rows[0]["Msg"].ToString()));
+            }
+            return "Success";
         }
     }
 }

@@ -14,6 +14,6 @@ namespace CF.Octogo.Editions
         // Task<ListResultDto<AddonByEdtionIdDto>> GetAddonListByEditionId(int EditionId);
         Task<List<ModuleListForAddonDto>> GetModuleListByEditionForAddon(int editionId);
         Task<AddonModuleAndPricingDto> GetAddonModuleAndPricing(int AddonId);
-        Task DeleteAddon(EntityDto input);
+        Task<string> DeleteAddon(EntityDto input);
     }
 }

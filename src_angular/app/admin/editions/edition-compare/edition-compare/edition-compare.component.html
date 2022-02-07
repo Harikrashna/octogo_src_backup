@@ -129,6 +129,11 @@
                                             <ul>
                                                 <li *ngFor="let subModule of module.subModule">
                                                     {{subModule.subModuleName}}
+                                                    <ul *ngIf="subModule?.subSubModule != null">
+                                                        <li *ngFor="let subsubMod of subModule?.subSubModule">
+                                                            {{subsubMod.subModuleName}}
+                                                        </li>
+                                                    </ul>
                                                 </li>
                                             </ul>
                                         </ng-template>

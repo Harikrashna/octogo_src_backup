@@ -1350,6 +1350,7 @@
 		<text name="PleaseSelectMoreThanOneEditions">Please choose minimum two editions to compare</text>
 		<text name="DuplicateEdition">Duplicate Edition</text>
 		<text name="EditionCompare">Compare Edition</text>
+		<text name="ThereAreTenantsSubscribedToThisAddon">There are tenants subscribed to this addon.</text>
 	</texts>
 </localizationDictionary>
 
