@@ -1,0 +1,4 @@
+﻿CREATE USER [dmathpal] WITHOUT LOGIN;
+
+
+

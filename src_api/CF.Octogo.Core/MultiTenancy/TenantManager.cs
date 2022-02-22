@@ -48,7 +48,8 @@ namespace CF.Octogo.MultiTenancy
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IRepository<SubscribableEdition> _subscribableEditionRepository;
         protected readonly IBackgroundJobManager _backgroundJobManager;
-        
+        private readonly IRepository<User, long> _userRepository;
+
         public TenantManager(
             IRepository<Tenant> tenantRepository,
             IRepository<TenantFeatureSetting, long> tenantFeatureRepository,
@@ -62,8 +63,9 @@ namespace CF.Octogo.MultiTenancy
             IAbpZeroFeatureValueStore featureValueStore,
             IAbpZeroDbMigrator abpZeroDbMigrator,
             IPasswordHasher<User> passwordHasher,
-            IRepository<SubscribableEdition> subscribableEditionRepository, 
-            IBackgroundJobManager backgroundJobManager) : base(
+            IRepository<SubscribableEdition> subscribableEditionRepository,
+            IBackgroundJobManager backgroundJobManager,
+            IRepository<User, long> userRepository) : base(
                 tenantRepository,
                 tenantFeatureRepository,
                 editionManager,
@@ -82,6 +84,7 @@ namespace CF.Octogo.MultiTenancy
             _passwordHasher = passwordHasher;
             _subscribableEditionRepository = subscribableEditionRepository;
             _backgroundJobManager = backgroundJobManager;
+            _userRepository = userRepository;
         }
 
         public async Task<int> CreateWithAdminUserAsync(
@@ -101,6 +104,8 @@ namespace CF.Octogo.MultiTenancy
             int newTenantId;
             long newAdminId;
 
+
+
             await CheckEditionAsync(editionId, isInTrialPeriod);
 
             if (isInTrialPeriod && !subscriptionEndDate.HasValue)
@@ -110,6 +115,7 @@ namespace CF.Octogo.MultiTenancy
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
+                User existingUser = await CheckEmailIdAsync(adminEmailAddress);
                 //Create tenant
                 var tenant = new Tenant(tenancyName, name)
                 {
@@ -137,7 +143,7 @@ namespace CF.Octogo.MultiTenancy
                     var adminRole = _roleManager.Roles.Single(r => r.Name == StaticRoleNames.Tenants.Admin);
                     await _roleManager.GrantAllPermissionsAsync(adminRole);
 
-                    //User role should be default
+                    //"User" role should be default
                     var userRole = _roleManager.Roles.Single(r => r.Name == StaticRoleNames.Tenants.User);
                     userRole.IsDefault = true;
                     CheckErrors(await _roleManager.UpdateAsync(userRole));
@@ -162,6 +168,15 @@ namespace CF.Octogo.MultiTenancy
                     }
 
                     adminUser.Password = _passwordHasher.HashPassword(adminUser, adminPassword);
+                    adminUser.UserName = GetUserName(adminEmailAddress, tenancyName);
+                    adminUser.NormalizedUserName = adminUser.UserName.ToUpper();
+
+                    // if SignUp user is Admin for new Tenant
+                    if (existingUser != null && existingUser.EmailAddress.Trim().ToUpper() == adminEmailAddress.Trim().ToUpper())
+                    {
+                        adminUser.Name = existingUser.Name;
+                        adminUser.Surname = existingUser.Surname;
+                    }
 
                     CheckErrors(await _userManager.CreateAsync(adminUser));
                     await _unitOfWorkManager.Current.SaveChangesAsync(); //To get admin user's id
@@ -320,6 +335,13 @@ namespace CF.Octogo.MultiTenancy
             {
                 throw new UserFriendlyException(LocalizationManager.GetString(OctogoConsts.LocalizationSourceName, "TrialWithoutEndDateErrorMessage"));
             }
+            InsertTenantEditionAddonDto input = new InsertTenantEditionAddonDto
+            {
+                TenantId = tenant.Id,
+                EditionId = tenant.EditionId,
+                isEdit = true
+            };
+            InsertUpdateTenantEditionAddonDetails(input);
 
             return base.UpdateAsync(tenant);
         }
@@ -346,11 +368,12 @@ namespace CF.Octogo.MultiTenancy
         }
         public async Task<int> InsertUpdateTenantEditionAddonDetails(InsertTenantEditionAddonDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[4];
+            SqlParameter[] parameters = new SqlParameter[5];
             parameters[0] = new SqlParameter("TenantId", input.TenantId);
             parameters[1] = new SqlParameter("EditionId", input.EditionId);
             parameters[2] = new SqlParameter("isEdit", input.isEdit);
             parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
+            parameters[4] = new SqlParameter("@AddonIds", null);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
@@ -365,6 +388,24 @@ namespace CF.Octogo.MultiTenancy
             {
                 return 0;
             }
+        }
+
+        private async Task<User> CheckEmailIdAsync(string emailId)
+        {
+            using (_unitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant))
+            {
+                var user = _userRepository.GetAll().Where(x => x.IsDeleted == false && x.EmailAddress.ToLower().Trim().Equals(emailId.ToLower().Trim())).FirstOrDefault();
+                if (user != null && user.Id > 0 && user.Id != AbpSession.UserId)
+                {
+                    var error = LocalizationManager.GetSource(OctogoConsts.LocalizationSourceName).GetString("AdminEmailAddressDuplicate");
+                    throw new UserFriendlyException(error);
+                }
+                return user;
+            }
+        }
+        public string GetUserName(string adminEmailAddress, string tenancyName)
+        {
+           return adminEmailAddress.Substring(0, adminEmailAddress.IndexOf("@") + 1) + tenancyName.Trim();
         }
     }
 }

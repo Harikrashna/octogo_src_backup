@@ -264,15 +264,11 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                     let subModule = this.editionModule.PageSubModuleList.filter(x => x.moduleId == selectedModules[i].id);
                     if (subModule != null && subModule.length > 0 && subModule[0].subModuleList != null && subModule[0].subModuleList.length > 0) 
                     {
-                        // let tempIndex = subModule[0].subModuleList.findIndex(x => x["selected"] == true);
-                        isModuleSubModuleSelected = true;
-                        // if(tempIndex < 0){
-                        //     isModuleSubModuleSelected = false;
-                        //     break;
-                        // }
+                        // isModuleSubModuleSelected = true;
                         let selectedSubModule = subModule[0].subModuleList.filter(obj => obj["selected"] == true);
                         if (selectedSubModule != null && selectedSubModule != undefined && selectedSubModule.length > 0){
-                          selectedSubModule.forEach(subModule =>{
+                            isModuleSubModuleSelected = true;
+                            selectedSubModule.forEach(subModule =>{
                             if(subModule.subSubModuleList != null && subModule.subSubModuleList != undefined){
                               let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true);
                               if(selectedSubSubModIndex < 0){

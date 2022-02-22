@@ -46,6 +46,8 @@ using CF.Octogo.Security.Recaptcha;
 using CF.Octogo.Web.Authentication.External;
 using CF.Octogo.Web.Common;
 using CF.Octogo.Authorization.Delegation;
+using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 
 namespace CF.Octogo.Web.Controllers
 {
@@ -77,6 +79,8 @@ namespace CF.Octogo.Web.Controllers
         private readonly AbpUserClaimsPrincipalFactory<User, Role> _claimsPrincipalFactory;
         public IRecaptchaValidator RecaptchaValidator { get; set; }
         private readonly IUserDelegationManager _userDelegationManager;
+        private readonly IRepository<User, long> _userRepository;
+        //private readonly IRepository<Tenant> _tenantRepository;
 
         public TokenAuthController(
             LogInManager logInManager,
@@ -100,7 +104,10 @@ namespace CF.Octogo.Web.Controllers
             ISettingManager settingManager,
             IJwtSecurityStampHandler securityStampHandler,
             AbpUserClaimsPrincipalFactory<User, Role> claimsPrincipalFactory,
-            IUserDelegationManager userDelegationManager)
+            IUserDelegationManager userDelegationManager,
+            IRepository<User, long> userRepository
+            //IRepository<Tenant> tenantRepository
+            )
         {
             _logInManager = logInManager;
             _tenantCache = tenantCache;
@@ -125,20 +132,48 @@ namespace CF.Octogo.Web.Controllers
             _claimsPrincipalFactory = claimsPrincipalFactory;
             RecaptchaValidator = NullRecaptchaValidator.Instance;
             _userDelegationManager = userDelegationManager;
+            _userRepository = userRepository;
+            //_tenantRepository = tenantRepository;
         }
 
         [HttpPost]
-        public async Task<AuthenticateResultModel> Authenticate([FromBody] AuthenticateModel model)
+        public async Task<AuthenticateResultModelNew> Authenticate([FromBody] AuthenticateModel model)
         {
             if (UseCaptchaOnLogin())
             {
                 await ValidateReCaptcha(model.CaptchaResponse);
             }
-
+            int? tenantId = null;
+            // ------// Added by Hari Krashna(10/02/2022) - for login without Tenant selection -------------
+            string tenancyName = string.Empty; // = GetTenancyNameOrNull();
+            bool showTenantChange = await _settingManager.GetSettingValueForApplicationAsync<bool>(
+                                     AppSettings.TenantManagement.ShowTenantChange
+                                    );
+            if (showTenantChange == true)
+            {
+                tenancyName = GetTenancyNameOrNull();
+                tenantId = AbpSession.TenantId;
+            }
+            else
+            {
+            using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MayHaveTenant))
+                    {
+                        var user = _userRepository.GetAll().Where(x => x.IsDeleted == false && x.UserName.ToUpper().Equals(model.UserNameOrEmailAddress.ToUpper())
+                                                         || x.EmailAddress.ToUpper().Equals(model.UserNameOrEmailAddress.ToUpper())).FirstOrDefault();
+                        if (user != null && user.Id > 0 && user.TenantId.HasValue)
+                        {
+                            tenancyName = _tenantCache.GetOrNull(user.TenantId.Value)?.TenancyName;
+                            tenantId = _tenantCache.GetOrNull(user.TenantId.Value)?.Id;
+                        }
+                    }
+            }
+            // -------------------------------------------------------------------
+            
             var loginResult = await GetLoginResultAsync(
                 model.UserNameOrEmailAddress,
                 model.Password,
-                GetTenancyNameOrNull()
+                // GetTenancyNameOrNull()
+                tenancyName
             );
 
             var returnUrl = model.ReturnUrl;
@@ -155,12 +190,13 @@ namespace CF.Octogo.Web.Controllers
             if (loginResult.User.ShouldChangePasswordOnNextLogin)
             {
                 loginResult.User.SetNewPasswordResetCode();
-                return new AuthenticateResultModel
+                return new AuthenticateResultModelNew
                 {
                     ShouldResetPassword = true,
                     PasswordResetCode = loginResult.User.PasswordResetCode,
                     UserId = loginResult.User.Id,
-                    ReturnUrl = returnUrl
+                    ReturnUrl = returnUrl,
+                    TenantId = tenantId
                 };
             }
 
@@ -180,12 +216,13 @@ namespace CF.Octogo.Web.Controllers
                             new TwoFactorCodeCacheItem()
                         );
 
-                    return new AuthenticateResultModel
+                    return new AuthenticateResultModelNew
                     {
                         RequiresTwoFactorVerification = true,
                         UserId = loginResult.User.Id,
                         TwoFactorAuthProviders = await _userManager.GetValidTwoFactorProvidersAsync(loginResult.User),
-                        ReturnUrl = returnUrl
+                        ReturnUrl = returnUrl,
+                        TenantId = tenantId
                     };
                 }
 
@@ -207,7 +244,7 @@ namespace CF.Octogo.Web.Controllers
             var accessToken = CreateAccessToken(await CreateJwtClaims(loginResult.Identity, loginResult.User,
                 refreshTokenKey: refreshToken.key));
 
-            return new AuthenticateResultModel
+            return new AuthenticateResultModelNew
             {
                 AccessToken = accessToken,
                 ExpireInSeconds = (int) _configuration.AccessTokenExpiration.TotalSeconds,
@@ -216,7 +253,8 @@ namespace CF.Octogo.Web.Controllers
                 EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
                 TwoFactorRememberClientToken = twoFactorRememberClientToken,
                 UserId = loginResult.User.Id,
-                ReturnUrl = returnUrl
+                ReturnUrl = returnUrl,
+                TenantId = tenantId
             };
         }
 
@@ -284,7 +322,7 @@ namespace CF.Octogo.Web.Controllers
                 if (refreshTokenValidityKeyInClaims != null)
                 {
                     await RemoveTokenAsync(refreshTokenValidityKeyInClaims.Value);
-                }
+;                }
 
                 if (AllowOneConcurrentLoginPerUser())
                 {

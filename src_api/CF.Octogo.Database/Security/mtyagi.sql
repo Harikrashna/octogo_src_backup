@@ -1,0 +1,2 @@
+﻿CREATE USER [mtyagi] WITHOUT LOGIN;
+

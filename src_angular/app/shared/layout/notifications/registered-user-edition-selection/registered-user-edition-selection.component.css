@@ -1,4 +1,4 @@
-body {
+/* body {
     background-color: #f2f3f8;
 }
 
@@ -15,9 +15,7 @@ button[disabled] {
 .col-centered {
     display: inline-table;
     float: none;
-    /* reset the text-align */
     text-align: center;
-    /* inline-block space fix */
     margin-right: -4px;
 }
 
@@ -65,10 +63,7 @@ button[disabled] {
 
   #btn{position: absolute;
 right:30px;}
-  /* #tbl td{
-      display: flex;
-      align-items: center;
-  } */
+
 
   .subModules{
       flex-wrap: wrap;
@@ -103,4 +98,4 @@ right:30px;}
 }
 .border-right{
   border-right: 1px solid;
-}
+} */

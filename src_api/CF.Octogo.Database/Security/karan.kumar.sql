@@ -1,0 +1,2 @@
+﻿CREATE USER [karan.kumar] WITHOUT LOGIN;
+

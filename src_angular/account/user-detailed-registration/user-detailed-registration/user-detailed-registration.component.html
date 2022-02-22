@@ -207,7 +207,7 @@
                     #cityCode="ngModel" name="city" size="50"  [(ngModel)]="UserRegistration.city" [size]="60"
                     [suggestions]="cityCodeResult" (completeMethod)="getCity($event)" [forceSelection]="true"
                     (keypress)="_validationService.NameValidation($event)" (onSelect)="fillCountry(UserRegistration.city)"
-                    field="name" maxlength="50" required [forceSelection]="true" (input)="resetCountry()">
+                    field="name" maxlength="50" required (input)="resetCountry()">
                 </p-autoComplete>
                 <label for="city">{{"City" | localize}}<span class="text-danger" id="req">*</span></label>
             </span>
@@ -220,7 +220,7 @@
                     inputStyleClass="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
                     #country="ngModel" name="country" (keypress)="_validationService.NameValidation($event)" [forceSelection]="true"
                     (completeMethod)="getCountry($event)" field="name" [(ngModel)]="UserRegistration.country"
-                    [size]="60" [suggestions]="countryCodeResult" maxlength="50" required [forceSelection]="true">
+                    [size]="60" [suggestions]="countryCodeResult" maxlength="50" required >
                 </p-autoComplete>
                 <label for="country">{{"Country" | localize}} <span class="text-danger" id="req">*</span></label>
             </span>
@@ -240,7 +240,7 @@
                 
                     <input id="phone" inputId="phone"  [ngClass]="{'p-filled': UserRegistration.contact?.length > 0}"
                         class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6"
-                        name="phone" (keypress)="_validationService.NameValidation($event)" #phone="ngModel" type="text" placeholder="{{'Contact' | localize}} *"
+                        name="phone" (keypress)="_validationService.IsNumeric($event)" #phone="ngModel" type="text" placeholder="{{'Contact' | localize}} *"
                         [(ngModel)]="UserRegistration.contact" maxlength="10" minlength="8" pInputText
                         required>
 

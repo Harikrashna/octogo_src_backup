@@ -1,7 +1,10 @@
+import { result } from 'lodash';
+import { TenantEditionAddonDto, SubscribedAddonDto } from './../../../shared/service-proxies/service-proxies';
 import { Component, Injector, OnInit } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { DashboardCustomizationServiceProxy } from '@shared/service-proxies/service-proxies';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tenant-dashboard',
@@ -10,18 +13,12 @@ import { DashboardCustomizationServiceProxy } from '@shared/service-proxies/serv
   animations: [appModuleAnimation()]
 })
 export class TenantDashboardComponent extends AppComponentBase implements OnInit {
-  productDetails = [];
-  constructor( injector: Injector,  private _dashboardService: DashboardCustomizationServiceProxy,) { 
+
+  constructor( injector: Injector) { 
     super(injector);
   }
   ngOnInit() {
-    this.spinnerService.show();
-    this._dashboardService.getProductAndEditionDetailByUserId(this.appSession.userId)
-    .subscribe(result => {
-      this.spinnerService.hide();
-      if(result != null){
-         this.productDetails = result.items;
-      }
-    });      
+   
   }
 }
+

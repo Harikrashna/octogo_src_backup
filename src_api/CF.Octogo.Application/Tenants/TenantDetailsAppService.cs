@@ -282,5 +282,46 @@ namespace CF.Octogo.Tenants
                 return null;
             }
         }
+
+        /// <summary>
+        /// Desc:Get tenant proccess completetion status
+        /// created by : Merajuddin khan
+        /// created on :08-02-22
+        /// 
+        /// </summary>
+        /// <param name="setUpId"></param>
+        /// <returns></returns>
+        public async Task<DataSet> TenantAdminSetupProcessCompleteStatus(TenantSummaryInputDto input)
+        {
+                SqlParameter[] parameters = new SqlParameter[14];
+                parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
+                parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+                parameters[2] = new SqlParameter("TenantName", input.TenantName);
+                parameters[3] = new SqlParameter("TenantId", input.TenantId);
+                parameters[4] = new SqlParameter("ProductId", input.ProductId);
+                parameters[5] = new SqlParameter("IsDBSetup", input.IsDBSetup);
+                parameters[6] = new SqlParameter("IsAppURLSetup", input.IsAppURLSetup);
+                parameters[7] = new SqlParameter("IsWSSetup", input.IsWSSetup);
+                parameters[8] = new SqlParameter("IsApiURLSetup", input.IsApiURLSetUp);
+                parameters[9] = new SqlParameter("IsAdminCreated", input.IsAdminCreated);
+                parameters[10] = new SqlParameter("IsAppHosted", input.IsAppHosted);
+                parameters[11] = new SqlParameter("IsCompleted", input.IsCompleted);
+                parameters[12] = new SqlParameter("IsFailed", input.IsFailed);
+                parameters[13] = new SqlParameter("IsProcess", input.IsProcess);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                   Connection.GetSqlConnection("DefaultOctoGo"),
+                   System.Data.CommandType.StoredProcedure,
+                   "USP_GetTenantProcessLogs", parameters
+                   );
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds;
+                }
+                else
+                {
+                    return null;
+                }
+        }
+
     }
 }

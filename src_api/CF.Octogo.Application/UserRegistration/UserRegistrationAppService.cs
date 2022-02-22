@@ -77,19 +77,13 @@ namespace CF.Octogo.UserRegistration
                 user.ShouldChangePasswordOnNextLogin = false;
                 user.IsTwoFactorEnabled = true;
                 user.IsLockoutEnabled = true;
-            //user.TenantId = null;
 
-            //Set password
-            //if (input.SetRandomPassword)
-            //{
-            //    var randomPassword = await _userManager.CreateRandomPassword();
-            //    user.Password = _passwordHasher.HashPassword(user, randomPassword);
-            //    input.User.Password = randomPassword;
-            //}
             
-            // Create new transaction using UOW
+
             using (var unitofwork = _unitOfWorkManager.Begin())
             {
+                // Added by Hari Krashna(10/02/2022) - for check Email and UserName duplicacy
+                await CheckEmailIdAndUserNameAsync(input.EmailAddress, input.UserName);
                 if (!input.Password.IsNullOrEmpty())
                 {
                     await UserManager.InitializeOptionsAsync(AbpSession.TenantId);
@@ -294,6 +288,29 @@ namespace CF.Octogo.UserRegistration
                 //hostUser.DeletionTime = DateTime.UtcNow;
             }
             return TenantId;
+        }
+
+        // Added by Hari Krashna(10/02/2022) - for check Email and UserName duplicacy
+        private async Task CheckEmailIdAndUserNameAsync(string emailId, string userName)
+        {
+            using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MayHaveTenant))
+            {
+                var user = _userRepository.GetAll().Where(x => x.IsDeleted == false && (x.UserName.ToUpper().Equals(userName.ToUpper())
+                                 || x.EmailAddress.ToUpper().Equals(emailId.ToUpper()))).FirstOrDefault();
+                if (user != null && user.Id > 0)
+                {
+                    if (user.EmailAddress.ToUpper().Equals(emailId.ToUpper()))
+                    {
+                        var error = LocalizationManager.GetSource(OctogoConsts.LocalizationSourceName).GetString("EmailAddressDuplicate");
+                        throw new UserFriendlyException(error);
+                    }
+                    if (user.UserName.ToUpper().Equals(userName.ToUpper()))
+                    {
+                        var error = LocalizationManager.GetSource(OctogoConsts.LocalizationSourceName).GetString("UserNameAddressDuplicate");
+                        throw new UserFriendlyException(error);
+                    }
+                }
+            }
         }
     }
 }

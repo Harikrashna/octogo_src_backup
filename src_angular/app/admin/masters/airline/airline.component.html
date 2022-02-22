@@ -25,13 +25,25 @@
                                     <ng-template pTemplate="header">
                                         <tr>
                                             <th scope="col">{{'Actions' | localize}}</th>
+                                            <!-- <th pSortableColumn="AWBPrifix">
+                                                {{'AWBPrifix' | localize}}
+                                                <p-sortIcon field="AWBPrifix"></p-sortIcon>
+                                            </th> -->
+                                            <th pSortableColumn="CarrierCode">
+                                                {{'CarrierCode' | localize}}
+                                                <p-sortIcon field="CarrierCode"></p-sortIcon>
+                                            </th>
                                             <th pSortableColumn="AirlineName">
                                                 {{'AirlineName' | localize}}
                                                 <p-sortIcon field="AirlineName"></p-sortIcon>
                                             </th>
-                                            <th pSortableColumn="Description">
-                                                {{'Description' | localize}}
-                                                <p-sortIcon field="Description"></p-sortIcon>
+                                            <th pSortableColumn="Interline">
+                                                {{'Interline' | localize}}
+                                                <p-sortIcon field="Interline"></p-sortIcon>
+                                            </th>
+                                            <th pSortableColumn="Active">
+                                                {{'Active' | localize}}
+                                                <p-sortIcon field="Active"></p-sortIcon>
                                             </th>
                                         </tr>
                                     </ng-template>
@@ -45,20 +57,33 @@
                                                     </button>
                                                     <ul id="dropdownMenu" class="dropdown-menu" role="menu" *dropdownMenu aria-labelledby="dropdownButton">
                                                         <li *ngIf="'Pages.Administration.Airline.Edit' | permission" role="menuitem">
+                                                            <a class="dropdown-item" href="javascript:;" (click)="viewAirline.show(Airline.inAirlineID)">{{'View'|localize}}</a>
+                                                        </li>
+                                                        <!-- <li *ngIf="'Pages.Administration.Airline.Edit' | permission" role="menuitem">
                                                             <a class="dropdown-item" href="javascript:;" (click)="createOrEditAirline.show(Airline.inAirlineID)">{{'Edit'|localize}}</a>
                                                         </li>
                                                         <li *ngIf="!Airline.isStatic && 'Pages.Administration.Airline.Delete' | permission" role="menuitem">
                                                             <a class="dropdown-item" href="javascript:;" (click)="deleteAirline(Airline)">{{'Delete' |
                                                                 localize}}</a>
-                                                        </li>
+                                                        </li> -->
                                                     </ul>
                                                 </div>
+                                            </td>
+                                            <!-- <td>
+                                                <span class="p-column-title"> {{'AWBPrifix' | localize}}</span> {{Airline.vcAWBPrifix }}
+                                            </td> -->
+                                            <td>
+                                                <span class="p-column-title"> {{'CarrierCode' | localize}}</span> {{Airline.vcCarrierCode }}
                                             </td>
                                             <td>
                                                 <span class="p-column-title"> {{'AirlineName' | localize}}</span> {{Airline.vcAirlineName }}
                                             </td>
                                             <td>
-                                                <span class="p-column-title"> {{'Description' | localize}}</span> {{Airline.vcDescription }}
+                                                <span class="p-column-title"> {{'Interline' | localize}}</span> {{Airline.isInterline }}
+                                            </td>
+
+                                            <td>
+                                                <span class="p-column-title"> {{'Active' | localize}}</span> {{Airline.isAcitve }}
                                             </td>
                                         </tr>
                                     </ng-template>
@@ -81,5 +106,11 @@
             </div>
         </div>
     </div>
-    <app-create-or-edit-airline (modalSave)="getallAirlineList()" [Airline]="Airline" #createOrEditAirline>
-    </app-create-or-edit-airline>
+    <!-- <app-create-or-edit-airline (modalSave)="getallAirlineList()" [Airline]="Airline" #createOrEditAirline>
+    </app-create-or-edit-airline> -->
+    <!-- <app-view-airline (modalSave)="getallAirlineList()" [Airline]="Airline" #viewAirline>
+    </app-view-airline> -->
+    <app-view [Airline]="Airline" #viewAirline
+    (modalSave)="getallAirlineList()">
+</app-view>
+    

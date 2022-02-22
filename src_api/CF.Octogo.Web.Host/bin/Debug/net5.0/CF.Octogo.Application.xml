@@ -124,10 +124,24 @@
             <param name="userId"></param>
             <returns></returns>
         </member>
+        <member name="M:CF.Octogo.DashboardCustomization.DashboardCustomizationAppService.GetTenantEditionAddonDetailsByTenantId(System.Int32)">
+            <summary>
+            Get Subscribed Product details
+            </summary>
+            <param name="TenantId"></param>
+            <returns></returns>
+        </member>
         <member name="T:CF.Octogo.DashboardCustomization.Dto.DashboardOutput">
             <summary>
             This class stores filtered dashboard information by user
             </summary>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.TenantAppService.DeactivateTenantUsers(System.Int32)">
+            <summary>
+            Deactivate all users of tenant after Tenant decativation
+            </summary>
+            <param name="tenantId"></param>
+            <returns></returns>
         </member>
         <member name="T:CF.Octogo.OctogoApplicationModule">
             <summary>
@@ -182,6 +196,16 @@
             </summary>
             <param name="editionId"></param>
             <param name="tenantId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.TenantAdminSetupProcessCompleteStatus(CF.Octogo.Tenants.Dto.TenantSummaryInputDto)">
+            <summary>
+            Desc:Get tenant proccess completetion status
+            created by : Merajuddin khan
+            created on :08-02-22
+            
+            </summary>
+            <param name="setUpId"></param>
             <returns></returns>
         </member>
     </members>

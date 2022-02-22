@@ -1,0 +1,96 @@
+.cart-div {
+    height: 600px;
+    border-left: 1px solid grey;
+    margin-top: 15px;
+}
+
+.pricing-div {
+    height: 600px;
+    margin-top: 5px;
+    padding-bottom: 15px;
+    overflow-y: auto;
+}
+
+.float-right {
+    float: right;
+}
+
+.text-14 {
+    font-size: 14px;
+}
+.text-10 {
+    font-size: 10px;
+}
+.text-12 {
+    font-size: 12px;
+}
+.text-16 {
+    font-size: 16px;
+}
+
+.text-25 {
+    font-size: 25px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.payment-card {
+    border: 1px solid rgba(128, 128, 128, 0.322);
+    border-radius: 5px;
+    padding: 5px;
+    background: #f0ffff54;
+    cursor: pointer;
+}
+
+.edition-card {
+    margin-top: 5px;
+    border: 1px solid rgba(128, 128, 128, 0.322);
+    border-radius: 5px;
+    height: 70px;
+}
+
+.edition-name-card {
+    border-radius: 5px 0px 0px 5px;
+    padding: 5px;
+    width: 20%;
+    height: inherit;
+    /* border-right: 1px solid rgba(128, 128, 128, 0.322); */
+    background: rgba(203, 188, 218, 0.288);
+}
+
+.price-card {
+    border: 1px solid rgba(128, 128, 128, 0.322);
+    border-radius: 5px;
+    width: 110px;
+    height: 56px;
+    margin-top: 7px;
+    margin-left: 7px;
+    padding: 8px;
+    background: rgba(230, 239, 241, 0.082);
+}
+
+.fa-check {
+    color: #2134e2d2;
+    border: 1px solid;
+    border-radius: 50%;
+    padding: 2px;
+    font-size: 12px;
+    background: white;
+    float: right;
+    margin-top: -25%;
+}
+
+.text-70 {
+    font-size: 70px;
+}
+.ml-2{
+    margin-left: 5px;
+}
+p{
+    line-height: 2px;
+}
+.payment-card:hover{
+    box-shadow: 2px 4px 7px 1px rgb(162 162 162 / 25%);
+}

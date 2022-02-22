@@ -55,7 +55,7 @@ export class SelectEditionComponent extends AppComponentBase implements OnInit {
     }
     if(this.ProductWithEditionList == null || this.ProductWithEditionList == undefined){
       this.spinnerService.show();
-    this._editionService.getProductWithEdition().subscribe(result=>{
+    this._editionService.getProductWithEdition(null,null,false).subscribe(result=>{
       this.spinnerService.hide();
       this.ProductWithEditionList=result;
     })

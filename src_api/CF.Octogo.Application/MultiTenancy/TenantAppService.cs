@@ -18,6 +18,7 @@ using CF.Octogo.Editions.Dto;
 using CF.Octogo.MultiTenancy.Dto;
 using CF.Octogo.Url;
 using CF.Octogo.Tenants;
+using System;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -108,7 +109,7 @@ namespace CF.Octogo.MultiTenancy
                     NewEditionId = input.EditionId
                 });
 
-                _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)tenant.EditionId, input.Id);
+                // _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)tenant.EditionId, input.Id);
             }
 
             ObjectMapper.Map(input, tenant);
@@ -121,6 +122,7 @@ namespace CF.Octogo.MultiTenancy
         public async Task DeleteTenant(EntityDto input)
         {
             var tenant = await TenantManager.GetByIdAsync(input.Id);
+            await DeactivateTenantUsers(tenant.Id);         // Added by Hari Krashna 16/02/2022
             await TenantManager.DeleteAsync(tenant);
         }
 
@@ -160,6 +162,29 @@ namespace CF.Octogo.MultiTenancy
                     tenantAdmin.Unlock();
                 }
             }
+        }
+        /// <summary>
+        /// Deactivate all users of tenant after Tenant decativation
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <returns></returns>
+        private async Task DeactivateTenantUsers(int tenantId)
+        {
+                using (CurrentUnitOfWork.SetTenantId(tenantId))
+                {
+                    var users = UserManager.Users.Select(x => x.Id).ToList();
+                    if (users.Count > 0)
+                    {
+                        foreach (var userId in users)
+                        {
+                            var user = await UserManager.GetUserByIdAsync(userId);
+                            if (user.IsDeleted == false)
+                            {
+                                CheckErrors(await UserManager.DeleteAsync(user));
+                            }
+                    }
+                    }
+                }
         }
     }
 }

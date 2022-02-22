@@ -30,7 +30,7 @@ using CF.Octogo.Dto;
 using CF.Octogo.Notifications;
 using CF.Octogo.Url;
 using CF.Octogo.Organizations.Dto;
-
+using Abp.Domain.Uow;
 
 namespace CF.Octogo.Authorization.Users
 {
@@ -56,6 +56,7 @@ namespace CF.Octogo.Authorization.Users
         private readonly UserManager _userManager;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepository;
         private readonly IRepository<OrganizationUnitRole, long> _organizationUnitRoleRepository;
+        private readonly IRepository<User, long> _userRepository;
 
         public UserAppService(
             RoleManager roleManager,
@@ -74,7 +75,8 @@ namespace CF.Octogo.Authorization.Users
             IRoleManagementConfig roleManagementConfig,
             UserManager userManager,
             IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository,
-            IRepository<OrganizationUnitRole, long> organizationUnitRoleRepository)
+            IRepository<OrganizationUnitRole, long> organizationUnitRoleRepository,
+            IRepository<User, long> userRepository)
         {
             _roleManager = roleManager;
             _userEmailer = userEmailer;
@@ -95,7 +97,8 @@ namespace CF.Octogo.Authorization.Users
             _roleRepository = roleRepository;
 
             AppUrlService = NullAppUrlService.Instance;
-        }
+            _userRepository = userRepository;
+    }
 
         [HttpPost]
         public async Task<PagedResultDto<UserListDto>> GetUsers(GetUsersInput input)
@@ -246,6 +249,9 @@ namespace CF.Octogo.Authorization.Users
 
         public async Task CreateOrUpdateUser(CreateOrUpdateUserInput input)
         {
+            // Added by Hari Krashna(10/02/2022) - for check Email and UserName duplicacy
+            await CheckEmailIdAndUserNameAsync(input.User.EmailAddress, input.User.UserName, input.User.Id);
+
             if (input.User.Id.HasValue)
             {
                 await UpdateUserAsync(input);
@@ -465,6 +471,28 @@ namespace CF.Octogo.Authorization.Users
             }
 
             return query;
+        }
+        // Added by Hari Krashna(10/02/2022) - for check Email and UserName duplicacy
+        private async Task CheckEmailIdAndUserNameAsync(string emailId, string userName, long? userId)
+        {
+            using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MayHaveTenant))
+            {
+                var user = _userRepository.GetAll().Where(x => x.Id != userId && x.IsDeleted == false && ( x.UserName.ToUpper().Equals(userName.ToUpper())
+                                 || x.EmailAddress.ToUpper().Equals(emailId.ToUpper()))).FirstOrDefault();
+                if (user != null && user.Id > 0)
+                {
+                    if (user.EmailAddress.ToUpper().Equals(emailId.ToUpper()))
+                    {
+                        var error = LocalizationManager.GetSource(OctogoConsts.LocalizationSourceName).GetString("EmailAddressDuplicate");
+                        throw new UserFriendlyException(error);
+                    }
+                    if (user.UserName.ToUpper().Equals(userName.ToUpper()))
+                    {
+                        var error = LocalizationManager.GetSource(OctogoConsts.LocalizationSourceName).GetString("UserNameAddressDuplicate");
+                        throw new UserFriendlyException(error);
+                    }
+                }
+            }
         }
     }
 }

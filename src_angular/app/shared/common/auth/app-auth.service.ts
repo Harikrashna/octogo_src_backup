@@ -20,6 +20,7 @@ export class AppAuthService {
             () => {
                 abp.auth.clearToken();
                 abp.auth.clearRefreshToken();
+                abp.multiTenancy.setTenantIdCookie(null);   // Added by Hari Krashna(10/02/2022) - for login without Tenant selection
                 new LocalStorageService().removeItem(AppConsts.authorization.encrptedAuthTokenName,
                     () => {
                         if (reload !== false) {

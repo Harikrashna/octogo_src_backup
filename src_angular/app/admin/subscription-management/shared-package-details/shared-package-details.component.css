@@ -1,0 +1,255 @@
+.h-500{
+    height: 400px;
+}
+
+.customCard{
+  height: 100px !important;
+  z-index: 1000;
+  box-shadow: 5px 5px red .5;
+  box-shadow: 3px 3px 5px 0px;
+  padding: 14px;
+}
+
+.product-name{
+  color: #3699ff;
+  font-size: 18px;
+}
+
+.ed-name{
+  color: #1bc538;
+  display: flex;
+  font-weight: 500;
+}
+
+.card {
+  border-radius: 5px;
+  box-shadow: 1px 7px 10px 1px gray;
+  border: 1px solid rgb(133, 118, 118);
+  margin: 10px;
+  padding: 15px;
+  width: 250px;
+  height: 160px;
+}
+.less {
+  height: 10px;
+}
+.price-edition{
+  border: 1px solid;
+  padding: 2px 2px 0px 2px;
+  border-radius: 10px;
+  background-color: aliceblue;
+  font-size: 8px;
+  color: #148d29;
+  min-width: 35px;
+  text-align: center;
+  height: 15px;
+}
+.price-addon{
+  border: 1px solid;
+  padding: 2px;
+  border-radius: 10px;
+  background-color: aliceblue;
+  font-size: 8px;
+  height: 17px;
+  color: rgb(92 161 132) !important;
+  min-width: 35px;
+  text-align: center;
+  height: 15px;
+}
+
+.adodetails{
+  overflow-y: scroll;
+  overscroll-behavior: smooth;
+  margin-bottom: -5px;
+  font-size: 10px;
+}
+
+::-webkit-scrollbar{
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: rgba(167, 166, 166, 0.8); 
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+background: rgba(129, 127, 127, 0.4); 
+}
+
+.brkt{
+  color: black;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.adolist{
+  margin-top: 0px;
+  padding: 0px;
+  margin-bottom: -12px;
+}
+.text-10{
+  font-size: 10px;
+}
+.end-date-card{
+  color: #F64E60 !important;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.productCard {
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid rgb(234 234 234);
+  padding: 10px;
+  margin: 10px;
+  box-shadow: 0px 4px 10px 1px rgb(244 234 234);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  height: auto;
+  width: auto;
+}
+
+.start-date-card{
+  float: right;
+  margin-left: auto;
+  color: black;
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.adname{
+  font-size: 10px;
+  font-weight: 500;
+  color: rgb(92 161 132) !important;
+}
+
+.product-card {
+  border-radius: 5px;
+  border: 1px solid rgba(94, 61, 61, 0.342);
+  /* margin-left: 15px;
+  margin-top: 10px; */
+  padding: 10px;
+  box-shadow: 2px 4px 7px 1px rgb(162 162 162 / 25%);
+  background: #fff;
+    /* min-width: 350px; */
+}
+.selected{
+  background: rgba(183, 240, 175, 0.418);
+}
+
+.url{
+  color: #369aff;
+  margin-left: 20px;
+  font-size: x-small;
+}
+
+.subscribe-card{
+  display: flex;
+  border-radius: 2px;
+  border: 1px solid rgba(124, 81, 81, 0.438);
+  padding: 8px 2px;
+  width: 100%;
+  margin-bottom: 5px;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: darkcyan;
+  background: rgba(231, 226, 226, 0.377);
+  line-height: 1px;
+}
+
+/* .pi-chevron-left{
+  font-size: 16px;
+  position: absolute;
+  cursor: pointer;
+  margin-top: 110px;
+  margin-left: -6px;
+  z-index: 1000;
+  color: #5a9dff;
+}
+
+.pi-chevron-right{
+  font-size: 16px;
+  position: absolute;
+  cursor: pointer;
+  margin-top: 110px;
+  z-index: 1000;
+  right: 60px;
+  color: #5a9dff;
+}
+
+.pi-chevron-left:hover{
+  color: rgb(167, 162, 162);
+  background: #5a9dff;
+  border-radius: 50%;
+}
+
+.pi-chevron-right:hover{
+  color: rgb(167, 162, 162);
+  background:#5a9dff;
+  border-radius: 50%;
+} */
+
+#setting{
+  float: right;
+  margin-left: auto;
+  cursor: pointer;
+  border: #fff;
+  background-color: #fff;
+}
+.fa-wrench{
+  float: right;
+  margin-left: auto;
+  cursor: pointer;
+  border: #fff;
+  background-color: #fff; 
+}
+.cursor{
+  cursor:pointer;
+}
+
+.expiring {
+  color: rgb(32, 27, 27);
+  animation-name: expirydate;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+@keyframes expirydate {
+  0% {
+      background-color: rgba(230, 188, 96, 0.521);
+      color: rgb(177, 219, 138);
+  }
+}
+.timeline-card {
+  border: 1px solid rgba(94, 61, 61, 0.055);
+  box-shadow: 1px 7px 10px 1px rgba(226, 175, 175, 0.253);
+  background: rgba(46, 121, 92, 0.404);
+}
+.h-10 {
+  height: 10px;
+}
+.progress {
+  height: 10px;
+  /* border: 1px solid rgba(94, 61, 61, 0.055); */
+  box-shadow: 1px 7px 10px 1px rgba(226, 175, 175, 0.253);
+  background: rgba(96, 148, 128, 0.288)
+}
+
+/* .less {
+  height: 10px;
+  width: 20%;
+  background: red;
+} */
+
+.more {
+  height: 10px;
+  width: 100%;
+  background: green;
+}

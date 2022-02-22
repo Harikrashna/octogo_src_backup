@@ -24,6 +24,7 @@ using CF.Octogo.MultiTenancy.Payments;
 using Newtonsoft.Json;
 using CF.Octogo.Data;
 using System.Data.SqlClient;
+using CF.Octogo.Authorization.Users;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -59,9 +60,10 @@ namespace CF.Octogo.MultiTenancy
         public async Task<RegisterTenantOutput> RegisterTenant(RegisterTenantInput input)
         {
             // Added for Signed Up user - Added By: HARI KRASHNA(17/12/2021)
+            User currentUser = new User();
             if (AbpSession.UserId.HasValue)
             {
-                checkEmailDuplicacy(input.AdminEmailAddress);
+                currentUser = checkEmailDuplicacy(input.AdminEmailAddress);
             }
             if (input.EditionId.HasValue)
             {
@@ -127,6 +129,13 @@ namespace CF.Octogo.MultiTenancy
                     user.TenantId = tenant.Id;
                     user.LastModificationTime = DateTime.UtcNow;
                     user.LastModifierUserId = user.Id;
+                    await CurrentUnitOfWork.SaveChangesAsync();
+
+                    // Deactivate current user if current user is Admin of new Tenant
+                    if (currentUser.EmailAddress.Trim().ToUpper() == input.AdminEmailAddress.Trim().ToUpper())
+                    {
+                        CheckErrors(await UserManager.DeleteAsync(user));
+                    }
                 }
                 await _appNotifier.NewTenantRegisteredAsync(tenant);
 
@@ -144,7 +153,7 @@ namespace CF.Octogo.MultiTenancy
                     TenantId = tenant.Id,
                     TenancyName = input.TenancyName,
                     Name = input.Name,
-                    UserName = AbpUserBase.AdminUserName,
+                    UserName = TenantManager.GetUserName(input.AdminEmailAddress, input.TenancyName),
                     EmailAddress = input.AdminEmailAddress,
                     IsActive = tenant.IsActive,
                     IsEmailConfirmationRequired = isEmailConfirmationRequired,
@@ -366,13 +375,14 @@ namespace CF.Octogo.MultiTenancy
                 EditionsWithFeatures = editionWithFeatures,
             };
         }
-        private void checkEmailDuplicacy(string email)
+        private User checkEmailDuplicacy(string email)
         {
             var hostUser = UserManager.GetUserById((long)AbpSession.UserId);            
-            if (hostUser.EmailAddress.ToUpper() == email.ToUpper())
+            if (hostUser.EmailAddress.ToUpper() == email.ToUpper() && hostUser.Id != AbpSession.UserId)
             {
                 throw new UserFriendlyException(L("AdminEmailAdressDuplicate"));
             }
+            return hostUser;
         }
 
         public async Task<EditionDetailsForEditDto> GetEditionDetailsById(int EditionId)
@@ -382,7 +392,7 @@ namespace CF.Octogo.MultiTenancy
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GETEDITIONDATAFOREDIT", parameters
+                    "USP_GetEditionDataForEdit", parameters
                     );
             if (ds.Tables.Count > 0)
             {

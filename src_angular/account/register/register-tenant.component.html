@@ -28,7 +28,8 @@
         <div class="form-group ">
             <input #tenancyName="ngModel" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" autoFocus type="text"
                 placeholder="{{'TenancyName' | localize}} *" [(ngModel)]="model.tenancyName" name="tenancyName" required
-                maxlength="64" pattern="^[a-zA-Z][a-zA-Z0-9_-]{1,}$" />
+                maxlength="64" pattern="^[a-zA-Z][a-zA-Z0-9_-]{1,}$" 
+                (keypress)="_validationService.NameWithoutSpaceValidation($event)" />
             <div *ngIf="!tenancyName.valid && !tenancyName.pristine">
                 <span class="form-text text-danger text-left">{{"TenantName_Regex_Description" | localize}}</span>
             </div>
@@ -36,7 +37,8 @@
 
         <div class="form-group">
             <input #nameInput="ngModel" class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text" placeholder="{{'TenantName' | localize}} *"
-                [(ngModel)]="model.name" name="Name" required maxlength="128" />
+                [(ngModel)]="model.name" name="Name" required maxlength="128" 
+                (keypress)="_validationService.NameValidation($event)"/>
             <validation-messages [formCtrl]="nameInput"></validation-messages>
         </div>
 

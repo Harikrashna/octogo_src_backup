@@ -1,6 +1,7 @@
 import { Component, Injector, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppAuthService } from '@app/shared/common/auth/app-auth.service';
+import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { UserRegistrationServiceProxy } from '@shared/service-proxies/service-proxies';
 
@@ -8,7 +9,8 @@ import { UserRegistrationServiceProxy } from '@shared/service-proxies/service-pr
 @Component({
   selector: 'app-unregistered-user-dashboard',
   templateUrl: './unregistered-user-dashboard.component.html',
-  styleUrls: ['./unregistered-user-dashboard.component.css']
+  styleUrls: ['./unregistered-user-dashboard.component.css'],
+  animations: [appModuleAnimation()]
 })
 export class UnregisteredUserDashboardComponent extends AppComponentBase implements OnInit {
   isEmailConfirmed: boolean = false;

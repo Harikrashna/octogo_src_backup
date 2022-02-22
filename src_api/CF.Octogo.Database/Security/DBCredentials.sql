@@ -1,0 +1,4 @@
+﻿CREATE CERTIFICATE [DBCredentials]
+    AUTHORIZATION [dbo]
+    WITH SUBJECT = N'Login credentials for PRD environments', START_DATE = N'2021-12-21T12:04:17', EXPIRY_DATE = N'2022-12-21T12:04:17';
+

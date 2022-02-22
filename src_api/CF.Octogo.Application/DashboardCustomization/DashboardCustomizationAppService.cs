@@ -304,16 +304,7 @@ namespace CF.Octogo.DashboardCustomization
                 {
                     for(int i = 0; i< EditionProductData.Count; i++)
                     {
-                        if(EditionProductData[i].ProductUrl.IndexOf("?") == -1)
-                        {
-                            EditionProductData[i].ProductUrl = EditionProductData[i].ProductUrl + "?t=";
-                        }
-                        if (EditionProductData[i].ProductUrl.IndexOf("http") == -1)
-                        {
-                            EditionProductData[i].ProductUrl = "https://" + EditionProductData[i].ProductUrl;
-                        }
-                        string url = EditionProductData[i].ProductUrl + Convert.ToBase64String(Encoding.UTF8.GetBytes(user.UserName.ToString() + ':' + user.Password.ToString()));
-                        EditionProductData[i].ProductUrl = url;
+                        EditionProductData[i].ProductUrl = PrepareProductUrl(EditionProductData[i].ProductUrl, user);
                     }
                 }
                 return new ListResultDto<EditionAndProductListDto>(EditionProductData);
@@ -323,6 +314,110 @@ namespace CF.Octogo.DashboardCustomization
             {
                 //if user does not have any active product then throw an userfriendly exception
                 // throw new UserFriendlyException(L("NotActiveProduct"));
+                return null;
+            }
+        }
+        private string PrepareProductUrl(string productUrl, User user)
+        {
+            if (productUrl != null)
+            {
+                if (productUrl.IndexOf("?") == -1)
+                {
+                    productUrl = productUrl + "?t=";
+                }
+                if (productUrl.IndexOf("http") == -1)
+                {
+                    productUrl = "https://" + productUrl;
+                }
+                if (user != null)
+                {
+                    string url = productUrl + Convert.ToBase64String(Encoding.UTF8.GetBytes(user.UserName.ToString() + ':' + user.Password.ToString()));
+                    productUrl = url;
+                }
+            }
+            return productUrl;
+        }
+        /// <summary>
+        /// Get Subscribed Product details
+        /// </summary>
+        /// <param name="TenantId"></param>
+        /// <returns></returns>
+        public async Task<List<TenantEditionAddonDto>> GetTenantEditionAddonDetailsByTenantId(int tenantId)
+        {
+            long? userId = AbpSession.UserId;
+            var user = userId != null ? _userRepository.Get((long)userId) : null;
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("TenantId", tenantId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_TenantEditionAddonDetails", parameters);
+
+            if (ds.Tables.Count > 0)
+            {
+                var res = SqlHelper.ConvertDataTable<TenantEditionAddonRet>(ds.Tables[0]);
+                var result = res.Select(rw => new TenantEditionAddonDto
+                {
+                    ProductName = rw.ProductName,
+                    ProductId = rw.ProductId,
+                    EditionId = rw.EditionId,
+                    EditionName = rw.EditionName,
+                    Price = rw.Price,
+                    AppURL = PrepareProductUrl(rw.AppURL, user),
+                    StartDate = rw.StartDate,
+                    EndDate = rw.EndDate,
+                    RemainingDays = rw.RemainingDays,
+                    IsSetupProcessComplete = rw.IsSetupProcessComplete,
+                    Addon = rw.Addon != null ? JsonConvert.DeserializeObject<List<SubscribedAddonDto>>(rw.Addon.ToString()) : null
+
+                }).ToList();
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async Task<List<TenantEditionAddonModulesDto>> GetTenantEditionAddonModuleDetails(int EditionId)
+        {
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
+                parameters[1] = new SqlParameter("EditionId", EditionId);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_TenantEditionAddonModulesDetails", parameters);
+                if (ds.Tables.Count > 0)
+                {
+                    var res = SqlHelper.ConvertDataTable<TenantEditionAddonModulesRet>(ds.Tables[0]);
+                    var result = res.Select(rw => new TenantEditionAddonModulesDto
+                    {
+                        ProductName = rw.ProductName,
+                        EditionId = rw.EditionId,
+                        EditionName = rw.EditionName,
+                        Price = rw.Price,
+                        AppURL = rw.AppURL,
+                        StartDate = rw.StartDate,
+                        EndDate = rw.EndDate,
+                        RemainingDays = rw.RemainingDays,
+                        IsSetupProcessComplete = rw.IsSetupProcessComplete,
+                        Addon = rw.Addon != null ? JsonConvert.DeserializeObject<List<TenantAddonModulesDto>>(rw.Addon.ToString()) : null,
+                        Module = rw.Module != null ? JsonConvert.DeserializeObject<List<EditionAddonModules>>(rw.Module.ToString()) : null,
+
+                    }).ToList();
+                    return result;
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
                 return null;
             }
         }

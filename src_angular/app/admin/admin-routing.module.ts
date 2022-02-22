@@ -196,6 +196,12 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
                             import('./editions/edition-compare/edition-compare.module').then((m) => m.EditionCompareModule),
                         data: { permission: 'Pages.Editions' }
                     },
+                    {
+                        path: 'tenant-setup-summary',
+                        loadChildren: () =>
+                            import('./tenants/tenant-setup-summary/tenant-setup-summary.module').then((m) => m.TenantSetupSummaryModule),
+                        data: { permission: 'Pages.Tenants' }
+                    },// added by : merajuddin 
                     { path: '', redirectTo: 'hostDashboard', pathMatch: 'full' },
                     { path: '**', redirectTo: 'hostDashboard' }
                 ]

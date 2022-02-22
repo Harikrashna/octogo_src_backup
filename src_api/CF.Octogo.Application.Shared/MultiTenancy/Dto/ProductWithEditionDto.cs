@@ -15,6 +15,13 @@ namespace CF.Octogo.Dto
         public string Edition { get; set; }
 
     }
+    public class ProductWithEditionInputDto
+    {
+        public int? IncludeProductId { get; set; }
+        public int? ExcludeProductId { get; set; }
+        public bool? IsAvailableProduct { get; set; } = false;
+
+    }
     public class ProductWithEditionDto
     {
         public string ProductName { get; set; }
@@ -28,6 +35,7 @@ namespace CF.Octogo.Dto
         public string EditionName { get; set; }
 
         public int TrialDayCount { get; set; }
+        public bool IsDownGraded { get; set; }
 
         public List<Modules> MODULE { get; set; }
         public List<PricingType> PRICINGTYPE { get; set; }
@@ -51,6 +59,7 @@ namespace CF.Octogo.Dto
         public decimal Discount { get; set; }
         public int Days { get; set; }
         public decimal Price { get; set; }
+        public int PricingTypeID { get; set; }
     }
     public class AddOn
     {

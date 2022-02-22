@@ -28,7 +28,7 @@ namespace CF.Octogo.Editions
         Task<PagedResultDto<EditionListDtoNew>> GetEditionsList(GetEditionInput input);
         Task<EditionDetailsForEditDto> GetEditionDetailsForEdit(int EditionId);
         Task<List<EditionCompareResultDto>> GetEditionDeatilsByEditionIdForCompare(string EditionIds);
-        Task<List<ProductWithEditionDto>> GetProductWithEdition();
+        Task<List<ProductWithEditionDto>> GetProductWithEdition(ProductWithEditionInputDto input);
         Task<DataSet> GetMasterDataForEdition();
         Task<EditionModulesDto> GetEditionModules(int EditionId);
     }

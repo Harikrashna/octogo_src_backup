@@ -21,6 +21,7 @@ using CF.Octogo.Authorization.Delegation;
 using Abp.Domain.Repositories;
 using CF.Octogo.MultiTenancy.Payments;
 using CF.Octogo.Editions;
+using Abp.Domain.Uow;
 
 namespace CF.Octogo.Authorization.Accounts
 {
@@ -139,25 +140,28 @@ namespace CF.Octogo.Authorization.Accounts
 
         public async Task<ResetPasswordOutput> ResetPassword(ResetPasswordInput input)
         {
-            var user = await UserManager.GetUserByIdAsync(input.UserId);
-            if (user == null || user.PasswordResetCode.IsNullOrEmpty() || user.PasswordResetCode != input.ResetCode)
+            using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MayHaveTenant))
             {
-                throw new UserFriendlyException(L("InvalidPasswordResetCode"), L("InvalidPasswordResetCode_Detail"));
+                var user = await UserManager.GetUserByIdAsync(input.UserId);
+                if (user == null || user.PasswordResetCode.IsNullOrEmpty() || user.PasswordResetCode != input.ResetCode)
+                {
+                    throw new UserFriendlyException(L("InvalidPasswordResetCode"), L("InvalidPasswordResetCode_Detail"));
+                }
+
+                await UserManager.InitializeOptionsAsync(AbpSession.TenantId);
+                CheckErrors(await UserManager.ChangePasswordAsync(user, input.Password));
+                user.PasswordResetCode = null;
+                user.IsEmailConfirmed = true;
+                user.ShouldChangePasswordOnNextLogin = false;
+
+                await UserManager.UpdateAsync(user);
+
+                return new ResetPasswordOutput
+                {
+                    CanLogin = user.IsActive,
+                    UserName = user.UserName
+                };
             }
-
-            await UserManager.InitializeOptionsAsync(AbpSession.TenantId);
-            CheckErrors(await UserManager.ChangePasswordAsync(user, input.Password));
-            user.PasswordResetCode = null;
-            user.IsEmailConfirmed = true;
-            user.ShouldChangePasswordOnNextLogin = false;
-
-            await UserManager.UpdateAsync(user);
-
-            return new ResetPasswordOutput
-            {
-                CanLogin = user.IsActive,
-                UserName = user.UserName
-            };
         }
 
         public async Task SendEmailActivationLink(SendEmailActivationLinkInput input)
@@ -265,13 +269,16 @@ namespace CF.Octogo.Authorization.Accounts
 
         private async Task<User> GetUserByChecking(string inputEmailAddress)
         {
-            var user = await UserManager.FindByEmailAsync(inputEmailAddress);
-            if (user == null)
+            using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MayHaveTenant))
             {
-                throw new UserFriendlyException(L("InvalidEmailAddress"));
-            }
+                var user = await UserManager.FindByEmailAsync(inputEmailAddress);
+                if (user == null)
+                {
+                    throw new UserFriendlyException(L("InvalidEmailAddress"));
+                }
 
-            return user;
+                return user;
+            }
         }
         /// <summary>
         /// desc:This service is used to find payment deatils and availibility of tenant

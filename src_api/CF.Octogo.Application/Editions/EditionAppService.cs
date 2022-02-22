@@ -579,22 +579,15 @@ namespace CF.Octogo.Editions
                     return null;
                 }
         }
-        public async Task<List<ProductWithEditionDto>> GetProductWithEdition()
+        public async Task<List<ProductWithEditionDto>> GetProductWithEdition(ProductWithEditionInputDto input)
         {
-            int EditionId = 0;
-            if (AbpSession.UserId.HasValue && AbpSession.TenantId.HasValue)
-            {
-                var currentEditionId = (await _tenantManager.GetByIdAsync(AbpSession.GetTenantId())).EditionId;
-
-                if (currentEditionId.HasValue)
-                {
-                    EditionId = (int)currentEditionId;
-                }
-            }
             List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
             ProductWithEditionDto result = new ProductWithEditionDto();
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("EditionId", EditionId);
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
+            parameters[1] = new SqlParameter("IncludeProductId", input.IncludeProductId);
+            parameters[2] = new SqlParameter("ExcludeProductId", input.ExcludeProductId);
+            parameters[3] = new SqlParameter("IsAvailableProduct", input.IsAvailableProduct);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,

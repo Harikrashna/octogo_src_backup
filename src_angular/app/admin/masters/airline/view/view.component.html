@@ -1,0 +1,256 @@
+
+<div appBsModal #viewAirline="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="viewAirline" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #AirlineForm="ngForm" novalidate  autocomplete="new-password">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span *ngIf="createAirline.inAirlineID">{{"Airline Name" | localize}} :
+                            {{currentAirlineName}}</span>
+                        <!-- <span *ngIf="!createAirline.inAirlineID">{{"CreateNewAirline" | localize}}</span> -->
+                    </h4>
+                    
+                </div>
+                
+                
+                    
+                    <div class='form-group ' style="padding-left: 50px;padding-top:20px">
+                        <label style="font-weight: bold;">{{'Carrier Code'}}*</label>
+                       <span style="margin-left: 30px;"> 
+                        <label *ngIf="createAirline.vcCarrierCode">
+                            {{currentCarrierCode}}
+                        </label></span>
+                        <!-- <span>
+                        <input id="CarrierCode" readonly class="form-control" type="text" name="CarrierCode" [(ngModel)]="createAirline.vcCarrierCode" maxlength="3">
+                        </span> -->
+                        
+                    </div>
+                    
+               
+               <!-- <img [src]="imageUrl"/>
+               <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
+               AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+                   9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" /> -->
+            
+                <div class='form-group ' style="padding-left: 50px;">
+                    <label style="font-weight: bold;">{{'ICAO Code'}}</label>
+                    <span style="margin-left: 30px;">
+                        <label *ngIf="createAirline.vcICAOCode">
+                            {{currentICAOCode}}
+                        </label></span>
+                   
+            </div>
+
+            <div class='form-group ' style="padding-left: 50px;">
+                <label style="font-weight: bold;">{{'Country Name'}}</label>
+                <span style="margin-left: 30px;">
+                    <label *ngIf="createAirline.vcCountryName">
+                        {{currentCountryName}}
+                    </label></span>
+               
+        </div>
+
+        <div class='form-group ' style="padding-left: 50px;">
+            <label style="font-weight: bold;">{{'Airport Code'}}</label>
+            <span style="margin-left: 30px;">
+                <label *ngIf="createAirline.vcAirport">
+                    {{currentAirport}}
+                </label></span>
+           
+    </div>
+                
+                
+           
+           <!-- <div class='row' style="justify-content: center;">
+            <div class='form-group row' style="padding-right:50px ; padding-left: 50px;">
+                <label for="SingleSelectInput" class="col-lg-12">Country Name</label>
+                
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                    <span>
+                    <p-autoComplete [(ngModel)]="createAirline.vcCountryName" id="SingleSelectInput" [suggestions]="filteredCountries" (completeMethod)="filterCountry($event)" field="name" placeholder="Country" [minLength]="1" name="SingleSelectInput" inputStyleClass="form-control"
+                        styleClass="width-percent-100">
+                    </p-autoComplete>
+                </span>
+                </div>
+            </div>
+            <div class='form-group row' style="padding-right:50px ;margin-left: auto;margin-right: 50px;">
+                <label for="SingleSelectInput" class="col-lg-12">Airport</label>
+                
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                    <p-autoComplete [(ngModel)]="createAirline.vcAirport" id="SingleSelectInput" [suggestions]="filteredAirport" (completeMethod)="filterairport($event)" field="name" placeholder="Airport" [minLength]="1" name="SingleSelectInput" inputStyleClass="form-control"
+                        styleClass="width-percent-100">
+                    </p-autoComplete>
+                </div>
+            </div>
+           </div> -->
+           
+           <div class='form-group' style="padding-left: 50px;">
+            <label style="font-weight: bold;">{{'Contact Person' |localize}}</label>
+            <span style="margin-left: 30px;">
+                <label *ngIf="createAirline.vcContactPerson">
+                    {{currentContactPerson}}
+                </label></span>
+            
+        </div>
+
+           
+            <div class='form-group' style="padding-left: 50px;">
+                <label style="font-weight: bold;">{{'Mobile No.' |localize}}</label>
+                <span style="margin-left: 30px;">
+                    <label *ngIf="createAirline.vcContactPerson">
+                        {{currentContactPerson}}
+                    </label></span>
+                <!-- <span>
+                <input id="MobileNo" class="form-control" type="text" readonly name="MobileNo" [(ngModel)]="createAirline.vcMobileNo" maxlength="20">
+           </span> -->
+            </div>
+            
+           
+
+           
+            <div class="form-group" style="padding-left: 50px;">
+                <label style="font-weight: bold;">{{"Fax No" | localize}} </label>
+                <span style="margin-left: 30px;">
+                    <label *ngIf="createAirline.vcContactPerson">
+                        {{currentContactPerson}}
+                    </label></span>
+                <!-- <span>
+                <input id="FaxNo" class="form-control" type="text" readonly name="FaxNo" [(ngModel)]="createAirline.vcFaxNo" maxlength="20">
+            </span> -->
+        </div>
+           
+            <div class="form-group" style="padding-left: 50px;">
+                <label style="font-weight: bold;">{{"Phone No" | localize}} </label>
+                <span style="margin-left: 30px;">
+                    <label *ngIf="createAirline.vcPhoneNo">
+                        {{currentPhoneNo}}
+                    </label></span>
+                <!-- <span>
+                <input id="PhoneNo" class="form-control" type="text" readonly name="PhoneNo" [(ngModel)]="createAirline.vcPhoneNo" maxlength="20">
+            </span> -->
+        </div>
+            
+
+            <!-- <div class="form-group row" style="padding-right:50px ;margin-left: auto;margin-right: 50px;">
+                <label>{{"CheckModulus7" | localize}}*</label>
+                <div class='row' id="check" *ngFor="let name of usertypes" style="padding-left: 15px;padding-right: 15px;">
+
+                    <input class="checkbox"  type="checkbox" [name]="name" readonly (change)="onChange($event,name)" [checked]="name.id==createAirline.isCheckModulus7">
+                    <span class="ml-2 checkboxText" id="checkName">{{name.name}}</span>
+
+                </div>
+            </div> -->
+            
+        
+       
+            <div class='form-group' style="padding-left: 50px;">
+                <label style="font-weight: bold;">{{'Airline Website' |localize}}</label>
+                <span style="margin-left: 30px;">
+                    <label *ngIf="createAirline.vcAirlineWebsite">
+                        {{currentAirlineWebsite}}
+                    </label></span>
+              <!-- <span>  <input id="AirlineWebsite" class="form-control" type="text" readonly name="AirlineWebsite" [(ngModel)]="createAirline.vcAirlineWebsite" maxlength="100">
+           </span>  -->
+        </div>
+            
+
+       
+            <div class="form-group" style="padding-left: 50px;">
+                <label style="font-weight: bold;">{{"AWB Duplicacy" | localize}}* </label>
+                <span style="margin-left: 30px;">
+                    <label *ngIf="createAirline.vcAWBDuplicacy">
+                        {{currentAWBDuplicacy}}
+                    </label></span>
+          <!-- <span>      <input id="AWBDuplicacy" class="form-control" type="text" readonly name="AWBDuplicacy" [(ngModel)]="createAirline.vcAWBDuplicacy" maxlength="20">
+        </span> -->
+        </div>
+
+
+
+          
+        
+        
+            <div class="form-group" style="padding-left: 50px;">
+                <label style="font-weight: bold;">{{"Handling Information" | localize}} </label>
+                <span style="margin-left: 30px;">
+                    <label *ngIf="createAirline.vcHandlingInformation">
+                        {{currentHandlingInformation}}
+                    </label></span>
+             <!-- <span>   <input id="HandlingInformation" class="form-control" readonly type="text" name="HandlingInformation" [(ngModel)]="createAirline.vcHandlingInformation" maxlength="250">
+        </span>   -->
+      </div>
+        
+
+        <hr style="width: 800px;border-width:1px;color:rgb(170, 169, 169);background-color:gray;margin-bottom: 30px;"/>
+
+        <div class='row' >
+            <div class="form-group" style="padding-right:50px ;padding-left: 100px;">
+                <label style="font-weight: bold;">{{"Interline" | localize}}*</label>
+                <!-- <div class='row' id="check" *ngFor="let name of usertypes"  style="padding-left: 15px;padding-right: 15px;">
+
+                    <label class="checkbox" type="checkbox" readonly [name]="name" (change)="onInterline($event,name)" [checked]="name.id==createAirline.isInterline">
+                    <span class="ml-2 checkboxText" id="checkName">{{name.name}}</span> </label>
+                   
+                </div> -->
+                <span *ngIf="createAirline.isInterline" style="margin-left: 30px;">{{"Yes" | localize}}</span>
+                <span *ngIf="!createAirline.isInterline" style="margin-left: 30px;">{{"No" | localize}}</span>
+            </div>
+
+            <div class="form-group" style="padding-right:100px ;margin-left: auto;margin-right: 50px;">
+                <label style="font-weight: bold;">{{"CCShipmentAllowed" | localize}}*</label>
+                
+                <span *ngIf="createAirline.isCCShipment" style="margin-left: 30px;">{{"Yes" | localize}}</span>
+                <span *ngIf="!createAirline.isCCShipment" style="margin-left: 30px;">{{"No" | localize}}</span>
+            </div>
+
+
+            
+        </div>
+
+       
+        
+        <div class='row' style="justify-content: center;">
+            <div class="form-group" style="padding-right:50px ;padding-left: 100px;">
+                <label style="font-weight: bold;">{{"Part Shipment Allowed" | localize}}*</label>
+                <!-- <div class='row' id="check" *ngFor="let name of usertypes" style="padding-left: 15px;padding-right: 15px;">
+
+                    <input class="checkbox" type="checkbox" [name]="name" readonly (change)="onPartShipment($event,name)" [checked]="name.id==createAirline.isPartShipment">
+                    <span class="ml-2 checkboxText" id="checkName">{{name.name}}</span>
+
+                </div> -->
+                <span *ngIf="createAirline.isPartShipment" style="margin-left: 30px;">{{"Yes" | localize}}</span>
+                <span *ngIf="!createAirline.isPartShipment" style="margin-left: 30px;">{{"No" | localize}}</span>
+            </div>
+            <div class="form-group" style="padding-right:100px ;margin-left: auto;margin-right: 50px;">
+                <label style="font-weight: bold;">{{"Active" | localize}}*</label>
+                <!-- <div class='row' id="check" *ngFor="let name of usertypes" style="padding-left: 15px;padding-right: 15px;">
+
+                    <input class="checkbox" type="checkbox" [name]="name" readonly (change)="onactive($event,name)" [checked]="name.id==createAirline.isActive">
+                    <span class="ml-2 checkboxText" id="checkName">{{name.name}}</span>
+
+                </div> -->
+                <span *ngIf="createAirline.isActive" style="margin-left: 30px;">{{"Yes" | localize}}</span>
+                <span *ngIf="!createAirline.isActive" style="margin-left: 30px;">{{"No" | localize}}</span>
+            </div> 
+
+            
+        </div>
+
+        <div class='row'>
+            <div class="form-group" style="padding-right:50px ;padding-left: 100px;">
+                <label style="font-weight: bold;">{{"CheckModulus7" | localize}}*</label>
+                
+                <span *ngIf="createAirline.isCheckModulus7">{{"Yes" | localize}}</span>
+                <span *ngIf="!createAirline.isCheckModulus7">{{"No" | localize}}</span>
+            </div>
+        </div>
+
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold" (click)="close(AirlineForm)">{{"Cancel" | localize}}</button>
+                    
+                </div>
+            
+            </form>
+        </div>
+    </div>
+</div>

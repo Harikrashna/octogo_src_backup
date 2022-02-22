@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { AirlineServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -9,14 +10,18 @@ import { Table } from 'primeng/table';
 import { finalize } from 'rxjs/operators';
 import { CreateOrEditAirlineComponent } from './create-or-edit-airline/create-or-edit-airline.component';
 
+
 @Component({
   selector: 'app-airline',
   templateUrl: './airline.component.html',
-  styleUrls: ['./airline.component.css']
+  styleUrls: ['./airline.component.css'],
+  animations: [appModuleAnimation()]
 })
 export class AirlineComponent extends AppComponentBase implements AfterViewInit {
     @ViewChild('createOrEditAirline', { static: true }) createOrEditAirline: CreateOrEditAirlineComponent;
+   // @ViewChild('viewAirline', { static: true }) viewAirline: ViewAirlineComponent;
      @ViewChild('createOrEditAirline', { static: true }) modal: ModalDirective;
+     //@ViewChild('viewAirline', { static: true }) modal1: ModalDirective;
      @ViewChild('dataTable', { static: true }) dataTable: Table;
      @ViewChild('paginator', { static: true }) paginator: Paginator;
      Airline: any;
@@ -39,10 +44,14 @@ export class AirlineComponent extends AppComponentBase implements AfterViewInit 
          this.primengTableHelper.getSorting(this.dataTable),
          this.filterText,
        ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
+     //    this.primengTableHelper.totalRecordsCount = result.totalCount;
+       //  this.primengTableHelper.totalRecordsCount = result.items.length;
+        // this.primengTableHelper.records = result.items;
+        // this.Airline = result.items;
+         //this.primengTableHelper.hideLoadingIndicator();
+         this.primengTableHelper.records=result.items
          this.primengTableHelper.totalRecordsCount = result.totalCount;
-         this.primengTableHelper.totalRecordsCount = result.items.length;
-         this.primengTableHelper.records = result.items;
-         this.Airline = result.items;
+         this.Airline=result.items;
          this.primengTableHelper.hideLoadingIndicator();
        });
      }

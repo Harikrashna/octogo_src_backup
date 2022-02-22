@@ -56,7 +56,6 @@ export class UpgradeEditionComponent extends AppComponentBase implements OnInit 
     }
 
     ngOnInit(): void {
-        debugger
         this.showMainSpinner();
         this.editionPaymentType = parseInt(this._activatedRoute.snapshot.queryParams['editionPaymentType']);
         this.upgradeEditionId = this._activatedRoute.snapshot.queryParams['upgradeEditionId'];

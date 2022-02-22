@@ -1,0 +1,103 @@
+<div class="tenant-card">
+    <span class="d-flex">
+        <h4 class="text-primary">{{TenantData.tenantName}}</h4>&nbsp;-&nbsp;
+        <h5 class="text-muted">{{TenantData.productName}}</h5>
+    </span>
+    <hr style="margin-top: 0px !important;" />
+    <div class="d-flex">
+        <div style="width: 16%;" id="first" class="d-flex">
+            <div style="width: 30%;">&nbsp;</div>
+            <div style="width: 40%;">
+                <div class="middle"
+                    [ngClass]="TenantData.isDBSetup ?'completed':(TenantData.isAppURLSetup ? 'null' :(TenantData.errorMessage ?'failed':'progress'))">
+                    1</div>
+            </div>
+            <div class="right-line" style="width: 30%;"></div>
+        </div>
+        <div style="width: 16%;" class="d-flex">
+            <div class="left-line" style="width: 30%;"></div>
+            <div style="width: 40%;">
+                <div class="middle"
+                    [ngClass]="TenantData.isAppURLSetup ?'completed':(TenantData.errorMessage?'failed':(TenantData.isDBSetup ) ?'progress':'null')">
+                    2</div>
+            </div>
+            <div class="right-line" style="width: 30%;"></div>
+        </div>
+        <div style="width: 16%;" class="d-flex">
+            <div class="left-line" style="width: 30%;"></div>
+            <div style="width: 40%;">
+                <div class="middle"
+                    [ngClass]="TenantData.isWSSetup ? 'completed':(TenantData.errorMessage ?'failed':((TenantData.isAppURLSetup )  ?'progress':'null'))">
+                    3</div>
+            </div>
+            <div class="right-line" style="width: 30%;"></div>
+        </div>
+        <div style="width: 16%;" class="d-flex">
+            <div class="left-line" style="width: 30%;"></div>
+            <div style="width: 40%;">
+                <div class="middle"
+                    [ngClass]="TenantData.isApplicationHost ?'completed':(TenantData.errorMessage ?'failed':((TenantData.isWSSetup )  ?'progress':'null'))">
+                    4</div>
+            </div>
+            <div class="right-line" style="width: 30%;"></div>
+        </div>
+        <div style="width: 16%;" class="d-flex">
+            <div class="left-line" style="width: 30%;"></div>
+            <div style="width: 40%;">
+                <div class="middle"
+                    [ngClass]="TenantData.isAPIURLSetup ?'completed':(TenantData.errorMessage ?'failed':(TenantData.isApplicationHost ?'progress':null))">
+                    5</div>
+            </div>
+            <div class="right-line" style="width: 30%;"></div>
+        </div>
+        <div style="width: 16%;" id="last" class="d-flex">
+            <div class="left-line" style="width: 30%;"></div>
+            <div style="width: 40%;">
+                <div class="middle"
+                    [ngClass]="TenantData.isDBSetup && TenantData.isAPIURLSetup && TenantData.isApplicationHost && TenantData.isWSSetup && TenantData.isAPIURLSetup  ?'completed':(TenantData.errorMessage? 'failed':'null')">
+                    6</div>
+            </div>
+            <div style="width: 30%;">&nbsp;</div>
+        </div>
+    </div>
+    <div class="d-flex">
+        <div style="width: 16%;  text-align: center;">
+            <b>{{"DataBase"| localize}}</b><br />
+            <span class="text-primary text-10">{{TenantData.isDBSetup && TenantData.dbName != null? TenantData.dbName :
+                "NA"}}</span><br />
+            <span class="text-10">{{TenantData.dbSetupCompleteDt | date:'medium'}}</span>
+        </div>
+        <div style="width: 16%;  text-align: center;">
+            <b>{{"ApplicationUrl"| localize}}</b><br />
+            <span class="text-primary text-10">
+                <span *ngIf="TenantData.appURAL != null"> {{TenantData.appURAL}} </span>
+                <span *ngIf="TenantData.appURAL == null">NA</span>
+            </span><br />
+            <span class="text-10"> {{TenantData.appURLSetupCompleteDt | date:'medium'}}</span>
+        </div>
+        <div style="width: 16%;  text-align: center;">
+            <b>{{"WindowService"| localize}}</b><br />
+            <span class="text-primary text-10">{{TenantData.isAPIURLSetup && TenantData.apiURL != null? TenantData.apiURL:
+                "NA"}}</span><br />
+            <span class="text-10"> {{TenantData.wsSetupCompleteDt | date:'medium'}}</span>
+        </div>
+        <div style="width: 16%;  text-align: center;">
+            <b>{{"ApplicationHosted"| localize}}</b><br />
+            <span class="text-primary text-10">NA</span><br />
+            <span class="text-10">{{TenantData.applicationHostDt | date:'medium'}}</span>
+        </div>
+        <div style="width: 16%;  text-align: center;">
+            <b>{{"ApiUrl"| localize}}</b><br />
+            <span class="text-primary text-10">NA</span><br />
+            <span class="text-10">{{TenantData.apiurlSetupCompleteDt | date:'medium'}}</span>
+        </div>
+
+        <div style="width: 16%;  text-align: center;">
+            <b>{{"Completed"| localize}}</b><br />
+            <span class="text-10 " 
+                [ngStyle]="{'color':TenantData.errorMessage  ? 'red' : '#187DE4' }">{{TenantData.isDBSetup &&
+                TenantData.isAPIURLSetup && TenantData.isApplicationHost && TenantData.isWSSetup
+                && TenantData.isAPIURLSetup ? l('ReadyToUse'):(TenantData.errorMessage?l('Failed'):l('ProcessingWithThreeDot'))}}</span><br />
+        </div>
+    </div>
+</div>

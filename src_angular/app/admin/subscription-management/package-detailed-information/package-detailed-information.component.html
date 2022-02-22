@@ -1,0 +1,150 @@
+<div *ngIf="!IsUpgrade && !IsExtend">
+    <!-- <div class="row">
+        <div class="col-sm">
+            <button class="btn btn-link float-right" (click)="BackToSubscription()">
+                <u>{{"Back" | localize}}</u>
+            </button>
+        </div>
+    </div> -->
+
+    <div class="package-card1 mt-2" [busyIf]="!dataFetched">
+        <div class="detailcard" *ngFor="let product of additionalDetailsList">
+            <div class="row">
+                <div class="col-sm-5">
+                    <h2 class="text-primary">{{product.productName}}
+                    </h2>
+
+                    <h4 class="text-success">{{product.editionName}}
+                        <span class="price-edition">{{product.price}}</span>
+
+                    </h4>
+                    <p class="text-muted d-flex">{{'SubscriptionDate' | localize}} &nbsp;
+                        <b>
+                            ({{product.startDate.toString() | date}} -
+                            <span *ngIf="product.endDate == null" class="text-danger">
+                                {{'UnlimitedLimit' | localize}}
+                            </span>
+                            <span *ngIf="product.endDate != null" class="text-danger"
+                                [ngClass]="checkExpiryTime(product.remainingDays) == true ? 'expiring': null">
+                                {{product.endDate.toString() | date}}
+                            </span>)
+                        </b>
+                    </p>
+                    <div class="progress">
+                        <div class="more" *ngIf="product.endDate == null"></div>
+                        <div class="less" *ngIf="product.endDate != null"
+                        style="{{CalculateExpiryPercentage(product.startDate,product.endDate,product.remainingDays)}}" >    
+                        </div>
+                       
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-sm d-flex">
+                            <button class="btn btn-primary btn-sm float-right" (click)="ExtendPackage()"
+                                *ngIf="Package.price != 'FREE'">{{'Extend' | localize}}</button>
+                            <button class="btn btn-success btn-sm float-right" (click)="UpgradePackage()">{{'Upgrade' | localize}}</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-7">
+                    <div class="submodule h-130" *ngIf="product.module?.length >0">
+                        <div class="row">
+                            <div class="col-sm-6" *ngFor="let edModule of product.module; let moduleIndex = index"
+                            [ngClass]="moduleIndex % 2 ==0 ?'border-right':null">
+                                <ol>
+                                    <li>&nbsp;{{edModule.moduleName}}
+                                        <div class="subModule" *ngIf="edModule.subModule?.length > 0">
+                                            <ul *ngFor="let suModule of edModule.subModule">
+                                                <li>{{suModule.moduleName}}
+                                                    <ul class="subsubModule" *ngFor="let subsub of suModule.subModule; let i=index">
+                                                        <li>&nbsp;{{subsub.moduleName}}</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="card2" style="line-height: 1px;">Subscribed Addons</div> -->
+            <hr />
+            <div class="row" *ngFor="let add of product.addon; let addIndex = index;">
+                <div class="col-sm-5">
+                    <h5 class="adname">{{add.addonName}}
+                        <span class="price-edition">{{add.addonPrice}}</span>
+
+                    </h5>
+                    <p class="text-muted d-flex">{{'SubscriptionDate' | localize}} &nbsp;
+                        <b>
+                            ({{add.startDate.toString() | date}} -
+                            <span *ngIf="add.endDate == null" class="text-danger">
+                                {{'UnlimitedLimit' | localize}}
+                            </span>
+                            <span *ngIf="add.endDate != null" class="text-danger"
+                                [ngClass]="checkExpiryTime(add.addonRemainingDays) == true ? 'expiring': null">
+                                {{add.endDate.toString() | date}}
+                            </span>)
+                        </b>
+                    </p>
+                    
+                    <div class="progress">
+                        <div class="more" *ngIf="add.endDate == null"></div>
+                        <div class="less" *ngIf="add.endDate != null"
+                        style="{{CalculateExpiryPercentage(add.startDate,add.endDate,add.remainingDays)}}">
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="col-sm-7">
+                    <div class="submodule" *ngIf="product.module?.length >0">
+                        <div class="row">
+                            <div class="col-sm-6" *ngFor="let edModule of product.module; let moduleIndex = index"
+                            [ngClass]="moduleIndex % 2 ==0 ?'border-right':null">
+                                <ol>
+                                    <li>&nbsp;{{edModule.moduleName}}
+                                        <div class="subModule" *ngIf="edModule.subModule?.length > 0">
+                                            <ul *ngFor="let suModule of edModule.subModule">
+                                                <li>{{suModule.moduleName}}
+                                                    <ul class="subsubModule" *ngFor="let subsub of suModule.subModule; let i=index">
+                                                        <li>&nbsp;{{subsub.moduleName}}</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr id="line" />
+            </div>
+        </div>
+
+    </div>
+</div>
+<div *ngIf="IsUpgrade">
+    <div class="row" *ngIf="IsBackToPackageDetails">
+        <div class="col-sm">
+            <button class="btn btn-link float-right" (click)="BackToPackageDetails()">
+                <u>{{"Back" | localize}}</u>
+            </button>
+        </div>
+    </div>
+    <app-package-selection [IncludeProductId]="Package.productId" [PackageId]="Package.editionId"
+        (upgradeClicked)="upgradeClickedOutput($event)"></app-package-selection>
+</div>
+<div *ngIf="IsExtend">
+    <div class="row">
+        <div class="col-sm">
+            <button class="btn btn-link float-right" (click)="BackToPackageDetails()">
+                <u>{{"Back" | localize}}</u>
+            </button>
+        </div>
+    </div>
+   Here Package extension functionality
+</div>

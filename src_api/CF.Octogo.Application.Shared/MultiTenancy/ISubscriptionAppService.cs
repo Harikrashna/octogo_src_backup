@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Abp.Application.Services;
+using CF.Octogo.MultiTenancy.Dto;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -8,5 +9,6 @@ namespace CF.Octogo.MultiTenancy
         Task DisableRecurringPayments();
 
         Task EnableRecurringPayments();
+        Task<int> InsertEditionAddonSubscription(EditionAddonSubscriptionInputDto input);
     }
 }

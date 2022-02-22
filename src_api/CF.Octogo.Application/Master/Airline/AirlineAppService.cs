@@ -17,45 +17,50 @@ namespace CF.Octogo.Master.Airline
 {
     public class AirlineAppService : OctogoAppServiceBase, IAirlineAppService
     {
-        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
-        private readonly ICacheManager _cacheManager;
-
-        public AirlineAppService(ICacheManager cacheManager)
-        {
-            _cacheManager = cacheManager;
-        }
         //[AbpAuthorize(AppPermissions.Pages_Administration_Airline)]
         public async Task<PagedResultDto<AirlineListDto>> GetAirline(PagedAndSortedInputDto input, string filter)
         {
-            SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("Sorting", input.Sorting);
-            parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
-            parameters[3] = new SqlParameter("Filter", filter);
-            List<AirlineListDto> AirlineList = new List<AirlineListDto>();
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_GetAirline", parameters
-            );
-
-            if (ds.Tables.Count > 0)
+            try
             {
-                int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                var totalCount = v;
-                DataTable dt = ds.Tables[0];
+                SqlParameter[] parameters = new SqlParameter[4];
+                parameters[0] = new SqlParameter("Sorting", input.Sorting);
+                parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
+                parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
+                parameters[3] = new SqlParameter("Filter", filter);
+                List<AirlineListDto> AirlineList = new List<AirlineListDto>();
+                var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_GetAirline", parameters
+                );
 
-                AirlineList = (from DataRow dr in dt.Rows
-                               select new AirlineListDto()
-                               {
-                                   inAirlineID = Convert.ToInt32(dr["AirlineId"]),
-                                   vcAirlineName = dr["AirlineName"].ToString(),
-                                   vcDescription = dr["Description"].ToString(),
+                if (ds.Tables.Count > 0)
+                {
+                    int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
+                    var totalCount = v;
+                    DataTable dt = ds.Tables[0];
 
-                               }).ToList();
-                return new PagedResultDto<AirlineListDto>(totalCount, AirlineList);
+                    AirlineList = (from DataRow dr in dt.Rows
+                                   select new AirlineListDto()
+                                   {
+                                       inAirlineID = Convert.ToInt32(dr["AirlineId"]),
+
+                                       vcCarrierCode = dr["CarrierCode"].ToString(),
+                                       vcAirlineName = dr["AirlineName"].ToString(),
+                                       isInterline = dr["IsInterline"].ToString(),
+                                       isActive = Convert.ToBoolean(dr["Active"])
+
+                                   }).ToList();
+                    return new PagedResultDto<AirlineListDto>(totalCount, AirlineList);
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return null;
             }
         }
@@ -75,10 +80,36 @@ namespace CF.Octogo.Master.Airline
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inAirlineID", inp.inAirlineID);
-            parameters[1] = new SqlParameter("vcAirlineName", inp.vcAirlineName.Trim());
-            parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
-            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+            parameters[1] = new SqlParameter("vcAWBPrifix", inp.vcAWBPrifix);
+            parameters[2] = new SqlParameter("vcCarrierCode", inp.vcCarrierCode);
+            parameters[3] = new SqlParameter("vcAirlineName", inp.vcAirlineName);
+            parameters[4] = new SqlParameter("vcICAOCode", inp.vcICAOCode);
+            parameters[5] = new SqlParameter("vcCountryName", inp.vcCountryName);
+            parameters[6] = new SqlParameter("vcAirport", inp.vcAirport);
+            parameters[7] = new SqlParameter("vcRegisteredAddress", inp.vcRegisteredAddress);
+            parameters[8] = new SqlParameter("vcContactPerson", inp.vcContactPerson);
+            parameters[9] = new SqlParameter("vcMobileNo", inp.vcMobileNo);
+            parameters[10] = new SqlParameter("vcPhoneNo", inp.vcPhoneNo);
+            parameters[11] = new SqlParameter("vcFaxNo", inp.vcFaxNo);
+            parameters[12] = new SqlParameter("isCheckModulus7", inp.isCheckModulus7);
+            parameters[13] = new SqlParameter("vcAWBDuplicacy", inp.vcAWBDuplicacy);
+            parameters[14] = new SqlParameter("vcHandlingInformation", inp.vcHandlingInformation);
+            parameters[15] = new SqlParameter("isInterline", inp.isInterline);
+            parameters[16] = new SqlParameter("vcAirlineWebsite", inp.vcAirlineWebsite);
+
+            parameters[17] = new SqlParameter("isInvoiceGeneration", inp.isInvoiceGeneration);
+            parameters[18] = new SqlParameter("isCCShipment", inp.isCCShipment);
+            parameters[19] = new SqlParameter("isPartShipment", inp.isPartShipment);
+            parameters[20] = new SqlParameter("isFSUTime", inp.isFSUTime);
+            parameters[21] = new SqlParameter("isIncludeInFFM", inp.isIncludeInFFM);
+            parameters[22] = new SqlParameter("vcCIMPGrossWeight", inp.vcCIMPGrossWeight);
+            parameters[23] = new SqlParameter("vcCIMPCBM", inp.vcCIMPCBM);
+            parameters[24] = new SqlParameter("isActive", inp.isActive);
+            parameters[25] = new SqlParameter("vcAirlineLogo", inp.vcAirlineLogo);
+            parameters[26] = new SqlParameter("vcAWBLogo", inp.vcAWBLogo);
+
+            parameters[27] = new SqlParameter("UserId", AbpSession.UserId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateAirline", parameters);
 
@@ -88,7 +119,6 @@ namespace CF.Octogo.Master.Airline
 
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
@@ -108,31 +138,43 @@ namespace CF.Octogo.Master.Airline
 
 
 
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteAirline", parameters);
-            await ClearCache();
+
         }
 
 
         [AbpAuthorize(AppPermissions.Pages_Administration_Airline_Edit)]
         public async Task<DataSet> GetAirlineForEdit(GetEditAirlineinput input)
         {
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("AirlineID", input.inAirlineID);
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_GetAirlineById", parameters
-            );
-            if (ds.Tables.Count > 0)
+            try
             {
-                return ds;
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("AirlineID", input.inAirlineID);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                Connection.GetSqlConnection("Default"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_GetAirlineById", parameters
+                );
+                if (ds.Tables.Count > 0)
+                {
+                    Console.WriteLine(ds);
+                    return ds;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return null;
             }
+
+
+
         }
 
 
@@ -143,9 +185,9 @@ namespace CF.Octogo.Master.Airline
             parameters[1] = new SqlParameter("AirlineName", vcAirlineName);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
+            Connection.GetSqlConnection("Default"),
             System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicateAirline", parameters
+            "USP_CheckDuplicateRecord", parameters
             );
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
@@ -156,11 +198,7 @@ namespace CF.Octogo.Master.Airline
                 return null;
             }
         }
-        public async Task ClearCache()
-        {
-            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
-            await allMasterCache.ClearAsync();
-        }
+
 
     }
 

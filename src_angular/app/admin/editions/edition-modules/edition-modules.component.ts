@@ -223,7 +223,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
         }
         if(moduleChangeConfirmation == true){
           this.message.confirm(
-            this.l('EditionModuleChangeConfirmationMsg', module.displayName),
+            this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.displayName),
             this.l('AreYouSure'),
             isConfirmed => {
               if(isConfirmed){

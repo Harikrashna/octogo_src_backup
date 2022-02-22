@@ -17,6 +17,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { NgxBootstrapDatePickerConfigService } from 'assets/ngx-bootstrap/ngx-bootstrap-datepicker-config.service';
 import { SubheaderModule } from '@app/shared/common/sub-header/subheader.module';
 import { TenantDashboardComponent } from './tenant-dashboard/tenant-dashboard.component';
+import { SubscriptionManagementModule } from '@app/admin/subscription-management/subscription-management.module';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { TenantDashboardComponent } from './tenant-dashboard/tenant-dashboard.co
         BsDatepickerModule.forRoot(),
         BsDropdownModule.forRoot(),
         PopoverModule.forRoot(),
-        SubheaderModule
+        SubheaderModule,
+        SubscriptionManagementModule
     ],
     declarations: [
     TenantDashboardComponent

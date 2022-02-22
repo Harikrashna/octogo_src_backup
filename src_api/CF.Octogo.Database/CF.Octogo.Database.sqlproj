@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>CF.Octogo.Database</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{764d92b3-70d5-4a68-85f8-9c2056204787}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>CF.OctoGo.Database</RootNamespace>
+    <AssemblyName>CF.OctoGo.Database</AssemblyName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <TargetDatabase>CF.Octogo.Database</TargetDatabase>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="HangFire\" />
+    <Folder Include="HangFire\Tables\" />
+    <Folder Include="Security\" />
+    <Folder Include="dbo\Stored Procedures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\AbpRoleClaims.sql" />
+    <Build Include="dbo\Tables\TblMst_CityOld.sql" />
+    <Build Include="dbo\Tables\TblTrn_AddOn.sql" />
+    <Build Include="dbo\Tables\AbpRoles.sql" />
+    <Build Include="dbo\Tables\TblMst_CountryOld.sql" />
+    <Build Include="dbo\Tables\TblMst_Page.sql" />
+    <Build Include="dbo\Tables\AbpSettings.sql" />
+    <Build Include="dbo\Tables\AbpTenantNotifications.sql" />
+    <Build Include="HangFire\Tables\Schema.sql" />
+    <Build Include="dbo\Tables\TblTrn_ApproachAddOnMapping.sql" />
+    <Build Include="dbo\Tables\AbpTenants.sql" />
+    <Build Include="HangFire\Tables\Job.sql" />
+    <Build Include="dbo\Tables\AbpUserAccounts.sql" />
+    <Build Include="HangFire\Tables\State.sql" />
+    <Build Include="dbo\Tables\AbpUserClaims.sql" />
+    <Build Include="dbo\Tables\AbpUserLoginAttempts.sql" />
+    <Build Include="HangFire\Tables\JobParameter.sql" />
+    <Build Include="dbo\Tables\AbpUserLogins.sql" />
+    <Build Include="dbo\Tables\TblMst_Airline.sql" />
+    <Build Include="HangFire\Tables\JobQueue.sql" />
+    <Build Include="dbo\Tables\AbpUserNotifications.sql" />
+    <Build Include="dbo\Tables\TblMst_City.sql" />
+    <Build Include="HangFire\Tables\Server.sql" />
+    <Build Include="dbo\Tables\AbpUserOrganizationUnits.sql" />
+    <Build Include="dbo\Tables\TblMst_Country.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantEditionAddOnMapping.sql" />
+    <Build Include="dbo\Tables\AbpUserRoles.sql" />
+    <Build Include="HangFire\Tables\List.sql" />
+    <Build Include="dbo\Tables\AbpUsers.sql" />
+    <Build Include="HangFire\Tables\Set.sql" />
+    <Build Include="dbo\Tables\AbpUserTokens.sql" />
+    <Build Include="dbo\Tables\AbpWebhookEvents.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantEditionApproachMapping.sql" />
+    <Build Include="HangFire\Tables\Counter.sql" />
+    <Build Include="dbo\Tables\AbpWebhookSendAttempts.sql" />
+    <Build Include="HangFire\Tables\Hash.sql" />
+    <Build Include="dbo\Tables\AbpWebhookSubscriptions.sql" />
+    <Build Include="dbo\Tables\TblMst_Airport.sql" />
+    <Build Include="HangFire\Tables\AggregatedCounter.sql" />
+    <Build Include="dbo\Tables\Amits.sql" />
+    <Build Include="dbo\Tables\TblMst_Currency.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantAddOnApproachMapping.sql" />
+    <Build Include="dbo\Tables\AppBinaryObjects.sql" />
+    <Build Include="dbo\Tables\AppChatMessages.sql" />
+    <Build Include="dbo\Tables\AppFriendships.sql" />
+    <Build Include="dbo\Tables\AppInvoices.sql" />
+    <Build Include="dbo\Tables\TblTrn_EditionPricing_Prepaid.sql" />
+    <Build Include="dbo\Tables\AppSubscriptionPayments.sql" />
+    <Build Include="dbo\Tables\AppSubscriptionPaymentsExtensionData.sql" />
+    <Build Include="dbo\Tables\AppUserDelegations.sql" />
+    <Build Include="dbo\Tables\TblMst_UserType.sql" />
+    <Build Include="dbo\Tables\Demo.sql" />
+    <Build Include="dbo\Tables\TblTrn_UserUserTypesMapping.sql" />
+    <Build Include="dbo\Tables\TblTrn_AddOnPricing_Prepaid.sql" />
+    <Build Include="dbo\Tables\TblMst_Services.sql" />
+    <Build Include="dbo\Tables\TblTrn_UserDetails.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantEditionPricing_Prepaid.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantDB.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantAddOnPricing_Prepaid.sql" />
+    <Build Include="dbo\Tables\Tbltrn_UserUserTypesLinking.sql" />
+    <Build Include="dbo\Tables\TblTrn_AddonModule_SubModule_SubSubModuleMapping.sql" />
+    <Build Include="dbo\Tables\TblTrn_PerAWBCost_Postpaid.sql" />
+    <Build Include="dbo\Tables\DBA_SQLUsers.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantPerAWBCost_Postpaid.sql" />
+    <Build Include="dbo\Tables\__EFMigrationsHistory.sql" />
+    <Build Include="dbo\Tables\AbpAuditLogs.sql" />
+    <Build Include="dbo\Tables\AbpBackgroundJobs.sql" />
+    <Build Include="dbo\Tables\TblMst_Product.sql" />
+    <Build Include="dbo\Tables\TblMst_PricingApproach.sql" />
+    <Build Include="dbo\Tables\AbpDynamicEntityProperties.sql" />
+    <Build Include="dbo\Tables\AbpDynamicEntityPropertyValues.sql" />
+    <Build Include="dbo\Tables\TblTrn_ProductEditionMapping.sql" />
+    <Build Include="dbo\Tables\TblMst_PricingType.sql" />
+    <Build Include="dbo\Tables\AbpDynamicProperties.sql" />
+    <Build Include="dbo\Tables\AbpDynamicPropertyValues.sql" />
+    <Build Include="dbo\Tables\TblMst_PerAWBCostApproach.sql" />
+    <Build Include="dbo\Tables\AbpEditions.sql" />
+    <Build Include="dbo\Tables\TblMst_Department.sql" />
+    <Build Include="dbo\Tables\AbpEntityChanges.sql" />
+    <Build Include="dbo\Tables\TblMst_AirlineOld.sql" />
+    <Build Include="dbo\Tables\TblTrn_ApproachEditionMapping.sql" />
+    <Build Include="dbo\Tables\AbpEntityChangeSets.sql" />
+    <Build Include="dbo\Tables\AbpEntityPropertyChanges.sql" />
+    <Build Include="dbo\Tables\AbpFeatures.sql" />
+    <Build Include="dbo\Tables\TblMst_Designation.sql" />
+    <Build Include="dbo\Tables\TblMst_Industry.sql" />
+    <Build Include="dbo\Tables\TblTrn_EditionDependancy.sql" />
+    <Build Include="dbo\Tables\AbpLanguages.sql" />
+    <Build Include="dbo\Tables\AbpLanguageTexts.sql" />
+    <Build Include="dbo\Tables\AbpNotifications.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantSetupProcessDetailedLog.sql" />
+    <Build Include="dbo\Tables\TblTrn_EditionModules.sql" />
+    <Build Include="dbo\Tables\AbpNotificationSubscriptions.sql" />
+    <Build Include="dbo\Tables\AbpOrganizationUnitRoles.sql" />
+    <Build Include="dbo\Tables\AbpOrganizationUnits.sql" />
+    <Build Include="dbo\Tables\TblTrn_SubModules.sql" />
+    <Build Include="dbo\Tables\TblTrn_TenantSetupProcessLog.sql" />
+    <Build Include="dbo\Tables\AbpPermissions.sql" />
+    <Build Include="dbo\Tables\TblMst_AppSetup.sql" />
+    <Build Include="dbo\Tables\AbpPersistedGrants.sql" />
+    <Build Include="Security\db_executor.sql" />
+    <Build Include="Security\anand.srivastava.sql" />
+    <Build Include="Security\ankush.kumar.sql" />
+    <Build Include="Security\hari.krashna.sql" />
+    <Build Include="Security\gourav.sql" />
+    <Build Include="Security\dmathpal.sql" />
+    <Build Include="Security\merajuddin.sql" />
+    <Build Include="Security\mtyagi.sql" />
+    <Build Include="Security\vishal.dogra.sql" />
+    <Build Include="Security\karan.kumar.sql" />
+    <Build Include="Security\RoleMemberships.sql" />
+    <Build Include="dbo\Stored Procedures\DeleteEditionData.sql" />
+    <Build Include="dbo\Stored Procedures\CheckEditionDependency.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetCityList.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateCity.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetCityById.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteCity.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckCityDuplicacy.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetEditionAndAddonPricingData.sql" />
+    <Build Include="dbo\Stored Procedures\GetPageModulesList.sql" />
+    <Build Include="dbo\Stored Procedures\Usp_GetAddonsList.sql" />
+    <Build Include="dbo\Stored Procedures\Usp_GetEditionListForAddon.sql" />
+    <Build Include="dbo\Stored Procedures\Usp_GetAddonListByEditionId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPricingTypes.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateUpdatePricingType.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeletePricingType.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPricingTypebyId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicacyRecord.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeletePricingApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPricingApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPricingApproachDuplicacyCheck.sql" />
+    <Build Include="dbo\Stored Procedures\USP_InsertUpdatePricingApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPerAWBCostApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateAwbCostApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteAwbCostApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetAwbCostApproachId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckAwbCostApproachDuplicateData.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateProduct.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteProduct.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPoductId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetProducts.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteAirline.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateProduct.sql" />
+    <Build Include="dbo\Stored Procedures\GetAddonDetailsByModuleId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_InsertUserTypeMapping.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetUserTypeByUserId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_EditionModuleAndPagesByUserId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetRegisteredUserDetailsByUserId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_EditionNameAndProductByUserId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetProductWithEdition.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteCountry.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetCountryById.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetCountryList.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateCountry.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateCountry.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetModuleListByEditionForAddon.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateUserDetailedRegistration.sql" />
+    <Build Include="dbo\Stored Procedures\InsertUserTypeLinking.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetTenantDetails.sql" />
+    <Build Include="dbo\Stored Procedures\USP_UpdateAbpTenentStatus.sql" />
+    <Build Include="dbo\Stored Procedures\OctoGen_GetNewDBandSOQuery.sql" />
+    <Build Include="dbo\Stored Procedures\USP_InsertUpdateAddonAndPricing.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetAddonModuleAndPricing.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckAddonDuplicacy.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GETEDITIONDATAFOREDIT.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteAddon.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetServices.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetServiceById.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteService.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateService.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateRecord.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetUserTypeById.sql" />
+    <Build Include="dbo\Stored Procedures\OctogenAutoDBCreate_GetList.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateUserType.sql" />
+    <Build Include="dbo\Stored Procedures\InsertEditionModulesANDPricing.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateServices.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicate.sql" />
+    <Build Include="dbo\Stored Procedures\GETEDITIONDATAFOREDIT.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateAirline.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetUserType.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateUserType.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteUserType.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetTenantDataBaseDetails.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteDepartment.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPageSnoByTenantAndProductId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteEditionData.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateDepartment.sql" />
+    <Build Include="dbo\Stored Procedures\USP_InsertEditionModulesANDPricing.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateDepart.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetDepartmentById.sql" />
+    <Build Include="dbo\Stored Procedures\USP_InsertUpdateTenantEditionAddonDetails.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GETMASTERSDATAFOREDITION.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetDepartment.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GETEDITIONMODULES.sql" />
+    <Build Include="dbo\Stored Procedures\USP_UpdateTenantSetupProcess.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetEditionsByProductId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetEditionsList.sql" />
+    <Build Include="dbo\Stored Procedures\GETOTHERDATAFOREDITION.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetTenantsLinkedWithEdition.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetDependentEdition.sql" />
+    <Build Include="dbo\Stored Procedures\GetEditionsByProductId.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckEditionDuplicacy.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckEditionDependency.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPageModulesList_Test.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetPageModulesList.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetAirline.sql" />
+    <Build Include="dbo\Stored Procedures\USP_InsertEditionModulesANDPricing_Test.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetMasterDataByMasterName_Test.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetAirlineById.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetEditionModules_Test.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateAirline.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetEditonDetailToCompare.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetProductWiseEditions.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CheckDuplicateIndustry.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetUpdateEmailSendForRegsiterTenant.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateOrUpdateIndustry.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteIndustry.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetIndustry.sql" />
+    <Build Include="dbo\Stored Procedures\USP_UpdateTenantDetailedLog.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetIndustryById.sql" />
+    <Build Include="dbo\Stored Procedures\GETEDITIONMODULES.sql" />
+    <Build Include="dbo\Stored Procedures\USP_TenantAdminSetupProcessCompleteStatus.sql" />
+    <Build Include="dbo\Stored Procedures\USP_DeleteDesignation.sql" />
+    <Build Include="dbo\Stored Procedures\GetEditionsList.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetTenantProcessLogs.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetDesignation.sql" />
+    <Build Include="dbo\Stored Procedures\GetPricingApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetDesignationDuplicacyCheck.sql" />
+    <Build Include="dbo\Stored Procedures\GetPricingTypes.sql" />
+    <Build Include="dbo\Stored Procedures\USP_InsertUpdateDesignation.sql" />
+    <Build Include="dbo\Stored Procedures\GetProducts.sql" />
+    <Build Include="dbo\Stored Procedures\USP_UpdateAbpTenentConnectionString.sql" />
+    <Build Include="dbo\Stored Procedures\GetPerAWBCostApproach.sql" />
+    <Build Include="dbo\Stored Procedures\USP_CreateUserDetailedRegistration_backup.sql" />
+    <Build Include="dbo\Stored Procedures\GetDependentEdition.sql" />
+    <Build Include="dbo\Stored Procedures\USP_GetMasterDataByMasterName.sql" />
+    <Build Include="Security\DBCredentials.sql" />
+    <Build Include="Security\HangFire.sql" />
+    <Build Include="Security\Credentials_KeyPRD.sql" />
+  </ItemGroup>
+</Project>

@@ -30,6 +30,7 @@ import {FileUploadModule} from 'ng2-file-upload';
 import {FileUploadModule as PrimeNgFileUploadModule} from 'primeng/fileupload';
 import { SubheaderModule } from '@app/shared/common/sub-header/subheader.module';
 import { AddEditionModulesComponent } from './add-edition-modules/add-edition-modules.component';
+import { SharedTenantSetupProgressComponent } from './shared-tenant-setup-progress/shared-tenant-setup-progress.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { AddEditionModulesComponent } from './add-edition-modules/add-edition-mo
         OrganizationUnitsTreeComponent,
         FeatureTreeComponent,
         EditionComboComponent,
-        AddEditionModulesComponent
+        AddEditionModulesComponent,
+        SharedTenantSetupProgressComponent
     ],
     imports: [
         AppSharedModule,
@@ -103,7 +105,8 @@ import { AddEditionModulesComponent } from './add-edition-modules/add-edition-mo
         FileUploadModule,
         PrimeNgFileUploadModule,
         SubheaderModule,
-        AddEditionModulesComponent
+        AddEditionModulesComponent,
+        SharedTenantSetupProgressComponent
     ]
 })
 export class AdminSharedModule {

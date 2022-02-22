@@ -19,6 +19,7 @@ import { TenantRegistrationHelperService } from './tenant-registration-helper.se
 import { finalize, catchError } from 'rxjs/operators';
 import { ReCaptchaV3Service } from 'ngx-captcha';
 import { AppAuthService } from '@app/shared/common/auth/app-auth.service';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 
 @Component({
     templateUrl: './register-tenant.component.html',
@@ -44,7 +45,8 @@ export class RegisterTenantComponent extends AppComponentBase implements OnInit,
         private _profileService: ProfileServiceProxy,
         private _tenantRegistrationHelper: TenantRegistrationHelperService,
         private _activatedRoute: ActivatedRoute,
-        private _reCaptchaV3Service: ReCaptchaV3Service
+        private _reCaptchaV3Service: ReCaptchaV3Service,
+        public _validationService: ValidationServiceService
     ) {
         super(injector);
     }

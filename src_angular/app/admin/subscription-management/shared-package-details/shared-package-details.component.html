@@ -1,0 +1,95 @@
+<div #scrollMenu class="product-card"  *ngIf="PackageDetails != null" [ngClass]="Selected ?'selected':null">
+    <!-- [ngClass]="(product?.selected) ? (SelectedIndex == prodIndex) ? 'selected-product-card module-focus':'selected-product-card':'product-card'" -->
+        <span class="product-name cursor" [ngClass]="PackageDetails.isSetupProcessComplete == true ? 'cursor':null">
+            <a (click)="PackageDetails.isSetupProcessComplete == true && GoToProduct(PackageDetails.appURL)">
+                {{PackageDetails.productName}}
+            </a>
+        </span>
+        <u>
+            <span *ngIf="PackageDetails.isSetupProcessComplete  == false"
+                [ngClass]="checkProcess(PackageDetails.isSetupProcessComplete) == true ? 'expiring': null"
+                class="text-danger url cursor" (click)="OpenTenantSetupSummary(PackageDetails)">
+                {{'ProductSetupNotCompletedYet' | localize}}
+        </span>
+        </u>
+    <div class="text-muted  d-flex"  (click)="!ForDashboard && DetailedInformation()"> 
+        <span class="ed-name">{{PackageDetails.editionName}}</span>&nbsp;
+        <span class="price-edition">{{PackageDetails.price}}</span>
+        <button class="fa fa-cog text-success float-right" (click)="GoToSubscription()" id="setting"
+        *ngIf="ForDashboard"></button>
+    </div>
+
+    <span class="d-flex text-10 mt-2">{{'SubscriptionDate' | localize}} &nbsp;
+        <b>
+            ({{PackageDetails.startDate.toString() | date}} -
+            <span *ngIf="PackageDetails.endDate == null" class="text-danger">
+                {{'UnlimitedLimit' | localize}}
+            </span>
+            <span *ngIf="PackageDetails.endDate != null" class="text-danger"
+                [ngClass]="checkExpiryTime(PackageDetails.remainingDays) == true ? 'expiring': null">
+                {{PackageDetails.endDate.toString() | date}}
+            </span>)
+        </b>
+    </span>
+    <!-- <div class="timeline-card h-10">
+        <div class="h-10" style="width: 100%;background: green;" *ngIf="PackageDetails.endDate == null"></div>
+        <div class="h-10" style="{{CalculateExpiryPercentage(PackageDetails.startDate,PackageDetails.endDate,PackageDetails.remainingDays)}}" *ngIf="PackageDetails.endDate != null">
+        </div>
+    </div> -->
+    <div class="progress">
+        <div class="more" *ngIf="PackageDetails.endDate == null"></div>
+        <div class="less" *ngIf="PackageDetails.endDate != null"
+        style="{{CalculateExpiryPercentage(PackageDetails.startDate,PackageDetails.endDate,PackageDetails.remainingDays)}}">
+        </div>
+    </div>
+    <div class="add mt-2" *ngIf="PackageDetails.addon?.length > 0">
+        <div class="subscribe-card">
+            {{'SubscribedAddons' | localize}}&nbsp;({{PackageDetails.addon.length}})
+        </div>
+        <div class="adodetails">
+            <div class="adolist" *ngFor="let ado of PackageDetails.addon | slice:0:3; let adnIndex = index">
+                <p class="text-muted  d-flex text-10">
+                    <span class="adname">{{ado.addonName}}
+                    </span>&nbsp;
+                    <span class="price-addon">{{ado.addonPrice}}</span>
+                    <span class="start-date-card text-muted"> ({{ado.startDate | date}} -</span>
+                    <span class="end-date-card" *ngIf="ado.endDate == null">{{'UnlimitedLimit' |
+                        localize}}</span>
+                    <span class="end-date-card" *ngIf="ado.endDate != null"
+                        [ngClass]="checkExpiryTime(ado.remainingDays) == true ? 'expiring': null">
+                        {{ado.endDate}}
+                    </span>
+                    <span class="brkt">)</span>
+                </p>
+            </div>
+            <span *ngIf="PackageDetails.addon?.length > 3 ;let moreIndex = index">
+               
+                <span *ngIf="isAddonCollapsed && moreIndex == addonIndex">
+                    <div class="adolist"
+                        *ngFor="let ado of PackageDetails.addon | slice:3:PackageDetails.addon.length ">
+                        <p class="text-muted  d-flex text-10">
+                            <span class="adname">{{ado.addonName}}
+                            </span>&nbsp;
+                            <span class="price-addon">{{ado.addonPrice}}</span>
+                            <span class="start-date-card text-muted"> ({{ado.startDate | date}} -</span>
+                            <span class="end-date-card" *ngIf="ado.endDate == null">{{'UnlimitedLimit' |
+                                localize}}</span>
+                            <span class="end-date-card" *ngIf="ado.endDate != null"
+                                [ngClass]="checkExpiryTime(ado.remainingDays) == true ? 'expiring': null">
+                                {{ado.endDate}}
+                            </span>
+                            <span class="brkt">)</span>
+                        </p>
+                    </div>
+                </span>
+                <label *ngIf="isAddonCollapsed == false" (click)="expandAddons(moreIndex)" class="float-left cursor">
+                    <u>{{ 'More' | localize }}({{PackageDetails.addon?.length - 3}})</u>
+                </label>
+                <label *ngIf="isAddonCollapsed == true" (click)="expandAddons(moreIndex)" class="float-left cursor">
+                    <u>{{ 'Less' | localize }}</u>
+                </label>
+            </span>
+        </div>
+    </div>
+</div>
+<app-tenant-product-setup-summary #tenantSummaryModel></app-tenant-product-setup-summary>

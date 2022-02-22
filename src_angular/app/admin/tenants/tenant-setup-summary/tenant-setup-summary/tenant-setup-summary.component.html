@@ -1,0 +1,165 @@
+<div [class]="containerClass">
+    <div style="border:none" class="card card-custom gutter-b" data-bs-spy="scroll">
+        <div class="card-body pr-0" data-bs-spy="scroll">
+            <div class="row">
+                <sub-header [title]="'TenantSetupSummary' | localize">
+                </sub-header>
+                <div class="row" style="width: 100%;">
+                    <div class="col-sm-3 pl-0">
+                        <button class="btn btn-primary btn-sm" (click)="Back()">
+                            <i class="fa fa-arrow-left"></i> {{"Back" | localize}}
+                        </button>
+                    </div>
+                    <div class="col-sm-9 pr-0">
+                        <div class="row p-fluid" style="width: 100%;">
+                            <div class="col-sm-5">
+                                <span class="p-float-label">
+                                    <input type="text" id="tenantname" class="form-control" name="tenant"
+                                        [(ngModel)]="tenantName" placeholder="{{'TenantName' | localize}}">
+                                </span>
+                            </div>
+                            <div class="col-sm-4" style="width: 100%;">
+                                <span class="p-float-label">
+                                    <p-dropdown inputId="dropdown" [autoDisplayFirst]="false" [options]="tenantSetupStatus" 
+                                    id="ddl_status" [(ngModel)]="statusCode" optionLabel="name" ></p-dropdown>
+                                    <label for="dropdown" >{{'Status' | localize}}</label>
+                                </span>
+                            </div>
+                            <div class="col-sm-1">
+                                    <button (click)="Search()" class="btn btn-primary" type="submit"><i
+                                            class="flaticon-search-1" [attr.aria-label]="l('Search')"></i>
+                                    </button>                         
+                            </div>
+                            <div class="col-sm-2">
+                                    <button (click)="Refresh()" class="btn btn-primary d-flex" type="submit"><i
+                                            class="fa fa-sync"></i>
+                                        {{ 'Refresh' | localize}}
+                                    </button>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+
+            </div>
+        </div>
+        <!-- start -->
+        <div *ngFor="let tenant of tenantStatusData;">
+        <app-shared-tenant-setup-progress [TenantData]="tenant"></app-shared-tenant-setup-progress>
+    </div>
+        <!-- <div *ngFor="let tenant of tenantStatusData;" class="tenant-card">
+            <span class="d-flex">
+                <h4 class="text-primary">{{tenant.tenantName}}</h4>&nbsp;-&nbsp;
+                <h5 class="text-muted">{{tenant.productName}}</h5>
+            </span>
+            <hr style="margin-top: 0px !important;" />
+            <div class="d-flex">
+                <div style="width: 16%;" id="first" class="d-flex">
+                    <div style="width: 30%;">&nbsp;</div>
+                    <div style="width: 40%;">
+                        <div class="middle"
+                            [ngClass]="tenant.isDBSetup ?'completed':(tenant.isAppURLSetup ? 'null' :(tenant.errorMessage ?'failed':'progress'))">
+                            1</div>
+                    </div>
+                    <div class="right-line" style="width: 30%;"></div>
+                </div>
+                <div style="width: 16%;" class="d-flex">
+                    <div class="left-line" style="width: 30%;"></div>
+                    <div style="width: 40%;">
+                        <div class="middle"
+                            [ngClass]="tenant.isAppURLSetup ?'completed':(tenant.errorMessage?'failed':(tenant.isDBSetup ) ?'progress':'null')">
+                            2</div>
+                    </div>
+                    <div class="right-line" style="width: 30%;"></div>
+                </div>
+                <div style="width: 16%;" class="d-flex">
+                    <div class="left-line" style="width: 30%;"></div>
+                    <div style="width: 40%;">
+                        <div class="middle"
+                            [ngClass]="tenant.isWSSetup ? 'completed':(tenant.errorMessage ?'failed':((tenant.isAppURLSetup )  ?'progress':'null'))">
+                            3</div>
+                    </div>
+                    <div class="right-line" style="width: 30%;"></div>
+                </div>
+                <div style="width: 16%;" class="d-flex">
+                    <div class="left-line" style="width: 30%;"></div>
+                    <div style="width: 40%;">
+                        <div class="middle"
+                            [ngClass]="tenant.isApplicationHost ?'completed':(tenant.errorMessage ?'failed':((tenant.isWSSetup )  ?'progress':'null'))">
+                            4</div>
+                    </div>
+                    <div class="right-line" style="width: 30%;"></div>
+                </div>
+                <div style="width: 16%;" class="d-flex">
+                    <div class="left-line" style="width: 30%;"></div>
+                    <div style="width: 40%;">
+                        <div class="middle"
+                            [ngClass]="tenant.isAPIURLSetup ?'completed':(tenant.errorMessage ?'failed':(tenant.isApplicationHost ?'progress':null))">
+                            5</div>
+                    </div>
+                    <div class="right-line" style="width: 30%;"></div>
+                </div>
+                <div style="width: 16%;" id="last" class="d-flex">
+                    <div class="left-line" style="width: 30%;"></div>
+                    <div style="width: 40%;">
+                        <div class="middle"
+                            [ngClass]="tenant.isDBSetup && tenant.isAPIURLSetup && tenant.isApplicationHost && tenant.isWSSetup && tenant.isAPIURLSetup  ?'completed':(tenant.errorMessage? 'failed':'null')">
+                            6</div>
+                    </div>
+                    <div style="width: 30%;">&nbsp;</div>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div style="width: 16%;  text-align: center;">
+                    <b>{{"DataBase"| localize}}</b><br />
+                    <span class="text-primary text-10">{{tenant.isDBSetup && tenant.dbName != null? tenant.dbName :
+                        "NA"}}</span><br />
+                    <span class="text-10">{{tenant.dbSetupCompleteDt | date:'medium'}}</span>
+                </div>
+                <div style="width: 16%;  text-align: center;">
+                    <b>{{"ApplicationUrl"| localize}}</b><br />
+                    <span class="text-primary text-10">
+                        <span *ngIf="tenant.appURAL != null"> {{tenant.appURAL}} </span>
+                        <span *ngIf="tenant.appURAL == null">NA</span>
+                    </span><br />
+                    <span class="text-10"> {{tenant.appURLSetupCompleteDt | date:'medium'}}</span>
+                </div>
+                <div style="width: 16%;  text-align: center;">
+                    <b>{{"WindowService"| localize}}</b><br />
+                    <span class="text-primary text-10">{{tenant.isAPIURLSetup && tenant.apiURL != null? tenant.apiURL:
+                        "NA"}}</span><br />
+                    <span class="text-10"> {{tenant.wsSetupCompleteDt | date:'medium'}}</span>
+                </div>
+                <div style="width: 16%;  text-align: center;">
+                    <b>{{"ApplicationHosted"| localize}}</b><br />
+                    <span class="text-primary text-10">NA</span><br />
+                    <span class="text-10">{{tenant.applicationHostDt | date:'medium'}}</span>
+                </div>
+                <div style="width: 16%;  text-align: center;">
+                    <b>{{"ApiUrl"| localize}}</b><br />
+                    <span class="text-primary text-10">NA</span><br />
+                    <span class="text-10">{{tenant.apiurlSetupCompleteDt | date:'medium'}}</span>
+                </div>
+
+                <div style="width: 16%;  text-align: center;">
+                    <b>{{"Completed"| localize}}</b><br />
+                    <span class="text-10 " 
+                        [ngStyle]="{'color':tenant.errorMessage  ? 'red' : '#187DE4' }">{{tenant.isDBSetup &&
+                        tenant.isAPIURLSetup && tenant.isApplicationHost && tenant.isWSSetup
+                        && tenant.isAPIURLSetup ? l('ReadyToUse'):(tenant.errorMessage?l('Failed'):l('ProcessingWithThreeDot'))}}</span><br />
+                </div>
+            </div>
+        </div> -->
+        <div class="row mt-3">
+            <div *ngIf="tenantStatusData.length  != 0" class="col-sm-6">
+                Total : {{tenantStatusData.length}}/{{totalRecordCount}}
+            </div>
+            <div *ngIf="tenantStatusData.length  != 0 && tenantStatusData.length != totalRecordCount" class="col-sm-6">
+                <a class="brn btn-link float-right" (click)="ViewMore()">{{"ViewMore" | localize}}</a>
+            </div>
+        </div>
+        <p-progressSpinner style="margin-left: 45%" *ngIf="!recordFetchd"></p-progressSpinner>
+        <span style="margin-left: 45%" *ngIf="tenantStatusData.length == 0 && recordFetchd ">{{'NoData' | localize}}</span>
+        <!-- End -->
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<div *ngIf="productDetailsList?.length > 0" [busyIf]="loading">
+    <div class="row p-3" id="product_content" *ngIf="showEditionInformation">
+        <!-- <i class="pi pi-chevron-left p-1" (click)="ScrollLeft()" aria-hidden="true"
+                            *ngIf="IsScrollable && CanScrollLeft"></i>
+                        <i class="pi pi-chevron-right p-1" (click)="ScrollRight()" aria-hidden="true"
+                            *ngIf="IsScrollable && CanScrollRight"></i> -->
+        <div *ngFor="let product of productDetailsList; let prodIndex=index" class="col-sm-4 pt-1">
+            <app-shared-package-details [PackageDetails]="product" [ForDashboard]="ForDashboard" [Selected]="prodIndex==selectedIndex" (showPackageDetails)="ShowPackageDetails(prodIndex)">
+            </app-shared-package-details>
+        </div>
+    </div>
+    <div *ngIf="showDetailedInformation && !ForDashboard">
+        <app-package-detailed-information [Package]="SelectedPackage"  (upgradeClicked)="upgradeClicked()" (backClicked)="BackToSubscribedProducts()"></app-package-detailed-information>
+    </div>
+</div>
+<div *ngIf="!(productDetailsList?.length > 0)" class="text-danger p-5">
+    {{'NoData' | localize}}
+</div>

@@ -10,7 +10,7 @@ import { AppConsts } from '@shared/AppConsts';
 import { UrlHelper } from '@shared/helpers/UrlHelper';
 import {
     AuthenticateModel,
-    AuthenticateResultModel,
+    AuthenticateResultModelNew,
     ExternalAuthenticateModel,
     ExternalAuthenticateResultModel,
     ExternalLoginProviderInfoModel,
@@ -57,7 +57,7 @@ export class LoginService {
 
     MSAL: UserAgentApplication; // Microsoft API
     authenticateModel: AuthenticateModel;
-    authenticateResult: AuthenticateResultModel;
+    authenticateResult: AuthenticateResultModelNew;
     externalLoginProviders: ExternalLoginProvider[] = [];
     rememberMe: boolean;
 
@@ -105,7 +105,7 @@ export class LoginService {
                 self._tokenAuthService
                     .authenticate(self.authenticateModel)
                     .subscribe({
-                        next: (result: AuthenticateResultModel) => {
+                        next: (result: AuthenticateResultModelNew) => {
                             self.processAuthenticateResult(result, redirectUrl);
                             finallyCallback();
                         },
@@ -167,10 +167,13 @@ export class LoginService {
     }
 
     private processAuthenticateResult(
-        authenticateResult: AuthenticateResultModel,
+        authenticateResult: AuthenticateResultModelNew,
         redirectUrl?: string
     ) {
         this.authenticateResult = authenticateResult;
+
+        // Added by Hari Krashna(10/02/2022) - for login without Tenant selection
+        abp.multiTenancy.setTenantIdCookie(this.authenticateResult.tenantId);
 
         if (authenticateResult.shouldResetPassword) {
             // Password reset

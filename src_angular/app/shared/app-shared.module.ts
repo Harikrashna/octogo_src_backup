@@ -23,6 +23,9 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { TableModule } from 'primeng/table';
 import { AppCommonModule } from './common/app-common.module';
 import { ThemesLayoutBaseComponent } from './layout/themes/themes-layout-base.component';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { DividerModule } from 'primeng/divider';
 
 const imports = [
     CommonModule,
@@ -49,6 +52,9 @@ const imports = [
     AutoCompleteModule,
     NgxSpinnerModule,
     AppBsModalModule,
+    ProgressSpinnerModule,
+    OverlayPanelModule,
+    DividerModule
 ];
 
 @NgModule({

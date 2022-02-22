@@ -42,4 +42,14 @@ export class InputValidationService {
     }
     return ret;
 }
+IsNumeric(e) {
+      
+  if(e.target.value==""  && e.keyCode==48){
+    return false     
+  } 
+  var keyCode = e.which ? e.which : e.keyCode
+  var ret = ((keyCode >= 48 && keyCode <= 57));
+  return ret
+
+}
 }

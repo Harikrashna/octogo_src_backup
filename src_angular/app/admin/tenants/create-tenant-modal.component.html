@@ -23,7 +23,7 @@
                         <input id="TenancyName" #tenancyNameInput="ngModel" class="form-control" type="text"
                             [ngClass]="{'edited':tenant.tenancyName}" name="tenancyName"
                             [(ngModel)]="tenant.tenancyName" #tenancyName="ngModel" required maxlength="64"
-                            (keypress)="_validationService.NameValidation($event)">
+                            (keypress)="_validationService.NameWithoutSpaceValidation($event)">
                             <!-- pattern="^[a-zA-Z][a-zA-Z0-9_-]{1,}$" -->
                         <validation-messages [formCtrl]="tenancyNameInput"></validation-messages>
                     </div>

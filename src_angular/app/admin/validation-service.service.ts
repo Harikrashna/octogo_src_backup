@@ -23,6 +23,20 @@ export class ValidationServiceService {
               (keyCode >= 48 && keyCode <= 57) || keyCode==45 || keyCode==47);
      return ret;
   }
+  NameWithoutSpaceValidation(e){
+    
+    if(e.keyCode==32){
+      return false    
+    }
+    if(e.target.value=="" && e.keyCode >= 48 && e.keyCode <= 57){
+      return false    
+    }
+    var keyCode = e.which ? e.which : e.keyCode
+
+    var ret = ((keyCode >= 65 && keyCode <= 90) || (keyCode >= 97 && keyCode <= 122) || e.keyCode==32 || e.keyCode==124 ||
+              (keyCode >= 48 && keyCode <= 57) || keyCode==45 || keyCode==47);
+     return ret;
+  }
   IsNumericWithDot(e, value: any = "", num) {
     value = value != null ? value.toString() : "";
     if ((value.indexOf(".") >= 0) && (value.length - value.indexOf(".") > num)) {
@@ -41,5 +55,15 @@ export class ValidationServiceService {
         }
     }
     return ret;
+}
+IsNumeric(e) {
+      
+  if(e.target.value==""  && e.keyCode==48){
+    return false     
+  } 
+  var keyCode = e.which ? e.which : e.keyCode
+  var ret = ((keyCode >= 48 && keyCode <= 57));
+  return ret
+
 }
 }

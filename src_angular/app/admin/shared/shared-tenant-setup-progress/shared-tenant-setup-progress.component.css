@@ -1,0 +1,132 @@
+
+.circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 29px;
+    display: block;
+    font-size: 12px;
+    border-radius: 250px;
+    margin: auto;
+    border: 1px solid grey;
+    z-index: 600;
+    background: lightgray;
+    cursor: pointer;
+}
+.vertical-line {
+    width: 90px;
+    height: 2px;
+    padding-left: 5px;
+    background: grey;
+    margin-top: 14px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.card{
+    border-radius: 5px;
+    box-shadow: 1px 1px 10px 1px gray;
+    border: 1px solid black;
+    width: 100%;
+    padding: 5px 20px 2px 20px;
+    margin: 3px;
+}
+h4{
+    font-size: 14px;
+}
+h5{
+    font-size: 12px;
+}
+p{
+    font-size: 10px;
+    margin-left: -2px;
+    width: 90px;
+
+}
+.completed{
+    background: green;
+    color : white;
+}
+.progress{
+    background: orange;
+}
+.notReady{
+    background: #fffa75;
+}
+.ml-0{
+    margin-left: 0px;
+}
+.pl-10{
+    padding-left: 10px;
+}
+.cursor{
+    cursor: pointer;
+}
+.col-sm-6{
+    cursor: pointer;
+}
+
+
+
+
+
+
+.tenant-card{
+    border-radius: 5px;
+            box-shadow: 1px 7px 10px 1px rgba(128, 128, 128, 0.308);
+            border: 1px solid rgba(0, 0, 0, 0.342);
+            padding: 5px;
+            margin-top: 8px;
+}
+        .middle {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 29px;
+            display: block;
+            font-size: 12px;
+            border-radius: 250px;
+            margin: auto;
+            border: 1px solid grey;
+            z-index: 600;
+            background: lightgray;
+            cursor: pointer;
+        }
+
+        .left-line {
+            width: 40%;
+            height: 2px;
+            padding-left: 0px;
+            background: grey;
+            margin-top: 14px;
+            margin-left: -1px;
+        }
+
+        .right-line {
+            width: 40%;
+            height: 2px;
+            padding-right: 0px;
+            background: grey;
+            margin-top: 14px;
+        }
+        .completed{
+            background: green;
+            color : white;
+        }
+        .progress{
+            background: orange;
+        }
+        .notReady{
+            background: #fffa75;
+        }
+        .failed{
+            background: red;
+        }
+        .text-10{
+            font-size: 10px;
+          
+           
+        }
+        :host /deep/ #ddl_status .p-dropdown{
+            border:1px solid #eae9e8 !important;
+            border-radius: 4px !important;
+        }

@@ -1,0 +1,24 @@
+<div appBsModal #tenantSetupModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <span>{{"ProductSetupSummary" | localize}}</span>
+                </h5>
+                <button type="button" class="close" (click)="close()" [attr.aria-label]="l('Close')">
+                     <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+<div class="container mb-5 mt-3">
+    <app-shared-tenant-setup-progress [TenantData]="TenantSetupData" *ngIf="TenantSetupData != null">
+    </app-shared-tenant-setup-progress>
+    <div *ngIf="!(TenantSetupData != null) && recordFetchd" class="text-danger">
+        {{'NoData' | localize}}
+    </div>
+    <p-progressSpinner  *ngIf="!recordFetchd"></p-progressSpinner>
+</div>
+        </div>
+    </div>
+</div>

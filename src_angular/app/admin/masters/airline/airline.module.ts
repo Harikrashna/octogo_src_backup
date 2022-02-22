@@ -7,10 +7,12 @@ import { AirlineComponent } from './airline.component';
 import { AdminSharedModule } from '@app/admin/shared/admin-shared.module';
 import { AppSharedModule } from '@app/shared/app-shared.module';
 import { DynamicEntityPropertyManagerModule } from '@app/shared/common/dynamic-entity-property-manager/dynamic-entity-property-manager.module';
+import { ViewComponent } from './view/view.component';
+
 
 
 @NgModule({
-  declarations: [CreateOrEditAirlineComponent,AirlineComponent],
+  declarations: [CreateOrEditAirlineComponent,AirlineComponent, ViewComponent],
   imports: [
     CommonModule,
     AirlineRoutingModule,

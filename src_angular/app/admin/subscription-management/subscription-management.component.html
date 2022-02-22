@@ -7,8 +7,9 @@
             <div class="card card-custom gutter-b">
                 <div class="card-body">
                     <tabset>
-                        <tab class="p-5" heading="{{'SubscriptionInformation' | localize}}">
-                            <form class="form">
+                        <tab heading="{{'SubscriptionInformation' | localize}}">
+                            <app-subscribed-products-details></app-subscribed-products-details>
+                            <!-- <form class="form">
                                 <input type="hidden" Name="PaymentPeriodType" value="@tenant.PaymentPeriodType" />
                                 <input type="hidden" Name="Gateway" value="@SubscriptionPaymentGatewayType.Paypal" />
 
@@ -84,9 +85,15 @@
                                     </div>
                                 </div>
 
-                            </form>
+                            </form> -->
                         </tab>
                         <tab class="p-5" heading="{{'PaymentHistory' | localize}}">
+                            <app-subscription-payment-history></app-subscription-payment-history>
+                        </tab>
+                        <tab class="p-5" heading="{{'AvailableProducts' | localize}}">
+                            <app-package-selection [OnlyAvailableProducts]="true"></app-package-selection>
+                        </tab>
+                        <!-- <tab class="p-5" heading="{{'PaymentHistory' | localize}}" *ngIf="false">
                             <div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
                                 <p-table #dataTable sortMode="multiple" (onLazyLoad)="getPaymentHistory($event)"
                                     [value]="primengTableHelper.records"
@@ -190,7 +197,7 @@
                                     </p-paginator>
                                 </div>
                             </div>
-                        </tab>
+                        </tab> -->
                     </tabset>
                 </div>
             </div>

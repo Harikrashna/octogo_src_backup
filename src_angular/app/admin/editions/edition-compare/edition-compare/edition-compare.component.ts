@@ -48,7 +48,7 @@ export class EditionCompareComponent extends AppComponentBase implements OnInit 
     this._commonService.getMasterData_Cache("PRODUCT").subscribe(result => {
       this.ProductList = result[0].masterData;
 
-      console.log(this.ProductList)
+      // console.log(this.ProductList)
     })
   }
 
@@ -92,7 +92,7 @@ export class EditionCompareComponent extends AppComponentBase implements OnInit 
   }
 
   compare(product){
-    console.log(product);
+    // console.log(product);
      this.compareData = []
     for(let i = 0 ; i<this.ProductEditionData.length ; i++){
       if(product[i]?.productId > 0 && product[i]?.editionId > 0)
@@ -101,7 +101,7 @@ export class EditionCompareComponent extends AppComponentBase implements OnInit 
       }
     }
 
-    console.log(this.compareData);
+    // console.log(this.compareData);
     if(this.compareData.length < 2){
       this.notify.warn(this.l("PleaseSelectMoreThanOneEditions"));
       return;
@@ -124,7 +124,7 @@ export class EditionCompareComponent extends AppComponentBase implements OnInit 
     this._editionService.getEditionDeatilsByEditionIdForCompare(editionId).pipe(finalize(() => { this.compairing = false; })).subscribe(result=>{
       this.ProductEditionCompareList = result;
 
-      console.log(this.ProductEditionCompareList)
+      // console.log(this.ProductEditionCompareList)
     })
     
     // this.ProductEditionData = 
