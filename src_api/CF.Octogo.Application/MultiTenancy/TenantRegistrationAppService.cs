@@ -60,11 +60,13 @@ namespace CF.Octogo.MultiTenancy
         public async Task<RegisterTenantOutput> RegisterTenant(RegisterTenantInput input)
         {
             // Added for Signed Up user - Added By: HARI KRASHNA(17/12/2021)
-            User currentUser = new User();
-            if (AbpSession.UserId.HasValue)
-            {
-                currentUser = checkEmailDuplicacy(input.AdminEmailAddress);
-            }
+
+            // Used to register tenant by SignUp user's Email address
+            //User currentUser = new User();
+            //if (AbpSession.UserId.HasValue)
+            //{
+            //    currentUser = checkEmailDuplicacy(input.AdminEmailAddress);
+            //}
             if (input.EditionId.HasValue)
             {
                 // await CheckEditionSubscriptionAsync(input.EditionId.Value, input.SubscriptionStartType);
@@ -131,11 +133,12 @@ namespace CF.Octogo.MultiTenancy
                     user.LastModifierUserId = user.Id;
                     await CurrentUnitOfWork.SaveChangesAsync();
 
+                    // Used to register tenant by SignUp user's Email address
                     // Deactivate current user if current user is Admin of new Tenant
-                    if (currentUser.EmailAddress.Trim().ToUpper() == input.AdminEmailAddress.Trim().ToUpper())
-                    {
-                        CheckErrors(await UserManager.DeleteAsync(user));
-                    }
+                    //if (currentUser.EmailAddress.Trim().ToUpper() == input.AdminEmailAddress.Trim().ToUpper())
+                    //{
+                    //    CheckErrors(await UserManager.DeleteAsync(user));
+                    //}
                 }
                 await _appNotifier.NewTenantRegisteredAsync(tenant);
 

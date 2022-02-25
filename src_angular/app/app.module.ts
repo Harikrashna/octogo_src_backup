@@ -92,8 +92,7 @@ import { AppBsModalModule } from '@shared/common/appBsModal/app-bs-modal.module'
 import { SubheaderModule } from './shared/common/sub-header/subheader.module';
 import { UnregisteredUserDashboardComponent } from './shared/layout/notifications/unregistered-user-dashboard/unregistered-user-dashboard.component';
 import { RegisteredUserEditionSelectionComponent } from './shared/layout/notifications/registered-user-edition-selection/registered-user-edition-selection.component';
-import { PackageSelectionModule } from './admin/subscription-management/package-selection/package-selection/package-selection.module';
-
+import { PackageSelectionModule } from './admin/subscription-management/package-selection/package-selection.module';
 
 
 

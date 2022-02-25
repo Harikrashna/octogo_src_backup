@@ -9,6 +9,7 @@ import { AppComponentBase } from '@shared/common/app-component-base';
 export class SharedTenantSetupProgressComponent extends AppComponentBase implements OnInit {
 
   @Input()TenantData;
+  @Input()ForTenant = false;
   constructor(injector: Injector) {
     super(injector);
 }

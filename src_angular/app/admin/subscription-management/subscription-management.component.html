@@ -8,7 +8,7 @@
                 <div class="card-body">
                     <tabset>
                         <tab heading="{{'SubscriptionInformation' | localize}}">
-                            <app-subscribed-products-details></app-subscribed-products-details>
+                            <app-subscribed-products-details [selectedEditionId]="selectedEditionId"></app-subscribed-products-details>
                             <!-- <form class="form">
                                 <input type="hidden" Name="PaymentPeriodType" value="@tenant.PaymentPeriodType" />
                                 <input type="hidden" Name="Gateway" value="@SubscriptionPaymentGatewayType.Paypal" />

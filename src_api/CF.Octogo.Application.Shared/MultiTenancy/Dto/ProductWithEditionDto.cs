@@ -17,9 +17,9 @@ namespace CF.Octogo.Dto
     }
     public class ProductWithEditionInputDto
     {
-        public int? IncludeProductId { get; set; }
-        public int? ExcludeProductId { get; set; }
-        public bool? IsAvailableProduct { get; set; } = false;
+        public Nullable<int> IncludeProductId { get; set; }
+        public Nullable<int> ExcludeProductId { get; set; }
+        public Nullable<bool> IsAvailableProduct { get; set; } = false;
 
     }
     public class ProductWithEditionDto

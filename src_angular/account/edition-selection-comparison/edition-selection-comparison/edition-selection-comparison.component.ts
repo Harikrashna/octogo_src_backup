@@ -48,7 +48,7 @@ export class EditionSelectionComparisonComponent extends AppComponentBase implem
       this.isUserLoggedIn = true;
     }
     this.spinnerService.show();
-    this._editionService.getProductWithEdition(null,null,false).subscribe(result => {
+    this._editionService.getProductWithEdition(0,0,false).subscribe(result => {
       this.spinnerService.hide();
       this.ProductWithEditionList = result;
       this.CheckScrollable();

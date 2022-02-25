@@ -16,6 +16,7 @@ export class UnregisteredUserDashboardComponent extends AppComponentBase impleme
   isEmailConfirmed: boolean = false;
   isRegisteredUser: boolean = false;
   saving = false;
+
   constructor(injector: Injector,private _router: Router 
     ,private _userDetailRegistration: UserRegistrationServiceProxy
     ,private _authService: AppAuthService,

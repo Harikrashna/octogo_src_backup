@@ -56,17 +56,6 @@ namespace CF.Octogo.MultiTenancy
         public async Task<int> InsertEditionAddonSubscription(EditionAddonSubscriptionInputDto input)
         {
             string Remark = string.Empty;
-            bool PaymentDone = false;
-            if (!AbpSession.TenantId.HasValue && AbpSession.UserId.HasValue)
-            {
-                Remark = "Subscription requested by Host user";
-                PaymentDone = false;
-            }
-            else
-            {
-                Remark = "Subscription requested by client's user";
-                PaymentDone = true;
-            }
             SqlParameter[] parameters = new SqlParameter[10];
             parameters[0] = new SqlParameter("EditionId", input.EditionId);
             parameters[1] = new SqlParameter("AddonSubscription", input.AddonSubscription != null ? JsonConvert.SerializeObject(input.AddonSubscription) : null);
@@ -76,7 +65,7 @@ namespace CF.Octogo.MultiTenancy
             parameters[5] = new SqlParameter("LoginUserId", AbpSession.UserId);
             parameters[6] = new SqlParameter("TenantId", input.TenantId);
             parameters[7] = new SqlParameter("Remark", Remark);
-            parameters[8] = new SqlParameter("PaymentDone", PaymentDone);
+            parameters[8] = new SqlParameter("PaymentDone", input.PaymentDone);
             parameters[9] = new SqlParameter("Amount", input.Amount);
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,

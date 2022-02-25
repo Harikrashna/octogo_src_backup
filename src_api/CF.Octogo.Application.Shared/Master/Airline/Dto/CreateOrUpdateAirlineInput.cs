@@ -39,5 +39,6 @@ namespace CF.Octogo.Master.Airline.Dto
         public bool isActive { get; set; }
         public string vcAirlineLogo { get; set; }
         public string vcAWBLogo { get; set; }
+
     }
 }

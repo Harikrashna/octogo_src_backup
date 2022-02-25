@@ -1,4 +1,4 @@
-<div #scrollMenu class="product-card"  *ngIf="PackageDetails != null" [ngClass]="Selected ?'selected':null">
+<div #scrollMenu class="product-card"  *ngIf="PackageDetails != null" [ngClass]="!ForDashboard && Selected ?'selected':null">
     <!-- [ngClass]="(product?.selected) ? (SelectedIndex == prodIndex) ? 'selected-product-card module-focus':'selected-product-card':'product-card'" -->
         <span class="product-name cursor" [ngClass]="PackageDetails.isSetupProcessComplete == true ? 'cursor':null">
             <a (click)="PackageDetails.isSetupProcessComplete == true && GoToProduct(PackageDetails.appURL)">
@@ -12,11 +12,11 @@
                 {{'ProductSetupNotCompletedYet' | localize}}
         </span>
         </u>
-    <div class="text-muted  d-flex"  (click)="!ForDashboard && DetailedInformation()"> 
+    <div class="text-muted  d-flex cursor"  (click)="!ForDashboard && DetailedInformation()"> 
         <span class="ed-name">{{PackageDetails.editionName}}</span>&nbsp;
         <span class="price-edition">{{PackageDetails.price}}</span>
         <button class="fa fa-cog text-success float-right" (click)="GoToSubscription()" id="setting"
-        *ngIf="ForDashboard"></button>
+        *ngIf="ForDashboard && ('Pages.Administration.Tenant.SubscriptionManagement' | permission)"></button>
     </div>
 
     <span class="d-flex text-10 mt-2">{{'SubscriptionDate' | localize}} &nbsp;
@@ -49,7 +49,7 @@
         <div class="adodetails">
             <div class="adolist" *ngFor="let ado of PackageDetails.addon | slice:0:3; let adnIndex = index">
                 <p class="text-muted  d-flex text-10">
-                    <span class="adname">{{ado.addonName}}
+                    <span class="adname">{{ado.addonName | limitToString: 8}}
                     </span>&nbsp;
                     <span class="price-addon">{{ado.addonPrice}}</span>
                     <span class="start-date-card text-muted"> ({{ado.startDate | date}} -</span>
@@ -57,7 +57,7 @@
                         localize}}</span>
                     <span class="end-date-card" *ngIf="ado.endDate != null"
                         [ngClass]="checkExpiryTime(ado.remainingDays) == true ? 'expiring': null">
-                        {{ado.endDate}}
+                        {{ado.endDate | date}}
                     </span>
                     <span class="brkt">)</span>
                 </p>

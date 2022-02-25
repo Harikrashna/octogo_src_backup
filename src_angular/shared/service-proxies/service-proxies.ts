@@ -1344,6 +1344,53 @@ export class AirlineServiceProxy {
         }
         return _observableOf<any>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    clearCache(): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Airline/ClearCache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processClearCache(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processClearCache(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processClearCache(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
 }
 
 @Injectable()
@@ -7918,10 +7965,15 @@ export class EditionServiceProxy {
     }
 
     /**
+     * @param productId (optional) 
      * @return Success
      */
-    getModuleList(): Observable<ModuleSubModuleDto> {
-        let url_ = this.baseUrl + "/api/services/app/Edition/GetModuleList";
+    getModuleList(productId: number | undefined): Observable<ModuleSubModuleDto> {
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetModuleList?";
+        if (productId === null)
+            throw new Error("The parameter 'productId' cannot be null.");
+        else if (productId !== undefined)
+            url_ += "productId=" + encodeURIComponent("" + productId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -8102,6 +8154,69 @@ export class EditionServiceProxy {
             }));
         }
         return _observableOf<ProductWithEditionDto[]>(<any>null);
+    }
+
+    /**
+     * @param editionId (optional) 
+     * @return Success
+     */
+    getAvailableAddonBySubscribedEditionId(editionId: number | undefined): Observable<AvailableAddonModulesDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetAvailableAddonBySubscribedEditionId?";
+        if (editionId === null)
+            throw new Error("The parameter 'editionId' cannot be null.");
+        else if (editionId !== undefined)
+            url_ += "EditionId=" + encodeURIComponent("" + editionId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAvailableAddonBySubscribedEditionId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAvailableAddonBySubscribedEditionId(<any>response_);
+                } catch (e) {
+                    return <Observable<AvailableAddonModulesDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AvailableAddonModulesDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAvailableAddonBySubscribedEditionId(response: HttpResponseBase): Observable<AvailableAddonModulesDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AvailableAddonModulesDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AvailableAddonModulesDto[]>(<any>null);
     }
 }
 
@@ -16483,6 +16598,108 @@ export class TenantDetailsServiceProxy {
         }
         return _observableOf<any>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    checkTeanantSetUpProcessAndErrorMessage(): Observable<string> {
+        let url_ = this.baseUrl + "/api/services/app/TenantDetails/CheckTeanantSetUpProcessAndErrorMessage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCheckTeanantSetUpProcessAndErrorMessage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCheckTeanantSetUpProcessAndErrorMessage(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCheckTeanantSetUpProcessAndErrorMessage(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    checkTeanantSetUpProcessAndSuccessMail(): Observable<string> {
+        let url_ = this.baseUrl + "/api/services/app/TenantDetails/CheckTeanantSetUpProcessAndSuccessMail";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCheckTeanantSetUpProcessAndSuccessMail(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCheckTeanantSetUpProcessAndSuccessMail(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCheckTeanantSetUpProcessAndSuccessMail(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
+    }
 }
 
 @Injectable()
@@ -22137,6 +22354,122 @@ export interface IAuthenticateResultModelNew {
     tenantId: number | undefined;
 }
 
+export class AvailableAddonModulesDto implements IAvailableAddonModulesDto {
+    addonId!: number;
+    addonName!: string | undefined;
+    editionId!: number;
+    moduleList!: AvailableModuleDto[] | undefined;
+    pricingData!: PricingDataDto[] | undefined;
+
+    constructor(data?: IAvailableAddonModulesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addonId = _data["addonId"];
+            this.addonName = _data["addonName"];
+            this.editionId = _data["editionId"];
+            if (Array.isArray(_data["moduleList"])) {
+                this.moduleList = [] as any;
+                for (let item of _data["moduleList"])
+                    this.moduleList!.push(AvailableModuleDto.fromJS(item));
+            }
+            if (Array.isArray(_data["pricingData"])) {
+                this.pricingData = [] as any;
+                for (let item of _data["pricingData"])
+                    this.pricingData!.push(PricingDataDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AvailableAddonModulesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AvailableAddonModulesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addonId"] = this.addonId;
+        data["addonName"] = this.addonName;
+        data["editionId"] = this.editionId;
+        if (Array.isArray(this.moduleList)) {
+            data["moduleList"] = [];
+            for (let item of this.moduleList)
+                data["moduleList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.pricingData)) {
+            data["pricingData"] = [];
+            for (let item of this.pricingData)
+                data["pricingData"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAvailableAddonModulesDto {
+    addonId: number;
+    addonName: string | undefined;
+    editionId: number;
+    moduleList: AvailableModuleDto[] | undefined;
+    pricingData: PricingDataDto[] | undefined;
+}
+
+export class AvailableModuleDto implements IAvailableModuleDto {
+    moduleName!: string | undefined;
+    subModule!: AvailableModuleDto[] | undefined;
+
+    constructor(data?: IAvailableModuleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModule"])) {
+                this.subModule = [] as any;
+                for (let item of _data["subModule"])
+                    this.subModule!.push(AvailableModuleDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AvailableModuleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AvailableModuleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModule)) {
+            data["subModule"] = [];
+            for (let item of this.subModule)
+                data["subModule"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IAvailableModuleDto {
+    moduleName: string | undefined;
+    subModule: AvailableModuleDto[] | undefined;
+}
+
 export class AwbCostApproachListDto implements IAwbCostApproachListDto {
     inApproachID!: number;
     vcApproachName!: string | undefined;
@@ -24987,6 +25320,7 @@ export class EditionAddonSubscriptionInputDto implements IEditionAddonSubscripti
     amount!: number | undefined;
     paymentModeCode!: string | undefined;
     paymentType!: number | undefined;
+    paymentDone!: boolean;
     addonSubscription!: AddonSubscriptionDto[] | undefined;
 
     constructor(data?: IEditionAddonSubscriptionInputDto) {
@@ -25006,6 +25340,7 @@ export class EditionAddonSubscriptionInputDto implements IEditionAddonSubscripti
             this.amount = _data["amount"];
             this.paymentModeCode = _data["paymentModeCode"];
             this.paymentType = _data["paymentType"];
+            this.paymentDone = _data["paymentDone"];
             if (Array.isArray(_data["addonSubscription"])) {
                 this.addonSubscription = [] as any;
                 for (let item of _data["addonSubscription"])
@@ -25029,6 +25364,7 @@ export class EditionAddonSubscriptionInputDto implements IEditionAddonSubscripti
         data["amount"] = this.amount;
         data["paymentModeCode"] = this.paymentModeCode;
         data["paymentType"] = this.paymentType;
+        data["paymentDone"] = this.paymentDone;
         if (Array.isArray(this.addonSubscription)) {
             data["addonSubscription"] = [];
             for (let item of this.addonSubscription)
@@ -25045,6 +25381,7 @@ export interface IEditionAddonSubscriptionInputDto {
     amount: number | undefined;
     paymentModeCode: string | undefined;
     paymentType: number | undefined;
+    paymentDone: boolean;
     addonSubscription: AddonSubscriptionDto[] | undefined;
 }
 
@@ -34313,6 +34650,9 @@ export enum PaymentPeriodType {
     Daily = 1,
     Weekly = 7,
     Monthly = 30,
+    Quartrly = 90,
+    HalfYearly = 180,
+    Yearly = 360,
     Annual = 365,
 }
 
@@ -34446,6 +34786,62 @@ export interface IPriceDiscount {
     pricingTypeId: number;
     amount: number;
     discountPercentage: number;
+}
+
+export class PricingDataDto implements IPricingDataDto {
+    addonPricingID!: number;
+    pricingTypeID!: number;
+    amount!: string | undefined;
+    discountPercentage!: string | undefined;
+    pricingTypeName!: string | undefined;
+    noOfDays!: string | undefined;
+
+    constructor(data?: IPricingDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addonPricingID = _data["addonPricingID"];
+            this.pricingTypeID = _data["pricingTypeID"];
+            this.amount = _data["amount"];
+            this.discountPercentage = _data["discountPercentage"];
+            this.pricingTypeName = _data["pricingTypeName"];
+            this.noOfDays = _data["noOfDays"];
+        }
+    }
+
+    static fromJS(data: any): PricingDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PricingDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addonPricingID"] = this.addonPricingID;
+        data["pricingTypeID"] = this.pricingTypeID;
+        data["amount"] = this.amount;
+        data["discountPercentage"] = this.discountPercentage;
+        data["pricingTypeName"] = this.pricingTypeName;
+        data["noOfDays"] = this.noOfDays;
+        return data; 
+    }
+}
+
+export interface IPricingDataDto {
+    addonPricingID: number;
+    pricingTypeID: number;
+    amount: string | undefined;
+    discountPercentage: string | undefined;
+    pricingTypeName: string | undefined;
+    noOfDays: string | undefined;
 }
 
 export class PricingDto implements IPricingDto {
@@ -36560,6 +36956,10 @@ export interface ISubscriptionPaymentDto {
 export enum SubscriptionPaymentGatewayType {
     Paypal = 1,
     Stripe = 2,
+    Card = 3,
+    Netbanking = 4,
+    Wallet = 5,
+    UPI = 6,
 }
 
 export class SubscriptionPaymentListDto implements ISubscriptionPaymentListDto {
@@ -40297,6 +40697,10 @@ export interface IWsFederationExternalLoginProviderSettings {
 export class AdditionalData implements IAdditionalData {
     paypal!: { [key: string]: string; };
     stripe!: { [key: string]: string; };
+    card!: { [key: string]: string; };
+    netbanking!: { [key: string]: string; };
+    wallet!: { [key: string]: string; };
+    uPI!: { [key: string]: string; };
 
     constructor(data?: IAdditionalData) {
         if (data) {
@@ -40321,6 +40725,34 @@ export class AdditionalData implements IAdditionalData {
                 for (let key in _data["Stripe"]) {
                     if (_data["Stripe"].hasOwnProperty(key))
                         (<any>this.stripe)![key] = _data["Stripe"][key];
+                }
+            }
+            if (_data["Card"]) {
+                this.card = {} as any;
+                for (let key in _data["Card"]) {
+                    if (_data["Card"].hasOwnProperty(key))
+                        (<any>this.card)![key] = _data["Card"][key];
+                }
+            }
+            if (_data["Netbanking"]) {
+                this.netbanking = {} as any;
+                for (let key in _data["Netbanking"]) {
+                    if (_data["Netbanking"].hasOwnProperty(key))
+                        (<any>this.netbanking)![key] = _data["Netbanking"][key];
+                }
+            }
+            if (_data["Wallet"]) {
+                this.wallet = {} as any;
+                for (let key in _data["Wallet"]) {
+                    if (_data["Wallet"].hasOwnProperty(key))
+                        (<any>this.wallet)![key] = _data["Wallet"][key];
+                }
+            }
+            if (_data["UPI"]) {
+                this.uPI = {} as any;
+                for (let key in _data["UPI"]) {
+                    if (_data["UPI"].hasOwnProperty(key))
+                        (<any>this.uPI)![key] = _data["UPI"][key];
                 }
             }
         }
@@ -40349,6 +40781,34 @@ export class AdditionalData implements IAdditionalData {
                     (<any>data["Stripe"])[key] = this.stripe[key];
             }
         }
+        if (this.card) {
+            data["Card"] = {};
+            for (let key in this.card) {
+                if (this.card.hasOwnProperty(key))
+                    (<any>data["Card"])[key] = this.card[key];
+            }
+        }
+        if (this.netbanking) {
+            data["Netbanking"] = {};
+            for (let key in this.netbanking) {
+                if (this.netbanking.hasOwnProperty(key))
+                    (<any>data["Netbanking"])[key] = this.netbanking[key];
+            }
+        }
+        if (this.wallet) {
+            data["Wallet"] = {};
+            for (let key in this.wallet) {
+                if (this.wallet.hasOwnProperty(key))
+                    (<any>data["Wallet"])[key] = this.wallet[key];
+            }
+        }
+        if (this.uPI) {
+            data["UPI"] = {};
+            for (let key in this.uPI) {
+                if (this.uPI.hasOwnProperty(key))
+                    (<any>data["UPI"])[key] = this.uPI[key];
+            }
+        }
         return data; 
     }
 }
@@ -40356,6 +40816,10 @@ export class AdditionalData implements IAdditionalData {
 export interface IAdditionalData {
     paypal: { [key: string]: string; };
     stripe: { [key: string]: string; };
+    card: { [key: string]: string; };
+    netbanking: { [key: string]: string; };
+    wallet: { [key: string]: string; };
+    uPI: { [key: string]: string; };
 }
 
 export class ApiException extends Error {

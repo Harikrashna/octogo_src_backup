@@ -22,17 +22,21 @@ namespace CF.Octogo.Tenants
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly RoleManager _roleManager;
         private readonly UserManager _userManager;
+        private readonly IUserEmailer _userEmailer;
         private readonly IRepository<UserRole, long> _userRolesRepository;
         public TenantDetailsAppService(
             IRepository<UserRole, long> userRolesRepository,
             IUnitOfWorkManager UnitOfWorkManager,
              RoleManager roleManager,
-            UserManager userManager)
+            UserManager userManager,
+                IUserEmailer userEmailer
+            )
         {
             _userRolesRepository = userRolesRepository;
             _unitOfWorkManager = UnitOfWorkManager;
             _roleManager = roleManager;
             _userManager = userManager;
+            _userEmailer = userEmailer;
         }
         public async Task<PageDetailsWithProduct> GetPageSnoByTenantAndProductId(TenantProductInputDto input)
         {
@@ -293,35 +297,122 @@ namespace CF.Octogo.Tenants
         /// <returns></returns>
         public async Task<DataSet> TenantAdminSetupProcessCompleteStatus(TenantSummaryInputDto input)
         {
-                SqlParameter[] parameters = new SqlParameter[14];
-                parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-                parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
-                parameters[2] = new SqlParameter("TenantName", input.TenantName);
-                parameters[3] = new SqlParameter("TenantId", input.TenantId);
-                parameters[4] = new SqlParameter("ProductId", input.ProductId);
-                parameters[5] = new SqlParameter("IsDBSetup", input.IsDBSetup);
-                parameters[6] = new SqlParameter("IsAppURLSetup", input.IsAppURLSetup);
-                parameters[7] = new SqlParameter("IsWSSetup", input.IsWSSetup);
-                parameters[8] = new SqlParameter("IsApiURLSetup", input.IsApiURLSetUp);
-                parameters[9] = new SqlParameter("IsAdminCreated", input.IsAdminCreated);
-                parameters[10] = new SqlParameter("IsAppHosted", input.IsAppHosted);
-                parameters[11] = new SqlParameter("IsCompleted", input.IsCompleted);
-                parameters[12] = new SqlParameter("IsFailed", input.IsFailed);
-                parameters[13] = new SqlParameter("IsProcess", input.IsProcess);
+
+            SqlParameter[] parameters = new SqlParameter[11];
+            parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
+            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[2] = new SqlParameter("TenantName", input.TenantName);
+            parameters[3] = new SqlParameter("TenantId", input.TenantId);
+            parameters[4] = new SqlParameter("ProductId", input.ProductId);
+            parameters[5] = new SqlParameter("IsDBSetup", input.IsDBSetup);
+            parameters[6] = new SqlParameter("IsAppURLSetup", input.IsAppURLSetup);
+            parameters[7] = new SqlParameter("IsWSSetup", input.IsWSSetup);
+            parameters[8] = new SqlParameter("IsApiURLSetup", input.IsApiURLSetUp);
+            parameters[9] = new SqlParameter("IsAdminCreated", input.IsAdminCreated);
+            parameters[10] = new SqlParameter("IsAppHosted", input.IsAppHosted);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+               Connection.GetSqlConnection("DefaultOctoGo"),
+               System.Data.CommandType.StoredProcedure,
+               "USP_GetTenantProcessLogs", parameters
+               );
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return ds;
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<string> CheckTeanantSetUpProcessAndErrorMessage()
+        {
+
+           
                 var ds = await SqlHelper.ExecuteDatasetAsync(
                    Connection.GetSqlConnection("DefaultOctoGo"),
                    System.Data.CommandType.StoredProcedure,
-                   "USP_GetTenantProcessLogs", parameters
+                   "USP_CheckTeanantErrorMessage"
                    );
                 if (ds.Tables[0].Rows.Count > 0)
                 {
-                    return ds;
+                    var tenantDetails = SqlHelper.ConvertDataTable<TenantErrorMessage>(ds.Tables[0]);
+                    foreach (var result in tenantDetails)
+                    {
+                        if (result.ErrorMessage != null)
+                        {
+                            TenantErrorMessage tenantErrorMessagelist = new TenantErrorMessage();
+                            tenantErrorMessagelist.TenantId = result.TenantId;
+                            tenantErrorMessagelist.TenantName = result.TenantName;
+                            tenantErrorMessagelist.LastName = result.LastName;
+                            tenantErrorMessagelist.Name = result.Name;
+                            tenantErrorMessagelist.AdminEmail = result.AdminEmail;
+                            tenantErrorMessagelist.UserEmail = result.UserEmail;
+                            tenantErrorMessagelist.ErrorMessage = result.ErrorMessage;
+                            tenantErrorMessagelist.ErrorLogProcess = result.ErrorLogProcess;
+                            tenantErrorMessagelist.StackTrace = result.StackTrace;
+                            await _userEmailer.SendAdminSetUpFailedEmailAsync(tenantErrorMessagelist);
+                            await UpdateErrorMailFlag(result.SetupId);
+                        }
+                    }
+                    return "suceess";
                 }
                 else
-                {
                     return null;
-                }
+            
         }
+        private async Task<string> UpdateErrorMailFlag(long setUpId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("SetupId", setUpId); ;
 
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                        Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_UpdateErrorEmailFlag", parameters);
+            return ds.Tables.Count > 0? "success": null;
+           
+        }
+        private async Task<string> UpdateTenantEmailSendFlag(long setUpId)
+        {
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("EmailSendFlag", "EmailSended"); ;
+            parameters[1] = new SqlParameter("SetupId", setUpId); ;
+          
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            CommandType.StoredProcedure,"USP_UpdateTenantSetupProcess", parameters);
+            return ds.Tables.Count > 0?"success":null;
+               
+        }
+        public async Task<string> CheckTeanantSetUpProcessAndSuccessMail()
+            {
+                
+                    var ds = await SqlHelper.ExecuteDatasetAsync(
+                       Connection.GetSqlConnection("DefaultOctoGo"),
+                       System.Data.CommandType.StoredProcedure,
+                       "USP_CheckTenantSetUpProcessAndEmailFlag"
+                       );
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        var tenantDetails = SqlHelper.ConvertDataTable<TenantSuccesMailDto>(ds.Tables[0]);
+                        foreach (var result in tenantDetails)
+                        {
+                            TenantSuccessMail tenantSuccessMessageList = new TenantSuccessMail();
+                            tenantSuccessMessageList.TenantId = result.TenantId;
+                            tenantSuccessMessageList.TenantName = result.TenantName;
+                            tenantSuccessMessageList.LastName = result.LastName;
+                            tenantSuccessMessageList.Name = result.Name;
+                            tenantSuccessMessageList.EmailAddress = result.EmailAddress;
+                            await _userEmailer.SendAdminSetUpCompleteEmailAsync(tenantSuccessMessageList);
+                            await UpdateTenantEmailSendFlag(result.SetupId);
+                        }
+                        return "success";
+                    }
+                    else
+                        return null;
+                
+            }
+        }
     }
-}

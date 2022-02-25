@@ -1,10 +1,10 @@
 <div [@routerTransition]>
     <div class="content d-flex flex-column flex-column-fluid">
-        <sub-header [title]="'Airline' | localize" [description]="'AirlineHeaderInfo' | localize">
+        <!-- <sub-header [title]="'Airline' | localize" [description]="'AirlineHeaderInfo' | localize">
             <div role="actions">
                 <button (click)="createAirline()" class="btn btn-primary"><i class="fa fa-plus"></i> {{"CreateNewAirline" | localize}}</button>
             </div>
-        </sub-header>
+        </sub-header> -->
         <div [class]="containerClass">
             <div class="card card-custom gutter-b">
                 <div class="card-body">
@@ -12,7 +12,9 @@
                         <div class="primeng-datatable-container">
                             <div class="form-group m-form__group align-items-center">
                                 <div class="input-group">
-                                    <input [(ngModel)]="filterText" name="filterText" autoFocus class="form-control m-input" [placeholder]="l('SearchWithThreeDot')" type="text">
+                                    <input [(ngModel)]="filterText" name="filterText" autoFocus
+                                        class="form-control m-input" [placeholder]="l('SearchWithThreeDot')"
+                                        type="text">
                                     <div class="input-group-append">
                                         <button (click)=getallAirlineList() class="btn btn-primary" type="submit"><i
                                                 class="flaticon-search-1" [attr.aria-label]="l('Search')"></i></button>
@@ -20,15 +22,15 @@
                                 </div>
                             </div>
                             <div class="primeng-datatable-container" [busyIf]="primengTableHelper.isLoading">
-                                <p-table #dt [value]="Airline" #dataTable sortMode="multiple" (onLazyLoad)="getallAirlineList($event)" [value]="primengTableHelper.records" [globalFilterFields]="['Airline']" rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false"
-                                    [lazy]="true" ScrollWidth="100%" [responsive]="primengTableHelper.isResponsive" [resizableColumns]="primengTableHelper.resizableColumns">
+                                <p-table #dt [value]="Airline" #dataTable sortMode="multiple"
+                                    (onLazyLoad)="getallAirlineList($event)" [value]="primengTableHelper.records"
+                                    [globalFilterFields]="['Airline']"
+                                    rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false"
+                                    [lazy]="true" ScrollWidth="100%" [responsive]="primengTableHelper.isResponsive"
+                                    [resizableColumns]="primengTableHelper.resizableColumns">
                                     <ng-template pTemplate="header">
                                         <tr>
-                                            <th scope="col">{{'Actions' | localize}}</th>
-                                            <!-- <th pSortableColumn="AWBPrifix">
-                                                {{'AWBPrifix' | localize}}
-                                                <p-sortIcon field="AWBPrifix"></p-sortIcon>
-                                            </th> -->
+                                            <th scope="col">{{'Actions' | localize}}</th>                                            
                                             <th pSortableColumn="CarrierCode">
                                                 {{'CarrierCode' | localize}}
                                                 <p-sortIcon field="CarrierCode"></p-sortIcon>
@@ -49,41 +51,47 @@
                                     </ng-template>
                                     <ng-template pTemplate="body" let-Airline="$implicit" let-i="rowIndex">
                                         <tr>
-                                            <td [hidden]="!((['Pages.Administration.Airline.Edit', 'Pages.Administration.Airline.Delete'] | permissionAny) )">
+                                            <td
+                                                [hidden]="!((['Pages.Administration.Airline.Edit', 'Pages.Administration.Airline.Delete'] | permissionAny) )">
                                                 <div class="btn-group" dropdown placement="bottom left">
-                                                    <button id="dropdownButton" type="button" class="btn btn-primary btn-sm dropdown-toggle" dropdownToggle aria-controls="dropdownMenu">
+                                                    <button id="dropdownButton" type="button"
+                                                        class="btn btn-primary btn-sm dropdown-toggle" dropdownToggle
+                                                        aria-controls="dropdownMenu">
                                                         <i class="fa fa-cog"></i><span class="caret"></span>
                                                         {{"Actions" | localize}}
                                                     </button>
-                                                    <ul id="dropdownMenu" class="dropdown-menu" role="menu" *dropdownMenu aria-labelledby="dropdownButton">
-                                                        <li *ngIf="'Pages.Administration.Airline.Edit' | permission" role="menuitem">
-                                                            <a class="dropdown-item" href="javascript:;" (click)="viewAirline.show(Airline.inAirlineID)">{{'View'|localize}}</a>
-                                                        </li>
-                                                        <!-- <li *ngIf="'Pages.Administration.Airline.Edit' | permission" role="menuitem">
-                                                            <a class="dropdown-item" href="javascript:;" (click)="createOrEditAirline.show(Airline.inAirlineID)">{{'Edit'|localize}}</a>
-                                                        </li>
-                                                        <li *ngIf="!Airline.isStatic && 'Pages.Administration.Airline.Delete' | permission" role="menuitem">
-                                                            <a class="dropdown-item" href="javascript:;" (click)="deleteAirline(Airline)">{{'Delete' |
-                                                                localize}}</a>
-                                                        </li> -->
+                                                    <ul id="dropdownMenu" class="dropdown-menu" role="menu"
+                                                        *dropdownMenu aria-labelledby="dropdownButton">
+                                                        <li *ngIf="'Pages.Administration.Airline.Edit' | permission"
+                                                            role="menuitem">
+                                                            <a class="dropdown-item" href="javascript:;"
+                                                                (click)="viewAirline.show(Airline.inAirlineID)">{{'View'|localize}}</a>
+                                                        </li>                                                        
                                                     </ul>
                                                 </div>
                                             </td>
-                                            <!-- <td>
-                                                <span class="p-column-title"> {{'AWBPrifix' | localize}}</span> {{Airline.vcAWBPrifix }}
-                                            </td> -->
                                             <td>
-                                                <span class="p-column-title"> {{'CarrierCode' | localize}}</span> {{Airline.vcCarrierCode }}
+                                                <span class="p-column-title"> {{'CarrierCode' | localize}}</span>
+                                                {{Airline.vcCarrierCode }}
                                             </td>
                                             <td>
-                                                <span class="p-column-title"> {{'AirlineName' | localize}}</span> {{Airline.vcAirlineName }}
+                                                <span class="p-column-title"> {{'AirlineName' | localize}}</span>
+                                                {{Airline.vcAirlineName }}
                                             </td>
                                             <td>
-                                                <span class="p-column-title"> {{'Interline' | localize}}</span> {{Airline.isInterline }}
+                                                <span class="p-column-title"> {{'Interline' | localize}}</span>
+                                                {{Airline.isInterline }}
                                             </td>
 
                                             <td>
-                                                <span class="p-column-title"> {{'Active' | localize}}</span> {{Airline.isAcitve }}
+                                                <span class="p-column-title"> {{'Active' | localize}}</span>
+
+                                                <span class="label label-success label-inline"
+                                                    *ngIf="Airline.isActive">{{'Yes'
+                                                    | localize}}</span>
+                                                <span class="label label-dark label-inline"
+                                                    *ngIf="!Airline.isActive">{{'No' |
+                                                    localize}}</span>
                                             </td>
                                         </tr>
                                     </ng-template>
@@ -92,7 +100,11 @@
                                     {{'NoData' | localize}}
                                 </div>
                                 <div class="primeng-paging-container">
-                                    <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage" #paginator (onPageChange)="getallAirlineList($event)" [totalRecords]="primengTableHelper.totalRecordsCount" [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage" [showCurrentPageReport]="true"
+                                    <p-paginator [rows]="primengTableHelper.defaultRecordsCountPerPage" #paginator
+                                        (onPageChange)="getallAirlineList($event)"
+                                        [totalRecords]="primengTableHelper.totalRecordsCount"
+                                        [rowsPerPageOptions]="primengTableHelper.predefinedRecordsCountPerPage"
+                                        [showCurrentPageReport]="true"
                                         [currentPageReportTemplate]="'TotalRecordsCount' | localize:primengTableHelper.totalRecordsCount">
                                     </p-paginator>
 
@@ -106,11 +118,5 @@
             </div>
         </div>
     </div>
-    <!-- <app-create-or-edit-airline (modalSave)="getallAirlineList()" [Airline]="Airline" #createOrEditAirline>
-    </app-create-or-edit-airline> -->
-    <!-- <app-view-airline (modalSave)="getallAirlineList()" [Airline]="Airline" #viewAirline>
-    </app-view-airline> -->
-    <app-view [Airline]="Airline" #viewAirline
-    (modalSave)="getallAirlineList()">
-</app-view>
-    
+    <app-view [Airline]="Airline" #viewAirline (modalSave)="getallAirlineList()">
+    </app-view>

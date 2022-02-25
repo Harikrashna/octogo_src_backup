@@ -20,7 +20,7 @@
                                 <label for="product">{{"Product" | localize}} *</label>
                                 <select class="form-control" [(ngModel)]="ProductId" required
                                     name="product" id="product"  #productNameSelect="ngModel"
-                                    (ngModelChange)="getEditions();getFreeEditions();resetEditionIds()" [disabled]="isEdit">
+                                    (ngModelChange)="getEditions();getFreeEditions();ProductChange()" [disabled]="isEdit">
                                     <option disabled>{{ "Select" | localize}}</option>
                                     <option *ngFor="let product of ProductList" [value]="product.id">
                                         {{product.productName}}</option>

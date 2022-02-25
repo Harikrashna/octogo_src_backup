@@ -13,6 +13,6 @@ namespace CF.Octogo.Master.Airline.Dto
         public string vcAirlineName { get; set; }
         public string isInterline { get; set; }
         public bool isActive { get; set; }
-
     }
 }
+

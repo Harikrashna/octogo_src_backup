@@ -1201,7 +1201,7 @@
 		<text name="AwbCostApproach">Awb Cost Approach</text>
 		<text name="AwbCostApproachDeleteWarningMessage">AWB {0} will be deleted.</text>
 		<text name="UpdateAwbCostApproachMessage">Updated Successfully</text>
-		<text name="ProductName">Product Name</text>
+		<text name="ProductName">Product name</text>
 		<text name="EditProduct">Edit Product</text>
 		<text name="CreateNewProduct">Create New Product</text>
 		<text name="ProductHeaderInfo">Manage Products </text>
@@ -1310,7 +1310,7 @@
 		<text name="UserRegisteredSuccessfullyMsg">Registration Completed</text>
 		<text name="Products">Products</text>
 		<text name="NoEditions">No Package to display</text>
-		<text name="OurProducts">Our Products</text>
+		<text name="OurProductsHeadding">Choose the product that’s right for you</text>
 		<text name="ProductsHeaderInfo">Products that we Provide</text>
 		<text name="ProductWithEdition">Product With Package</text>
 		<text name="FreeEditions">Free Packages</text>
@@ -1386,6 +1386,35 @@
 		<text name="Wallet">Wallet</text>
 		<text name="UPI">UPI</text>
 		<text name="Checkout">Subscribe</text>
+		<text name="ProcessFailed_SubTitle">There is something wrong!! failed to complete setup process</text>
+		<text name="ProcessFailed_Title">Failed to tenant setup process</text>
+		<text name="ErrorMessage">Error Message</text>
+		<text name="SetupCompleted_SubTitle">Congrats!! your setup process is completed</text>
+		<text name="SetupCompleted_Title">Welcome to Octogo.</text>
+		<text name="ErrorStage">Error Stage</text>
+		<text name="StackTrace">Stack Trace</text>
+		<text name="UserEmail">User Email</text>
+		<text name="TenantSetupComplete_Subject">Octogo teanant setup completed</text>
+		<text name="TenantSetupFailed_Subject">Octogo teanant setup failed</text>
+		<text name="AvailableAddons">Available Addons</text>
+		<text name="Congratulations">Congratulations!!!</text>
+		<text name="ClientRegistrationHeaddingMsg">Your product setup starts as soon as you register your company.</text>
+		<text name="TenantRegistrationCompleteWithSubscriptionMsg">You have successfully selected the {0} product. The application setup is in progress.It will be ready to use within 24 hours.</text>
+		<text name="AddOnInformation">AddOn information</text>
+		<text name="CarrierCode">Carrier Code</text>
+		<text name="ICAOCode">ICAO Code</text>
+		<text name="AirportCode">Airport Code</text>
+		<text name="ContactPerson">Contact Person</text>
+		<text name="MobileNo">Mobile No.</text>
+		<text name="FaxNo">Fax No</text>
+		<text name="PhoneNo">Phone No</text>
+		<text name="AirlineWebsite">Airline Website</text>
+		<text name="AWBDuplicacy">AWB Duplicacy</text>
+		<text name="HandlingInformation">Handling Information</text>
+		<text name="Interline">Interline</text>
+		<text name="CCShipmentAllowed">CCShipmentAllowed</text>
+		<text name="PartShipmentAllowed">Part Shipment Allowed</text>
+		<text name="CheckModulus7">CheckModulus 7</text>
 	</texts>
 </localizationDictionary>
 

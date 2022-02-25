@@ -31,11 +31,11 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     localStorage.setItem('dataSource', "this.dataSource.length");
   }
   // this method calls in create mode only
-  GetModuleList() {
+  GetModuleList(productId) {
     this.PageModuleList = [];
     this.PageSubModuleList = [];
     this.TempPageModuleList = new Array<PageModulesDto>();
-    this._editionService.getModuleList().subscribe(result => {
+    this._editionService.getModuleList(productId).subscribe(result => {
       if (result != null) {
         this.PageModuleList = result.moduleList;
         this.TempPageModuleList = this.PageModuleList;
@@ -45,10 +45,10 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     });
   }
   // this method calls in edit mode only
-  SetModuleDataForEdit(moduleData: ModuleDto[]) {
+  SetModuleDataForEdit(moduleData: ModuleDto[], productId) {
     this.PageModuleList = [];
     this.PageSubModuleList = [];
-    this._editionService.getModuleList().subscribe(result => {
+    this._editionService.getModuleList(productId).subscribe(result => {
       if (result != null) {
         this.PageModuleList = result.moduleList;
         this.PageSubModuleList = result.subModuleList;

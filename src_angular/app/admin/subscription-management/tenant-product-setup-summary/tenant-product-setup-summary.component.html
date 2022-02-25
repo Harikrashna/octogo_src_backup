@@ -12,7 +12,7 @@
                 </button>
             </div>
 <div class="container mb-5 mt-3">
-    <app-shared-tenant-setup-progress [TenantData]="TenantSetupData" *ngIf="TenantSetupData != null">
+    <app-shared-tenant-setup-progress [ForTenant]="true" [TenantData]="TenantSetupData" *ngIf="TenantSetupData != null">
     </app-shared-tenant-setup-progress>
     <div *ngIf="!(TenantSetupData != null) && recordFetchd" class="text-danger">
         {{'NoData' | localize}}

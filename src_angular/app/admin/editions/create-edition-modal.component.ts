@@ -154,7 +154,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                         //     })
                         // }
                         if (ForEdit == true) {
-                            this.editionModule.SetModuleDataForEdit(result.modulesData);
+                            this.editionModule.SetModuleDataForEdit(result.modulesData, this.ProductId);
                         }
                         else if (this.IsDependent && ForEdit == false && result.modulesData != null && result.modulesData.length > 0) {
                             this.editionModule.DependEditionData.unshift({
@@ -211,23 +211,15 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     show(editionId?: number): void {
         this.active = true;
         this.GetMasterDataForEdition();
-        // this._commonLookupService.getEditionsForCombobox(true).subscribe(editionsResult => {
-        //     this.expiringEditions = editionsResult.items;
-        //     this.expiringEditions.unshift(new ComboboxItemDto({ value: null, displayText: this.l('NotAssigned'), isSelected: true }));
-
-        // this._editionService.getEditionForEdit(editionId).subscribe(editionResult => {
-        //     this.featureTree.editData = editionResult;
-        // });
         this.modal.show();
-        if (!(editionId > 0)) {
-            let timer = setInterval(() => {
-                if (this.editionModule != null && this.editionModule != undefined) {
-                    this.editionModule.GetModuleList();
-                    clearInterval(timer)
-                }
-            }, 50)
-        }
-        // });
+        // if (!(editionId > 0)) {
+        //     let timer = setInterval(() => {
+        //         if (this.editionModule != null && this.editionModule != undefined) {
+        //             this.editionModule.GetModuleList();
+        //             clearInterval(timer)
+        //         }
+        //     }, 50)
+        // }
     }
 
     onShown(): void {
@@ -473,9 +465,15 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                 });
         }
     }
-    resetEditionIds() {
+    ProductChange() {
         this.DependantEditionID = null;
         this.edition.edition.expiringEditionId = null;
+            let timer = setInterval(() => {
+                if (this.editionModule != null && this.editionModule != undefined) {
+                    this.editionModule.GetModuleList(this.ProductId);
+                    clearInterval(timer)
+                }
+            }, 50)
     }
     calculateDiscounts(event) {
         // this.edition.edition.monthlyPrice = Number(event.target.value);

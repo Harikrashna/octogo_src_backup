@@ -1,12 +1,10 @@
 <div *ngIf="isEmailConfirmed && isRegisteredUser">
     <div [@routerTransition]>
         <div class="content d-flex flex-column flex-column-fluid">
-            <sub-header [title]="'OurProducts' | localize">
+            <sub-header [title]="'OurProductsHeadding' | localize">
             </sub-header>
-
-
             <div [class]="containerClass">
-                <app-package-selection></app-package-selection>
+                <app-package-selection  [OnlyAvailableProducts]="true" [IsTenantRegistration]="true"></app-package-selection>
             </div>
         </div>
     </div>

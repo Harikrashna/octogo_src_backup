@@ -1,0 +1,9 @@
+.headFont{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+}
+.img-airline{
+    max-width: 100%;
+    height: 25px;
+    width: 40px;
+}

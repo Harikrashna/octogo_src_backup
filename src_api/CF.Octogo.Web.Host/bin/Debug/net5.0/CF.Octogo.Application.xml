@@ -11,7 +11,7 @@
             <param name="editionId"></param>
             <returns></returns>
         </member>
-        <member name="M:CF.Octogo.Editions.EditionAppService.GetModuleList">
+        <member name="M:CF.Octogo.Editions.EditionAppService.GetModuleList(System.Int32)">
             <summary>
             to get Page module data
             </summary>

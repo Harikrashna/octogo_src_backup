@@ -17,6 +17,13 @@ namespace CF.Octogo.Master.Airline
 {
     public class AirlineAppService : OctogoAppServiceBase, IAirlineAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public AirlineAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         //[AbpAuthorize(AppPermissions.Pages_Administration_Airline)]
         public async Task<PagedResultDto<AirlineListDto>> GetAirline(PagedAndSortedInputDto input, string filter)
         {
@@ -43,7 +50,6 @@ namespace CF.Octogo.Master.Airline
                                    select new AirlineListDto()
                                    {
                                        inAirlineID = Convert.ToInt32(dr["AirlineId"]),
-
                                        vcCarrierCode = dr["CarrierCode"].ToString(),
                                        vcAirlineName = dr["AirlineName"].ToString(),
                                        isInterline = dr["IsInterline"].ToString(),
@@ -138,10 +144,10 @@ namespace CF.Octogo.Master.Airline
 
 
 
-            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("Default"),
+            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteAirline", parameters);
-
+            await ClearCache();
         }
 
 
@@ -198,10 +204,13 @@ namespace CF.Octogo.Master.Airline
                 return null;
             }
         }
-
+        public async Task ClearCache()
+        {
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
+        }
 
     }
-
 }
 
 

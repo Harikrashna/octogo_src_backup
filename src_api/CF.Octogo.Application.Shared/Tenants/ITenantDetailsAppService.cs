@@ -13,5 +13,7 @@ namespace CF.Octogo.Tenants
         Task<List<TenantPageSnoListDto>> EditionModuleAndPagesByUserId(UserProductInputDto input);
         Task<List<TenantAdminCreationStatusDto>> CreateAdminUserOnTenantDB(int? tenantId = null);
         Task UpdateTenantSyetemSettingForEditionUpdate(int editionId, int? tenantId, int? addonId = null);
+        Task<string> CheckTeanantSetUpProcessAndSuccessMail();
+        Task<string> CheckTeanantSetUpProcessAndErrorMessage();
     }
 }

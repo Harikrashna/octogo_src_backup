@@ -23,7 +23,7 @@ namespace CF.Octogo.Editions
         Task MoveTenantsToAnotherEdition(MoveTenantsToAnotherEditionDto input);
 
         Task<List<SubscribableEditionComboboxItemDto>> GetEditionComboboxItems(int? selectedEditionId = null, bool addAllItem = false, bool onlyFree = false);
-
+        Task<ModuleSubModuleDto> GetModuleList(int productId);
         Task<int> GetTenantCount(int editionId);
         Task<PagedResultDto<EditionListDtoNew>> GetEditionsList(GetEditionInput input);
         Task<EditionDetailsForEditDto> GetEditionDetailsForEdit(int EditionId);
@@ -31,5 +31,6 @@ namespace CF.Octogo.Editions
         Task<List<ProductWithEditionDto>> GetProductWithEdition(ProductWithEditionInputDto input);
         Task<DataSet> GetMasterDataForEdition();
         Task<EditionModulesDto> GetEditionModules(int EditionId);
+        Task<List<AvailableAddonModulesDto>> GetAvailableAddonBySubscribedEditionId(int EditionId);
     }
 }

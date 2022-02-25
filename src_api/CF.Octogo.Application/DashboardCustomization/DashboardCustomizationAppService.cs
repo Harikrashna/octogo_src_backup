@@ -380,8 +380,6 @@ namespace CF.Octogo.DashboardCustomization
         }
         public async Task<List<TenantEditionAddonModulesDto>> GetTenantEditionAddonModuleDetails(int EditionId)
         {
-            try
-            {
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
                 parameters[1] = new SqlParameter("EditionId", EditionId);
@@ -414,12 +412,6 @@ namespace CF.Octogo.DashboardCustomization
                 {
                     return null;
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return null;
-            }
         }
     }
 }

@@ -1,6 +1,6 @@
 <div class="tenant-card">
     <span class="d-flex">
-        <h4 class="text-primary">{{TenantData.tenantName}}</h4>&nbsp;-&nbsp;
+        <h4 class="text-primary" *ngIf="!ForTenant">{{TenantData.tenantName}}&nbsp;-&nbsp;</h4>
         <h5 class="text-muted">{{TenantData.productName}}</h5>
     </span>
     <hr style="margin-top: 0px !important;" />

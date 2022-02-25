@@ -79,9 +79,9 @@ export class AppNavigationService {
     }
 
     showMenuItem(menuItem: AppMenuItem): boolean {
-        if (menuItem.permissionName === 'Pages.Administration.Tenant.SubscriptionManagement' && this._appSessionService.tenant && !this._appSessionService.tenant.edition) {
-            return false;
-        }
+        // if (menuItem.permissionName === 'Pages.Administration.Tenant.SubscriptionManagement' && this._appSessionService.tenant && !this._appSessionService.tenant.edition) {
+        //     return false;
+        // }
 
         let hideMenuItem = false;
 

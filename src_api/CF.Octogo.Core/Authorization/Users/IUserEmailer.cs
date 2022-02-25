@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using CF.Octogo.Chat;
+using CF.Octogo.Tenants.Dto;
 
 namespace CF.Octogo.Authorization.Users
 {
@@ -32,5 +33,8 @@ namespace CF.Octogo.Authorization.Users
         Task TryToSendChatMessageMail(User user, string senderUsername, string senderTenancyName, ChatMessage chatMessage);
         Task SendUserSignUpEmailActivationLinkAsync(User user, string UserType, int userTypeId, string plainPassword = null);
         Task SendWelcomeMailToRegisteredUser(string emailAddress);
+
+        Task SendAdminSetUpCompleteEmailAsync(TenantSuccessMail tenantSuccessMessageList);
+        Task SendAdminSetUpFailedEmailAsync(TenantErrorMessage tenantErrorMessagelist);
     }
 }

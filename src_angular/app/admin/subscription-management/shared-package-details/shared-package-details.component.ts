@@ -37,7 +37,7 @@ export class SharedPackageDetailsComponent implements OnInit {
     return false;
   }
   GoToSubscription() {
-    this._router.navigate(['app/admin/subscription-management']);
+    this._router.navigate(['app/admin/subscription-management'], { queryParams: { editionId: this.PackageDetails.editionId }, queryParamsHandling: 'merge' });
   }
   GoToProduct(url){
     window.open(url, "_blank");

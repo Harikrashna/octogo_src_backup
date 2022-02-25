@@ -38,7 +38,7 @@
   padding: 2px 2px 0px 2px;
   border-radius: 10px;
   background-color: aliceblue;
-  font-size: 8px;
+  font-size: 9px;
   color: #148d29;
   min-width: 35px;
   text-align: center;
@@ -49,7 +49,7 @@
   padding: 2px;
   border-radius: 10px;
   background-color: aliceblue;
-  font-size: 8px;
+  font-size: 9px;
   height: 17px;
   color: rgb(92 161 132) !important;
   min-width: 35px;
@@ -138,7 +138,7 @@ background: rgba(129, 127, 127, 0.4);
   padding: 10px;
   box-shadow: 2px 4px 7px 1px rgb(162 162 162 / 25%);
   background: #fff;
-    /* min-width: 350px; */
+  min-height: 170px;
 }
 .selected{
   background: rgba(183, 240, 175, 0.418);
@@ -202,7 +202,7 @@ background: rgba(129, 127, 127, 0.4);
   margin-left: auto;
   cursor: pointer;
   border: #fff;
-  background-color: #fff;
+  background-color: transparent;
 }
 .fa-wrench{
   float: right;

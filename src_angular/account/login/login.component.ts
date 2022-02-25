@@ -53,7 +53,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
         if(this.appSession.tenant != null && this.appSession.tenant.tenancyName != null 
             && this.appSession.tenant.edition.isHighestEdition==false ){
             
-        this.checkTenantPaymentStatus()
+        // this.checkTenantPaymentStatus()
         }
         this.loginService.init();
         if (this._sessionService.userId > 0 && UrlHelper.getReturnUrl() && UrlHelper.getSingleSignIn()) {

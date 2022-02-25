@@ -88,6 +88,12 @@ namespace CF.Octogo.MultiTenancy.Payments
                     return Payments.PaymentPeriodType.Monthly;
                 case 365:
                     return Payments.PaymentPeriodType.Annual;
+                case 90:
+                    return Payments.PaymentPeriodType.Quartrly;
+                case 180:
+                    return Payments.PaymentPeriodType.HalfYearly;
+                case 360:
+                    return Payments.PaymentPeriodType.Yearly;
                 default:
                     throw new NotImplementedException($"PaymentPeriodType for {DayCount} day could not found");
             }

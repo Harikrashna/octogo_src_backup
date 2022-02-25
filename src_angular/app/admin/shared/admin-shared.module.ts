@@ -31,6 +31,7 @@ import {FileUploadModule as PrimeNgFileUploadModule} from 'primeng/fileupload';
 import { SubheaderModule } from '@app/shared/common/sub-header/subheader.module';
 import { AddEditionModulesComponent } from './add-edition-modules/add-edition-modules.component';
 import { SharedTenantSetupProgressComponent } from './shared-tenant-setup-progress/shared-tenant-setup-progress.component';
+import { LimitStringPipe } from './sharedpipe.pipe';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { SharedTenantSetupProgressComponent } from './shared-tenant-setup-progre
         FeatureTreeComponent,
         EditionComboComponent,
         AddEditionModulesComponent,
-        SharedTenantSetupProgressComponent
+        SharedTenantSetupProgressComponent,
+        LimitStringPipe
     ],
     imports: [
         AppSharedModule,
@@ -106,7 +108,8 @@ import { SharedTenantSetupProgressComponent } from './shared-tenant-setup-progre
         PrimeNgFileUploadModule,
         SubheaderModule,
         AddEditionModulesComponent,
-        SharedTenantSetupProgressComponent
+        SharedTenantSetupProgressComponent,
+        LimitStringPipe
     ]
 })
 export class AdminSharedModule {

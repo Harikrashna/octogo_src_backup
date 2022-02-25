@@ -1,6 +1,7 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { DashboardCustomizationServiceProxy, TenantEditionAddonDto } from '@shared/service-proxies/service-proxies';
+import { PackageDetailedInformationComponent } from '../package-detailed-information/package-detailed-information.component';
 
 @Component({
   selector: 'app-subscribed-products-details',
@@ -8,7 +9,9 @@ import { DashboardCustomizationServiceProxy, TenantEditionAddonDto } from '@shar
   styleUrls: ['./subscribed-products-details.component.css']
 })
 export class SubscribedProductsDetailsComponent extends AppComponentBase implements OnInit {
+  @ViewChild('packageDetailedInformation') packageDetailedInformation: PackageDetailedInformationComponent
   @Input() ForDashboard = false;
+  @Input() selectedEditionId = 0;
 
   productDetailsList: TenantEditionAddonDto[]=[];
   showDetailedInformation: boolean = false;
@@ -19,37 +22,52 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
   CanScrollRight: boolean = false;
   SelectedPackage:TenantEditionAddonDto = null;
   loading:boolean;
-  selectedIndex = -1;
+  SeletedProductIndex = 0
+  dataFetched: boolean = false;
   constructor( injector: Injector,  private _dashboardService: DashboardCustomizationServiceProxy,) { 
     super(injector);
   }
   ngOnInit() {
   this.productDetailsList = new Array<TenantEditionAddonDto>();
   this.loading = true;
+  this.dataFetched = false;
     this._dashboardService.getTenantEditionAddonDetailsByTenantId(this.appSession.tenantId)
     .subscribe(result => {
       this.loading = false;
+      this.dataFetched = true;
       if(result != null && result.length > 0){
          this.productDetailsList = result;
+        //  this.productDetailsList.push(result[0]);
         //  this.CheckScrollable();
         if(!this.ForDashboard){
-        this.ShowPackageDetails(0);
+          if(this.selectedEditionId > 0) {
+            this.SeletedProductIndex = this.productDetailsList.findIndex(x => x.editionId == this.selectedEditionId)
+          }
+        this.ShowPackageDetails(this.SeletedProductIndex);
         }
       }
-    });      
-   }
-   ShowPackageDetails(prodIndex){
-     this.selectedIndex = prodIndex;
-     // call detail edition data API here
-     this.showDetailedInformation = true;
-     this.SelectedPackage = this.productDetailsList[prodIndex];
-   }
-   upgradeClicked(){
+    });
+  }
+  ShowPackageDetails(prodIndex) {
+    this.SeletedProductIndex = prodIndex;
+    this.showDetailedInformation = true;
+    this.SelectedPackage = this.productDetailsList[prodIndex];
+    let timer = setInterval(() => {
+      if (this.packageDetailedInformation != null && this.packageDetailedInformation != undefined) {
+        this.packageDetailedInformation.additionalDetailsList = null;
+        this.packageDetailedInformation.availableAddonList = null;
+        if(this.SelectedPackage != null && this.SelectedPackage != undefined){
+        this.packageDetailedInformation.Show(this.SelectedPackage.editionId, this.SelectedPackage);
+        }
+        clearInterval(timer)
+      }
+    }, 50)
+  }
+  upgradeClicked() {
     this.showEditionInformation = false;
-    this.selectedIndex = -1;
+    this.SeletedProductIndex = -1;
    }
-   BackToSubscribedProducts(){
-     debugger
+   ShowSubscribedProducts(){
     this.showEditionInformation = true;
     this.ShowPackageDetails(0);
    }

@@ -395,7 +395,7 @@ namespace CF.Octogo.MultiTenancy
             using (_unitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant))
             {
                 var user = _userRepository.GetAll().Where(x => x.IsDeleted == false && x.EmailAddress.ToLower().Trim().Equals(emailId.ToLower().Trim())).FirstOrDefault();
-                if (user != null && user.Id > 0 && user.Id != AbpSession.UserId)
+                if (user != null && user.Id > 0) //  && user.Id != AbpSession.UserId
                 {
                     var error = LocalizationManager.GetSource(OctogoConsts.LocalizationSourceName).GetString("AdminEmailAddressDuplicate");
                     throw new UserFriendlyException(error);

@@ -52,19 +52,23 @@
     </div>
     <div class="col-sm-2 cart-div" *ngIf="isPaymentRequired">
         <!-- <hr style="width: 100%;" /> -->
-        <div *ngIf="SelectedEditionData?.pricingtype?.length > 0">
+        <div *ngIf="SelectedEditionData?.pricingtype?.length > 0" class="row">
+            <div class="col-sm">
             <span class="text-success">{{SelectedEditionData.editionName}}</span>
             <span class="text-primary float-right">$&nbsp;{{selectedEditionPricing["Price"] | number : '1.2-2'}}</span>
         </div>
-        <div *ngIf="selectedAddonPricing?.length > 0">
-            <div *ngFor="let addon of selectedAddonPricing">
+        </div>
+        <div *ngIf="selectedAddonPricing?.length > 0" class="row">
+            <div *ngFor="let addon of selectedAddonPricing" class="col-sm">
                 <span class="text-success">{{addon["AddonName"]}}</span>
                 <span class="text-primary float-right">$&nbsp;{{addon["Price"] | number : '1.2-2'}}</span>
             </div>
         </div>
-        <div>
+        <div class="row">
+            <div class="col-sm">
             <span class="text-success text-16 bold">{{' Total' |localize }}</span>
             <span class="float-right text-primary text-16 bold">$&nbsp;{{CalculateTotal() | number : '1.2-2'}}</span>
+        </div>
         </div>
         <hr style="width: 100%;" />
         <div class="payment-card" (click)="!submitted && CreatePayment('CARD')">

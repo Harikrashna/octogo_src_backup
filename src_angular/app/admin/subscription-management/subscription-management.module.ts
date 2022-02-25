@@ -7,15 +7,20 @@ import {SubscriptionManagementRoutingModule} from './subscription-management-rou
 import {SubscriptionManagementComponent} from './subscription-management.component';
 import { TenantProductSetupSummaryComponent } from './tenant-product-setup-summary/tenant-product-setup-summary.component';
 import { PackageDetailedInformationComponent } from './package-detailed-information/package-detailed-information.component';
-import { PackageSelectionModule } from './package-selection/package-selection/package-selection.module';
+import { PackageSelectionModule } from './package-selection/package-selection.module';
 import { SubscriptionPaymentHistoryComponent } from './subscription-payment-history/subscription-payment-history.component';
+
+
 
 
 @NgModule({
     declarations: [SubscriptionManagementComponent,SharedPackageDetailsComponent,
          TenantProductSetupSummaryComponent,SubscribedProductsDetailsComponent, 
          PackageDetailedInformationComponent, SubscriptionPaymentHistoryComponent],
-    imports: [AppSharedModule, AdminSharedModule, SubscriptionManagementRoutingModule,
+    imports: [
+        AppSharedModule,
+        AdminSharedModule,
+        SubscriptionManagementRoutingModule,
         PackageSelectionModule],
     exports: [SharedPackageDetailsComponent, SubscribedProductsDetailsComponent]
 })

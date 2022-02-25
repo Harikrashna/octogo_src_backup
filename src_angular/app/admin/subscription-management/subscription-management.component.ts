@@ -42,6 +42,7 @@ export class SubscriptionManagementComponent extends AppComponentBase implements
     editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
 
     filterText = '';
+    selectedEditionId = 0;
 
     constructor(
         injector: Injector,
@@ -54,6 +55,7 @@ export class SubscriptionManagementComponent extends AppComponentBase implements
     ) {
         super(injector);
         this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
+        this.selectedEditionId = this._activatedRoute.snapshot.queryParams['editionId'] || '';
     }
 
     ngOnInit(): void {

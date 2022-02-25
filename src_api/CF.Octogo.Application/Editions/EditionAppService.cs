@@ -314,7 +314,8 @@ namespace CF.Octogo.Editions
             //}
             //else
             //{
-                // var x = JsonConvert.SerializeObject(input.ModuleList);
+          
+                //var x = JsonConvert.SerializeObject(input.ModuleList);
                 SqlParameter[] parameters = new SqlParameter[12];
                 parameters[0] = new SqlParameter("ProductId", input.ProductId);
                 parameters[1] = new SqlParameter("ModuleData", JsonConvert.SerializeObject(input.ModuleList));
@@ -343,6 +344,7 @@ namespace CF.Octogo.Editions
                 {
                     return 0;
                 }
+            
         }
         public async Task<EditionDetailsForEditDto> GetEditionDetailsForEdit(int EditionId)
         {
@@ -518,12 +520,14 @@ namespace CF.Octogo.Editions
         /// to get Page module data
         /// </summary>
         /// <returns></returns>
-        public async Task<ModuleSubModuleDto> GetModuleList()
+        public async Task<ModuleSubModuleDto> GetModuleList(int productId)
         {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("ProductId", productId);
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_GetPageModulesList"
+                    "USP_GetPageModulesList", parameters
                     );
             if (ds.Tables.Count > 0)
             {
@@ -665,6 +669,36 @@ namespace CF.Octogo.Editions
             {
                 return null;
             }
+        }
+        public async Task<List<AvailableAddonModulesDto>> GetAvailableAddonBySubscribedEditionId(int EditionId)
+        {
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
+
+                parameters[1] = new SqlParameter("EditionId", EditionId);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_AvailableAddonBySubscribedEditionId", parameters);
+                if (ds.Tables.Count > 0)
+                {
+                    var res = SqlHelper.ConvertDataTable<AvailableAddonModulesRet>(ds.Tables[0]);
+                    var result = res.Select(rw => new AvailableAddonModulesDto
+                    {
+                        AddonId = rw.AddonId,
+                        AddonName = rw.AddonName,
+                        EditionId = rw.EditionId,
+                        ModuleList = rw.ModuleList != null ? JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString()) : null,
+                        PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<PricingDataDto>>(rw.PricingData.ToString()) : null,
+
+                    }).ToList();
+                    return result;
+
+                }
+                else
+                {
+                    return null;
+                }
         }
     }
     

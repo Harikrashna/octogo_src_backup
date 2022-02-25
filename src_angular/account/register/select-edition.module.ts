@@ -7,6 +7,7 @@ import {PanelModule} from 'primeng/panel';
 import {OverlayPanelModule} from 'primeng/overlaypanel';
 import {DividerModule} from 'primeng/divider';
 import { TooltipModule } from 'primeng/tooltip';
+import { PackageSelectionModule } from '@app/admin/subscription-management/package-selection/package-selection.module';
 
 @NgModule({
     declarations: [SelectEditionComponent],
@@ -14,7 +15,8 @@ import { TooltipModule } from 'primeng/tooltip';
         PanelModule,
         OverlayPanelModule,
         DividerModule,
-        TooltipModule],
+        TooltipModule,
+        PackageSelectionModule],
         exports: [SelectEditionComponent]
 })
 export class SelectEditionModule {

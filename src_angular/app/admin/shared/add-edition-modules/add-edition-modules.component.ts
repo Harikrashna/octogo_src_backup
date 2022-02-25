@@ -38,10 +38,10 @@ export class AddEditionModulesComponent extends AppComponentBase implements OnIn
     this.GetModuleList();
   }
   // get Page Module list
-  GetModuleList() {
+  GetModuleList(productId?) {
     this.PageModuleList = [];
     this.PageSubModuleList = [];
-    this._editionService.getModuleList().subscribe(result => {
+    this._editionService.getModuleList(productId).subscribe(result => {
       if (result != null) {
         this.PageModuleList = result.moduleList;
         this.PageSubModuleList = result.subModuleList;

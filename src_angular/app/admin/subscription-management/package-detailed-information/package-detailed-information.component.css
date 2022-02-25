@@ -234,7 +234,7 @@ border-radius: 5px;
     padding: 2px 2px 0px 2px;
     border-radius: 10px;
     background-color: aliceblue;
-    font-size: 8px;
+    font-size: 10px;
     color: #148d29;
     min-width: 35px;
     text-align: center;
@@ -246,10 +246,116 @@ border-radius: 5px;
     background: orange;
   }
   .btn-sm{
-    font-size: 10px;
-    border-radius: 2px;
-    padding: 2px;
+    font-size: 12px;
+    border-radius: 4px;
+    padding: 3px;
   }
   p{
     font-size: 11px;
   }
+
+  element.style {
+  }
+  ol ol, ul ul, ol ul, ul ol {
+      padding-left: 20px !important;
+  }
+.text-14{
+    font-size: 14px;
+}
+
+  .availableAddons{
+    display: flex;
+  }
+  .availablecard {
+    border-radius: 5px;
+    border: 1px solid rgba(94, 61, 61, 0.233);
+    margin: 10px;
+    padding: 15px;
+    box-shadow: 1px 7px 10px 1px rgba(226, 175, 175, 0.253);
+    background: rgba(160, 201, 85, 0.027);
+    min-width: 180px;
+    min-height:100px;
+}
+.availablecard:hover {
+    box-shadow: 1px 7px 10px 1px rgba(226, 175, 175, 0.253);
+    background: rgba(183, 240, 175, 0.336);
+}
+.bold{
+    margin-left: -11px;
+    color: #3699ff;
+    margin-top: -11px;
+    width: auto;
+    font-size: 16px;
+    display: flex;
+  }
+  .price-addon{
+    border: 1px solid;
+    padding: 4px;
+    border-radius: 7px;
+    background-color: aliceblue;
+    font-size: 9px;
+    height: 21px;
+    margin-left: 6px;
+    color: rgb(92 161 132) !important;
+  }
+  .admodule{
+    margin-left: -55px;
+    margin-top: 15px;
+
+}
+.Sublist{
+    margin-top: 0px;
+    padding: 0px;
+    margin-bottom: -12px;
+  }
+.Subdetails{
+  
+    margin-left: -27px;
+    margin-top: -14px;
+
+    margin-bottom: -5px;
+    font-size: 10px;
+  }
+.subscribe-card{
+    display: flex;
+    border-radius: 2px;
+    width: 100%;
+    margin-bottom: 5px;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: darkcyan;
+  }
+
+.selectedCard2 {
+    border-radius: 5px;
+    border: 1px solid rgba(94, 61, 61, 0.055);
+    margin: 10px;
+    padding: 15px;
+    box-shadow: 1px 7px 10px 1px rgba(226, 175, 175, 0.253);
+    background: rgba(183, 240, 175, 0.336);
+    height: 180px;
+    min-width: 180px !important;
+    min-height:100px;
+}
+.btn-2{
+    margin-left: 140px;
+    margin-top: 60px;
+
+}
+ul li{
+    color: rgb(21, 160, 160) !important;
+    font-size: 10px;
+    width: 225px;
+}
+.buy{
+    color: #FFFFFF;
+    background-color: #3699FF;
+    border-color: #3699FF;
+    border-radius: 4px;
+    padding: 1px;
+    font-size: smaller;
+    height: fit-content;
+    margin-left: auto;
+    cursor: pointer;
+}

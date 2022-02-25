@@ -104,3 +104,18 @@ right:30px;}
 .border-right{
   border-right: 1px solid;
 }
+.btn-sm{
+  font-size: 12px;
+  border-radius: 4px;
+  padding: 3px;
+}
+:host::ng-deep .p-steps-title{
+  color: #15bd4d !important;
+}
+:host::ng-deep .p-steps .p-steps-item:before {
+  border-top: 1px solid rgb(78, 53, 221) !important;
+}
+
+
+  
+  

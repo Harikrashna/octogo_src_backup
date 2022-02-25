@@ -18,66 +18,59 @@ import { CreateOrEditAirlineComponent } from './create-or-edit-airline/create-or
   animations: [appModuleAnimation()]
 })
 export class AirlineComponent extends AppComponentBase implements AfterViewInit {
-    @ViewChild('createOrEditAirline', { static: true }) createOrEditAirline: CreateOrEditAirlineComponent;
-   // @ViewChild('viewAirline', { static: true }) viewAirline: ViewAirlineComponent;
-     @ViewChild('createOrEditAirline', { static: true }) modal: ModalDirective;
-     //@ViewChild('viewAirline', { static: true }) modal1: ModalDirective;
-     @ViewChild('dataTable', { static: true }) dataTable: Table;
-     @ViewChild('paginator', { static: true }) paginator: Paginator;
-     Airline: any;
-     filterText = '';
-     constructor(injector: Injector, private _Airline: AirlineServiceProxy, private _activatedRoute: ActivatedRoute) {
-       super(injector);
-       this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
-     }
+  @ViewChild('createOrEditAirline', { static: true }) createOrEditAirline: CreateOrEditAirlineComponent;
+  @ViewChild('createOrEditAirline', { static: true }) modal: ModalDirective;
+  @ViewChild('dataTable', { static: true }) dataTable: Table;
+  @ViewChild('paginator', { static: true }) paginator: Paginator;
+  Airline: any;
+  filterText = '';
+  constructor(injector: Injector, private _Airline: AirlineServiceProxy, private _activatedRoute: ActivatedRoute) {
+    super(injector);
+    this.filterText = this._activatedRoute.snapshot.queryParams['filterText'] || '';
+  }
 
-     getallAirlineList(event?: LazyLoadEvent) {
-       if (this.primengTableHelper.shouldResetPaging(event)) {
-         this.paginator.changePage(0);
-         return;
-       }
-       this.primengTableHelper.showLoadingIndicator();
-       this._Airline.getAirline(
+  getallAirlineList(event?: LazyLoadEvent) {
+    if (this.primengTableHelper.shouldResetPaging(event)) {
+      this.paginator.changePage(0);
+      return;
+    }
+    this.primengTableHelper.showLoadingIndicator();
+    this._Airline.getAirline(
 
-         this.primengTableHelper.getMaxResultCount(this.paginator, event),
-         this.primengTableHelper.getSkipCount(this.paginator, event),
-         this.primengTableHelper.getSorting(this.dataTable),
-         this.filterText,
-       ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
-     //    this.primengTableHelper.totalRecordsCount = result.totalCount;
-       //  this.primengTableHelper.totalRecordsCount = result.items.length;
-        // this.primengTableHelper.records = result.items;
-        // this.Airline = result.items;
-         //this.primengTableHelper.hideLoadingIndicator();
-         this.primengTableHelper.records=result.items
-         this.primengTableHelper.totalRecordsCount = result.totalCount;
-         this.Airline=result.items;
-         this.primengTableHelper.hideLoadingIndicator();
-       });
-     }
+      this.primengTableHelper.getMaxResultCount(this.paginator, event),
+      this.primengTableHelper.getSkipCount(this.paginator, event),
+      this.primengTableHelper.getSorting(this.dataTable),
+      this.filterText,
+    ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
+      this.primengTableHelper.records = result.items
+      this.primengTableHelper.totalRecordsCount = result.totalCount;
+      this.Airline = result.items;
+      this.primengTableHelper.hideLoadingIndicator();
+    });
+  }
 
-     ngAfterViewInit() {
-       this.getallAirlineList();
-     }
+  ngAfterViewInit() {
+    this.getallAirlineList();
+  }
 
-     createAirline(): void {
-       this.createOrEditAirline.show();
-     }
+  createAirline(): void {
+    this.createOrEditAirline.show();
+  }
 
-     deleteAirline(Airline) {
-       this.message.confirm
-         (
-           this.l('AirlineDeleteWarningMessage', Airline.vcAirlineName),
-           this.l('AreYouSure'),
-           (isConfirmed) => {
-             if (isConfirmed) {
-               this._Airline.deleteAirline(Airline.inAirlineID).subscribe(() => {
-                 this.notify.info(this.l('SuccessfullyDeleted'));
-                 this.getallAirlineList();
-               });
-             }
-           }
-         )
-     }
-   }
+  deleteAirline(Airline) {
+    this.message.confirm
+      (
+        this.l('AirlineDeleteWarningMessage', Airline.vcAirlineName),
+        this.l('AreYouSure'),
+        (isConfirmed) => {
+          if (isConfirmed) {
+            this._Airline.deleteAirline(Airline.inAirlineID).subscribe(() => {
+              this.notify.info(this.l('SuccessfullyDeleted'));
+              this.getallAirlineList();
+            });
+          }
+        }
+      )
+  }
+}
 

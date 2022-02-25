@@ -11,7 +11,8 @@ namespace CF.Octogo.MultiTenancy.Dto
         public int? PricingTypeId { get; set; }
         public decimal? Amount { get; set; }
         public string PaymentModeCode { get; set; }
-        public int? PaymentType { get; set; }// Buy/Extend/Upgrade
+        public int? PaymentType { get; set; }
+        public bool PaymentDone { get; set; }
         public List<AddonSubscriptionDto> AddonSubscription { get; set; }
     }
     public class AddonSubscriptionDto

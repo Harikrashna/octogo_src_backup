@@ -23,6 +23,8 @@ namespace CF.Octogo.HangfireJobs
         protected override void DoWork()
         {
             _tenantDetailsService.CreateAdminUserOnTenantDB();
+            _tenantDetailsService.CheckTeanantSetUpProcessAndSuccessMail();
+            _tenantDetailsService.CheckTeanantSetUpProcessAndErrorMessage();
         }
 
     }

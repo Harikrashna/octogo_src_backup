@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DashboardCustomizationServiceProxy, TenantEditionAddonDto, TenantEditionAddonModulesDto } from '@shared/service-proxies/service-proxies';
+import { AvailableAddonModulesDto, DashboardCustomizationServiceProxy, EditionServiceProxy, TenantEditionAddonDto, TenantEditionAddonModulesDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-package-detailed-information',
@@ -8,7 +8,7 @@ import { DashboardCustomizationServiceProxy, TenantEditionAddonDto, TenantEditio
 })
 export class PackageDetailedInformationComponent implements OnInit {
 
-  @Input() Package:TenantEditionAddonDto;
+  @Input() PackageDetails:TenantEditionAddonDto;
   @Output() backClicked = new EventEmitter();
   @Output() upgradeClicked = new EventEmitter();
 
@@ -17,17 +17,27 @@ export class PackageDetailedInformationComponent implements OnInit {
   dataFetched: boolean = false;
   IsBackToPackageDetails: boolean = true;
   additionalDetailsList : TenantEditionAddonModulesDto[];
-  constructor(private _dsashboardCustomizationService: DashboardCustomizationServiceProxy) { }
+  availableAddonList : AvailableAddonModulesDto[];
+  EditionId;
+  constructor(private _dsashboardCustomizationService: DashboardCustomizationServiceProxy, private _editionService: EditionServiceProxy) { }
 
   ngOnInit(): void {
+    if(this.PackageDetails != null && this.PackageDetails != undefined){
+    this.EditionId = this.PackageDetails.editionId;
+    }
+  }
+  Show(editionId,packageDetails: TenantEditionAddonDto){
+    this.EditionId = packageDetails.editionId;
+    this.PackageDetails = packageDetails;
     this.GetPackageDetailedInformation();
+    this.GetAvailableAddonBySubscribedEditionId();
   }
 GetPackageDetailedInformation()
 {
-  if(this.Package.editionId > 0){
+  if(this.PackageDetails.editionId > 0){
     this.dataFetched = false;
     this.additionalDetailsList = new Array<TenantEditionAddonModulesDto>();
-    this._dsashboardCustomizationService.getTenantEditionAddonModuleDetails(this.Package.editionId )
+    this._dsashboardCustomizationService.getTenantEditionAddonModuleDetails(this.PackageDetails.editionId )
     .subscribe(result => {
       this.dataFetched = true;
       if(result != null){
@@ -37,6 +47,13 @@ GetPackageDetailedInformation()
       }
     });
   }
+}
+GetAvailableAddonBySubscribedEditionId(): void {
+  this.availableAddonList = new Array<AvailableAddonModulesDto>();
+  this._editionService.getAvailableAddonBySubscribedEditionId(this.PackageDetails.editionId)
+  .subscribe(result => {
+    this.availableAddonList = result;
+  })
 }
 checkProcess(process){
   if(process == false){
@@ -57,7 +74,7 @@ checkExpiryTime(remainingDays){
   this.backClicked.emit(null);
  }
  ExtendPackage(){
-    this.IsExtend = true;
+    // this.IsExtend = true;
  }
  UpgradePackage(){
   this.IsUpgrade = true;
