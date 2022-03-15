@@ -1,0 +1,8 @@
+<div class="form-group">
+    <label *ngFor="let users of usertype;let i=index" class="checkbox">
+        <input class="checkbox" [checked]="users?.selected" type="checkbox" [name]="users"  [disabled]="users?.isEdit"
+            (change)="onChange($event,users.id,i)">
+        <span></span>
+        {{users.name}}
+    </label>
+</div>

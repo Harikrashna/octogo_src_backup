@@ -73,5 +73,14 @@ namespace CF.Octogo.Editions.Dto
         public List<SubModuleForEditAddonDto> SubSubModuleList { get; set; } = null;
 
     }
+    public class FeatureListForAddonDto
+    {
+        
+        public string Name { get; set; }
+
+        public string Value { get; set;}
+ 
+
+    }
 
 }

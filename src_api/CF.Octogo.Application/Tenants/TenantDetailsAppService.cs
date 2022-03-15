@@ -288,7 +288,7 @@ namespace CF.Octogo.Tenants
         }
 
         /// <summary>
-        /// Desc:Get tenant proccess completetion status
+        /// Desc:Get tenant proccess completion status
         /// created by : Merajuddin khan
         /// created on :08-02-22
         /// 
@@ -298,7 +298,7 @@ namespace CF.Octogo.Tenants
         public async Task<DataSet> TenantAdminSetupProcessCompleteStatus(TenantSummaryInputDto input)
         {
 
-            SqlParameter[] parameters = new SqlParameter[11];
+            SqlParameter[] parameters = new SqlParameter[14];
             parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
             parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
             parameters[2] = new SqlParameter("TenantName", input.TenantName);
@@ -310,6 +310,9 @@ namespace CF.Octogo.Tenants
             parameters[8] = new SqlParameter("IsApiURLSetup", input.IsApiURLSetUp);
             parameters[9] = new SqlParameter("IsAdminCreated", input.IsAdminCreated);
             parameters[10] = new SqlParameter("IsAppHosted", input.IsAppHosted);
+            parameters[11] = new SqlParameter("IsCompleted", input.IsCompleted);
+            parameters[12] = new SqlParameter("IsFailed", input.IsFailed);
+            parameters[13] = new SqlParameter("IsProcess", input.IsProcess);
             var ds = await SqlHelper.ExecuteDatasetAsync(
                Connection.GetSqlConnection("DefaultOctoGo"),
                System.Data.CommandType.StoredProcedure,
@@ -328,8 +331,6 @@ namespace CF.Octogo.Tenants
 
         public async Task<string> CheckTeanantSetUpProcessAndErrorMessage()
         {
-
-           
                 var ds = await SqlHelper.ExecuteDatasetAsync(
                    Connection.GetSqlConnection("DefaultOctoGo"),
                    System.Data.CommandType.StoredProcedure,
@@ -360,7 +361,6 @@ namespace CF.Octogo.Tenants
                 }
                 else
                     return null;
-            
         }
         private async Task<string> UpdateErrorMailFlag(long setUpId)
         {
@@ -396,20 +396,19 @@ namespace CF.Octogo.Tenants
                        );
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        var tenantDetails = SqlHelper.ConvertDataTable<TenantSuccesMailDto>(ds.Tables[0]);
-                        foreach (var result in tenantDetails)
+                        var result = SqlHelper.ConvertDataTable<TenantSuccesMailDto>(ds.Tables[0]);
+                        foreach (var tenantDetails in result)
                         {
                             TenantSuccessMail tenantSuccessMessageList = new TenantSuccessMail();
-                            tenantSuccessMessageList.TenantId = result.TenantId;
-                            tenantSuccessMessageList.TenantName = result.TenantName;
-                            tenantSuccessMessageList.LastName = result.LastName;
-                            tenantSuccessMessageList.Name = result.Name;
-                            tenantSuccessMessageList.EmailAddress = result.EmailAddress;
+                            tenantSuccessMessageList.EmailAddress = tenantDetails.EmailAddress;
+                            tenantSuccessMessageList.ProductName = tenantDetails.ProductName;
+                            tenantSuccessMessageList.ProductLink = tenantDetails.ProductLink;
                             await _userEmailer.SendAdminSetUpCompleteEmailAsync(tenantSuccessMessageList);
-                            await UpdateTenantEmailSendFlag(result.SetupId);
+                            await UpdateTenantEmailSendFlag(tenantDetails.SetupId);
                         }
-                        return "success";
-                    }
+                    
+                            return "success";
+                        }
                     else
                         return null;
                 

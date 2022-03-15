@@ -1,15 +1,17 @@
 import { Component, EventEmitter, Injector, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { EditionPricing } from '@app/admin/shared-models/Edition/EditionPricing';
+import { FeatureTreeComponent } from '@app/admin/shared/feature-tree.component';
 import { ValidationServiceService } from '@app/admin/validation-service.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { AddonListDto, AddonServiceProxy, CreateAddonDto, EditionServiceProxy, ModuleListDto, ModuleListForAddonDto, ModulePricingDto, PageModulesDto, PriceDiscount, SubModuleForAddonDto, SubModulesDto } from '@shared/service-proxies/service-proxies';
+import { AddonListDto, AddonServiceProxy, ComboboxItemDto, CommonLookupServiceProxy, CreateAddonDto, EditionServiceProxy, FeatureTreeEditModel, ModuleListDto, ModuleListForAddonDto, ModulePricingDto, PageModulesDto, PriceDiscount, SubModuleForAddonDto, SubModulesDto } from '@shared/service-proxies/service-proxies';
+import { debug } from 'console';
+import { stubTrue } from 'lodash-es';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import  { finalize }  from 'rxjs/operators';
+import * as internal from 'stream';
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
-
-
 
 const roundTo = function (num: number, places: number) {
     const factor = 10 ** places;
@@ -25,7 +27,8 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
     @ViewChild('createUpdateModal', { static: true }) modal: ModalDirective;
     @ViewChild('addonForm') editionForm: NgForm;
     @ViewChild('staticTabs', { static: false }) staticTabs?: TabsetComponent;
-
+    @ViewChild('featureTree') featureTree: FeatureTreeComponent;
+  
     active = false;
     saving = false;
     currencyMask = createNumberMask({
@@ -61,11 +64,15 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
     CanScrollLeft: boolean = false;
     CanScrollRight: boolean = false;
     SubSubModuleList: SubModuleForAddonDto[] = [];
-
+    setStandalone = true;
+    expiringEditions: ComboboxItemDto[] = [];
+   // featureList:FeatureListForAddonDto [] =[];
+    featureTreeList:FeatureTreeEditModel 
     constructor(injector: Injector,
         private addonServiceProxy: AddonServiceProxy,
         private _editionService: EditionServiceProxy,
-        public validationService: ValidationServiceService) {
+        public validationService: ValidationServiceService,
+        private _commonLookupService: CommonLookupServiceProxy) {
         super(injector);
     }
 
@@ -94,27 +101,57 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             this.ForEditionName = this.AddonDataForEdit.forEditionName;
             this.EditionID = this.AddonDataForEdit.forEditionId;
             this.Description = this.AddonDataForEdit.description;
-            this.GetModuleListByEditionForAddon(this.EditionID);
+            this.GetModuleListByEditionForAddon(this.EditionID); 
             this.GetEditionListForAddon(this.AddonDataForEdit.forEditionId);
+          //  this.loadFeatures(data.addonId)
+            this.isStandAlone = this.AddonDataForEdit.isStandAlone
         }
+        if(this.isStandAlone)
+        this.loadFeatures(data.addonId)
         this.getMasterDataForEdition();
         // if (!this.isEdit) {
         //     this.GetAddonModuleList();
         // }
+        // if(this.isStandAlone)
+        // {
+        //  this.loadFeatures()
+        // }
         this.modal.show();
     }
     onShown(): void {
-        document.getElementById('ddl_Product').focus();
+        // document.getElementById('txt_Addon').focus();
     }
+
+loadFeatures(data?:any): void {  // Added by:merjauddin khan -- Desc:Load feature tree when standalone is selected
+    if(this.isStandAlone){
+        this.addonServiceProxy.getStandaloneAddonFeaturesById(data).subscribe((result) => {
+            let timer = setInterval(() => {
+                if(this.featureTree != null && this.featureTree != undefined){
+                    this.featureTree.editData = result;
+                    this.featureTreeList = result;
+                    clearInterval(timer);
+                  }
+              }, 50)
+        });
+    }
+    else if(this.featureTree != null && this.featureTree != undefined)
+    {
+        this.featureTree.editData = new FeatureTreeEditModel();
+    }  
+}
+
     GetModuleListByEditionForAddon(EditionId) {
         this.ModulesList = new Array<ModuleListForAddonDto>();
         this.SubSubModuleList = [];
         this.SelectedModule = null;
         this.SelectedIndex = -1;
         this.IsScrollable = false;
-        if (EditionId > 0) {
+        if (this.isEdit && this.isStandAlone ) {
+            this.GetAddonModuleAndPricing(this.AddonDataForEdit.addonId);
+        }
+        if (EditionId > 0 ) {
             this.addonServiceProxy.getModuleListByEditionForAddon(EditionId)
-                .pipe().subscribe(result => {
+                .pipe().subscribe(result => {    
                     this.ModulesList = new Array<ModuleListForAddonDto>();
                     if (result != null && result != undefined && result.length > 0) {
                         // filter modules, if duplicate modules get from different-different editions
@@ -152,13 +189,13 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                                     }
                                 }
                             }
-                            else {
-                                this.ModulesList.push(module);
+                            else {                               
+                            this.ModulesList.push(module);      
                             }
                         })
                     }
-                    
-                    if (this.isEdit) {
+                    if (this.isEdit ) {
+                        debugger
                         this.GetAddonModuleAndPricing(this.AddonDataForEdit.addonId);
                     }
                     else{
@@ -166,13 +203,14 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                     }
                 });
         }
-    }
+    } 
     GetEditionListForAddon(editionID = null) {
         this.EditionList = [];
         this.ModulesList = [];
         this.SubSubModuleList = [];
         this.EditionID = editionID;
         this.SelectedModule = null;
+
         if (this.ProductId > 0) {
             this.addonServiceProxy.getEditionListForAddon(this.ProductId)
                 .pipe().subscribe(result => {
@@ -458,10 +496,17 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             });
         }
     }
-    save() {
+    save() 
+    {
+        if(this.isStandAlone){ // when standalone selected this will set 'null' in editionid and productid
+            this.EditionID = null
+            this.ProductId = null
+        } 
         let isModuleSubModuleSelected = false;
         let selectedModules = [];
-        if (this.ModulesList != null && this.ModulesList != undefined && this.ModulesList.length > 0) {
+        let selectedFeature:boolean = false
+        if (this.ModulesList != null && this.ModulesList != undefined && this.ModulesList.length > 0)
+        {
             selectedModules = this.ModulesList.filter(obj => obj["selected"] == true);
             if (selectedModules != null && selectedModules.length > 0) 
             {
@@ -496,6 +541,11 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                             }
                           })
                         }
+                        else{
+                            isModuleSubModuleSelected = false;
+                            break;
+                        }
+                        
                     }
                 
                 else{
@@ -505,22 +555,30 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
             }
             }
         }
-        if (isModuleSubModuleSelected) {
+        if(this.featureTree != undefined){  // Added by:merjauddin khan
+            if(this.featureTree.selectedFeatures.length > 0 )
+            {
+                selectedFeature = true;
+            }
+        }
+        if (isModuleSubModuleSelected || selectedFeature) { 
             this.priceFormInvalid = this.ValidatePriceForm();
             if (!this.priceFormInvalid) {
                 const input = new CreateAddonDto();
-                input.productId = this.ProductId;
+                input.productId = this.ProductId != null?this.ProductId : 10;
                 input.approachId = this.ApproachId;
-                input.editionID = this.EditionID;
+                input.editionID = this.EditionID
                 input.addonName = this.AddonName;
-                input.isStandAlone = this.isStandAlone;
+                input.isStandAlone = this.isStandAlone != null? this.isStandAlone : false;
                 input.description = this.Description;
+                input.featureValues = this.isStandAlone ?  this.featureTree.getGrantedFeatures(): null
                 input.addonId = this.AddonDataForEdit != null ? this.AddonDataForEdit.addonId : null;
                 if (!this.isFree && this.pricingTypes.length > 0) {
                     input.priceDiscount = new Array<PriceDiscount>();
                     this.pricingTypes.forEach(obj => {
                         input.priceDiscount.push(new PriceDiscount({
                             pricingTypeId: obj.PricingTypeId,
+                            
                             amount: obj.ActualPrice,
                             discountPercentage: obj.DiscountPercentage
                         }));
@@ -549,7 +607,11 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
                 this.selectTab(2);
             }
         }
-        else {
+        else if(this.isStandAlone){  // Added by:merjauddin khan -- Desc: if any feature is not selected then this warning will trigger
+            this.notify.warn(this.l('PleaseSelectValidFeatureAndSubFeature'));
+            this.selectTab(1);
+        }
+        else{ // Added by:merjauddin khan -- Desc: if module not selected then this warning will trigger
             this.notify.warn(this.l('PleaseSelectValidModuleAndSubModules'));
             this.selectTab(1);
         }
@@ -637,25 +699,30 @@ export class InsertUpdateAddonsComponent extends AppComponentBase implements OnI
         this.modal.hide();
     }
     ValidatePriceForm(): boolean {
+        debugger
         this.priceFormInvalid = false;
         if (this.isFree) {
             return false;
         }
-        if (this.pricingTypes != null && this.pricingTypes.length > 0) {
-            for (let i = 0; i < this.pricingTypes.length; i++) {
-                let element = this.pricingTypes[i];
-                if (!((element.ActualPrice == null || element.ActualPrice <= 0)
-                    || (element.DiscountPercentage == null || element.DiscountPercentage < 0 || element.DiscountPercentage > 100)
-                    || (element.DiscountedPrice == null || element.DiscountedPrice <= 0))) {
-                    this.priceFormInvalid = false;
-                    break;
+        else
+        {
+            if (this.pricingTypes != null && this.pricingTypes.length > 0) {
+                for (let i = 0; i < this.pricingTypes.length; i++) {
+                    let element = this.pricingTypes[i];
+                    if (((element.ActualPrice == null || element.ActualPrice <= 0)
+                        || (element.DiscountPercentage == null || element.DiscountPercentage < 0 || element.DiscountPercentage > 100)
+                        || (element.DiscountedPrice == null || element.DiscountedPrice <= 0))) {
+                        this.priceFormInvalid = true;
+                        break;
+                    }
                 }
+                return this.priceFormInvalid;
             }
-            return this.priceFormInvalid;
+            else {
+                return true;
+            }
         }
-        else {
-            return false;
-        }
+     
     }
     ActualPriceInput(data) {
         let PerDayPrice = data.ActualPrice / data.NoOfDays

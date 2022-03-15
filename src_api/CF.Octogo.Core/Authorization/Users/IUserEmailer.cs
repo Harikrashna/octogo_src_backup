@@ -36,5 +36,9 @@ namespace CF.Octogo.Authorization.Users
 
         Task SendAdminSetUpCompleteEmailAsync(TenantSuccessMail tenantSuccessMessageList);
         Task SendAdminSetUpFailedEmailAsync(TenantErrorMessage tenantErrorMessagelist);
+        Task SendProductSelectionEmailAsync(string productName,string EmailAddress);
+
     }
 }
+
+

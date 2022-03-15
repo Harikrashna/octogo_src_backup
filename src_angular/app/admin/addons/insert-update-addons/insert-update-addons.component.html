@@ -16,7 +16,13 @@
                 <div class="modal-body">
                     <tabset #staticTabs>
                         <tab heading="{{'AddonProperties' | localize}}" class="p-5">
-                            <div class="form-group">
+                            <label for="EditUser_SendActivationEmail" class="checkbox" >
+                                <input id="EditUser_SendActivationEmail" type="checkbox" name="Standalone" [disabled]="isEdit" [(ngModel)]="isStandAlone"
+                                (change)="loadFeatures()"   >
+                                <span></span>
+                                {{"IsStandalone" | localize}}
+                            </label>
+                            <div style="margin-top:20px" *ngIf="!isStandAlone" class="form-group">
                                 <label for="product">{{"Product" | localize}} *</label>
                                 <select class="form-control" [(ngModel)]="ProductId" required name="product"
                                     id="ddl_Product" #productNameSelect="ngModel" [disabled]="isEdit"
@@ -27,7 +33,7 @@
                                 </select>
                                 <validation-messages [formCtrl]="productNameSelect"></validation-messages>
                             </div>
-                            <div class="form-group">
+                            <div *ngIf="!isStandAlone" class="form-group">
                                 <label for="EditionDisplayName">{{"EditionName" | localize}} *</label>
                                 <select class="form-control" [(ngModel)]="EditionID" [required]="true"
                                     name="EditionDisplayName" (ngModelChange)="GetModuleListByEditionForAddon(EditionID)"
@@ -45,6 +51,7 @@
                                     (keypress)="validationService.NameValidation($event)">
                                 <validation-messages [formCtrl]="addonNameInput"></validation-messages>
                             </div>
+                          
                             <div class="form-group">
                                 <label for="DescriptionName">{{"Description" | localize}}</label>
                                 <input id="txt_Description" #descriptionInput="ngModel" class="form-control" type="text"
@@ -99,6 +106,7 @@
                                 </label>
                             </fieldset>
                         </tab>
+                      
                         <!-- <tab heading="{{'AddonDetails' | localize}}" class="p-5">
                             <div *ngIf="AddonModuleDetails?.moduleId > 0">
                                         <p-panel header="{{'ModuleName' | localize}} : {{AddonModuleDetails.moduleName}}" [toggleable]="true" [collapsed]="false">
@@ -117,7 +125,9 @@
                                 {{'NoData' | localize}}
                             </div>
                         </tab> -->
-                        <tab heading="{{'Modules' | localize}}" class="p-5">
+                       
+                        <tab *ngIf="!isStandAlone" heading="{{'Modules' | localize}}" class="p-5">
+                           
                             <div *ngIf="ModulesList?.length > 0">
                                 <!-- Module list start -->
                                 <div class="moduleCard d-flex" id="module_content">
@@ -135,9 +145,9 @@
                                     </div>
                                 </div>
                                  <!-- Module list end -->
-
+                               
                                  <!-- Sub module list start -->
-                                <div class="subModuleCard" *ngIf="SelectedModule != null">
+                                <div class="subModuleCard" *ngIf="SelectedModule != null ">
                                     <div class="col pl-0">
                                         <span class="bold">{{'SubModuleList' | localize}}&nbsp;:-&nbsp;</span>
                                         {{SelectedModule?.moduleName}}
@@ -187,10 +197,7 @@
                                             <div class="input-group-prepend"><span
                                                     class="input-group-text">{{appSession.application.currencySign}}</span>
                                             </div>
-                                            <input [ngModelOptions]="{standalone: true}" type="text"
-                                                name="{{item.PricingTypeName}}" id="{{item.PricingTypeName}}"
-                                                class="form-control" autocomplete="new-password" [required]="!isFree"
-                                                [(ngModel)]="item.DiscountedPrice" [textMask]="{mask: currencyMask}" />
+                                        
                                         </div>
                                         <!-- <validation-messages [formCtrl]="annualPriceInput"></validation-messages> -->
                                     </div>
@@ -265,6 +272,9 @@
                                     <validation-messages [formCtrl]="approachNameSelect"></validation-messages>
                                 </div>
                             </div>
+                        </tab>
+                        <tab *ngIf="isStandAlone || (isEdit && isStandAlone)"   heading="{{'Features' | localize}}"  class="p-5">
+                            <feature-tree #featureTree></feature-tree>
                         </tab>
                     </tabset>
                 </div>

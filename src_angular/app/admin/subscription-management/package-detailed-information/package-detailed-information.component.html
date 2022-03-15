@@ -1,4 +1,4 @@
-<div *ngIf="!IsUpgrade && !IsExtend">
+<div *ngIf="!IsUpgrade && !IsExtend && !IsAddonExtend && !IsAddonBuy">
     <!-- <div class="row">
         <div class="col-sm">
             <button class="btn btn-primary btn-sm" (click)="BackToSubscription()">
@@ -8,7 +8,7 @@
     </div> -->
 
     <div class="package-card1 mt-2" [busyIf]="!dataFetched">
-        <div class="detailcard" *ngFor="let product of additionalDetailsList">
+        <div class="detailcard" *ngFor="let product of EditionDetailedInformation">
             <div class="row">
                 <div class="col-sm-5">
                     <h2 class="text-primary">{{product.productName}}
@@ -39,7 +39,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-sm d-flex">
-                            <button class="btn btn-primary btn-sm float-right" (click)="ExtendPackage()"
+                            <button class="btn btn-primary btn-sm float-right" (click)="ExtendPackage(product.editionId,product.productName)"
                                 *ngIf="PackageDetails?.price != 'FREE'">{{'Extend' | localize}}</button>
                             <button class="btn btn-success btn-sm float-right" (click)="UpgradePackage()">{{'Upgrade' | localize}}</button>
                         </div>
@@ -98,8 +98,8 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-sm d-flex">
-                            <button class="btn btn-primary btn-sm float-right"
-                                *ngIf="add?.addonPrice != 'FREE' && (add.remainingDays < product.remainingDays || product.endDate == null)">
+                            <button class="btn btn-primary btn-sm float-right" (click)="ExtendAddonSubscription(add)"
+                            *ngIf="add?.addonPrice != 'FREE' && (add.remainingDays < product.remainingDays || product.endDate == null)">
                                 {{'Extend' | localize}}</button>
                         </div>
                     </div>
@@ -197,8 +197,8 @@
                                     </ng-template>
                                 </p-overlayPanel>
                             </div>
-                            <button *ngIf="avAdd.pricingData != null" class="btn btn-sm btn-primary float-right">{{"Buy" | localize}}</button>
-                            <button *ngIf="avAdd.pricingData == null" class="btn btn-sm btn-primary float-right">{{"Free" | localize}}</button>
+                            <button *ngIf="avAdd.pricingData != null" class="btn btn-sm btn-primary float-right" (click)="SubscribeAddon(avAdd)">{{"Buy" | localize}}</button>
+                            <button *ngIf="avAdd.pricingData == null" class="btn btn-sm btn-primary float-right" (click)="SubscribeAddon(avAdd)">{{"Free" | localize}}</button>
                     </div>
                 </div>
             </marquee>
@@ -218,7 +218,7 @@
     <app-package-selection [IncludeProductId]="PackageDetails?.productId" [PackageId]="PackageDetails?.editionId"
         (upgradeClicked)="upgradeClickedOutput($event)"></app-package-selection>
 </div>
-<div *ngIf="IsExtend">
+<div *ngIf="IsExtend" [busyIf]="!dataFetched">
     <div class="row mt-2">
         <div class="col-sm">
             <button class="btn btn-primary btn-sm" (click)="BackToPackageDetails()">
@@ -226,5 +226,19 @@
             </button>
         </div>
     </div>
-   Here Package extension functionality
+    <app-package-addons-cart [SelectedEditionData]="selectedEditionData" [ProductName]="selectedProductName"
+    [Heading]="pageHeadding">
+    </app-package-addons-cart>
+</div>
+<div *ngIf="IsAddonBuy || IsAddonExtend" [busyIf]="!dataFetched">
+    <div class="row mt-2">
+        <div class="col-sm">
+            <button class="btn btn-primary btn-sm" (click)="BackToPackageDetails()">
+                <i class="fa fa-arrow-left"></i> {{"Back" | localize}}
+            </button>
+        </div>
+    </div>
+    <app-package-addons-cart [SelectedEditionData]="selectedEditionData"  [SelectedAddonsData]="selectedAddonsData"
+    [ProductName]="selectedProductName" [ForAddonOnly]="true" [Heading]="pageHeadding">
+    </app-package-addons-cart>
 </div>

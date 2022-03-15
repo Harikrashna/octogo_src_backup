@@ -54,7 +54,7 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
     this.SelectedPackage = this.productDetailsList[prodIndex];
     let timer = setInterval(() => {
       if (this.packageDetailedInformation != null && this.packageDetailedInformation != undefined) {
-        this.packageDetailedInformation.additionalDetailsList = null;
+        this.packageDetailedInformation.EditionDetailedInformation = null;
         this.packageDetailedInformation.availableAddonList = null;
         if(this.SelectedPackage != null && this.SelectedPackage != undefined){
         this.packageDetailedInformation.Show(this.SelectedPackage.editionId, this.SelectedPackage);

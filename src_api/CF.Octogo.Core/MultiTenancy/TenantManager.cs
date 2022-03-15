@@ -148,6 +148,7 @@ namespace CF.Octogo.MultiTenancy
                     userRole.IsDefault = true;
                     CheckErrors(await _roleManager.UpdateAsync(userRole));
 
+
                     //Create admin user for the tenant
                     var adminUser = User.CreateTenantAdminUser(tenant.Id, adminEmailAddress);
                     adminUser.ShouldChangePasswordOnNextLogin = shouldChangePasswordOnNextLogin;
@@ -335,13 +336,6 @@ namespace CF.Octogo.MultiTenancy
             {
                 throw new UserFriendlyException(LocalizationManager.GetString(OctogoConsts.LocalizationSourceName, "TrialWithoutEndDateErrorMessage"));
             }
-            InsertTenantEditionAddonDto input = new InsertTenantEditionAddonDto
-            {
-                TenantId = tenant.Id,
-                EditionId = tenant.EditionId,
-                isEdit = true
-            };
-            InsertUpdateTenantEditionAddonDetails(input);
 
             return base.UpdateAsync(tenant);
         }
@@ -366,29 +360,6 @@ namespace CF.Octogo.MultiTenancy
             }
             return 0;
         }
-        public async Task<int> InsertUpdateTenantEditionAddonDetails(InsertTenantEditionAddonDto input)
-        {
-            SqlParameter[] parameters = new SqlParameter[5];
-            parameters[0] = new SqlParameter("TenantId", input.TenantId);
-            parameters[1] = new SqlParameter("EditionId", input.EditionId);
-            parameters[2] = new SqlParameter("isEdit", input.isEdit);
-            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
-            parameters[4] = new SqlParameter("@AddonIds", null);
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_InsertUpdateTenantEditionAddonDetails", parameters
-               );
-            if (ds.Tables.Count > 0)
-            {
-                return 1;
-
-            }
-            else
-            {
-                return 0;
-            }
-        }
 
         private async Task<User> CheckEmailIdAsync(string emailId)
         {
@@ -406,6 +377,21 @@ namespace CF.Octogo.MultiTenancy
         public string GetUserName(string adminEmailAddress, string tenancyName)
         {
            return adminEmailAddress.Substring(0, adminEmailAddress.IndexOf("@") + 1) + tenancyName.Trim();
+        }
+        private async Task<string> CreateUserTypeLink(int userId, int userTypeId)
+        {
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("UserId", userId);
+            parameters[1] = new SqlParameter("UserTypeId", userTypeId);
+            parameters[2] = new SqlParameter("LoginUserId", AbpSession.UserId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_InsertUserTypeMapping", parameters);
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                return (string)ds.Tables[0].Rows[0]["UserType"];
+            }
+            return "success";
         }
     }
 }

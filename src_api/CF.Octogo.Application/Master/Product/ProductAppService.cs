@@ -13,6 +13,8 @@ using CF.Octogo.Authorization;
 using CF.Octogo.Dto;
 using Abp.UI;
 using Abp.Runtime.Caching;
+using Newtonsoft.Json;
+using CF.Octogo.Master.Product.Dto;
 
 namespace CF.Octogo.Master.Product
 {
@@ -74,11 +76,13 @@ namespace CF.Octogo.Master.Product
             {
                 throw new UserFriendlyException(L("DuplicateRecord"));
             }
-            SqlParameter[] parameters = new SqlParameter[4];
+            SqlParameter[] parameters = new SqlParameter[6];
             parameters[0] = new SqlParameter("inProductID", inp.inProductID);
             parameters[1] = new SqlParameter("vcProductName", inp.vcProductName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[4] = new SqlParameter("SelectedPageIds", inp.SelectedPageIds);
+            parameters[5] = new SqlParameter("userTypes", inp.userTypes);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
@@ -111,18 +115,27 @@ namespace CF.Octogo.Master.Product
 
 
 
-        public async Task<DataSet> GetProductForEdit(GetEditProductinput input)
+        public async Task<ProductandUserEdit> GetProductForEdit(GetEditProductinput input)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("ProductID", input.inProductID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetPoductId", parameters
+            "USP_GetPoductForEdit", parameters
             );
             if (ds.Tables.Count > 0)
             {
-                return ds;
+                var res = SqlHelper.ConvertDataTable<ProductandUserRet>(ds.Tables[0]);
+                var result = res.Select(rw => new ProductandUserEdit
+                {
+                    inProductID = rw.inProductID,
+                    vcProductName = rw.vcProductName,
+                    vcDescription = rw.vcDescription,
+                    UserTypes = rw.UserTypes != null ? JsonConvert.DeserializeObject<List<ProductUserTypeEditDto>>(rw.UserTypes.ToString()) : null
+
+                }).FirstOrDefault();
+                return result;
             }
             else
             {
@@ -156,6 +169,30 @@ namespace CF.Octogo.Master.Product
             var allMasterCache = _cacheManager.GetCache(masterCacheKey);
             await allMasterCache.ClearAsync();
         }
+        public async Task<List<ProductModulesDto>> GetProductModuleList(int InProductID)
+        {
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("ProductId", InProductID);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetProductPageModuleList", parameters);
+                if (ds.Tables.Count > 0)
+                {
+                    var res = SqlHelper.ConvertDataTable<ProductModuleRet>(ds.Tables[0]);
+                    var result = res.Select(rw => new ProductModulesDto
+                    {
+                        ModuleId = rw.ModuleId,
+                        DisplayName = rw.DisplayName,
+                        SubModuleList = rw.SubModuleList != null ? JsonConvert.DeserializeObject<List<ProductSubModuleDto>>(rw.SubModuleList.ToString()) : null,
+                    }).ToList();
+                    return result;
 
+                }
+                else
+                {
+                    return null;
+                }
+        }
     }
 }

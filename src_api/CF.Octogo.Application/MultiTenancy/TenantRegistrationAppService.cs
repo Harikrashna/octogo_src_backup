@@ -142,15 +142,6 @@ namespace CF.Octogo.MultiTenancy
                 }
                 await _appNotifier.NewTenantRegisteredAsync(tenant);
 
-                // Insert Edition,Addon, Approach and pricing details for tenant
-                if (input.EditionId.HasValue)
-                {
-                    InsertTenantEditionAddonDto tenantEdition = new InsertTenantEditionAddonDto();
-                    tenantEdition.TenantId = tenantId;
-                    tenantEdition.EditionId = input.EditionId;
-                    TenantManager.InsertUpdateTenantEditionAddonDetails(tenantEdition);
-                }
-
                 return new RegisterTenantOutput
                 {
                     TenantId = tenant.Id,

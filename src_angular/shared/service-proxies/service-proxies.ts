@@ -919,6 +919,62 @@ export class AddonServiceProxy {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    insertUpdateStandaloneAddOnModule(body: CreateAddonDto | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/services/app/Addon/InsertUpdateStandaloneAddOnModule";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInsertUpdateStandaloneAddOnModule(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInsertUpdateStandaloneAddOnModule(<any>response_);
+                } catch (e) {
+                    return <Observable<number>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<number>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processInsertUpdateStandaloneAddOnModule(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<number>(<any>null);
+    }
+
+    /**
      * @param editionId (optional) 
      * @return Success
      */
@@ -1035,6 +1091,62 @@ export class AddonServiceProxy {
             }));
         }
         return _observableOf<string>(<any>null);
+    }
+
+    /**
+     * @param addOnId (optional) 
+     * @return Success
+     */
+    getStandaloneAddonFeaturesById(addOnId: number | undefined): Observable<FeatureTreeEditModel> {
+        let url_ = this.baseUrl + "/api/services/app/Addon/GetStandaloneAddonFeaturesById?";
+        if (addOnId === null)
+            throw new Error("The parameter 'addOnId' cannot be null.");
+        else if (addOnId !== undefined)
+            url_ += "addOnId=" + encodeURIComponent("" + addOnId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetStandaloneAddonFeaturesById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetStandaloneAddonFeaturesById(<any>response_);
+                } catch (e) {
+                    return <Observable<FeatureTreeEditModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FeatureTreeEditModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetStandaloneAddonFeaturesById(response: HttpResponseBase): Observable<FeatureTreeEditModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FeatureTreeEditModel.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FeatureTreeEditModel>(<any>null);
     }
 }
 
@@ -8086,10 +8198,11 @@ export class EditionServiceProxy {
     /**
      * @param includeProductId (optional) 
      * @param excludeProductId (optional) 
+     * @param editionId (optional) 
      * @param isAvailableProduct (optional) 
      * @return Success
      */
-    getProductWithEdition(includeProductId: number | undefined, excludeProductId: number | undefined, isAvailableProduct: boolean | undefined): Observable<ProductWithEditionDto[]> {
+    getProductWithEdition(includeProductId: number | undefined, excludeProductId: number | undefined, editionId: number | undefined, isAvailableProduct: boolean | undefined): Observable<ProductWithEditionDto[]> {
         let url_ = this.baseUrl + "/api/services/app/Edition/GetProductWithEdition?";
         if (includeProductId === null)
             throw new Error("The parameter 'includeProductId' cannot be null.");
@@ -8099,6 +8212,10 @@ export class EditionServiceProxy {
             throw new Error("The parameter 'excludeProductId' cannot be null.");
         else if (excludeProductId !== undefined)
             url_ += "ExcludeProductId=" + encodeURIComponent("" + excludeProductId) + "&";
+        if (editionId === null)
+            throw new Error("The parameter 'editionId' cannot be null.");
+        else if (editionId !== undefined)
+            url_ += "EditionId=" + encodeURIComponent("" + editionId) + "&";
         if (isAvailableProduct === null)
             throw new Error("The parameter 'isAvailableProduct' cannot be null.");
         else if (isAvailableProduct !== undefined)
@@ -13154,7 +13271,7 @@ export class ProductServiceProxy {
      * @param inProductID (optional) 
      * @return Success
      */
-    getProductForEdit(inProductID: number | undefined): Observable<any> {
+    getProductForEdit(inProductID: number | undefined): Observable<ProductandUserEdit> {
         let url_ = this.baseUrl + "/api/services/app/Product/GetProductForEdit?";
         if (inProductID === null)
             throw new Error("The parameter 'inProductID' cannot be null.");
@@ -13177,14 +13294,14 @@ export class ProductServiceProxy {
                 try {
                     return this.processGetProductForEdit(<any>response_);
                 } catch (e) {
-                    return <Observable<any>><any>_observableThrow(e);
+                    return <Observable<ProductandUserEdit>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<any>><any>_observableThrow(response_);
+                return <Observable<ProductandUserEdit>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetProductForEdit(response: HttpResponseBase): Observable<any> {
+    protected processGetProductForEdit(response: HttpResponseBase): Observable<ProductandUserEdit> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13195,7 +13312,7 @@ export class ProductServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            result200 = ProductandUserEdit.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -13203,7 +13320,7 @@ export class ProductServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<any>(<any>null);
+        return _observableOf<ProductandUserEdit>(<any>null);
     }
 
     /**
@@ -13312,6 +13429,69 @@ export class ProductServiceProxy {
             }));
         }
         return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @param inProductID (optional) 
+     * @return Success
+     */
+    getProductModuleList(inProductID: number | undefined): Observable<ProductModulesDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Product/GetProductModuleList?";
+        if (inProductID === null)
+            throw new Error("The parameter 'inProductID' cannot be null.");
+        else if (inProductID !== undefined)
+            url_ += "InProductID=" + encodeURIComponent("" + inProductID) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetProductModuleList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetProductModuleList(<any>response_);
+                } catch (e) {
+                    return <Observable<ProductModulesDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ProductModulesDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetProductModuleList(response: HttpResponseBase): Observable<ProductModulesDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ProductModulesDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ProductModulesDto[]>(<any>null);
     }
 }
 
@@ -23128,14 +23308,15 @@ export interface ICountryListDto {
 
 export class CreateAddonDto implements ICreateAddonDto {
     addonName!: string | undefined;
-    editionID!: number;
-    productId!: number;
+    editionID!: number | undefined;
+    productId!: number | undefined;
     approachId!: number;
     isStandAlone!: boolean;
     addonId!: number | undefined;
     description!: string | undefined;
     moduleList!: AddonModulesDto[] | undefined;
     priceDiscount!: PriceDiscount[] | undefined;
+    featureValues!: NameValueDto[] | undefined;
 
     constructor(data?: ICreateAddonDto) {
         if (data) {
@@ -23164,6 +23345,11 @@ export class CreateAddonDto implements ICreateAddonDto {
                 this.priceDiscount = [] as any;
                 for (let item of _data["priceDiscount"])
                     this.priceDiscount!.push(PriceDiscount.fromJS(item));
+            }
+            if (Array.isArray(_data["featureValues"])) {
+                this.featureValues = [] as any;
+                for (let item of _data["featureValues"])
+                    this.featureValues!.push(NameValueDto.fromJS(item));
             }
         }
     }
@@ -23194,20 +23380,26 @@ export class CreateAddonDto implements ICreateAddonDto {
             for (let item of this.priceDiscount)
                 data["priceDiscount"].push(item.toJSON());
         }
+        if (Array.isArray(this.featureValues)) {
+            data["featureValues"] = [];
+            for (let item of this.featureValues)
+                data["featureValues"].push(item.toJSON());
+        }
         return data; 
     }
 }
 
 export interface ICreateAddonDto {
     addonName: string | undefined;
-    editionID: number;
-    productId: number;
+    editionID: number | undefined;
+    productId: number | undefined;
     approachId: number;
     isStandAlone: boolean;
     addonId: number | undefined;
     description: string | undefined;
     moduleList: AddonModulesDto[] | undefined;
     priceDiscount: PriceDiscount[] | undefined;
+    featureValues: NameValueDto[] | undefined;
 }
 
 export class CreateEditionDto implements ICreateEditionDto {
@@ -24077,6 +24269,8 @@ export class CreateOrUpdateProductInput implements ICreateOrUpdateProductInput {
     inProductID!: number | undefined;
     vcProductName!: string | undefined;
     vcDescription!: string | undefined;
+    selectedPageIds!: string | undefined;
+    userTypes!: string | undefined;
 
     constructor(data?: ICreateOrUpdateProductInput) {
         if (data) {
@@ -24092,6 +24286,8 @@ export class CreateOrUpdateProductInput implements ICreateOrUpdateProductInput {
             this.inProductID = _data["inProductID"];
             this.vcProductName = _data["vcProductName"];
             this.vcDescription = _data["vcDescription"];
+            this.selectedPageIds = _data["selectedPageIds"];
+            this.userTypes = _data["userTypes"];
         }
     }
 
@@ -24107,6 +24303,8 @@ export class CreateOrUpdateProductInput implements ICreateOrUpdateProductInput {
         data["inProductID"] = this.inProductID;
         data["vcProductName"] = this.vcProductName;
         data["vcDescription"] = this.vcDescription;
+        data["selectedPageIds"] = this.selectedPageIds;
+        data["userTypes"] = this.userTypes;
         return data; 
     }
 }
@@ -24115,6 +24313,8 @@ export interface ICreateOrUpdateProductInput {
     inProductID: number | undefined;
     vcProductName: string | undefined;
     vcDescription: string | undefined;
+    selectedPageIds: string | undefined;
+    userTypes: string | undefined;
 }
 
 export class CreateOrUpdateRoleInput implements ICreateOrUpdateRoleInput {
@@ -27152,6 +27352,54 @@ export interface IFeatureInputTypeDto {
     attributes: { [key: string]: any; } | undefined;
     validator: IValueValidator;
     itemSource: LocalizableComboboxItemSourceDto;
+}
+
+export class FeatureTreeEditModel implements IFeatureTreeEditModel {
+    features!: FlatFeatureDto[] | undefined;
+    featureValues!: any | undefined;
+
+    constructor(data?: IFeatureTreeEditModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["features"])) {
+                this.features = [] as any;
+                for (let item of _data["features"])
+                    this.features!.push(FlatFeatureDto.fromJS(item));
+            }
+            this.featureValues = _data["featureValues"];
+        }
+    }
+
+    static fromJS(data: any): FeatureTreeEditModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeatureTreeEditModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.features)) {
+            data["features"] = [];
+            for (let item of this.features)
+                data["features"].push(item.toJSON());
+        }
+        data["featureValues"] = this.featureValues;
+        return data; 
+    }
+}
+
+export interface IFeatureTreeEditModel {
+    features: FlatFeatureDto[] | undefined;
+    featureValues: any | undefined;
 }
 
 export class FileDto implements IFileDto {
@@ -34791,10 +35039,10 @@ export interface IPriceDiscount {
 export class PricingDataDto implements IPricingDataDto {
     addonPricingID!: number;
     pricingTypeID!: number;
-    amount!: string | undefined;
-    discountPercentage!: string | undefined;
+    amount!: number;
+    discountPercentage!: number;
     pricingTypeName!: string | undefined;
-    noOfDays!: string | undefined;
+    noOfDays!: number;
 
     constructor(data?: IPricingDataDto) {
         if (data) {
@@ -34838,10 +35086,10 @@ export class PricingDataDto implements IPricingDataDto {
 export interface IPricingDataDto {
     addonPricingID: number;
     pricingTypeID: number;
-    amount: string | undefined;
-    discountPercentage: string | undefined;
+    amount: number;
+    discountPercentage: number;
     pricingTypeName: string | undefined;
-    noOfDays: string | undefined;
+    noOfDays: number;
 }
 
 export class PricingDto implements IPricingDto {
@@ -35036,6 +35284,62 @@ export interface IPricingTypeListDto {
     inNoOfDays: number;
 }
 
+export class ProductandUserEdit implements IProductandUserEdit {
+    inProductID!: number;
+    vcProductName!: string | undefined;
+    vcDescription!: string | undefined;
+    userTypes!: ProductUserTypeEditDto[] | undefined;
+
+    constructor(data?: IProductandUserEdit) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.inProductID = _data["inProductID"];
+            this.vcProductName = _data["vcProductName"];
+            this.vcDescription = _data["vcDescription"];
+            if (Array.isArray(_data["userTypes"])) {
+                this.userTypes = [] as any;
+                for (let item of _data["userTypes"])
+                    this.userTypes!.push(ProductUserTypeEditDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProductandUserEdit {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductandUserEdit();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["inProductID"] = this.inProductID;
+        data["vcProductName"] = this.vcProductName;
+        data["vcDescription"] = this.vcDescription;
+        if (Array.isArray(this.userTypes)) {
+            data["userTypes"] = [];
+            for (let item of this.userTypes)
+                data["userTypes"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IProductandUserEdit {
+    inProductID: number;
+    vcProductName: string | undefined;
+    vcDescription: string | undefined;
+    userTypes: ProductUserTypeEditDto[] | undefined;
+}
+
 export class ProductListDto implements IProductListDto {
     inProductID!: number;
     vcProductName!: string | undefined;
@@ -35078,6 +35382,190 @@ export interface IProductListDto {
     inProductID: number;
     vcProductName: string | undefined;
     vcDescription: string | undefined;
+}
+
+export class ProductModulesDto implements IProductModulesDto {
+    moduleId!: number;
+    displayName!: string | undefined;
+    subModuleList!: ProductSubModuleDto[] | undefined;
+
+    constructor(data?: IProductModulesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.moduleId = _data["moduleId"];
+            this.displayName = _data["displayName"];
+            if (Array.isArray(_data["subModuleList"])) {
+                this.subModuleList = [] as any;
+                for (let item of _data["subModuleList"])
+                    this.subModuleList!.push(ProductSubModuleDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProductModulesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductModulesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["moduleId"] = this.moduleId;
+        data["displayName"] = this.displayName;
+        if (Array.isArray(this.subModuleList)) {
+            data["subModuleList"] = [];
+            for (let item of this.subModuleList)
+                data["subModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IProductModulesDto {
+    moduleId: number;
+    displayName: string | undefined;
+    subModuleList: ProductSubModuleDto[] | undefined;
+}
+
+export class ProductSubModuleDto implements IProductSubModuleDto {
+    id!: number;
+    displayName!: string | undefined;
+    subSubModuleList!: ProductSubSubModuleDto[] | undefined;
+
+    constructor(data?: IProductSubModuleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.displayName = _data["displayName"];
+            if (Array.isArray(_data["subSubModuleList"])) {
+                this.subSubModuleList = [] as any;
+                for (let item of _data["subSubModuleList"])
+                    this.subSubModuleList!.push(ProductSubSubModuleDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProductSubModuleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductSubModuleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        if (Array.isArray(this.subSubModuleList)) {
+            data["subSubModuleList"] = [];
+            for (let item of this.subSubModuleList)
+                data["subSubModuleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IProductSubModuleDto {
+    id: number;
+    displayName: string | undefined;
+    subSubModuleList: ProductSubSubModuleDto[] | undefined;
+}
+
+export class ProductSubSubModuleDto implements IProductSubSubModuleDto {
+    id!: number;
+    displayName!: string | undefined;
+
+    constructor(data?: IProductSubSubModuleDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.displayName = _data["displayName"];
+        }
+    }
+
+    static fromJS(data: any): ProductSubSubModuleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductSubSubModuleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["displayName"] = this.displayName;
+        return data; 
+    }
+}
+
+export interface IProductSubSubModuleDto {
+    id: number;
+    displayName: string | undefined;
+}
+
+export class ProductUserTypeEditDto implements IProductUserTypeEditDto {
+    userTypeId!: number;
+    canEdit!: boolean;
+
+    constructor(data?: IProductUserTypeEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userTypeId = _data["userTypeId"];
+            this.canEdit = _data["canEdit"];
+        }
+    }
+
+    static fromJS(data: any): ProductUserTypeEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProductUserTypeEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userTypeId"] = this.userTypeId;
+        data["canEdit"] = this.canEdit;
+        return data; 
+    }
+}
+
+export interface IProductUserTypeEditDto {
+    userTypeId: number;
+    canEdit: boolean;
 }
 
 export class ProductWithEditionDto implements IProductWithEditionDto {

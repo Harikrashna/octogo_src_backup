@@ -351,7 +351,7 @@ namespace CF.Octogo.DashboardCustomization
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_TenantEditionAddonDetails", parameters);
+            "USP_GetTenantEditionAddonDetails", parameters);
 
             if (ds.Tables.Count > 0)
             {
@@ -386,7 +386,7 @@ namespace CF.Octogo.DashboardCustomization
                 var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_TenantEditionAddonModulesDetails", parameters);
+                    "USP_GetTenantEditionAddonModulesDetails", parameters);
                 if (ds.Tables.Count > 0)
                 {
                     var res = SqlHelper.ConvertDataTable<TenantEditionAddonModulesRet>(ds.Tables[0]);

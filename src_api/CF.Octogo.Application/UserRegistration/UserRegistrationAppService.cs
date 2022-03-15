@@ -97,7 +97,7 @@ namespace CF.Octogo.UserRegistration
 
                 user.Roles = new Collection<UserRole>();
                 // get "User" role  data
-                var role = _roleRepository.GetAll().Where(f => f.DisplayName == "User" && f.IsDeleted == false && f.TenantId == null).FirstOrDefault();
+                var role = _roleRepository.GetAll().Where(f => f.DisplayName.Trim().ToUpper() == "USER" && f.IsDeleted == false && f.TenantId == null).FirstOrDefault();
                 var permission = new Permission(name: AppPermissions.Pages_isdefaultRegisterUser);
                 if (role != null && role.Id > 0)
                 {
@@ -171,11 +171,11 @@ namespace CF.Octogo.UserRegistration
                 return null;
             }
         }
-        private async Task<string> CreateUserTypeLink(int UserId, int UserTypeId)
+        private async Task<string> CreateUserTypeLink(int userId, int userTypeId)
         {
             SqlParameter[] parameters = new SqlParameter[3];
-                parameters[0] = new SqlParameter("UserId", UserId);
-                parameters[1] = new SqlParameter("UserTypeId", UserTypeId);
+                parameters[0] = new SqlParameter("UserId", userId);
+                parameters[1] = new SqlParameter("UserTypeId", userTypeId);
                 parameters[2] = new SqlParameter("LoginUserId", AbpSession.UserId);
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                             System.Data.CommandType.StoredProcedure,
@@ -184,7 +184,7 @@ namespace CF.Octogo.UserRegistration
                 {
                     return (string)ds.Tables[0].Rows[0]["UserType"];
                 }
-            return "";
+            return "success";
         }
         public async Task<int> CreateDetailedUserRegistration(UserRegistrationInput input)
         {

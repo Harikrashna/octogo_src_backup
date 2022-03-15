@@ -19,7 +19,7 @@
         <!--end::Name-->
         <!--begin::Name-->
         <div class="my-2">
-            <span class="text-dark font-weight-normal font-size-h4">Tenant: <span class="text-dark font-weight-bold">{{userInfo.tenant}}</span></span>
+            <span class="text-dark font-weight-normal font-size-h4">{{ 'TenantName' | localize}}: <span class="text-dark font-weight-bold">{{userInfo.tenant}}</span></span>
         </div>
         <form #loginForm="ngForm" class="form mt-4" method="post" novalidate (ngSubmit)="login()">
             <div class="my-2">

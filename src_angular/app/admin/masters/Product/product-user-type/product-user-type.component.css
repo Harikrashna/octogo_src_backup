@@ -1,0 +1,3 @@
+.checkbox > input:disabled ~ span {
+    background-color: #aeafb1 !important;
+}

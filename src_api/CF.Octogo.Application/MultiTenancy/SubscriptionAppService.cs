@@ -1,8 +1,14 @@
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
+using Abp.Authorization.Users;
+using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.Events.Bus;
 using Abp.Runtime.Session;
+using CF.Octogo.Authorization.Roles;
+using CF.Octogo.Authorization.Users;
 using CF.Octogo.Data;
 using CF.Octogo.MultiTenancy.Dto;
 using CF.Octogo.MultiTenancy.Payments;
@@ -13,10 +19,20 @@ namespace CF.Octogo.MultiTenancy
     public class SubscriptionAppService : OctogoAppServiceBase, ISubscriptionAppService
     {
         public IEventBus EventBus { get; set; }
+        private readonly IUserEmailer _userEmailer;
+        private readonly RoleManager _roleManager;
+        private readonly UserManager _userManager;
+        private readonly IRepository<UserRole, long> _userRolesRepository;
 
-        public SubscriptionAppService()
-        {
-            EventBus = NullEventBus.Instance;
+        public SubscriptionAppService(IUserEmailer userEmailer, RoleManager roleManager, UserManager userManager,
+            IRepository<UserRole, long> userRolesRepository)
+        {                                                      
+            EventBus = NullEventBus.Instance;                  
+            _userEmailer = userEmailer;
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _userRolesRepository = userRolesRepository;
+
         }
 
         public async Task DisableRecurringPayments()
@@ -55,30 +71,44 @@ namespace CF.Octogo.MultiTenancy
         }
         public async Task<int> InsertEditionAddonSubscription(EditionAddonSubscriptionInputDto input)
         {
-            string Remark = string.Empty;
-            SqlParameter[] parameters = new SqlParameter[10];
-            parameters[0] = new SqlParameter("EditionId", input.EditionId);
-            parameters[1] = new SqlParameter("AddonSubscription", input.AddonSubscription != null ? JsonConvert.SerializeObject(input.AddonSubscription) : null);
-            parameters[2] = new SqlParameter("PricingTypeId", input.PricingTypeId);
-            parameters[3] = new SqlParameter("PaymentModeCode", input.PaymentModeCode);
-            parameters[4] = new SqlParameter("PaymentType", input.PaymentType);
-            parameters[5] = new SqlParameter("LoginUserId", AbpSession.UserId);
-            parameters[6] = new SqlParameter("TenantId", input.TenantId);
-            parameters[7] = new SqlParameter("Remark", Remark);
-            parameters[8] = new SqlParameter("PaymentDone", input.PaymentDone);
-            parameters[9] = new SqlParameter("Amount", input.Amount);
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                    System.Data.CommandType.StoredProcedure,
-                    "USP_InsertEditionAddonSubscription", parameters);
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
+                string Remark = string.Empty;
+                SqlParameter[] parameters = new SqlParameter[10];
+                parameters[0] = new SqlParameter("EditionId", input.EditionId);
+                parameters[1] = new SqlParameter("AddonSubscription", input.AddonSubscription != null ? JsonConvert.SerializeObject(input.AddonSubscription) : null);
+                parameters[2] = new SqlParameter("PricingTypeId", input.PricingTypeId);
+                parameters[3] = new SqlParameter("PaymentModeCode", input.PaymentModeCode);
+                parameters[4] = new SqlParameter("PaymentType", input.PaymentType);
+                parameters[5] = new SqlParameter("LoginUserId", AbpSession.UserId);
+                parameters[6] = new SqlParameter("TenantId", input.TenantId);
+                parameters[7] = new SqlParameter("Remark", Remark);
+                parameters[8] = new SqlParameter("PaymentDone", input.PaymentDone);
+                parameters[9] = new SqlParameter("Amount", input.Amount);
+                var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_InsertEditionAddonSubscription", parameters);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                    {
+                        //var userData = _userRolesRepository.GetAll().Where(obj => obj.);
+                        var roleId = _roleManager.Roles.Where(obj => obj.DisplayName.ToLower() == "admin").FirstOrDefault().Id;
+                        var userId = _userRolesRepository.GetAll().Where(obj => obj.RoleId == roleId).FirstOrDefault().UserId;
+                        var userData = _userManager.GetUserById(userId);
 
-                return (int)ds.Tables[0].Rows[0]["Id"];
-            }
-            else
-            {
-                return 0;
-            }
+                        if ((int)ds.Tables[0].Rows[0]["ProductId"] > 0)
+                        {
+                            string productName = (string)ds.Tables[0].Rows[0]["ProductName"];
+                            _userEmailer.SendProductSelectionEmailAsync(productName, userData.EmailAddress);
+                        }
+                        return (int)ds.Tables[0].Rows[0]["ProductId"];
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
         }
+
+     
     }
 }

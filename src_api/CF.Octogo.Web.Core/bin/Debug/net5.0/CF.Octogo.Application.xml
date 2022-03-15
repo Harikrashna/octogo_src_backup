@@ -11,6 +11,23 @@
             <param name="editionId"></param>
             <returns></returns>
         </member>
+        <member name="M:CF.Octogo.Editions.AddonAppService.DeleteAddon(Abp.Application.Services.Dto.EntityDto)">
+            <summary>
+            
+            </summary>
+            <param name="editionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Editions.AddonAppService.GetStandaloneAddonFeaturesById(System.Nullable{System.Int32})">
+            <summary>
+            Desc:Get addon feature tree and feature list
+            created by : Merajuddin khan
+            created on :10-03-22
+            </summary>
+            <param name="addOnId"></param>
+            <returns></returns>
+            
+        </member>
         <member name="M:CF.Octogo.Editions.EditionAppService.GetModuleList(System.Int32)">
             <summary>
             to get Page module data
@@ -200,7 +217,7 @@
         </member>
         <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.TenantAdminSetupProcessCompleteStatus(CF.Octogo.Tenants.Dto.TenantSummaryInputDto)">
             <summary>
-            Desc:Get tenant proccess completetion status
+            Desc:Get tenant proccess completion status
             created by : Merajuddin khan
             created on :08-02-22
             

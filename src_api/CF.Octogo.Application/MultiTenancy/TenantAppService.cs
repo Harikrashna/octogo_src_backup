@@ -73,15 +73,6 @@ namespace CF.Octogo.MultiTenancy
                 input.IsInTrialPeriod,
                 AppUrlService.CreateEmailActivationUrlFormat(input.TenancyName)
             );
-
-            // Insert Edition,Addon, Approach and pricing details for tenant
-            if (tenantId > 0 && input.EditionId.HasValue)
-            {
-                InsertTenantEditionAddonDto tenantEdition = new InsertTenantEditionAddonDto();
-                tenantEdition.TenantId = tenantId;
-                tenantEdition.EditionId = input.EditionId;
-                TenantManager.InsertUpdateTenantEditionAddonDetails(tenantEdition);
-            }
         }
 
         [AbpAuthorize(AppPermissions.Pages_Tenants_Edit)]

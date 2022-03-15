@@ -1,0 +1,137 @@
+<!-- <div *ngIf="PageModuleList?.length > 0">
+    <div class="moduleCard d-flex" id="module_content">
+        <i class="pi pi-chevron-left p-1" (click)="ScrollLeft()" aria-hidden="true"
+            *ngIf="IsScrollable && CanScrollLeft"></i>
+        <i class="pi pi-chevron-right p-1" (click)="ScrollRight()" aria-hidden="true"
+            *ngIf="IsScrollable && CanScrollRight"></i>
+
+        <div class="text-center module-card-width" *ngFor="let module of PageModuleList; let i=index"
+            [ngClass]="(module?.selected) ? (SelectedIndex == i) ? 'selected-module-card module-focus':'selected-module-card':'module-card'">
+            <i class=" fa fa-check selected-check" *ngIf="module?.selected" (click)="SelectModule(module, i, true)"></i>
+            <div (click)="SelectModule(module, i)" class="cursor"> <i class=" fa fa-cube iconSize">&nbsp;</i>
+                <div class="moduleName">{{module.displayName}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="subModuleCard" *ngIf="SelectedModule != null">
+        <div class="col pl-0">
+            <span class="bold">{{'SubModuleList' | localize}}&nbsp;:-&nbsp;</span>
+            {{SelectedModule?.displayName}}
+        </div>
+        <hr />
+        <div *ngIf="SubModuleList?.length > 0" class="row">
+            <div class="col-sm-4 subModuleCheck d-flex" *ngFor="let subModule of SubModuleList; let subIndex = index">
+                <input type="checkbox" [checked]="subModule.selected" 
+                    (click)="SelectSubModule(subIndex,subModule.id)" />
+                &nbsp;&nbsp;{{subModule.displayName}}
+            </div>
+        </div>
+        <div *ngIf="SubModuleList == null || SubModuleList == undefined|| SubModuleList?.length == 0"
+            class="primeng-no-data text-danger">
+            {{'NoData' | localize}}
+        </div>
+    </div>
+    <div class="subModuleCard" *ngIf="SubSubModuleList?.length > 0">
+        <div class="col pl-0">
+            <span class="bold">{{'SubSubModuleList' | localize}}</span>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-4 subModuleCheck d-flex"
+                *ngFor="let subSubModule of SubSubModuleList">
+                <input type="checkbox" [checked]="subSubModule.selected" 
+                (click)="SelectSubSubModule(subSubModule.id)" />
+                &nbsp;&nbsp;{{subSubModule.displayName}}
+            </div>
+        </div>
+    </div>
+   
+</div> -->
+<div class="col-sm-7">
+    <div class="module" *ngIf="ModuleList?.length > 0">
+        <div class="row">
+            <div class="col-sm-6">
+                <div *ngFor="let module of ModuleList; let moduleIndex = index">
+                <div class="col-sm-12" *ngIf="moduleIndex % 2 == 0">
+                <ol>
+                    <li style="list-style: none;">
+                        
+                        <span>{{moduleIndex+1}}.&nbsp;<span *ngIf="module.subModuleList?.length > 0">
+                            <i class="fa fa-chevron-right icon" *ngIf="!module?.expended"
+                            (click)="toggleShow(moduleIndex, true)"></i>
+                        <i class="fa fa-chevron-down icon" *ngIf="module?.expended == true"
+                            (click)="toggleShow(moduleIndex, false)"></i>
+                        </span>&nbsp;{{module.displayName}}</span>
+                        <span *ngIf="module.subModuleList?.length > 0">
+                            <div *ngIf="module?.expended == true">
+                                <div class="submodule" *ngIf="module.subModuleList?.length > 0">
+                                    <ul *ngFor="let suModule of module.subModuleList; let subModuleIndex = index">
+                                        <li><span *ngIf="suModule.subSubModuleList?.length > 0">
+                                            <i class="fa fa-chevron-right icon-2" *ngIf="!suModule?.expended"
+                                            (click)="toggleSubShow(moduleIndex,subModuleIndex, true)"></i>
+                                        <i class="fa fa-chevron-down icon-2" *ngIf="suModule?.expended == true"
+                                            (click)="toggleSubShow(moduleIndex,subModuleIndex, false)"></i>
+                                        </span>&nbsp;{{suModule.displayName}}
+                                            <span *ngIf="suModule.subSubModuleList?.length > 0">
+                                                <div *ngIf="suModule.expended ==  true">
+                                                    <ul class="subsubModule"
+                                                        *ngFor="let subsub of suModule.subSubModuleList; let i=index">
+                                                        <li>&nbsp;{{subsub.displayName}}</li>
+                                                    </ul>
+                                                </div>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </span>
+                </ol>
+            </div>
+        </div>
+            </div>
+            <div class="col-sm-6">
+                <div *ngFor="let module of ModuleList; let moduleIndex = index">
+                    <div class="col-sm-12" *ngIf="moduleIndex % 2 == 1">
+                    <ol>
+                        <li style="list-style: none;">
+                            
+                            <span>{{moduleIndex+1}}.&nbsp;<span *ngIf="module.subModuleList?.length > 0">
+                                <i class="fa fa-chevron-right icon" *ngIf="!module?.expended"
+                                (click)="toggleShow(moduleIndex, true)"></i>
+                            <i class="fa fa-chevron-down icon" *ngIf="module?.expended == true"
+                                (click)="toggleShow(moduleIndex, false)"></i>
+                            </span>&nbsp;{{module.displayName}}</span>
+                            <span *ngIf="module.subModuleList?.length > 0">
+                                <div *ngIf="module?.expended == true">
+                                    <div class="submodule" *ngIf="module.subModuleList?.length > 0">
+                                        <ul *ngFor="let suModule of module.subModuleList; let subModuleIndex = index">
+                                            <li><span *ngIf="suModule.subSubModuleList?.length > 0">
+                                                <i class="fa fa-chevron-right icon-2" *ngIf="!suModule?.expended"
+                                                (click)="toggleSubShow(moduleIndex,subModuleIndex, true)"></i>
+                                            <i class="fa fa-chevron-down icon-2" *ngIf="suModule?.expended == true"
+                                                (click)="toggleSubShow(moduleIndex,subModuleIndex, false)"></i>
+                                            </span>&nbsp;{{suModule.displayName}}
+                                                <span *ngIf="suModule.subSubModuleList?.length > 0">
+                                                    <div *ngIf="suModule.expended ==  true">
+                                                        <ul class="subsubModule"
+                                                            *ngFor="let subsub of suModule.subSubModuleList; let i=index">
+                                                            <li>&nbsp;{{subsub.displayName}}</li>
+                                                        </ul>
+                                                    </div>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </span>
+                    </ol>
+                </div>
+            </div>
+            </div>
+            
+        </div>
+    </div>
+    <div *ngIf="!(ModuleList?.length > 0)" class="primeng-no-data text-danger">
+            {{'NoData' | localize}}
+    </div>
+</div>

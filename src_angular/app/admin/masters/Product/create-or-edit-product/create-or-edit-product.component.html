@@ -15,6 +15,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <tabset #staticTabs>
+                        <tab heading="{{'ProductProperties' | localize}}" class="p-5">
                     <div class="form-group">
 
                         <input class="form-control" #productId type="hidden" name="productId"
@@ -33,7 +35,15 @@
                             [(ngModel)]="createProduct.vcDescription" maxlength="250"
                             (keypress)="_validationService.NameValidation($event)">
                     </div>
+                </tab>
+                <tab heading="{{'UserType' | localize}}" class="p-5">
+                    <app-product-user-type #usertypes></app-product-user-type>
+                </tab>
+                <tab *ngIf="createProduct?.inProductID > 0" heading="{{'Modules' | localize}}" class="p-5">
+                    <app-product-modules #productModule></app-product-modules>
+                </tab>
 
+                </tabset>
 
                 </div>
                 <div class="modal-footer">

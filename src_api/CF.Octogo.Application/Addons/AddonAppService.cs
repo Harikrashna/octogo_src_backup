@@ -13,6 +13,9 @@ using System.Linq;
 using Newtonsoft.Json;
 using Abp.UI;
 using CF.Octogo.Tenants;
+using Abp;
+using Abp.Application.Features;
+using CF.Octogo.Addons.Dto;
 
 namespace CF.Octogo.Editions
 {
@@ -20,10 +23,13 @@ namespace CF.Octogo.Editions
     public class AddonAppService : OctogoAppServiceBase, IAddonAppService
     {
         private readonly ITenantDetailsAppService _tenantDetailsService;
-        public AddonAppService(ITenantDetailsAppService tenantDetailsService) 
+        private readonly EditionManager _editionManager;
+        public AddonAppService(ITenantDetailsAppService tenantDetailsService, EditionManager editionManager) 
         {
             _tenantDetailsService = tenantDetailsService;
+            _editionManager = editionManager;
         }
+
 
         [HttpPost]
         public async Task<PagedResultDto<AddonListDto>> GetAddonList(GetAddonInput input)
@@ -90,11 +96,11 @@ namespace CF.Octogo.Editions
         //        return new ListResultDto<AddonByEdtionIdDto>(AddonData);
         //    }
         //    else
-        //    {
+        //    getModuleListByEditionForAddongetModuleListByEditionForAddo
         //        return null;
         //    }
         //}
-    public async Task<AddonModuleAndPricingDto> GetAddonModuleAndPricing(int AddonId)
+        public async Task<AddonModuleAndPricingDto> GetAddonModuleAndPricing(int AddonId)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("AddonId", AddonId);
@@ -122,13 +128,14 @@ namespace CF.Octogo.Editions
         [AbpAuthorize(AppPermissions.Pages_Addons_Create, AppPermissions.Pages_Addons_Edit)]
         public async Task<int> InsertUpdateAddonModuleAndPricing(CreateAddonDto input)
         {
+          
+                var FeatureValues = input.IsStandAlone ? input.FeatureValues.Where(dt => dt.Value == "true").ToList() : null;
                 var Duplicacy = CheckAddonDuplicacy(input);
-
                 if (Duplicacy.Result != null)
                 {
                     throw new UserFriendlyException(L("DuplicateRecord"));
                 }
-                SqlParameter[] parameters = new SqlParameter[10];
+                SqlParameter[] parameters = new SqlParameter[11];
                 parameters[0] = new SqlParameter("ProductId", input.ProductId);
                 parameters[1] = new SqlParameter("PricingData", input.priceDiscount != null ? JsonConvert.SerializeObject(input.priceDiscount) : null);
                 parameters[2] = new SqlParameter("LoginUserId", AbpSession.UserId);
@@ -139,22 +146,64 @@ namespace CF.Octogo.Editions
                 parameters[7] = new SqlParameter("IsStandAlone", input.IsStandAlone);
                 parameters[8] = new SqlParameter("ModuleList", JsonConvert.SerializeObject(input.ModuleList));
                 parameters[9] = new SqlParameter("Description", input.Description);
+                parameters[10] = new SqlParameter("FeatureValues", JsonConvert.SerializeObject(FeatureValues));
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                        System.Data.CommandType.StoredProcedure,
-                        "USP_InsertUpdateAddonAndPricing", parameters);
+                            System.Data.CommandType.StoredProcedure,
+                            "USP_InsertUpdateAddonAndPricing", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                if (input.AddonId > 0) 
-                {
-                    _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate(input.EditionID, null, input.AddonId);
-                }
-                return (int)ds.Tables[0].Rows[0]["Id"];
+
+                    if (input.AddonId > 0 && !input.IsStandAlone)
+                    {
+                        await _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)input.EditionID, null, input.AddonId);
+
+                    }
+
+                    return (int)ds.Tables[0].Rows[0]["Id"];
                 }
                 else
                 {
                     return 0;
                 }
+           
+          
         }
+        //[AbpAuthorize(AppPermissions.Pages_Addons_Create, AppPermissions.Pages_Addons_Edit)]
+        //public async Task<int> InsertUpdateStandaloneAddOnModule(CreateAddonDto input)
+        //{
+        //    var Duplicacy = CheckAddonDuplicacy(input);
+
+        //    if (Duplicacy.Result != null)
+        //    {
+        //        throw new UserFriendlyException(L("DuplicateRecord"));
+        //    }
+        //    SqlParameter[] parameters = new SqlParameter[10];
+        //    parameters[0] = new SqlParameter("ProductId", input.ProductId);
+        //    parameters[1] = new SqlParameter("PricingData", input.priceDiscount != null ? JsonConvert.SerializeObject(input.priceDiscount) : null);
+        //    parameters[2] = new SqlParameter("LoginUserId", AbpSession.UserId);
+        //    parameters[3] = new SqlParameter("ApproachId", input.ApproachId);
+        //    parameters[4] = new SqlParameter("AddonId", input.AddonId);
+        //    parameters[5] = new SqlParameter("EditionID", input.EditionID);
+        //    parameters[6] = new SqlParameter("AddonName", input.AddonName);
+        //    parameters[7] = new SqlParameter("IsStandAlone", input.IsStandAlone);
+        //    parameters[8] = new SqlParameter("ModuleList", JsonConvert.SerializeObject(input.ModuleList));
+        //    parameters[9] = new SqlParameter("Description", input.Description);
+        //    var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+        //            System.Data.CommandType.StoredProcedure,
+        //            "USP_InsertUpdateAddonAndPricing", parameters);
+        //    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        //    {
+        //        if (input.AddonId > 0)
+        //        {
+        //         await _tenantDetailsService.UpdateTenantSyetemSettingForEditionUpdate((int)input.EditionID, null, input.AddonId);
+        //        }
+        //        return (int)ds.Tables[0].Rows[0]["Id"];
+        //    }
+        //    else
+        //    {
+        //        return 0;
+        //    }
+        //}
         private async Task<DataSet> CheckAddonDuplicacy(CreateAddonDto input)
         {
             List<int> ModulePageSnoList = new List<int>();
@@ -176,26 +225,39 @@ namespace CF.Octogo.Editions
                     });
                 }
             });
-            ModulePageSnoList.Sort();
-            SqlParameter[] parameters = new SqlParameter[5];
-            parameters[0] = new SqlParameter("EditionId", input.EditionID);
-            parameters[1] = new SqlParameter("AddonName", input.AddonName.Trim());
-            parameters[2] = new SqlParameter("AddonId", input.AddonId);
-            parameters[3] = new SqlParameter("IsFree", input.priceDiscount != null ? false : true);
-            parameters[4] = new SqlParameter("SelectedPageSno", String.Join(",",ModulePageSnoList));
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CheckAddonDuplicacy", parameters
-            );
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
+            //List<string> FeatureList = new List<string>();
+            //input.FeatureValues.ForEach(feature =>
+            //{
+            //    if(feature.Value == "true")
+            //    {
+            //        FeatureList.Add(feature.Name);
+            //    }
+            //});
+
+          
+                ModulePageSnoList.Sort();
+                SqlParameter[] parameters = new SqlParameter[5];
+                parameters[0] = new SqlParameter("EditionId", input.EditionID);
+                parameters[1] = new SqlParameter("AddonName", input.AddonName.Trim());
+                parameters[2] = new SqlParameter("AddonId", input.AddonId);
+                parameters[3] = new SqlParameter("IsFree", input.priceDiscount != null ? false : true);
+                parameters[4] = new SqlParameter("SelectedPageSno", String.Join(",", ModulePageSnoList));
+                //parameters[5] = new SqlParameter("FeatureList", String.Join(",", FeatureList));
+                //parameters[6] = new SqlParameter("IsStandalone",input.IsStandAlone);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                Connection.GetSqlConnection("DefaultOctoGo"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_CheckAddonDuplicacy", parameters
+                );
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds;
+                }
+                else
+                {
+                    return null;
+                }
+         
         }
         /// <summary>
         /// 
@@ -230,6 +292,13 @@ namespace CF.Octogo.Editions
                 return null;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="editionId"></param>
+        /// <returns></returns>
+
         [AbpAuthorize(AppPermissions.Pages_Addons_Delete)]
         public async Task<string> DeleteAddon(EntityDto input)
         {
@@ -246,5 +315,53 @@ namespace CF.Octogo.Editions
             }
             return "Success";
         }
+        /// <summary>
+        /// Desc:Get addon feature tree and feature list
+        /// created by : Merajuddin khan
+        /// created on :10-03-22
+        /// </summary>
+        /// <param name="addOnId"></param>
+        /// <returns></returns>
+        /// 
+        public async Task<FeatureTreeEditModel> GetStandaloneAddonFeaturesById(int? addOnId)
+        {
+            var features = FeatureManager.GetAll()
+                           .Where(f => f.Scope.HasFlag(FeatureScopes.All) && f.Name != "App.MaxUserCount");
+
+            List<NameValueDto> featureValues = new List<NameValueDto>();
+            var featureDtos = ObjectMapper.Map<List<FlatFeatureDto>>(features).OrderBy(f => f.DisplayName).ToList();
+           
+                if (addOnId > 0)
+                {
+                    SqlParameter[] parameters = new SqlParameter[1];
+                    parameters[0] = new SqlParameter("AddonId", addOnId);
+                    var ds = await SqlHelper.ExecuteDatasetAsync(
+                            Connection.GetSqlConnection("DefaultOctoGo"),
+                            System.Data.CommandType.StoredProcedure,
+                            "USP_GetStandaloneAddonFeaturesById", parameters
+                            );
+                    if (ds.Tables.Count > 0)
+                    {
+                        var featureList = SqlHelper.ConvertDataTable<FeatureListForAddonDto>(ds.Tables[0]);
+                        foreach (var featureData in featureList)
+                        {
+                            featureValues.Add(new NameValueDto
+                            {
+                                Name = featureData.Name,
+                                Value = featureData.Value
+                            });
+                        }
+
+                    }
+                }
+          
+            return new FeatureTreeEditModel
+            {
+                Features = featureDtos,
+                FeatureValues = featureValues
+            };
+
+        }
+
     }
 }

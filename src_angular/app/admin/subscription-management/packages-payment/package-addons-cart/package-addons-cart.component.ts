@@ -14,8 +14,10 @@ import { finalize } from 'rxjs/operators';
 export class PackageAddonsCartComponent extends AppComponentBase implements OnInit {
   @Input() SelectedEditionData: EditionList;
   @Input() SelectedAddonsData: AddOn[];
+  @Input() ForAddonOnly : boolean = false;
   @Input() ProductName;
   @Input() IsTenantRegistration = false;
+  @Input()Heading = '';
 
   selectedEditionPricing;
   selectedAddonPricing = [];
@@ -34,6 +36,8 @@ export class PackageAddonsCartComponent extends AppComponentBase implements OnIn
     this.SetSelectedPricingData();
   }
   SetSelectedPricingData() {
+    if(this.ForAddonOnly == false)
+    {
     if (this.SelectedEditionData != null && this.SelectedEditionData.pricingtype != null
       && this.SelectedEditionData.pricingtype != undefined && this.SelectedEditionData.pricingtype.length > 0) {
       this.selectedEditionPricing = {
@@ -58,6 +62,22 @@ export class PackageAddonsCartComponent extends AppComponentBase implements OnIn
         }
       })
     }
+  }
+  else{
+    if (this.SelectedAddonsData != null && this.SelectedAddonsData.length > 0) {
+      this.SelectedAddonsData.forEach(addon => {
+        if (addon != null && addon.addonPrice != null && addon.addonPrice != undefined && addon.addonPrice.length > 0) {
+          this.selectedAddonPricing.push({
+            "AddonId": addon.addOnId, "AddonName": addon.addOnName,
+            "PricingTypeId": addon.addonPrice[0].pricingTypeID,
+            "Price": addon.addonPrice[0].price - (addon.addonPrice[0].price * addon.addonPrice[0].discount) / 100
+          });
+          addon.addonPrice[0]["selected"] = true;
+          this.isPaymentRequired = true;
+        }
+      })
+    }
+  }
   }
   EditionPriceChange(pricing, index) {
     this.selectedEditionPricing["Price"] = pricing.price - (pricing.price * pricing.discount) / 100;

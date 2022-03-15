@@ -315,7 +315,7 @@ namespace CF.Octogo.Editions
             //else
             //{
           
-                //var x = JsonConvert.SerializeObject(input.ModuleList);
+                var x = JsonConvert.SerializeObject(input.ModuleList);
                 SqlParameter[] parameters = new SqlParameter[12];
                 parameters[0] = new SqlParameter("ProductId", input.ProductId);
                 parameters[1] = new SqlParameter("ModuleData", JsonConvert.SerializeObject(input.ModuleList));
@@ -587,11 +587,12 @@ namespace CF.Octogo.Editions
         {
             List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
             ProductWithEditionDto result = new ProductWithEditionDto();
-            SqlParameter[] parameters = new SqlParameter[4];
+            SqlParameter[] parameters = new SqlParameter[5];
             parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
             parameters[1] = new SqlParameter("IncludeProductId", input.IncludeProductId);
             parameters[2] = new SqlParameter("ExcludeProductId", input.ExcludeProductId);
             parameters[3] = new SqlParameter("IsAvailableProduct", input.IsAvailableProduct);
+            parameters[4] = new SqlParameter("EditionId", input.EditionId); 
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,

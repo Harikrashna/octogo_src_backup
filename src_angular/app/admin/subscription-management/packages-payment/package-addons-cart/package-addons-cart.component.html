@@ -1,7 +1,10 @@
+<div class="mt-2">
+<p class="text-primary pt-3">{{Heading}}</p>
+</div>
 <div class="row">
     <div class="col-sm-10 pricing-div">
         <div class="edition-card d-flex">
-            <div class="edition-name-card">
+            <div class="edition-name-card" [ngClass]="ForAddonOnly ?'w-100':null">
                 <div class="d-flex">
                     <i class="fa fa-box text-25 text-primary  mt-5 pr-3"></i>
                     <span>
@@ -10,17 +13,19 @@
                     </span>
                 </div>
             </div>
-            <div *ngIf="SelectedEditionData?.pricingtype?.length > 0" class="d-flex">
-                <div class="price-card cursor" *ngFor="let price of SelectedEditionData.pricingtype; let i =index"
-                    (click)="EditionPriceChange(price, i)">
-                    <p class="text-primary text-12 ml-3">{{price.name}}</p>
-                    <p class="text-10 text-danger ml-3" *ngIf="price.discount > 0">$&nbsp;<s>{{price.price | number : '1.2-2'}}</s></p>
-                    <p class="text-12 text-success ml-3">$&nbsp;{{price.price - (price.price*price.discount/100) | number : '1.2-2'}}</p>
-                    <i class="fa fa-check text-12" *ngIf="price['selected']==true"></i>
+            <div *ngIf="!ForAddonOnly">
+                <div *ngIf="SelectedEditionData?.pricingtype?.length > 0" class="d-flex">
+                    <div class="price-card cursor" *ngFor="let price of SelectedEditionData.pricingtype; let i =index"
+                        (click)="EditionPriceChange(price, i)">
+                        <p class="text-primary text-12 ml-3">{{price.name}}</p>
+                        <p class="text-10 text-danger ml-3" *ngIf="price.discount > 0">$&nbsp;<s>{{price.price | number : '1.2-2'}}</s></p>
+                        <p class="text-12 text-success ml-3">$&nbsp;{{price.price - (price.price*price.discount/100) | number : '1.2-2'}}</p>
+                        <i class="fa fa-check text-12" *ngIf="price['selected']==true"></i>
+                    </div>
                 </div>
-            </div>
-            <div *ngIf="!(SelectedEditionData?.pricingtype?.length > 0)">
-                <h4 class="text-primary mt-5 ml-3">{{'Free' | localize}} </h4>
+                <div *ngIf="!(SelectedEditionData?.pricingtype?.length > 0)">
+                    <h4 class="text-primary mt-5 ml-3">{{'Free' | localize}} </h4>
+                </div>
             </div>
         </div>
         <div *ngIf="SelectedAddonsData?.length > 0">
@@ -35,7 +40,7 @@
                 </div>
                 <div *ngIf="addon?.addonPrice?.length > 0" class="d-flex">
                     <div *ngFor="let price of addon.addonPrice; let j = index">
-                    <div class="price-card cursor" (click)="AddonPriceChange(addon, i, j)" *ngIf="!(SelectedEditionData?.pricingtype?.length > 0) || price.days <= selectedEditionPricingDays">
+                    <div class="price-card cursor" (click)="AddonPriceChange(addon, i, j)" *ngIf="!(SelectedEditionData?.pricingtype?.length > 0) || price.days <= selectedEditionPricingDays || ForAddonOnly">
                         <p class="text-primary text-12 ml-3">{{price.name}}</p>
                         <p class="text-10 text-danger ml-3" *ngIf="price.discount > 0">$&nbsp;<s>{{price.price | number : '1.2-2'}}</s></p>
                         <p class="text-12 text-success ml-3">$&nbsp;{{price.price - (price.price*price.discount/100) | number : '1.2-2'}}
@@ -52,7 +57,7 @@
     </div>
     <div class="col-sm-2 cart-div" *ngIf="isPaymentRequired">
         <!-- <hr style="width: 100%;" /> -->
-        <div *ngIf="SelectedEditionData?.pricingtype?.length > 0" class="row">
+        <div *ngIf="SelectedEditionData?.pricingtype?.length > 0 && !ForAddonOnly" class="row">
             <div class="col-sm">
             <span class="text-success">{{SelectedEditionData.editionName}}</span>
             <span class="text-primary float-right">$&nbsp;{{selectedEditionPricing["Price"] | number : '1.2-2'}}</span>

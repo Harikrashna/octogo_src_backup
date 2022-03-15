@@ -39,7 +39,7 @@ namespace CF.Octogo.Features
 
             context.Create(
                 AppFeatures.TestCheckFeature2,
-                defaultValue: "true",
+                defaultValue: "false",
                 displayName: L("TestCheckFeature2"),
                 inputType: new CheckboxInputType()
             )[FeatureMetadata.CustomFeatureKey] = new FeatureMetadata

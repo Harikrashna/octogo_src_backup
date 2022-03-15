@@ -29,10 +29,10 @@ namespace CF.Octogo.Editions.Dto
     {
         public int AddonPricingID { get; set; }
         public int PricingTypeID { get; set; }
-        public string Amount { get; set; }
-        public string DiscountPercentage { get; set; }
+        public decimal Amount { get; set; }
+        public decimal DiscountPercentage { get; set; }
         public string PricingTypeName { get; set; }
-        public string NoOfDays { get; set; }
+        public int NoOfDays { get; set; }
     }
     public class AvailableAddonModulesRet
     {

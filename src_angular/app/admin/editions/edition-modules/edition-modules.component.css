@@ -132,3 +132,6 @@ margin-left: 5%;
 .disable{
     cursor:not-allowed
 }
+.checkbox > input:disabled ~ span {
+    background-color: #aeafb1 !important;
+}

@@ -19,6 +19,7 @@ namespace CF.Octogo.Dto
     {
         public Nullable<int> IncludeProductId { get; set; }
         public Nullable<int> ExcludeProductId { get; set; }
+        public Nullable<int> EditionId { get; set; }
         public Nullable<bool> IsAvailableProduct { get; set; } = false;
 
     }

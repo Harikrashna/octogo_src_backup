@@ -11,7 +11,7 @@
     </div>
     <div *ngIf="showDetailedInformation && !ForDashboard">
         <app-package-detailed-information #packageDetailedInformation
-         (upgradeClicked)="upgradeClicked()" (backClicked)="ShowSubscribedProducts()"></app-package-detailed-information>
+         (actionClicked)="upgradeClicked()" (backClicked)="ShowSubscribedProducts()"></app-package-detailed-information>
     </div>
 </div>
 <div *ngIf="!(productDetailsList?.length > 0) && dataFetched" class="text-danger p-5">

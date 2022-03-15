@@ -17,11 +17,11 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
   @Output() upgradeClicked = new EventEmitter()
 
   RegistarationStepItems = [
-    {label: 'Product Selection'},
-    {label: 'Registration'},
-    {label: 'Payment'},
-    {label: 'Complete'}
-];
+    { label: 'Product Selection' },
+    { label: 'Registration' },
+    { label: 'Payment' },
+    { label: 'Complete' }
+  ];
 
   RegistarationSelectedStep = 0;
   ProductWithEditionList: ProductWithEditionDto[];
@@ -63,14 +63,72 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
     }
     this.loading = true;
     this.dataFetched = false;
-    this._editionService.getProductWithEdition(this.IncludeProductId, this.ExcludeProductId, this.OnlyAvailableProducts).subscribe(result => {
-      this.loading = false;
-      this.dataFetched = true;
-      this.ProductWithEditionList = result;
-      this.showModules = 2;
-    })
+    this._editionService.getProductWithEdition(this.IncludeProductId, this.ExcludeProductId,0, this.OnlyAvailableProducts)
+      .subscribe(result => {
+        debugger
+        this.loading = false;
+        this.dataFetched = true;
+        this.ProductWithEditionList = this.SetRedundentModulesData(result);
+        this.showModules = 2;
+      })
   }
-  isFree(edition? :EditionList): boolean {
+  SetRedundentModulesData(data: ProductWithEditionDto[]): ProductWithEditionDto[]{
+    if(data != null && data != undefined && data.length > 0)
+    {
+      data.forEach(product =>
+        {
+          if(product != null && product != undefined && product.edition != null && product.edition.length > 0)
+          {
+            product.edition.forEach(edi =>
+              {
+                if(edi != null && edi != undefined && edi.module != null && edi.module != undefined && edi.module.length > 0)
+                {
+                  for(let modIndex =0; modIndex < edi.module.length; modIndex++)
+                  {
+                    let moduleData = edi.module.filter(x => x.moduleName == edi.module[modIndex].moduleName);
+                    if(moduleData != null && moduleData.length > 1) // if modules duplicate in edition
+                    {
+                      for(let i = 1; i < moduleData.length; i++)
+                      {
+                        // push duplicate module's submodules to module's subModules 
+                        if(moduleData[i].submodule != null && moduleData[i].submodule != undefined)
+                        {
+                        edi.module[modIndex].submodule.push(...moduleData[i].submodule);
+                        let tempModuleIndex = edi.module.findIndex(x => x.moduleId == moduleData[i].moduleId);
+                        edi.module.splice(tempModuleIndex, 1);      // Remove duplicate module
+                        }
+                      }
+                      // merge duplicate sub-modules
+                      if(edi.module[modIndex].submodule != null && edi.module[modIndex].submodule.length > 1)
+                      {
+                        for(let subModIndex =0; subModIndex < edi.module[modIndex].submodule.length; subModIndex++)
+                        {
+                          let subModuleData = edi.module[modIndex].submodule.filter(x => x.subModuleName == edi.module[modIndex].submodule[subModIndex].subModuleName);
+                          if(subModuleData != null && subModuleData.length > 1) // if sub modules duplicate in module
+                          {
+                            // un-comment this code after getting Sub Sub module data from API
+
+                            // for(let i = 1; i < subModuleData.length; i++)
+                            // {
+                            //   // push duplicate sub module's Sub-submodules to sub-module's Sub-subModules 
+                            //   edi.module[modIndex].submodule[subModIndex].submodule.push(...subModuleData[i].submodule);
+                            //   let tempSubModuleIndex = edi.module[modIndex].submodule.findIndex(x => x.subModuleID == subModuleData[i].subModuleID);
+                            //   edi.module[modIndex].submodule.splice(tempSubModuleIndex, 1);      // Remove duplicate sub-module
+                            // }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              });
+          }
+        });
+      return data;
+    }
+    return [];
+  }
+  isFree(edition?: EditionList): boolean {
     if (edition != null && edition != undefined) {
       if (edition.pricingtype != null && edition.pricingtype.length > 0) {
         return false;
@@ -138,11 +196,10 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
 
   }
   BuyNow(edition: EditionList, productName) {
-    if(this.IsTenantRegistration == true)
-    {
+    if (this.IsTenantRegistration == true) {
       this.ShowRegisterTenant(edition, productName);
     }
-    else{
+    else {
       this.Upgrade(edition, productName);
     }
   }
@@ -157,7 +214,7 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
     }
     this.upgradeClicked.emit(true);
   }
-  ShowRegisterTenant(edition: EditionList, productName){
+  ShowRegisterTenant(edition: EditionList, productName) {
     this.RegistarationSelectedStep = 1;
     this.showTenantRegistration = true;
     this.selectedEditionData = edition;
@@ -168,7 +225,7 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
       }
     }
   }
-  TenantSuccessfullyRegistered(tenantId){
+  TenantSuccessfullyRegistered(tenantId) {
     this.isTenantSuccessfullyRegister = true;
     this.isGoToCheckout = true;
     this.showTenantRegistration = false;

@@ -9,7 +9,7 @@ import { DependEditionDto, EditionServiceProxy, ModuleDto, PageModulesDto, SubMo
 })
 export class EditionModulesComponent extends AppComponentBase implements OnInit {
 
-  @Input() DependEditionData: any[];
+  @Input() DependEditionData: DependEditionDto[];  //DependEditionDto
   SelectedIndex: number = -1;
   SelectedModule: PageModulesDto;
   IsScrollable: boolean = false;
@@ -18,41 +18,55 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
   SubModuleList: SubModuleListDto[] = [];
   SubSubModuleList: SubSubModuleListDto[] = [];
   PageModuleList: PageModulesDto[];
-  TempPageModuleList: PageModulesDto[] = [];
+  ActualPageModuleList: PageModulesDto[] = [];
   PageSubModuleList: SubModulesDto[];
+  ActualPageSubModuleList: SubModulesDto[];
   IsDependentEditionModuleSelected: boolean = false;
   scrollLength = 500;
+  SelectedDependentEdition = null;
 
   constructor(injector: Injector, private _editionService: EditionServiceProxy) {
     super(injector);
   }
 
   ngOnInit(): void {
-    localStorage.setItem('dataSource', "this.dataSource.length");
+
   }
   // this method calls in create mode only
-  GetModuleList(productId) {
+  GetModuleList(productId, IsDependent = false) {
     this.PageModuleList = [];
     this.PageSubModuleList = [];
-    this.TempPageModuleList = new Array<PageModulesDto>();
-    this._editionService.getModuleList(productId).subscribe(result => {
-      if (result != null) {
-        this.PageModuleList = result.moduleList;
-        this.TempPageModuleList = this.PageModuleList;
-        this.PageSubModuleList = result.subModuleList;
-        this.CheckScrollable();
-      }
-    });
+    this.ActualPageModuleList = [];
+    this.ActualPageSubModuleList = [];
+    if (productId != null && productId > 0) {
+      this._editionService.getModuleList(productId).subscribe(result => {
+        if (result != null) {
+          this.PageModuleList = result.moduleList;
+          this.ActualPageModuleList.push(...this.PageModuleList);
+          this.PageSubModuleList = result.subModuleList;
+          this.ActualPageSubModuleList.push(...this.PageSubModuleList);
+          if (IsDependent) {
+            this.SetDependentEditionModules();
+          }
+          this.CheckScrollable();
+        }
+      });
+    }
   }
   // this method calls in edit mode only
   SetModuleDataForEdit(moduleData: ModuleDto[], productId) {
     this.PageModuleList = [];
     this.PageSubModuleList = [];
-    this._editionService.getModuleList(productId).subscribe(result => {
+    this.ActualPageModuleList = [];
+    this.ActualPageSubModuleList = [];
+    this._editionService.getModuleList(productId).subscribe(async result => {
       if (result != null) {
         this.PageModuleList = result.moduleList;
         this.PageSubModuleList = result.subModuleList;
-        this.RemoveDependentEditionModules();
+        this.ActualPageModuleList.push(...this.PageModuleList);
+        this.ActualPageSubModuleList.push(...this.PageSubModuleList);
+        // await this.RemoveDependentEditionModules();
+        await this.SetDependentEditionModules(true);
         if (moduleData != null && moduleData != undefined && moduleData.length > 0) {
           moduleData.forEach(ediModule => {
             // set module selection
@@ -62,6 +76,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
                   this.PageModuleList[i]["selected"] = true;
                   this.PageModuleList[i]["editionModuleId"] = ediModule.moduleId;
                   break;
+
                 }
               }
             }
@@ -94,29 +109,152 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
                 }
               });
             }
+            else {
+              // Remove module selection if all sub modules are un-selected
+              let moduleIndex = this.PageModuleList.findIndex(x => x.id == ediModule.pageModuleId)
+              this.PageModuleList[moduleIndex]["selected"] = false;
+            }
           })
         }
         this.CheckScrollable();
       }
     });
   }
-  RemoveDependentEditionModules(forEdit = true) {
-    if(!forEdit){
-      this.PageModuleList = this.TempPageModuleList;
-    }
-    if (this.DependEditionData != null && this.DependEditionData.length > 0) {
-      this.DependEditionData.forEach(edition => {
-        if (edition.moduleData != null && edition.moduleData.length > 0) {
-          edition.moduleData.forEach(element => {
-            let moduleIndex = this.PageModuleList.findIndex(obj => obj.displayName.toLowerCase() == element.moduleName.toLowerCase())
-            if (moduleIndex >= 0) {
-              this.PageModuleList.splice(moduleIndex, 1);
+
+  async SetDependentEditionModules(forEdit = false) {
+    if (this.PageModuleList != null && this.PageModuleList.length > 0) {
+      if (this.DependEditionData != null && this.DependEditionData != undefined && this.DependEditionData.length > 0) {
+        this.DependEditionData.forEach(depEdition => // Iterate dependent Edition
+        {
+          depEdition.moduleData.forEach(depModule => {
+            let moduleIndex = this.PageModuleList.findIndex(x => x.id == depModule.pageModuleId);
+            if (moduleIndex != -1) {
+              // set DepEdition Name on Module
+              if (this.PageModuleList[moduleIndex]["DepEditionName"] == null || this.PageModuleList[moduleIndex]["DepEditionName"] == undefined) {
+                this.PageModuleList[moduleIndex]["DepEditionName"] = depEdition.displayName;
+              }
+              else {
+                this.PageModuleList[moduleIndex]["DepEditionName"] = this.PageModuleList[moduleIndex]["DepEditionName"] + " | " + depEdition.displayName;
+              }
+              // set DepEditionSubModules data
+              let subModuleListIndex = this.PageSubModuleList.findIndex(x => x.moduleId == depModule.pageModuleId);
+              if (subModuleListIndex != -1) {
+                depModule.subModuleList.forEach(depSubModule => {
+                  let subModuleIndex = this.PageSubModuleList[subModuleListIndex].subModuleList.findIndex(x => x.id == depSubModule.pageModuleId);
+                  if (subModuleIndex != -1) {
+                    this.PageSubModuleList[subModuleListIndex].subModuleList[subModuleIndex]["selected"] = true;
+                    this.PageSubModuleList[subModuleListIndex].subModuleList[subModuleIndex]["dependent"] = true;
+                    // set DepSubSubModules Data
+                    if (depSubModule.subModuleList != null && depSubModule.subModuleList != undefined && depSubModule.subModuleList.length > 0) {
+                      depSubModule.subModuleList.forEach(depSubSubModule => {
+                        let subSubModuleIndex = this.PageSubModuleList[subModuleListIndex].subModuleList[subModuleIndex].subSubModuleList.findIndex(x => x.id == depSubSubModule.pageModuleId);
+                        if (subSubModuleIndex != -1) {
+                          this.PageSubModuleList[subModuleListIndex].subModuleList[subModuleIndex].subSubModuleList[subSubModuleIndex]["selected"] = true;
+                          this.PageSubModuleList[subModuleListIndex].subModuleList[subModuleIndex].subSubModuleList[subSubModuleIndex]["dependent"] = true;
+                        }
+                      });
+                    }
+                  }
+                });
+              }
             }
           });
-        }
-      })
+        });
+      }
     }
   }
+  // async RemoveDependentEditionModules(forEdit = true) {
+  //   if(this.PageModuleList != null && this.PageModuleList.length > 0)
+  //   {
+  //   if (!forEdit) {
+  //     this.ResetModuleList();
+  //   }
+  //   if (this.DependEditionData != null && this.DependEditionData != undefined && this.DependEditionData.length > 0) {
+  //     this.DependEditionData.forEach(depEdition => {  // Iterate dependent Edition
+  //       if(depEdition.moduleData != null && depEdition.moduleData.length > 0){
+  //         depEdition.moduleData.forEach(depModule =>    // Iterate dependent edition modules
+  //           {
+  //             if(depModule.subModuleList != null && depModule.subModuleList.length > 0) // if subModules exist in Dependent module
+  //             {
+  //               let moduleIndex = this.PageModuleList.findIndex( x => x.id == depModule.pageModuleId); 
+  //               if(moduleIndex >= 0)      // if Module exist in Dependent Modules list
+  //               {   
+  //                 let subModuleListIndex = this.PageSubModuleList.findIndex(x => x.moduleId == depModule.pageModuleId);
+  //                 if(subModuleListIndex >= 0) // index of SubModule list for dependent module
+  //                 {
+  //                   depModule.subModuleList.forEach(depSubModule =>       //  Iterate dependent edition Sub Modules
+  //                     {
+  //                       // find dependent edition submodule in Submodule list
+  //                       let subModuleIndex = this.PageSubModuleList[subModuleListIndex].subModuleList.findIndex(x => x.id == depSubModule.pageModuleId);
+  //                       if(subModuleIndex >= 0)   // if dependent edtion submodule exist in submdule list
+  //                       {
+  //                         if(depSubModule.subModuleList != null && depSubModule.subModuleList.length > 0)
+  //                         {
+  //                           // if dependent edition submodule having subSubmodules
+  //                           depSubModule.subModuleList.forEach(depSubSubModule =>   // Iterate dependent edition Sub Sub Modules
+  //                             {
+  //                               // find Sub Sub module Index
+  //                               let subSubModuleIndex = this.PageSubModuleList[subModuleListIndex].subModuleList[subModuleIndex].subSubModuleList.findIndex(x => x.id == depSubSubModule.pageModuleId);
+  //                               if(subSubModuleIndex >= 0)  //  if dependent edtion sub sub module exist in sub sub mdule list
+  //                               {
+  //                                 // Remove sub sub Module from Sub Sub Module list
+  //                                 this.PageSubModuleList[subModuleListIndex].subModuleList[subModuleIndex].subSubModuleList.splice(subSubModuleIndex, 1);
+  //                               }
+  //                             })
+  //                         }
+  //                         else
+  //                         {
+  //                           // if dependent edition submodule don't having subSubmodules
+  //                           // Remove subModule from SubModule list
+  //                           this.PageSubModuleList[subModuleListIndex].subModuleList.splice(subModuleIndex, 1);
+  //                         }
+  //                       }
+  //                     });
+  //                 }
+  //             }
+  //             }
+  //           });
+  //       }
+  //     });
+
+  //     // Remove submodules whose all sub-sub modules removed for dependent edition modules
+  //     this.ActualPageSubModuleList.forEach(module =>
+  //       {
+  //         let subModuleListIndex = this.PageSubModuleList.findIndex(x => x.moduleId == module.moduleId);
+  //         if(subModuleListIndex >= 0 && module.subModuleList != null && module.subModuleList.length > 0)
+  //         {
+  //           // module.subModuleList.forEach(subModule =>
+  //             // {
+  //               // if(subModule.subSubModuleList != null && subModule.subSubModuleList != undefined){
+  //                 let tempSubModules = this.PageSubModuleList[subModuleListIndex].subModuleList.filter(x => (x.subSubModuleList == null || x.subSubModuleList == undefined || x.subSubModuleList.length == 0));
+  //                 if(tempSubModules != null && tempSubModules != undefined && tempSubModules.length > 0)
+  //                 {
+  //                   tempSubModules.forEach(sModule => 
+  //                     {
+  //                       let tempSubModuleIndex = this.PageSubModuleList[subModuleListIndex].subModuleList.findIndex(x => x.id == sModule.id);
+  //                       if(tempSubModuleIndex >= 0)
+  //                       {
+  //                         this.PageSubModuleList[subModuleListIndex].subModuleList.splice(tempSubModuleIndex, 1);
+  //                       }
+  //                     })
+  //                 }
+  //               // }
+  //             // });
+  //           // Remove modules whose all sub modules removed for dependent edition modules
+  //           if(this.PageSubModuleList[subModuleListIndex].subModuleList == null || this.PageSubModuleList[subModuleListIndex].subModuleList.length == 0)
+  //           {
+  //             let moduleListIndex = this.PageModuleList.findIndex(x => x.id == this.PageSubModuleList[subModuleListIndex].moduleId);
+  //             if(moduleListIndex >= 0)
+  //             {
+  //               this.PageModuleList.splice(moduleListIndex, 1);
+  //             }
+  //             this.PageSubModuleList.splice(subModuleListIndex, 1);
+  //           }
+  //         }
+  //       })
+  //   }
+  // }
+  // }
   ScrollLeft() {
     let scroll = this.scrollLength;
     let ele = document.getElementById('module_content')
@@ -145,19 +283,17 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
       if (ele != null && ele != undefined) {
         const hasScrollableContent = ele.scrollWidth > ele.clientWidth;
         this.IsScrollable = hasScrollableContent;
-        
+
         this.CanScrollRight = this.IsScrollable;
         this.CanScrollLeft = false;
         // set auto selected in edit mode
-        if(this.PageModuleList != null && this.PageModuleList.length > 0)
-        {
-            let firstSelectedIndex = this.PageModuleList.findIndex(obj => obj["selected"] == true);
-            if(firstSelectedIndex >= 0)
-            {
+        if (this.PageModuleList != null && this.PageModuleList.length > 0) {
+          let firstSelectedIndex = this.PageModuleList.findIndex(obj => obj["selected"] == true || obj["DepEditionName"] != null);
+          if (firstSelectedIndex >= 0) {
             this.SelectModule(this.PageModuleList[firstSelectedIndex], firstSelectedIndex);
-            this.CanScrollLeft = firstSelectedIndex > 4 ? true :false;
-            ele.scrollLeft += this.scrollLength * firstSelectedIndex/4;
-            }
+            this.CanScrollLeft = firstSelectedIndex > 1 ? true : false;
+            ele.scrollLeft += this.scrollLength * firstSelectedIndex / 4;
+          }
         }
         if (ele.clientWidth > 0) {
           clearInterval(timer);
@@ -165,8 +301,8 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
       }
     }, 50)
   }
-  SelectDependentEditionModule(module, editionInx, index) {
-    debugger
+  SelectDependentEditionModule(module, editionName) {
+    this.SelectedDependentEdition = editionName;
     this.IsDependentEditionModuleSelected = true;
     this.SubSubModuleList = [];
     this.SubModuleList = [];
@@ -184,8 +320,8 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
         this.SubSubModuleList = [];
         if (this.SubModuleList != null && this.SubModuleList != undefined) {
           this.SubModuleList.forEach(subModule => {
-            if(subModule["subSubModules"] != null && subModule["subSubModules"] != undefined && subModule["subSubModules"].length > 0){
-              subModule["subSubModules"].forEach(obj =>{
+            if (subModule["subSubModules"] != null && subModule["subSubModules"] != undefined && subModule["subSubModules"].length > 0) {
+              subModule["subSubModules"].forEach(obj => {
                 let subSubModule = new SubSubModuleListDto();
                 subSubModule.id = obj.subModuleId;
                 subSubModule.displayName = obj.moduleName;
@@ -201,19 +337,41 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
   }
 
   SelectModule(module, index, isReset: boolean = false) {
+    this.SelectedDependentEdition = null;
     if (this.SelectedIndex >= 0 && this.SelectedIndex != index) {
       if (!this.SubModuleList) {
         this.SelectModuleAction(module, index, true, true);
       }
       else {
         let moduleChangeConfirmation = false;
-        let selectedSubModule = this.SubModuleList.filter(obj => obj["selected"] == true);
-        if (selectedSubModule != null && selectedSubModule != undefined && selectedSubModule.length > 0){
-          selectedSubModule.forEach(subModule =>{
-            if(subModule.subSubModuleList != null && subModule.subSubModuleList != undefined){
-              let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true);
-              if(selectedSubSubModIndex < 0){
+        let selectedSubModule = this.SubModuleList.filter(obj => obj["selected"] == true && !obj["dependent"]);
+        let selectedDepSubModule = this.SubModuleList.filter(obj => obj["selected"] == true && obj["dependent"]);
+        if (selectedSubModule != null && selectedSubModule != undefined && selectedSubModule.length > 0) {
+          let flag = 0;
+          selectedSubModule.forEach(subModule => {
+            if (subModule["selected"] == true) {
+              if (flag == 0) moduleChangeConfirmation = false;
+            if (subModule.subSubModuleList != null && subModule.subSubModuleList != undefined) {
+              let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true && !x["dependent"]);
+              if (selectedSubSubModIndex < 0) {
                 moduleChangeConfirmation = true;
+                flag++;
+              }
+            }
+          }
+          })
+        }
+        else if (selectedDepSubModule != null && selectedDepSubModule != undefined && selectedDepSubModule.length > 0) {
+          let flag = 0;
+          selectedDepSubModule.forEach(subModule => {
+            if (subModule["selected"] == true) {
+              if (flag == 0) moduleChangeConfirmation = false;
+              if (subModule.subSubModuleList != null && subModule.subSubModuleList != undefined) {
+                let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true && !x["dependent"]);
+                if (selectedSubSubModIndex < 0) {
+                  moduleChangeConfirmation = true;
+                  flag++;
+                }
               }
             }
           })
@@ -221,90 +379,89 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
         else {
           moduleChangeConfirmation = true;
         }
-        if(moduleChangeConfirmation == true){
+        if (moduleChangeConfirmation == true) {
           this.message.confirm(
             this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.displayName),
             this.l('AreYouSure'),
             isConfirmed => {
-              if(isConfirmed){
+              if (isConfirmed) {
                 this.SelectModuleAction(module, index, true, true);
               }
-              else{
+              else {
                 return;
               }
             }
           );
         }
-        else{
+        else {
           this.SelectModuleAction(module, index, isReset);
         }
       }
     }
-    else{
+    else {
       this.SelectModuleAction(module, index, isReset);
     }
   }
   async SelectModuleAction(module, index, isReset: boolean = false, isConfirmed = false) {
-      this.IsDependentEditionModuleSelected = false;
-      this.SubSubModuleList = [];
-      this.SubModuleList = [];
-      if(!isConfirmed){
-        this.SelectedIndex = index;
-        this.SelectedModule = module;
+    this.IsDependentEditionModuleSelected = false;
+    this.SubSubModuleList = [];
+    this.SubModuleList = [];
+    if (!isConfirmed) {
+      this.SelectedIndex = index;
+      this.SelectedModule = module;
+    }
+    if (isReset == true) {
+      // reset module selection
+      this.PageModuleList[this.SelectedIndex]["selected"] = false;       // reset module selection
+      if (this.PageSubModuleList != null && this.PageSubModuleList != undefined) {
+        this.PageSubModuleList.forEach(mod => {
+          if (this.SelectedModule != null && mod.moduleId == this.SelectedModule.id) {
+            if (mod.subModuleList != null && mod.subModuleList != undefined) {
+              mod.subModuleList.forEach(subMod => {        // reset Sub Module selection
+                if (!subMod["dependent"]) subMod["selected"] = false;
+                if (subMod.subSubModuleList != null && subMod.subSubModuleList != undefined) {
+                  subMod.subSubModuleList.forEach(subSubMod => {        // reset Sub Sub Module selection
+                    if (!subSubMod["dependent"]) subSubMod["selected"] = false;
+                  });
+                }
+              });
+            }
+          }
+        });
       }
-      if (isReset == true) {
-        // reset module selection
-        this.PageModuleList[this.SelectedIndex]["selected"] = false;       // reset module selection
-        if (this.PageSubModuleList != null && this.PageSubModuleList != undefined) {
-          this.PageSubModuleList.forEach(mod => {
-            if (this.SelectedModule != null && mod.moduleId == this.SelectedModule.id) {
-              if (mod.subModuleList != null && mod.subModuleList != undefined) {
-                mod.subModuleList.forEach(subMod => {        // reset Sub Module selection
-                  subMod["selected"] = false;
-                  if (subMod.subSubModuleList != null && subMod.subSubModuleList != undefined) {
-                    subMod.subSubModuleList.forEach(subSubMod => {        // reset Sub Sub Module selection
-                      subSubMod["selected"] = false;
-                    });
-                  }
-                });
-              }
+      this.SelectedModule = null;
+      this.SelectedIndex = -1;
+      if (isConfirmed) {  // when user confirm YES while module selection change without selct any sub-module
+        this.SelectModuleAction(module, index, false);
+      }
+    }
+    else {
+      this.PageModuleList[this.SelectedIndex]["selected"] = true;
+      let subModule = this.PageSubModuleList.filter(obj => obj.moduleId == module.id);
+      if (subModule != null && subModule != undefined && subModule.length > 0) {
+        this.SubModuleList = subModule[0].subModuleList;
+        this.SubSubModuleList = [];
+        let selectedSubModules = this.SubModuleList.filter(obj => obj["selected"] == true);
+        if (selectedSubModules != null && selectedSubModules != undefined) {
+          selectedSubModules.forEach(obj2 => {
+            if (obj2.subSubModuleList != null && obj2.subSubModuleList != undefined && obj2.subSubModuleList.length > 0) {
+              obj2.subSubModuleList.forEach(x => {
+                this.SubSubModuleList.push(x);
+              })
             }
           });
         }
-        this.SelectedModule = null;
-        this.SelectedIndex = -1;
-        if(isConfirmed){  // when user confirm YES while module selection change without selct any sub-module
-          this.SelectModuleAction(module, index, false);
-        }
       }
-      else {
-        this.PageModuleList[this.SelectedIndex]["selected"] = true;
-        let subModule = this.PageSubModuleList.filter(obj => obj.moduleId == module.id);
-        if (subModule != null && subModule != undefined && subModule.length > 0) {
-          this.SubModuleList = subModule[0].subModuleList;
-          this.SubSubModuleList = [];
-          let selectedSubModules = this.SubModuleList.filter(obj => obj["selected"] == true);
-          if (selectedSubModules != null && selectedSubModules != undefined) {
-            selectedSubModules.forEach(obj2 => {
-              if(obj2.subSubModuleList != null && obj2.subSubModuleList != undefined && obj2.subSubModuleList.length > 0){
-                obj2.subSubModuleList.forEach(x =>{
-                  this.SubSubModuleList.push(x);
-                })
-              }
-            });
-          }
-        }
-      }
+    }
   }
   SelectSubModule(subIndex) {
     this.PageSubModuleList.forEach(obj => {
       if (obj.moduleId == this.SelectedModule.id) {
         if (obj.subModuleList[subIndex]["selected"]) {
           obj.subModuleList[subIndex]["selected"] = false;
-          if(obj.subModuleList[subIndex].subSubModuleList != null && obj.subModuleList[subIndex].subSubModuleList != undefined)
-          {
-            obj.subModuleList[subIndex].subSubModuleList.forEach(x =>{
-              x["selected"] = false;
+          if (obj.subModuleList[subIndex].subSubModuleList != null && obj.subModuleList[subIndex].subSubModuleList != undefined) {
+            obj.subModuleList[subIndex].subSubModuleList.forEach(x => {
+              if (!x["dependent"]) x["selected"] = false;
             })
           }
         }
@@ -315,8 +472,8 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
         let selectedSubModules = obj.subModuleList.filter(obj1 => obj1["selected"] == true);
         if (selectedSubModules != null && selectedSubModules != undefined) {
           selectedSubModules.forEach(obj2 => {
-            if(obj2.subSubModuleList != null && obj2.subSubModuleList != undefined && obj2.subSubModuleList.length > 0){
-              obj2.subSubModuleList.forEach(subSubModule =>{
+            if (obj2.subSubModuleList != null && obj2.subSubModuleList != undefined && obj2.subSubModuleList.length > 0) {
+              obj2.subSubModuleList.forEach(subSubModule => {
                 this.SubSubModuleList.push(subSubModule);
               })
             }
@@ -332,7 +489,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
           mod.subModuleList.forEach(subMod => {
             if (subMod.subSubModuleList != null && subMod.subSubModuleList != undefined) {
               let subSubIndex = subMod.subSubModuleList.findIndex(x => x.id == subSubModuleId);
-              if(subSubIndex >= 0){
+              if (subSubIndex >= 0) {
                 if (subMod.subSubModuleList[subSubIndex]["selected"]) {
                   subMod.subSubModuleList[subSubIndex]["selected"] = false;
                 }

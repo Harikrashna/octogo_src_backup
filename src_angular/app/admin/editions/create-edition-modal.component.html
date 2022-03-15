@@ -37,7 +37,7 @@
                             <fieldset [disabled]="isEdit" class="checkbox-list" *ngIf="ProductId > 0">
                                 <label for="EnhancedEdition" class="checkbox">
                                     <input id="EnhancedEdition" type="checkbox" [(ngModel)]="IsDependent"
-                                        (ngModelChange)="getEditions()" name="EnahnceCheck" />
+                                        (ngModelChange)="getEditions();ResetModuleList()" name="EnahnceCheck" />
                                     <span></span>
                                     {{"DependentEdition" | localize}}
                                     <div *ngIf="IsDependent">*</div>
@@ -71,7 +71,7 @@
                                 </label>
                             </fieldset>
                         </tab>
-                        <tab heading="{{'Modules' | localize}}" class="p-5">
+                        <tab heading="{{'Modules' | localize}}" class="p-5" [disabled]="!moduleDataFeched">
                             <!-- <feature-tree #featureTree hidden></feature-tree> -->
                             <!-- <app-add-edition-modules #editionModules></app-add-edition-modules> -->
                             <app-edition-modules #editionModule></app-edition-modules>

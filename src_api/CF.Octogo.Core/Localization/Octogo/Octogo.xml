@@ -1233,8 +1233,6 @@
 		<text name="DeletingService">Delete Service </text>
 		<text name="UpdateServiceMessage">Updated Successfully</text>
 		<text name="ServiceDeleteWarningMessage">Service {0} will be deleted </text>
-
-
 		<text name="Department">Department</text>
 		<text name="DepartmentHeaderInfo">Manage Departments</text>
 		<text name="DepartmentName">Department Name</text>
@@ -1347,6 +1345,7 @@
 		<text name="SubSubModuleList">Sub Sub-module List</text>
 		<text name="ShowTenantChange">Show client change on login</text>
 		<text name="PleaseSelectValidModuleAndSubModules">Please choose module and sub-modules properly</text>
+		<text name="PleaseSelectValidFeatureAndSubFeature">Please choose feature and sub feature</text>
 		<text name="EditionModuleChangeConfirmationMsg">Do you want to change the module because you didn't choose any sub-module of {0}?</text>
 		<text name="SelectProduct">Select Product</text>
 		<text name="SelectEdition">Select Package</text>
@@ -1389,14 +1388,21 @@
 		<text name="ProcessFailed_SubTitle">There is something wrong!! failed to complete setup process</text>
 		<text name="ProcessFailed_Title">Failed to tenant setup process</text>
 		<text name="ErrorMessage">Error Message</text>
-		<text name="SetupCompleted_SubTitle">Congrats!! your setup process is completed</text>
-		<text name="SetupCompleted_Title">Welcome to Octogo.</text>
+		<text name="SetupCompleted_SubTitle">Congratulations!!!</text>	
+		<text name="Regards">Team OctoGo</text>
+		<text name="SetupCompleted_Title">Congratulations!!!</text>
 		<text name="ErrorStage">Error Stage</text>
 		<text name="StackTrace">Stack Trace</text>
 		<text name="UserEmail">User Email</text>
-		<text name="TenantSetupComplete_Subject">Octogo teanant setup completed</text>
+		<text name="TenantSetupComplete_Subject">Application setup completion</text>
+		<text name="TeananrStupCompleteBody">Your OctoGo application ({0}) setup is completed and ready to use. Kindly click on the below link to start using the application:</text>
+		<text name="TenantProductSelection_Subject">Product selection</text>
+		<text name="TeanantProductSelectionBody"> You have successfully selected the {0}  product and we have received the payment against the same. The application setup is in progress. It would  be ready to use in the next few hours.</text>
+		<text name="Thanks">Thank you for choosing us!</text>
+		<text name="DearUser">Dear User</text>
 		<text name="TenantSetupFailed_Subject">Octogo teanant setup failed</text>
 		<text name="AvailableAddons">Available Addons</text>
+		
 		<text name="Congratulations">Congratulations!!!</text>
 		<text name="ClientRegistrationHeaddingMsg">Your product setup starts as soon as you register your company.</text>
 		<text name="TenantRegistrationCompleteWithSubscriptionMsg">You have successfully selected the {0} product. The application setup is in progress.It will be ready to use within 24 hours.</text>
@@ -1415,6 +1421,14 @@
 		<text name="CCShipmentAllowed">CCShipmentAllowed</text>
 		<text name="PartShipmentAllowed">Part Shipment Allowed</text>
 		<text name="CheckModulus7">CheckModulus 7</text>
+		<text name="CompanyName">Company Name</text>
+	    <text name="IsStandalone">Standalone</text>
+		<text name="ProductProperties">Product Properties</text>
+		<text name="PleaseExtendPackageBeforeAddonSubscription">Please Extend Package before subscribe Addon</text>
+		<text name="PleaseExtendPackageBeforeExtendAddon">Please Extend Package before extend Addon</text>
+		<text name="UpgradePackage">Upgrade Package</text>
+		<text name="ExtendAddon">Extend Addon</text>
+		<text name="SubscribeAddon">Addon Subscription</text>
 	</texts>
 </localizationDictionary>
 

@@ -333,9 +333,8 @@
                                                     </div>
                                                 </div>
 
-
+                                                <!-- (click)="FreeTrail(editionWithFeatures)" -->
                                                 <button class="btn btn-warning btn-block btn-lg"
-                                                    (click)="FreeTrail(editionWithFeatures)"
                                                     *ngIf="isUserLoggedIn && !isFree(editionWithFeatures) && editionWithFeatures.trialDayCount > 0">
                                                     {{"FreeTrial" | localize}}
                                                 </button>

@@ -10,7 +10,7 @@
                             <i class="fa fa-arrow-left"></i> {{"Back" | localize}}
                         </button>
                     </div>
-                    <div class="col-sm-9 pr-0">
+                    <div class="col-sm-9 pl-0">
                         <div class="row p-fluid" style="width: 100%;">
                             <div class="col-sm-5">
                                 <span class="p-float-label">
@@ -25,7 +25,16 @@
                                     <label for="dropdown" >{{'Status' | localize}}</label>
                                 </span>
                             </div>
-                            <div class="col-sm-1">
+                            <div class="col-lg-3 d-flex">    
+                                <button (click)="Search()" class="btn btn-primary" type="submit"><i
+                                        class="flaticon-search-1" [attr.aria-label]="l('Search')"></i>
+                                </button>                         
+                                <button (click)="Refresh()" class="btn btn-primary d-flex" type="submit"><i
+                                        class="fa fa-sync"></i>
+                                    Refresh
+                                </button> 
+                           </div>
+                            <!-- <div class="col-sm-1">
                                     <button (click)="Search()" class="btn btn-primary" type="submit"><i
                                             class="flaticon-search-1" [attr.aria-label]="l('Search')"></i>
                                     </button>                         
@@ -35,7 +44,7 @@
                                             class="fa fa-sync"></i>
                                         {{ 'Refresh' | localize}}
                                     </button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                    

@@ -43,7 +43,7 @@ export class AppNavigationService {
                     new AppMenuItem('Services','Pages.Administration.Services', 'flaticon-folder-1', '/app/admin/master/services'),
                     new AppMenuItem('UserType','Pages.Administration.UserType', 'flaticon-folder-1', '/app/admin/master/usertype'),
                     new AppMenuItem('Department','Pages.Administration.Department', 'flaticon-folder-1', '/app/admin/master/department'),
-                    // new AppMenuItem('Airline','Pages.Administration.Airline','flaticon-line-graph','/app/admin/master/airline'),
+                    new AppMenuItem('Airline','Pages.Administration.Airline','flaticon-line-graph','/app/admin/master/airline'),
                     new AppMenuItem('Industry','Pages.Administration.Industry', 'flaticon-folder-1', '/app/admin/master/industry'),
                     new AppMenuItem('Designation', 'Pages.Administration.Designation', 'flaticon-medical', '/app/admin/master/designation'),
                     new AppMenuItem('City','Pages.Administration.City','flaticon-line-graph','/app/admin/master/city'),

@@ -9,6 +9,7 @@ import { TenantProductSetupSummaryComponent } from './tenant-product-setup-summa
 import { PackageDetailedInformationComponent } from './package-detailed-information/package-detailed-information.component';
 import { PackageSelectionModule } from './package-selection/package-selection.module';
 import { SubscriptionPaymentHistoryComponent } from './subscription-payment-history/subscription-payment-history.component';
+import { PackagesPaymentModule } from './packages-payment/packages-payment.module';
 
 
 
@@ -21,7 +22,8 @@ import { SubscriptionPaymentHistoryComponent } from './subscription-payment-hist
         AppSharedModule,
         AdminSharedModule,
         SubscriptionManagementRoutingModule,
-        PackageSelectionModule],
+        PackageSelectionModule,
+        PackagesPaymentModule],
     exports: [SharedPackageDetailsComponent, SubscribedProductsDetailsComponent]
 })
 export class SubscriptionManagementModule {

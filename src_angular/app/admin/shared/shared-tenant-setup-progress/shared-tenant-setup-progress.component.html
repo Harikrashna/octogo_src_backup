@@ -63,41 +63,40 @@
     <div class="d-flex">
         <div style="width: 16%;  text-align: center;">
             <b>{{"DataBase"| localize}}</b><br />
-            <span class="text-primary text-10">{{TenantData.isDBSetup && TenantData.dbName != null? TenantData.dbName :
-                "NA"}}</span><br />
+            <span class="text-primary text-10">{{TenantData.dbName}}</span><br />
             <span class="text-10">{{TenantData.dbSetupCompleteDt | date:'medium'}}</span>
         </div>
         <div style="width: 16%;  text-align: center;">
             <b>{{"ApplicationUrl"| localize}}</b><br />
             <span class="text-primary text-10">
                 <span *ngIf="TenantData.appURAL != null"> {{TenantData.appURAL}} </span>
-                <span *ngIf="TenantData.appURAL == null">NA</span>
+                <!-- <span *ngIf="TenantData.appURAL == null">NA</span> -->
             </span><br />
             <span class="text-10"> {{TenantData.appURLSetupCompleteDt | date:'medium'}}</span>
         </div>
         <div style="width: 16%;  text-align: center;">
             <b>{{"WindowService"| localize}}</b><br />
-            <span class="text-primary text-10">{{TenantData.isAPIURLSetup && TenantData.apiURL != null? TenantData.apiURL:
-                "NA"}}</span><br />
+            <!-- <span class="text-primary text-10">{{ TenantData.apiURL}}</span><br /> -->
             <span class="text-10"> {{TenantData.wsSetupCompleteDt | date:'medium'}}</span>
         </div>
         <div style="width: 16%;  text-align: center;">
             <b>{{"ApplicationHosted"| localize}}</b><br />
-            <span class="text-primary text-10">NA</span><br />
+            
             <span class="text-10">{{TenantData.applicationHostDt | date:'medium'}}</span>
         </div>
         <div style="width: 16%;  text-align: center;">
             <b>{{"ApiUrl"| localize}}</b><br />
-            <span class="text-primary text-10">NA</span><br />
+           
             <span class="text-10">{{TenantData.apiurlSetupCompleteDt | date:'medium'}}</span>
         </div>
 
         <div style="width: 16%;  text-align: center;">
             <b>{{"Completed"| localize}}</b><br />
             <span class="text-10 " 
-                [ngStyle]="{'color':TenantData.errorMessage  ? 'red' : '#187DE4' }">{{TenantData.isDBSetup &&
+            [ngStyle]="{'color':TenantData.isAPIURLSetup && TenantData.isApplicationHost 
+            && TenantData.isWSSetup  && TenantData.isApplicationHost && TenantData.isDBSetup  ?'#187DE4':(TenantData.errorMessage? 'red':'#187DE4') }">{{TenantData.isDBSetup &&
                 TenantData.isAPIURLSetup && TenantData.isApplicationHost && TenantData.isWSSetup
-                && TenantData.isAPIURLSetup ? l('ReadyToUse'):(TenantData.errorMessage?l('Failed'):l('ProcessingWithThreeDot'))}}</span><br />
+                && TenantData.isAPIURLSetup  ? l('ReadyToUse'):(TenantData.errorMessage?l('Failed'):'')}}</span><br />
         </div>
     </div>
 </div>
