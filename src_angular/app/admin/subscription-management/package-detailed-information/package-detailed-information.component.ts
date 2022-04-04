@@ -132,7 +132,7 @@ checkExpiryTime(remainingDays){
  }
  ExtendPackage(editionId, productName){
   this.dataFetched = false;
-  this._editionService.getProductWithEdition(this.PackageDetails.productId, 0 ,editionId, false)
+  this._editionService.getProductWithEdition(this.PackageDetails.productId, 0 ,editionId, false, false)
   .subscribe(result => {
     this.dataFetched = true;
     if(result != null){
@@ -156,7 +156,7 @@ checkExpiryTime(remainingDays){
  {
   this.dataFetched = false;
   this.selectedAddonsData = [];
-  this._editionService.getProductWithEdition(this.PackageDetails.productId, 0 ,addon.editionId, false)
+  this._editionService.getProductWithEdition(this.PackageDetails.productId, 0 ,this.PackageDetails.editionId, false, true)
   .subscribe(result => {
     this.dataFetched = true;
     if(result != null){
@@ -166,8 +166,8 @@ checkExpiryTime(remainingDays){
       let adn = this.selectedEditionData.addons.filter(obj => obj.addOnId == addon.addonId);
       if(adn != null && adn != undefined && adn.length > 0)
       {
-        // pop pricing data of Addon that more then remaining days of Package subscription
-        if(adn[0].addonPrice != null && adn[0].addonPrice.length > 0 &&  this.PackageDetails.endDate != null){
+        // pop pricing data of Non-standalone  Addon that more then remaining days of Package subscription
+        if(!adn[0].isStandAlone && adn[0].addonPrice != null && adn[0].addonPrice.length > 0 &&  this.PackageDetails.endDate != null){
           adn[0].addonPrice = adn[0].addonPrice.filter( x=> x.days < this.PackageDetails.remainingDays)
           if(adn[0].addonPrice != null && adn[0].addonPrice.length > 0){
             this.selectedAddonsData.push(adn[0]);
@@ -189,7 +189,7 @@ checkExpiryTime(remainingDays){
  {
   this.dataFetched = false;
   this.selectedAddonsData = [];
-  this._editionService.getProductWithEdition(this.PackageDetails.productId, 0 ,this.PackageDetails.editionId, false)
+  this._editionService.getProductWithEdition(this.PackageDetails.productId, 0 ,this.PackageDetails.editionId, false, true)
   .subscribe(result => {
     this.dataFetched = true;
     if(result != null){
@@ -198,8 +198,8 @@ checkExpiryTime(remainingDays){
       if(adn != null && adn != undefined && adn.length > 0)
       {
         this.pageHeadding = this.l("ExtendAddon");
-        // pop pricing data of Addon that more then remaining days of Package subscription
-        if(adn[0].addonPrice != null && adn[0].addonPrice.length > 0 &&  this.PackageDetails.endDate != null){
+        // pop pricing data of Non-standalone Addon that more then remaining days of Package subscription
+        if(!adn[0].isStandAlone && adn[0].addonPrice != null && adn[0].addonPrice.length > 0 &&  this.PackageDetails.endDate != null){
           adn[0].addonPrice = adn[0].addonPrice.filter( x=> (addon.remainingDays + x.days) < this.PackageDetails.remainingDays)
           if(adn[0].addonPrice != null && adn[0].addonPrice.length > 0){
             this.IsAddonExtend = true;

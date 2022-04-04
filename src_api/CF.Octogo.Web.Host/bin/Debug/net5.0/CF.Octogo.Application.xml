@@ -160,6 +160,13 @@
             <param name="tenantId"></param>
             <returns></returns>
         </member>
+        <member name="M:CF.Octogo.MultiTenancy.TenantAppService.CreateUpdateTenantNew(CF.Octogo.MultiTenancy.Dto.CreateEditTenantInputDto)">
+            <summary>
+            Create Tenant by Host Admin user with Subscription and Transactional(AWB) charges
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
         <member name="T:CF.Octogo.OctogoApplicationModule">
             <summary>
             Application layer module of the application.

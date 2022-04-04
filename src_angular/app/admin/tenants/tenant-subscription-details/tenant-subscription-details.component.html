@@ -1,0 +1,71 @@
+<div appBsModal #subscriptionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="subscriptionModal"
+     aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{"TenantName" | localize}}&nbsp;:&nbsp;{{TenantName}}</span>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="close()">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div *ngIf="SubscribedEditionsData != null && SubscribedEditionsData?.length > 0">
+                        <div *ngFor="let edition of SubscribedEditionsData" class="card p-4 mb-3"
+                        [ngClass]="edition.setupStatus == 'Failed' ?'setup-failed':null">
+                            <div class="d-flex">
+                            <span class="text-primary text-16">{{edition.productName}}&nbsp;-&nbsp;</span>
+                            <span class="text-success text-16">{{edition.editionName}}</span>
+                            <span class="price-edition ml-2">{{edition.pricing}}</span>
+                            <span class="start-date-card text-muted"> ({{edition.subscriptionStartDateUtc | date}} -</span>
+                                        <span class="end-date-card" *ngIf="edition.subscriptionEndDateUtc == null">{{'UnlimitedLimit' |
+                                            localize}}</span>
+                                        <span class="end-date-card" *ngIf="edition.subscriptionEndDateUtc != null">
+                                            {{edition.subscriptionEndDateUtc | date}}
+                                        </span>
+                                        <span class="brkt">)</span>
+                        </div>
+                           <div *ngIf="edition.isSetupCompleted != true" class="d-flex">
+                            <span>{{ 'ProductSetupStatus' | localize}}</span>&nbsp;:&nbsp;
+                            <span [ngClass]="edition.setupStatus == 'Failed'? 'text-danger':'text-muted'">{{ edition.setupStatus }}</span>
+                           </div>  
+                           <div *ngIf="edition.setupErrorMsg != null && edition.setupErrorMsg != ''" class="d-flex">
+                            <span>{{ 'ErrorMessage' | localize}}</span>&nbsp;:&nbsp;
+                            <span class="text-danger">{{ edition.setupErrorMsg }}</span>
+                           </div>           
+                        <div class="add mt-2" *ngIf="edition.addon?.length > 0">
+                            <div class="subscribe-card">
+                                {{'Addons' | localize}}
+                            </div>
+                            <div class="adodetails">
+                                <div class="adolist" *ngFor="let ado of edition.addon; let adnIndex = index">
+                                    <p class="text-muted  d-flex text-10">
+                                        <span class="adname">{{ado.addonName }}</span>
+                                        <span class="price-edition ml-2">{{ado.pricing}}</span>
+                                        <span class="start-date-card text-muted"> ({{ado.subscriptionStartDateUtc | date}} -</span>
+                                        <span class="end-date-card" *ngIf="ado.subscriptionEndDateUtc == null">{{'UnlimitedLimit' |
+                                            localize}}</span>
+                                        <span class="end-date-card" *ngIf="ado.subscriptionEndDateUtc != null">
+                                            {{ado.subscriptionEndDateUtc | date}}
+                                        </span>
+                                        <span class="brkt">)</span>
+                                    </p>
+                                </div>
+                                </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!(SubscribedEditionsData != null && SubscribedEditionsData?.length > 0)" 
+                        class="primeng-no-data text-danger">
+                        {{'NoData' | localize}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-primary font-weight-bold" (click)="close()">{{"Close" | localize}}</button>
+                </div>
+        </div>
+    </div>
+</div>
+

@@ -6,6 +6,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { IOrganizationUnitsTreeComponentData, OrganizationUnitsTreeComponent } from '../shared/organization-unit-tree.component';
 import { map as _map, filter as _filter } from 'lodash-es';
 import { finalize } from 'rxjs/operators';
+import { InputValidationService } from '@account/shared/input-validation.service';
 
 @Component({
     selector: 'createOrEditUserModal',
@@ -40,7 +41,8 @@ export class CreateOrEditUserModalComponent extends AppComponentBase {
     constructor(
         injector: Injector,
         private _userService: UserServiceProxy,
-        private _profileService: ProfileServiceProxy
+        private _profileService: ProfileServiceProxy,
+        public _validationService: InputValidationService
     ) {
         super(injector);
     }

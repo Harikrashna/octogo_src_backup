@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Abp.Application.Features;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
@@ -15,6 +16,7 @@ using CF.Octogo.Configuration;
 using CF.Octogo.DashboardCustomization.Definitions;
 using CF.Octogo.DashboardCustomization.Dto;
 using CF.Octogo.Data;
+using CF.Octogo.Editions.Dto;
 using Newtonsoft.Json;
 
 namespace CF.Octogo.DashboardCustomization
@@ -342,7 +344,7 @@ namespace CF.Octogo.DashboardCustomization
         /// </summary>
         /// <param name="TenantId"></param>
         /// <returns></returns>
-        public async Task<List<TenantEditionAddonDto>> GetTenantEditionAddonDetailsByTenantId(int tenantId)
+        public async Task<TenantSubscriotionsDto> GetTenantEditionAddonDetailsByTenantId(int tenantId)
         {
             long? userId = AbpSession.UserId;
             var user = userId != null ? _userRepository.Get((long)userId) : null;
@@ -356,6 +358,7 @@ namespace CF.Octogo.DashboardCustomization
             if (ds.Tables.Count > 0)
             {
                 var res = SqlHelper.ConvertDataTable<TenantEditionAddonRet>(ds.Tables[0]);
+                var addonRes = SqlHelper.ConvertDataTable<SubscribedStandAloneAddonRet>(ds.Tables[1]);  // StandAlone Addons
                 var result = res.Select(rw => new TenantEditionAddonDto
                 {
                     ProductName = rw.ProductName,
@@ -371,12 +374,59 @@ namespace CF.Octogo.DashboardCustomization
                     Addon = rw.Addon != null ? JsonConvert.DeserializeObject<List<SubscribedAddonDto>>(rw.Addon.ToString()) : null
 
                 }).ToList();
-                return result;
+                var addonResult = addonRes.Select(rw => new SubscribedStandAloneAddonDto
+                {
+                    AddonName = rw.AddonName,
+                    StartDate = rw.StartDate,
+                    EndDate = rw.EndDate,
+                    AddonPrice = rw.AddonPrice,
+                    ModuleList = rw.ModuleList != null ? PrepareFeaturesList(JsonConvert.DeserializeObject<List<StandAloneAddonModulesDto>>(rw.ModuleList.ToString())) : null
+                }).ToList();
+                return new TenantSubscriotionsDto
+                {
+                    TenantEditionAddon = result,
+                    StandAloneAddon = addonResult
+                };
             }
             else
             {
                 return null;
             }
+        }
+        private List<StandAloneAddonModulesDto> PrepareFeaturesList(List<StandAloneAddonModulesDto> modules)
+        {
+            List<StandAloneAddonModulesDto> result = new List<StandAloneAddonModulesDto>();
+            var allFeatures = FeatureManager.GetAll().Where(f => f.Scope.HasFlag(FeatureScopes.All));
+            var featureDtos = ObjectMapper.Map<List<FlatFeatureDto>>(allFeatures).OrderBy(f => f.ParentName).ToList();
+            featureDtos.ForEach(feature =>
+            {
+                var featureIndex = modules.FindIndex(x => x.ModuleName == feature.Name);
+                if(featureIndex != -1)
+                {
+                    if(feature.ParentName == null)
+                    {
+                        result.Add(new StandAloneAddonModulesDto { ModuleName = feature.DisplayName, SubModule = GetSubFeatures(modules, featureDtos, feature.Name) });
+                    }
+                }
+            });
+            return result;
+        }
+        private List<StandAloneAddonModulesDto> GetSubFeatures(List<StandAloneAddonModulesDto> modules, List<FlatFeatureDto> features, string parentName)
+        {
+            List<StandAloneAddonModulesDto> result = new List<StandAloneAddonModulesDto>();
+            var childFeatures = features.Where(f => f.ParentName == parentName).ToList();
+            if(childFeatures != null && childFeatures.Count > 0)
+            {
+                childFeatures.ForEach(feature =>
+                {
+                    var featureIndex = modules.FindIndex(x => x.ModuleName == feature.Name);
+                    if (featureIndex != -1)
+                    {
+                        result.Add(new StandAloneAddonModulesDto { ModuleName = feature.DisplayName });
+                    }
+                });
+            }
+            return result;
         }
         public async Task<List<TenantEditionAddonModulesDto>> GetTenantEditionAddonModuleDetails(int EditionId)
         {

@@ -1,0 +1,112 @@
+<div class="row" *ngIf="SelectedPackages?.length > 0 && dataFetched" [busyIf]="!dataFetched">
+    <div class="col-sm-10">
+    <div class="pricing-div" *ngFor="let package of SelectedPackages; let prodIndex = index;">
+        <div class="edition-card d-flex">
+            <div class="edition-name-card">
+                <div class="d-flex">
+                    <i class="fa fa-box text-25 text-primary  mt-5 pr-3"></i>
+                    <span>
+                        <h2 class="text-success text-16 mt-2">{{package?.SelectedEditionData?.editionName}}</h2>
+                        <h4 class="text-danger text-14">{{package?.ProductName}}</h4>
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="package?.SelectedEditionData?.pricingtype?.length > 0" class="d-flex">
+                <div class="price-card cursor"
+                    *ngFor="let price of package?.SelectedEditionData.pricingtype; let i =index"
+                    (click)="EditionPriceChange(prodIndex, price, i)">
+                    <p class="text-primary text-12">{{price.name}}</p>
+                    <p class="text-12 text-success">$&nbsp;{{price.price - (price.price*price.discount/100) | number :
+                        '1.2-2'}}</p>
+                    <!-- <p class="text-10 text-danger ml-3" *ngIf="price.discount > 0">$&nbsp;{{price.price | number : '1.2-2'}}</p> -->
+                    <span class="d-flex text-12 text-success">
+                        <span>Price:&nbsp;</span>
+                        <input class="small-text-field form-control text-primary mt-1 ml-7" type="text" name="Amount"
+                            [(ngModel)]="price.price"
+                            (keypress)="_validationService.IsNumericWithDot($event,price.price,2)"
+                            (keyup)="EditionPriceChange(prodIndex, price, i)">$
+                    </span>
+                    <span class="d-flex text-12 text-success">
+                        <span>Discount:&nbsp;</span>
+                        <input class="small-text-field form-control text-primary mt-1" type="text" name="Discount"
+                            [(ngModel)]="price.discount" (keypress)="_validationService.IsNumeric($event, true)"
+                            maxlength="2" (keyup)="EditionPriceChange(prodIndex, price, i)">$
+                    </span>
+                    <i class="fa fa-check text-12 edition-check-m" *ngIf="price['selected']==true"></i>
+                </div>
+            </div>
+            <div *ngIf="!(package?.SelectedEditionData?.pricingtype?.length > 0)">
+                <h4 class="text-primary mt-5 ml-3">{{'Free' | localize}} </h4>
+            </div>
+        </div>
+        <div *ngIf="package?.SelectedAddonsData?.length > 0">
+            <div class="addon-card d-flex" *ngFor="let addon of package?.SelectedAddonsData; let i = index">
+                <div class="edition-name-card">
+                    <div class="d-flex">
+                        <i class="fa fa-book text-25 text-success  mt-7 pr-3"></i>
+                        <span>
+                            <h2 class="text-success text-16 mt-4">{{addon.addOnName}}</h2>
+                        </span>
+                    </div>
+                </div>
+                <div *ngIf="addon?.addonPrice?.length > 0" class="d-flex">
+                    <div *ngFor="let price of addon.addonPrice; let j = index">
+                        <div class="addon-price-card cursor" (click)="AddonPriceChange(prodIndex, addon, i, j)"
+                            *ngIf="!(package?.SelectedEditionData?.pricingtype?.length > 0) || price.days <= package.selectedEditionPricingDays">
+                            <p class="text-primary text-12">{{price.name}}</p>
+                            <p class="text-10 text-danger" *ngIf="price.discount > 0">$&nbsp;<s>{{price.price | number :
+                                    '1.2-2'}}</s></p>
+                            <p class="text-12 text-success">$&nbsp;{{price.price - (price.price*price.discount/100) |
+                                number : '1.2-2'}}
+                            </p>
+                            <i class="fa fa-check text-12 addon-check-m" *ngIf="price['selected']==true"></i>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!(addon?.addonPrice?.length > 0)">
+                    <h4 class="text-primary mt-5 ml-3">{{'Free' | localize}} </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="col-sm-2 cart-div">
+        <div *ngFor="let pkg of SelectedPackages">
+            <div class="row" *ngIf="pkg.selectedEditionPricing?.Price > 0">
+                <div class="col-sm text-14">
+                    <span class="text-success">{{pkg.selectedEditionPricing?.EditioName}}</span>
+                    <span class="text-primary float-right">$&nbsp;
+                        {{(pkg.selectedEditionPricing?.Price -(pkg.selectedEditionPricing?.Price*pkg.selectedEditionPricing?.Discount)/100) | number :
+                        '1.2-2'}}</span>
+                </div>
+            </div>
+            <div *ngIf="pkg?.selectedAddonPricing?.length > 0" class="row">
+                <div *ngFor="let addon of pkg.selectedAddonPricing" class="col-sm-12">
+                    <div *ngIf="addon?.Price > 0"  class="text-12">
+                        <span class="text-success">{{addon?.AddonName}}</span>
+                        <span class="text-primary float-right">$&nbsp;
+                            {{(addon?.Price - (addon?.Price*addon?.Discount)/100) | number : '1.2-2'}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <span class="text-success text-16 bold">{{'Total' |localize }}</span>
+                <span class="float-right text-primary text-16 bold">$&nbsp;{{CalculateTotal(0) | number :
+                    '1.2-2'}}</span>
+            </div>
+        </div>
+        <hr style="width: 100%;" />
+    </div>
+</div>
+<div class="primeng-no-data text-danger" *ngIf="!(SelectedPackages?.length > 0) && dataFetched">
+    {{'NoData' | localize}}
+</div>
+
+<div class="d-flex justify-content-center">
+    <div *ngIf="!(SelectedPackages?.length > 0) && !dataFetched" class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>

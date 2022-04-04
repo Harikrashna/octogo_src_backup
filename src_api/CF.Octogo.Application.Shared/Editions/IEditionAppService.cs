@@ -32,5 +32,6 @@ namespace CF.Octogo.Editions
         Task<DataSet> GetMasterDataForEdition();
         Task<EditionModulesDto> GetEditionModules(int EditionId);
         Task<List<AvailableAddonModulesDto>> GetAvailableAddonBySubscribedEditionId(int EditionId);
+        List<AvailableModuleDto> PrepareFeaturesList(List<AvailableModuleDto> modules);
     }
 }

@@ -585,46 +585,48 @@ namespace CF.Octogo.Editions
         }
         public async Task<List<ProductWithEditionDto>> GetProductWithEdition(ProductWithEditionInputDto input)
         {
-            List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
-            ProductWithEditionDto result = new ProductWithEditionDto();
-            SqlParameter[] parameters = new SqlParameter[5];
-            parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
-            parameters[1] = new SqlParameter("IncludeProductId", input.IncludeProductId);
-            parameters[2] = new SqlParameter("ExcludeProductId", input.ExcludeProductId);
-            parameters[3] = new SqlParameter("IsAvailableProduct", input.IsAvailableProduct);
-            parameters[4] = new SqlParameter("EditionId", input.EditionId); 
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_GetProductWithEdition", parameters);
+                List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
+                // ProductWithEditionDto result = new ProductWithEditionDto();
+                SqlParameter[] parameters = new SqlParameter[6];
+                parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
+                parameters[1] = new SqlParameter("IncludeProductId", input.IncludeProductId);
+                parameters[2] = new SqlParameter("ExcludeProductId", input.ExcludeProductId);
+                parameters[3] = new SqlParameter("IsAvailableProduct", input.IsAvailableProduct);
+                parameters[4] = new SqlParameter("EditionId", input.EditionId);
+                parameters[5] = new SqlParameter("WithStandAloneAddons", input.WithStandAloneAddons);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                Connection.GetSqlConnection("DefaultOctoGo"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_GetProductWithEdition", parameters);
 
-            if (ds.Tables.Count > 0)
-            {
-                var ProductWithEditionDataRet = SqlHelper.ConvertDataTable<ProductWithEditionRet>(ds.Tables[0]);
-                var ProductWithEditionData = ProductWithEditionDataRet.Select(rs => new ProductWithEditionDto
+                if (ds.Tables.Count > 0)
                 {
-                    ProductID = rs.ProductID,
-                    ProductName = rs.ProductName,
-                    Edition = rs.Edition != null ? JsonConvert.DeserializeObject<List<EditionList>>(rs.Edition.ToString()) : null
+                    var ProductWithEditionDataRet = SqlHelper.ConvertDataTable<ProductWithEditionRet>(ds.Tables[0]);
+                    var ProductWithEditionData = ProductWithEditionDataRet.Select(rs => new ProductWithEditionDto
+                    {
+                        ProductID = rs.ProductID,
+                        ProductName = rs.ProductName,
+                        Edition = rs.Edition != null ? JsonConvert.DeserializeObject<List<EditionList>>(rs.Edition.ToString()) : null
 
-                }).ToList();
-
-
-                //  ProductWithEditionDto pro = new ProductWithEditionDto();
-                //  pro.ProductID=ProductWithEditionData.ProductID;
-
-                //list.Add(ProductWithEditionData);
-                return ProductWithEditionData;
+                    }).ToList();
 
 
+                    //  ProductWithEditionDto pro = new ProductWithEditionDto();
+                    //  pro.ProductID=ProductWithEditionData.ProductID;
 
-            }
+                    //list.Add(ProductWithEditionData);
+                    return ProductWithEditionData;
 
-            else
-            {
-                return null;
-            }
+
+
+                }
+
+                else
+                {
+                    return null;
+                }
         }
+
         private async Task<DataSet> CheckEditionDuplicacy(CreateEditionDto input)
         {
             List<int> ModulePageSnoList = new List<int>();
@@ -689,7 +691,8 @@ namespace CF.Octogo.Editions
                         AddonId = rw.AddonId,
                         AddonName = rw.AddonName,
                         EditionId = rw.EditionId,
-                        ModuleList = rw.ModuleList != null ? JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString()) : null,
+                        IsStandAlone = rw.IsStandAlone,
+                        ModuleList = rw.ModuleList != null ? (rw.IsStandAlone == true ? PrepareFeaturesList(JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : null,
                         PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<PricingDataDto>>(rw.PricingData.ToString()) : null,
 
                     }).ToList();
@@ -700,6 +703,73 @@ namespace CF.Octogo.Editions
                 {
                     return null;
                 }
+        }
+        [AbpAuthorize]
+        public async Task<List<AvailableAddonModulesDto>> GetSubscribedAddonByEditionId(int EditionId)
+        {
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
+
+            parameters[1] = new SqlParameter("EditionId", EditionId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                Connection.GetSqlConnection("DefaultOctoGo"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_GetSubscribedAddonByEditionId", parameters);
+            if (ds.Tables.Count > 0)
+            {
+                var res = SqlHelper.ConvertDataTable<AvailableAddonModulesRet>(ds.Tables[0]);
+                var result = res.Select(rw => new AvailableAddonModulesDto
+                {
+                    AddonId = rw.AddonId,
+                    AddonName = rw.AddonName,
+                    EditionId = rw.EditionId,
+                    IsStandAlone = rw.IsStandAlone,
+                    ModuleList = rw.ModuleList != null ? (rw.IsStandAlone == true ? PrepareFeaturesList(JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : null,
+                    PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<PricingDataDto>>(rw.PricingData.ToString()) : null,
+
+                }).ToList();
+                return result;
+
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public List<AvailableModuleDto> PrepareFeaturesList(List<AvailableModuleDto> modules)
+        {
+            List<AvailableModuleDto> result = new List<AvailableModuleDto>();
+            var allFeatures = FeatureManager.GetAll().Where(f => f.Scope.HasFlag(FeatureScopes.All));
+            var featureDtos = ObjectMapper.Map<List<FlatFeatureDto>>(allFeatures).OrderBy(f => f.ParentName).ToList();
+            featureDtos.ForEach(feature =>
+            {
+                var featureIndex = modules.FindIndex(x => x.ModuleName == feature.Name);
+                if (featureIndex != -1)
+                {
+                    if (feature.ParentName == null)
+                    {
+                        result.Add(new AvailableModuleDto { ModuleName = feature.DisplayName, SubModule = GetSubFeatures(modules, featureDtos, feature.Name) });
+                    }
+                }
+            });
+            return result;
+        }
+        private List<AvailableModuleDto> GetSubFeatures(List<AvailableModuleDto> modules, List<FlatFeatureDto> features, string parentName)
+        {
+            List<AvailableModuleDto> result = new List<AvailableModuleDto>();
+            var childFeatures = features.Where(f => f.ParentName == parentName).ToList();
+            if (childFeatures != null && childFeatures.Count > 0)
+            {
+                childFeatures.ForEach(feature =>
+                {
+                    var featureIndex = modules.FindIndex(x => x.ModuleName == feature.Name);
+                    if (featureIndex != -1)
+                    {
+                        result.Add(new AvailableModuleDto { ModuleName = feature.DisplayName });
+                    }
+                });
+            }
+            return result;
         }
     }
     

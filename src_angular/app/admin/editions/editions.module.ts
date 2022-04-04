@@ -12,7 +12,8 @@ import { EditionModulesComponent } from './edition-modules/edition-modules.compo
     declarations: [EditionsComponent, EditEditionModalComponent, 
         CreateEditionModalComponent, MoveTenantsToAnotherEditionModalComponent, 
         EditionModulesComponent],
-    imports: [AppSharedModule, AdminSharedModule, EditionsRoutingModule]
+    imports: [AppSharedModule, AdminSharedModule, EditionsRoutingModule],
+    exports:[EditionModulesComponent]
 })
 export class EditionsModule {
 }

@@ -11,7 +11,7 @@ namespace CF.Octogo.Editions
     public interface IAddonAppService : IApplicationService
     {
         Task<PagedResultDto<AddonListDto>> GetAddonList(GetAddonInput input);
-        Task<ListResultDto<EditionListByProductDto>> GetEditionListForAddon(int ProductId);
+        Task<ListResultDto<EditionListByProductForAddonDto>> GetEditionListForAddon(int ProductId);
         // Task<ListResultDto<AddonByEdtionIdDto>> GetAddonListByEditionId(int EditionId);
         Task<List<ModuleListForAddonDto>> GetModuleListByEditionForAddon(int editionId);
         Task<AddonModuleAndPricingDto> GetAddonModuleAndPricing(int AddonId);

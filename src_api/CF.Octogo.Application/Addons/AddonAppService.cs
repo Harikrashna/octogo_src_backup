@@ -24,10 +24,14 @@ namespace CF.Octogo.Editions
     {
         private readonly ITenantDetailsAppService _tenantDetailsService;
         private readonly EditionManager _editionManager;
-        public AddonAppService(ITenantDetailsAppService tenantDetailsService, EditionManager editionManager) 
+        private readonly IEditionAppService _editionService;
+        public AddonAppService(ITenantDetailsAppService tenantDetailsService,
+            EditionManager editionManager,
+            IEditionAppService editionService) 
         {
             _tenantDetailsService = tenantDetailsService;
             _editionManager = editionManager;
+            _editionService = editionService;
         }
 
 
@@ -57,7 +61,7 @@ namespace CF.Octogo.Editions
                 addonList
             );
         }
-        public async Task<ListResultDto<EditionListByProductDto>> GetEditionListForAddon(int ProductId)
+        public async Task<ListResultDto<EditionListByProductForAddonDto>> GetEditionListForAddon(int ProductId)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("ProductId", ProductId);
@@ -68,7 +72,7 @@ namespace CF.Octogo.Editions
                );
             if (ds.Tables.Count > 0)
             {
-                return new ListResultDto<EditionListByProductDto>(SqlHelper.ConvertDataTable<EditionListByProductDto>(ds.Tables[0]));
+                return new ListResultDto<EditionListByProductForAddonDto>(SqlHelper.ConvertDataTable<EditionListByProductForAddonDto>(ds.Tables[0]));
             }
             else
             {
@@ -107,10 +111,10 @@ namespace CF.Octogo.Editions
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            // USP_GetAddonDetailsByModuleId
             "USP_GetAddonModuleAndPricing", parameters
                );
-            if (ds.Tables.Count > 0)
+             // USP_GetAddonDetailsByModuleId
+           if (ds.Tables.Count > 0)
             {
                 var AddonDataRet = SqlHelper.ConvertDataTable<AddonModuleAndPricingRet>(ds.Tables[0]);
                 var AddonData = AddonDataRet.Select(rw => new AddonModuleAndPricingDto
@@ -225,25 +229,27 @@ namespace CF.Octogo.Editions
                     });
                 }
             });
-            //List<string> FeatureList = new List<string>();
-            //input.FeatureValues.ForEach(feature =>
-            //{
-            //    if(feature.Value == "true")
-            //    {
-            //        FeatureList.Add(feature.Name);
-            //    }
-            //});
+            List<string> FeatureList = new List<string>();
+            if (input.FeatureValues != null)  
+            {
+                input.FeatureValues.ForEach(feature =>
+                {
+                    if (feature.Value == "true")
+                    {
+                        FeatureList.Add(feature.Name);
+                    }
+                });
+            }
 
-          
-                ModulePageSnoList.Sort();
-                SqlParameter[] parameters = new SqlParameter[5];
+            ModulePageSnoList.Sort();
+                SqlParameter[] parameters = new SqlParameter[7];
                 parameters[0] = new SqlParameter("EditionId", input.EditionID);
                 parameters[1] = new SqlParameter("AddonName", input.AddonName.Trim());
                 parameters[2] = new SqlParameter("AddonId", input.AddonId);
                 parameters[3] = new SqlParameter("IsFree", input.priceDiscount != null ? false : true);
                 parameters[4] = new SqlParameter("SelectedPageSno", String.Join(",", ModulePageSnoList));
-                //parameters[5] = new SqlParameter("FeatureList", String.Join(",", FeatureList));
-                //parameters[6] = new SqlParameter("IsStandalone",input.IsStandAlone);
+                parameters[5] = new SqlParameter("FeatureNames", String.Join(",", FeatureList));
+                parameters[6] = new SqlParameter("IsStandalone", input.IsStandAlone);
                 var ds = await SqlHelper.ExecuteDatasetAsync(
                 Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,
@@ -362,6 +368,36 @@ namespace CF.Octogo.Editions
             };
 
         }
+        [AbpAuthorize]
+        public async Task<List<AvailableAddonModulesDto>> GetAddonListByEditionId(int EditionId)
+        {
+            SqlParameter[] parameters = new SqlParameter[2]; 
+             parameters[0] = new SqlParameter("EditionId", EditionId);
+            parameters[1] = new SqlParameter("QueryFor", "Edition");
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                Connection.GetSqlConnection("DefaultOctoGo"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_GetAddonsList", parameters);
+            if (ds.Tables.Count > 0)
+            {
+                var res = SqlHelper.ConvertDataTable<AvailableAddonModulesRet>(ds.Tables[0]);
+                var result = res.Select(rw => new AvailableAddonModulesDto
+                {
+                    AddonId = rw.AddonId,
+                    AddonName = rw.AddonName,
+                    EditionId = rw.EditionId,
+                    IsStandAlone = rw.IsStandAlone,
+                    ModuleList = rw.ModuleList != null ? (rw.IsStandAlone == true ? _editionService.PrepareFeaturesList(JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : null,
+                    PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<PricingDataDto>>(rw.PricingData.ToString()) : null,
 
+                }).ToList();
+                return result;
+
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

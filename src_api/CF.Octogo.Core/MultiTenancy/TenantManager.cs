@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using CF.Octogo.Data;
 using System.Data.SqlClient;
 using CF.Octogo.MultiTenancy.Dto;
+using Abp.Authorization.Users;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -392,6 +393,134 @@ namespace CF.Octogo.MultiTenancy
                 return (string)ds.Tables[0].Rows[0]["UserType"];
             }
             return "success";
+        }
+        public async Task<int> CreateWithAdminUserAsyncNew(
+          string tenancyName,
+          string name,
+          string adminPassword,
+          string adminEmailAddress,
+          string adminFirstName,
+          string adminLastName,
+          string connectionString,
+          bool isActive,
+          bool shouldChangePasswordOnNextLogin,
+          bool sendActivationEmail,
+          string emailActivationLink)
+        {
+            int newTenantId;
+            long newAdminId;
+
+            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+            {
+                User existingUser = await CheckEmailIdAsync(adminEmailAddress);
+                //Create tenant
+                var tenant = new Tenant(tenancyName, name)
+                {
+                    IsActive = isActive,
+                    ConnectionString = connectionString.IsNullOrWhiteSpace() ? null : SimpleStringCipher.Instance.Encrypt(connectionString)
+                };
+
+                await CreateAsync(tenant);
+                await _unitOfWorkManager.Current.SaveChangesAsync(); //To get new tenant's id.
+
+                //Create tenant database
+                _abpZeroDbMigrator.CreateOrMigrateForTenant(tenant);
+
+                //We are working entities of new tenant, so changing tenant filter
+                using (_unitOfWorkManager.Current.SetTenantId(tenant.Id))
+                {
+                    //Create static roles for new tenant
+                    CheckErrors(await _roleManager.CreateStaticRoles(tenant.Id));
+                    await _unitOfWorkManager.Current.SaveChangesAsync(); //To get static role ids
+
+                    //grant all permissions to admin role
+                    var adminRole = _roleManager.Roles.Single(r => r.Name == StaticRoleNames.Tenants.Admin);
+                    await _roleManager.GrantAllPermissionsAsync(adminRole);
+
+                    //"User" role should be default
+                    var userRole = _roleManager.Roles.Single(r => r.Name == StaticRoleNames.Tenants.User);
+                    userRole.IsDefault = true;
+                    CheckErrors(await _roleManager.UpdateAsync(userRole));
+
+
+                    //Create admin user for the tenant
+                    var adminUser = new User
+                    {
+                        TenantId = tenant.Id,
+                        UserName = GetUserName(adminEmailAddress, tenancyName),
+                        Name = adminFirstName,
+                        Surname = adminLastName,
+                        EmailAddress = adminEmailAddress,
+                        Roles = new List<UserRole>()
+                    };
+                    adminUser.SetNormalizedNames();
+
+                    adminUser.ShouldChangePasswordOnNextLogin = shouldChangePasswordOnNextLogin;
+                    adminUser.IsActive = true;
+
+                    if (adminPassword.IsNullOrEmpty())
+                    {
+                        adminPassword = await _userManager.CreateRandomPassword();
+                    }
+                    else
+                    {
+                        await _userManager.InitializeOptionsAsync(AbpSession.TenantId);
+                        foreach (var validator in _userManager.PasswordValidators)
+                        {
+                            CheckErrors(await validator.ValidateAsync(_userManager, adminUser, adminPassword));
+                        }
+
+                    }
+
+                    adminUser.Password = _passwordHasher.HashPassword(adminUser, adminPassword);
+                    adminUser.NormalizedUserName = adminUser.UserName.ToUpper();
+
+                    // if SignUp user is Admin for new Tenant
+                    if (existingUser != null && existingUser.EmailAddress.Trim().ToUpper() == adminEmailAddress.Trim().ToUpper())
+                    {
+                        adminUser.Name = existingUser.Name;
+                        adminUser.Surname = existingUser.Surname;
+                    }
+
+                    CheckErrors(await _userManager.CreateAsync(adminUser));
+                    await _unitOfWorkManager.Current.SaveChangesAsync(); //To get admin user's id
+
+                    //Assign admin user to admin role!
+                    CheckErrors(await _userManager.AddToRoleAsync(adminUser, adminRole.Name));
+
+                    //Notifications
+                    await _appNotifier.WelcomeToTheApplicationAsync(adminUser);
+
+                    //Send activation email
+                    if (sendActivationEmail)
+                    {
+                        adminUser.SetNewEmailConfirmationCode();
+                        await _userEmailer.SendEmailActivationLinkAsync(adminUser, emailActivationLink, adminPassword);
+                    }
+
+                    await _unitOfWorkManager.Current.SaveChangesAsync();
+
+                    await _backgroundJobManager.EnqueueAsync<TenantDemoDataBuilderJob, int>(tenant.Id);
+
+                    newTenantId = tenant.Id;
+                    newAdminId = adminUser.Id;
+                }
+
+                await uow.CompleteAsync();
+            }
+
+            //Used a second UOW since UOW above sets some permissions and _notificationSubscriptionManager.SubscribeToAllAvailableNotificationsAsync needs these permissions to be saved.
+            using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(newTenantId))
+                {
+                    await _notificationSubscriptionManager.SubscribeToAllAvailableNotificationsAsync(new UserIdentifier(newTenantId, newAdminId));
+                    await _unitOfWorkManager.Current.SaveChangesAsync();
+                    await uow.CompleteAsync();
+                }
+            }
+
+            return newTenantId;
         }
     }
 }

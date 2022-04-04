@@ -1,0 +1,65 @@
+.price-edition{
+    border: 1px solid;
+    padding: 2px 2px 0px 2px;
+    border-radius: 10px;
+    background-color: aliceblue;
+    font-size: 9px;
+    color: #148d29;
+    min-width: 35px;
+    text-align: center;
+    height: 15px;
+  }
+  .text-12{
+      font-size: 12px;
+  }
+  .text-16{
+    font-size: 16px;
+}
+  .text-10{
+      font-size: 10px;
+  }
+  .subscribe-card{
+    display: flex;
+    border-radius: 2px;
+    border: 1px solid rgba(124, 81, 81, 0.438);
+    padding: 8px 2px;
+    width: 100%;
+    margin-bottom: 5px;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: darkcyan;
+    background: rgba(231, 226, 226, 0.377);
+    line-height: 1px;
+  }
+  .adname{
+    font-size: 12px;
+    font-weight: 500;
+    color: rgb(92 161 132) !important;
+  }
+  
+.start-date-card{
+    float: right;
+    margin-left: auto;
+    color: black;
+    font-size: 11px;
+    font-weight: bold;
+  }
+  .end-date-card{
+    color: #F64E60 !important;
+    font-size: 11px;
+    font-weight: bold;
+  }
+  .brkt{
+    color: rgba(0, 0, 0, 0.301);
+    font-size: 11px;
+    font-weight: bold;
+  }
+  .adolist{
+    margin-top: 0px;
+    padding: 0px;
+    margin-bottom: -12px;
+  }
+  .setup-failed{
+      background-color: #e5dbc6d4;
+  }

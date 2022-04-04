@@ -16,8 +16,8 @@
                 <div class="modal-body">
                     <tabset #staticTabs>
                         <tab heading="{{'AddonProperties' | localize}}" class="p-5">
-                            <label for="EditUser_SendActivationEmail" class="checkbox" >
-                                <input id="EditUser_SendActivationEmail" type="checkbox" name="Standalone" [disabled]="isEdit" [(ngModel)]="isStandAlone"
+                            <label for="standalone" class="checkbox" >
+                                <input id="standalone" type="checkbox" name="Standalone" [disabled]="isEdit" [(ngModel)]="isStandAlone"
                                 (change)="loadFeatures()"   >
                                 <span></span>
                                 {{"IsStandalone" | localize}}
@@ -187,6 +187,9 @@
                                 {{'NoData' | localize}}
                             </div>
                         </tab>
+                        <tab *ngIf="isStandAlone" heading="{{'Features' | localize}}"  class="p-5">
+                            <feature-tree #featureTree></feature-tree>
+                        </tab>
                         <tab heading="{{'Pricing' | localize}}" class="p-5" *ngIf="!isFree">
                             <div class="row" *ngIf="false">
                                 <div class="col-md-6" *ngFor="let item of pricingTypes;let i=index">
@@ -272,9 +275,6 @@
                                     <validation-messages [formCtrl]="approachNameSelect"></validation-messages>
                                 </div>
                             </div>
-                        </tab>
-                        <tab *ngIf="isStandAlone || (isEdit && isStandAlone)"   heading="{{'Features' | localize}}"  class="p-5">
-                            <feature-tree #featureTree></feature-tree>
                         </tab>
                     </tabset>
                 </div>

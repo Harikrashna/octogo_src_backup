@@ -63,9 +63,8 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
     }
     this.loading = true;
     this.dataFetched = false;
-    this._editionService.getProductWithEdition(this.IncludeProductId, this.ExcludeProductId,0, this.OnlyAvailableProducts)
+    this._editionService.getProductWithEdition(this.IncludeProductId, this.ExcludeProductId,0, this.OnlyAvailableProducts, false)
       .subscribe(result => {
-        debugger
         this.loading = false;
         this.dataFetched = true;
         this.ProductWithEditionList = this.SetRedundentModulesData(result);

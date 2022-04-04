@@ -1,4 +1,4 @@
-<div *ngIf="productDetailsList?.length > 0" [busyIf]="loading">
+<div *ngIf="productDetailsList?.length > 0" [busyIf]="loading" [hidden]="IsAddonExtend">
     <div class="row p-3" id="product_content" *ngIf="showEditionInformation">
         <!-- <i class="pi pi-chevron-left p-1" (click)="ScrollLeft()" aria-hidden="true"
                             *ngIf="IsScrollable && CanScrollLeft"></i>
@@ -9,11 +9,77 @@
             </app-shared-package-details>
         </div>
     </div>
+    <div class="col" *ngIf="StandAloneAddonList?.length > 0 && showEditionInformation">
+        <div class="subscribe-card">
+            {{'StandaloneAddons' | localize}}
+        </div>
+        <div class="row">
+            <div class="col-sm-4" *ngFor="let ado of StandAloneAddonList, let adnIndex = index">
+                <div class="card p-3 mb-2">
+                    <p class="text-muted  d-flex text-10">
+                        <span class="adname">{{ado.addonName}}
+                        </span>&nbsp;
+                        <span class="price-addon">{{ado.addonPrice}}</span>
+                        <span class="start-date-card text-muted"> ({{ado.startDate | date}} -</span>
+                        <span class="end-date-card" *ngIf="ado.endDate == null">{{'UnlimitedLimit' |
+                            localize}}</span>
+                        <span class="end-date-card" *ngIf="ado.endDate != null"
+                            [ngClass]="checkExpiryTime(ado.remainingDays) == true ? 'expiring': null">
+                            {{ado.endDate | date}}
+                        </span>
+                        <span class="brkt">)</span>
+                    </p>
+                    <div *ngIf="!ForDashboard">
+                        <div class="cursor text-success text-12" (click)="sb.toggle($event)" (mouseover)="sb.toggle($event)"
+                        (mouseout)="sb.hide()">
+                            {{'Modules' | localize}}&nbsp;({{ado.moduleList?.length}})
+                        </div>
+                        <p-overlayPanel #sb appendTo="body" [focusOnShow]="true" [style]="{width: '300px'}">
+                            <ng-template pTemplate>
+                                <div class="row">
+                                    <div class="col-sm-12" *ngFor="let edModule of ado.moduleList; let moduleIndex = index">
+                                        <ol>
+                                            <li style="list-style: none;">{{moduleIndex +1}}.&nbsp;{{edModule.moduleName}}
+                                                <div class="subModule" *ngIf="edModule.subModule?.length > 0">
+                                                    <ul *ngFor="let suModule of edModule.subModule">
+                                                        <li>{{suModule.moduleName}}
+                                                            <ul class="subsubModule" *ngFor="let subsub of suModule.subModule; let i=index">
+                                                                <li>&nbsp;{{subsub.moduleName}}</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        </ol>
+                                    </div>
+                                    </div>
+                            </ng-template>
+                        </p-overlayPanel>
+                        <button *ngIf="ado.addonPrice != 'FREE'" style="margin-top: -25px;"
+                        class="btn btn-sm btn-primary float-right" (click)="ExtendAddonSubscription(ado)">{{"Extend" | localize}}</button>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
     <div *ngIf="showDetailedInformation && !ForDashboard">
         <app-package-detailed-information #packageDetailedInformation
          (actionClicked)="upgradeClicked()" (backClicked)="ShowSubscribedProducts()"></app-package-detailed-information>
     </div>
 </div>
-<div *ngIf="!(productDetailsList?.length > 0) && dataFetched" class="text-danger p-5">
+<div *ngIf="!(productDetailsList?.length > 0) && dataFetched && !IsAddonExtend" class="text-danger p-5">
     {{'NoData' | localize}}
+</div>
+
+<div *ngIf="IsAddonExtend" [busyIf]="loading">
+    <div class="row mt-2">
+        <div class="col-sm">
+            <button class="btn btn-primary btn-sm" (click)="BackToPackageList()">
+                <i class="fa fa-arrow-left"></i> {{"Back" | localize}}
+            </button>
+        </div>
+    </div>
+    <app-package-addons-cart [SelectedEditionData]="selectedEditionData"  [SelectedAddonsData]="selectedAddonsData"
+    [ProductName]="SelectedPackage.productName" [ForAddonOnly]="true" [Heading]="l('ExtendAddon')">
+    </app-package-addons-cart>
 </div>

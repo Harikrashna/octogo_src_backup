@@ -40,7 +40,8 @@
                 </div>
                 <div *ngIf="addon?.addonPrice?.length > 0" class="d-flex">
                     <div *ngFor="let price of addon.addonPrice; let j = index">
-                    <div class="price-card cursor" (click)="AddonPriceChange(addon, i, j)" *ngIf="!(SelectedEditionData?.pricingtype?.length > 0) || price.days <= selectedEditionPricingDays || ForAddonOnly">
+                    <div class="price-card cursor" (click)="AddonPriceChange(addon, i, j)" 
+                    *ngIf="!(SelectedEditionData?.pricingtype?.length > 0) || price.days <= selectedEditionPricingDays || ForAddonOnly">
                         <p class="text-primary text-12 ml-3">{{price.name}}</p>
                         <p class="text-10 text-danger ml-3" *ngIf="price.discount > 0">$&nbsp;<s>{{price.price | number : '1.2-2'}}</s></p>
                         <p class="text-12 text-success ml-3">$&nbsp;{{price.price - (price.price*price.discount/100) | number : '1.2-2'}}

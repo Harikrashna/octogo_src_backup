@@ -8,8 +8,8 @@ namespace CF.Octogo.Editions.Dto
     {
         public int AddonId { get; set; }
         public string AddonName { get; set; }
-        public int EditionId { get; set; }
-
+        public int? EditionId { get; set; }
+        public bool? IsStandAlone { get; set; }
         public List<AvailableModuleDto> ModuleList { get; set; }
         public List<PricingDataDto> PricingData { get; set; }
 
@@ -38,7 +38,8 @@ namespace CF.Octogo.Editions.Dto
     {
         public int AddonId { get; set; }
         public string AddonName { get; set; }
-        public int EditionId { get; set; }
+        public int? EditionId { get; set; }
+        public bool? IsStandAlone { get; set; }
         public string ModuleList { get; set; }
         public string PricingData { get; set; }
 

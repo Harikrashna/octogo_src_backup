@@ -42,9 +42,9 @@ export class InputValidationService {
     }
     return ret;
 }
-IsNumeric(e) {
+IsNumeric(e, acceptZero:boolean = false) {
       
-  if(e.target.value==""  && e.keyCode==48){
+  if(e.target.value==""  && e.keyCode==48 && !acceptZero){
     return false     
   } 
   var keyCode = e.which ? e.which : e.keyCode

@@ -1,0 +1,187 @@
+
+                <form #packagesDetailForm="ngForm" role="form" novalidate class="form-validation" autocomplete="off">
+                    <div class="row align-items-center px-3">
+                        <div class="col-md-3">
+                            <label for="product">{{"Product" | localize}} *</label>
+                            <select class="form-control" [(ngModel)]="ProductId" required name="product"
+                                id="ddl_Product" #productNameSelect="ngModel" [disabled]="isEdit"
+                                (ngModelChange)="GetEditionList()">
+                                <option disabled>{{ "Select" | localize}}</option>
+                                <option *ngFor="let product of ProductList" [value]="product.id">
+                                    {{product.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="EditionDisplayName">{{"EditionName" | localize}} *</label>
+                            <select class="form-control" [(ngModel)]="EditionID" [required]="true"
+                                name="EditionDisplayName" (ngModelChange)="SetDefaultApproach()"
+                                #editionName="ngModel" [disabled]="isEdit">
+                                <option disabled>{{ "Select" | localize}}</option>
+                                <option *ngFor="let edition of EditionList" [value]="edition.id">
+                                    {{edition.displayName}}</option>
+                            </select>
+                        </div>
+                        <div *ngIf="!IsEditionFree && EditionID > 0" class="col-md-3">
+                            <label for="EditionDisplayName">{{"Approach" | localize}} *</label>
+                            <select class="form-control" [(ngModel)]="ApproachId" required name="approach" id="approach"
+                                #approachNameSelect="ngModel">
+                                <option *ngFor="let approach of ApproachList" [value]="approach.id">
+                                    {{approach.name}}</option>
+                            </select>
+                        </div>
+                        <div style="margin-top: 28px;" class="col-md-3">
+                            <button type="submit" [disabled]="saving" (click)="addEditionProductData()"
+                                class="btn btn-primary font-weight-bold"><i class="fa fa-plus"></i>
+                                <span>{{"Add" | localize}}</span></button>
+
+                        </div>
+                    </div>
+                    <div class="detailcard mt-2" *ngIf="SelctedPackagesDetail.length > 0">
+                        <div class="d-flex">
+                            <div class="product-card" *ngFor="let result of SelctedPackagesDetail ;let i = index;"
+                                (click)="SelectPackageCardData(i);GetEditionModulesData(result.EditionId,result.ProductId,i)"
+                                [ngClass]="SelectedProductIndex == i ?'selected-productEdition-card':'productEdition-card'">
+                                <i class=" fa fa-times text-danger selected-check" (click)="removeDuplicatePackage(i, true)"></i>
+                                <span class="product-name">{{result.ProductName}}</span>
+                                <div class="ed-name">{{result.EditionName}}
+                                    <span *ngIf="result.IsFree" class="price-edition">{{'Free' | localize}}</span>
+                                    <span *ngIf="result.IsFree != true" class="price-edition">{{'Paid' | localize}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngFor="let package of SelctedPackagesDetail ;let prodIndex = index;" [hidden]="SelectedProductIndex != prodIndex">
+                    <div *ngIf="SelectedProductIndex >= 0">
+                        <div class="detailcard mt-2">
+                            <span class="d-flex">
+                                <span class="text-primary">{{package.ProductName}}&nbsp;-&nbsp;</span>
+                                <span class="text-muted">{{package.EditionName}}</span>
+                                <span class="text-10 ml-2">(
+                                <span *ngIf="package?.EditionPricing?.length > 0" class="text-success">
+                                    <span *ngFor="let pricing of package.EditionPricing; let i = index" class="text-12">
+                                        <span *ngIf="i > 0">,&nbsp;</span>
+                                        ${{(pricing.amount - (pricing.amount * pricing.discountPercentage)/100) | number : '1.2-2'}}/{{pricing.pricingTypeName}}
+                                    </span>
+                                </span>
+                                <span *ngIf="!(package?.EditionPricing?.length > 0)" class=" text-success">{{'Free' | localize}}
+                                </span>
+                                )</span>
+                            </span>
+                            <hr style="margin-top: 0px !important;" />
+                            <app-edition-modules [ForTenantPage]="true" ></app-edition-modules>
+                        </div>
+                    </div>
+                        <div *ngIf="package.AddonList?.length > 0">
+                            <span class="text-primary pl-3">{{'Addons' | localize}}</span>
+                            <hr style="margin-top: 0px !important;" />
+                            <div class="card">
+                                <div class="row">
+                                    <div class="addon-card col-sm-2 ml-5 mt-2" *ngFor="let addons of package.AddonList ;let i = index;" [hidden]="addons?.hideAddon && !addons?.selected">
+                                        <i *ngIf="addons?.selected == true" class=" fa fa-check selected-check addon-check" (click)="removeSelectedAddon(i,addons.addonId,prodIndex)"></i>
+                                        <div (click)="selectAddons(i,addons.addonId,prodIndex)">                                        
+                                        <div class="bold text-primary ">{{addons.addonName}}</div>
+                                        <span *ngIf="addons.pricingData == null" class="text-success mt-2">{{'Free' |
+                                            localize}}</span>
+                                        <span *ngIf="addons.pricingData != null" (click)="op.toggle($event)"
+                                            (mouseover)="op.toggle($event)" (mouseout)="op.hide()"
+                                            class="text-success  mt-2"> {{"Paid" | localize}}</span>
+                                        <p-overlayPanel #op appendTo="body" [focusOnShow]="true"
+                                            [style]="{width: '600px'}">
+                                            <ng-template pTemplate>
+                                                <p-table #tbl [value]="addons.pricingData">
+                                                    <ng-template pTemplate="header">
+                                                        <tr>
+                                                            <th>{{"PricingType" | localize}}</th>
+                                                            <th>{{"ActualPrice" | localize}}</th>
+                                                            <th>{{"Discount" | localize}}(%)</th>
+                                                            <th>{{"DiscountedPrice" | localize}}</th>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="body" let-price>
+                                                        <tr>
+                                                            <td>
+                                                                {{price.pricingTypeName}}&nbsp;
+                                                                ({{price.noOfDays}}
+                                                                {{'Days' | localize}})
+                                                            <td>
+                                                                {{price.amount}}
+                                                            </td>
+                                                            <td>{{price.discountPercentage}}</td>
+                                                            <td>
+                                                                {{price.amount-(price.amount*price.discountPercentage/100)
+                                                                | number : '1.2-2'}}
+                                                            </td>
+                                                        </tr>
+                                                    </ng-template>
+                                                </p-table>
+                                            </ng-template>
+                                        </p-overlayPanel>
+                                        <div class="add mt-2" *ngIf="addons.moduleList?.length > 0">
+                                            <div class="addon-module" (click)="sb.toggle($event)"
+                                                (mouseover)="sb.toggle($event)" (mouseout)="sb.hide()">
+                                                {{'Modules' | localize}}&nbsp;({{addons.moduleList?.length}})
+                                            </div>
+                                            <p-overlayPanel #sb appendTo="body" [focusOnShow]="true"
+                                                [style]="{width: '300px'}">
+                                                <ng-template pTemplate>
+                                                    <div class="row">
+                                                        <div class="col-sm-12"
+                                                            *ngFor="let edModule of addons.moduleList; let moduleIndex = index">
+                                                            <ol>
+                                                                <li style="list-style: none;">{{moduleIndex
+                                                                    +1}}.&nbsp;{{edModule.moduleName}}
+                                                                    <div class="subModule"
+                                                                        *ngIf="edModule.subModule?.length > 0">
+                                                                        <ul *ngFor="let suModule of edModule.subModule">
+                                                                            <li>{{suModule.moduleName}}
+                                                                                <ul class="subsubModule"
+                                                                                    *ngFor="let subsub of suModule.subModule; let i=index">
+                                                                                    <li>&nbsp;{{subsub.moduleName}}</li>
+                                                                                </ul>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-overlayPanel>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- <div *ngIf="AddonList?.length > 0 && !isEitionFree" class="mt-10">
+                        <label>{{"AssignAnotherPackageAfterSubscriptionExpiry" | localize}}</label>
+                        <div class="d-flex col-sm-6">
+                            <label for="EditEdition_ExpireAction_AssignEdition" class="radio">
+                                <input (change)="radioButtonHandler($event)" id="EditEdition_ExpireAction_AssignEdition" name="AssignAnotherPackageAfterExpiry"
+                                    [(ngModel)]="ExpireAction" value="ExpireAction"
+                                    type="radio">
+                                <span></span>
+                                {{"AssignToAnotherEdition" | localize}}
+                            </label>
+                            <label for="EditEdition_IsWaitingDayActive" class="radio">
+                                <input (change)="radioButtonHandler($event)" id="EditEdition_IsWaitingDayActive" type="radio" name="AssignAnotherPackageAfterExpiry"
+                                    [(ngModel)]="WaitingDay" value="IsWaitingDayActive"/>
+                                <span></span>
+                                {{"WaitAfterSubscriptionExpireDate" | localize}}
+                            </label>
+                        </div>
+                        <div *ngIf="seletedRadio != null || seletedRadio != undefined">
+                            <div *ngIf="seletedRadio == ExpireAction " class="col-sm-3">
+                                <label for="PackageName">{{"PackageName" | localize}} *</label>
+                                <input  id="PackageName" #tenancyNameInput="ngModel" class="form-control" type="text"
+                                    name="PackageName" [(ngModel)]="PackageName">
+                            </div>
+                            <div *ngIf="seletedRadio == WaitingDay" class="col-sm-3 ml-0">
+                                <label for="WaitingDays">{{"WaitingDays" | localize}} *</label>
+                                <input id="waitingDays" #tenancyNameInput="ngModel" class="form-control" type="text"
+                                    name="waitingDays" [(ngModel)]="waitingDays">
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                </form>

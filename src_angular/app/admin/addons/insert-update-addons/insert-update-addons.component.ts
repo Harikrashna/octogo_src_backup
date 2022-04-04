@@ -126,7 +126,12 @@ loadFeatures(data?:any): void {  // Added by:merjauddin khan -- Desc:Load featur
     if(this.isStandAlone){
         this.addonServiceProxy.getStandaloneAddonFeaturesById(data).subscribe((result) => {
             let timer = setInterval(() => {
-                if(this.featureTree != null && this.featureTree != undefined){
+                if(this.featureTree != null && this.featureTree != undefined){             
+                    if(this.isEdit){ // if default value will be 'true' it convert into 'false' in edit mode
+                        result.features.forEach(f=>{
+                            f.defaultValue = 'false'
+                        })
+                    }
                     this.featureTree.editData = result;
                     this.featureTreeList = result;
                     clearInterval(timer);

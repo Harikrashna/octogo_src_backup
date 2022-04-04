@@ -21,7 +21,7 @@ namespace CF.Octogo.Dto
         public Nullable<int> ExcludeProductId { get; set; }
         public Nullable<int> EditionId { get; set; }
         public Nullable<bool> IsAvailableProduct { get; set; } = false;
-
+        public Nullable<bool> WithStandAloneAddons { get; set; } = false;
     }
     public class ProductWithEditionDto
     {
@@ -68,6 +68,7 @@ namespace CF.Octogo.Dto
         public string AddOnName { get; set; }
         public List<PricingType> ADDONPrice { get; set; }
         public List<AddonModules> ModuleList { get; set; }
+        public bool? IsStandAlone { get; set; }
     }
     public class AddonModules
     {

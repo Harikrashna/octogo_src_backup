@@ -569,7 +569,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
             this._editionService.getEditionsByProductId(this.ProductId, 0, 'FREE')
                 .pipe().subscribe(result => {
                     this.FreeEditionList = result.items;
-                    this.FreeEditionList.unshift(new EditionListByProductDto({ name: null, displayName: this.l('NotAssigned'), id: 0 }));
+                    this.FreeEditionList.unshift(new EditionListByProductDto({ name: null, displayName: this.l('NotAssigned'), id: 0 ,approachId:null,isFree:true}));
 
                 });
         }

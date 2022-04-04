@@ -64,7 +64,6 @@ margin-left: 5%;
     font-size: 12px;
     position: absolute;
     background: white;
-    z-index: 900;
     cursor: pointer;
     top: -6px;
     right: -6px;
@@ -116,8 +115,14 @@ margin-left: 5%;
     cursor: pointer;
     margin-top: 45px;
     z-index: 1000;
-    right: 52px;
+    /* right: 52px; */
     color: #d3e0e0;
+}
+.right-52{
+    right: 52px;
+}
+.right-85{
+    right: 85px;
 }
 .pi-chevron-left:hover{
     color: rgb(167, 162, 162);

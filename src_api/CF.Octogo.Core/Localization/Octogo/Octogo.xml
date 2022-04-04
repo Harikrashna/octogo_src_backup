@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="en">
 	<texts>
+	    <text name="AssignAnotherPackageAfterSubscriptionExpiry">Assign another package after subscription expirys </text>
 		<text name="HomePage">Home page</text>
 		<text name="AboutUs">About us</text>
 		<text name="Administration">Administration</text>
@@ -531,7 +532,7 @@
 		<text name="ExpiringTenantsHelpText">First {1} clients expiring in {0} days...</text>
 		<text name="NoData">No data</text>
 		<text name="SubscriptionEndDate">Subscription end date</text>
-		<text name="TenantNameOrTenancyCode">Client name / client code</text>
+		<text name="TenantNameOrTenancyCode">Client name / Client code</text>
 		<text name="IncomeWithAmount">Income: {0}</text>
 		<text name="Subscription">Subscription</text>
 		<text name="Extend">Extend</text>
@@ -1400,7 +1401,7 @@
 		<text name="TeanantProductSelectionBody"> You have successfully selected the {0}  product and we have received the payment against the same. The application setup is in progress. It would  be ready to use in the next few hours.</text>
 		<text name="Thanks">Thank you for choosing us!</text>
 		<text name="DearUser">Dear User</text>
-		<text name="TenantSetupFailed_Subject">Octogo teanant setup failed</text>
+		<text name="TenantSetupFailed_Subject">Octogo tenant setup failed</text>
 		<text name="AvailableAddons">Available Addons</text>
 		
 		<text name="Congratulations">Congratulations!!!</text>
@@ -1428,7 +1429,24 @@
 		<text name="PleaseExtendPackageBeforeExtendAddon">Please Extend Package before extend Addon</text>
 		<text name="UpgradePackage">Upgrade Package</text>
 		<text name="ExtendAddon">Extend Addon</text>
+		<text name="StandaloneAddons">Standalone Addons</text>
 		<text name="SubscribeAddon">Addon Subscription</text>
+		<text name="ProductSetupStatus">Product Setup Status</text>
+		<text name="AWBCharges">AWB Charges</text>
+		<text name="BillingApproach">Billing Approach</text>
+		<text name="AWBCounts">AWB Counts</text>
+		<text name="Rate">Rate($/AWB)</text>
+		<text name="SelectDifferentRange">Select Different Range</text>
+		<text name="MaxShouldbeGreaterThanMin">Max Should be Greater Than Min</text>
+		<text name="AWBDeleteWarningMessage">AWB data will be deleted</text>
+		<text name="CompanyDetails">Company Details</text>
+		<text name="TransactionalCharges">Transactional Charges</text>
+		<text name="AdminUserDetails">Admin User Details</text>
+		<text name="WaitingDays">Waiting Days</text>
+		<text name="ProductDetails">Product details</text>
+		<text name="EditionRemoveConfirmationMsg">{0} package subscription will be removed with all subscribed addons.</text>
+		<text name="AddonRemoveConfirmationMsg">{0} addon subscription will be removed.</text>
+		<text name="SomthingWrong">There is something wrong!!</text>
 	</texts>
 </localizationDictionary>
 

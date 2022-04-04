@@ -1,6 +1,6 @@
 import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { DashboardCustomizationServiceProxy, TenantEditionAddonDto } from '@shared/service-proxies/service-proxies';
+import { AddOn, DashboardCustomizationServiceProxy, EditionList, EditionServiceProxy, SubscribedStandAloneAddonDto, TenantEditionAddonDto } from '@shared/service-proxies/service-proxies';
 import { PackageDetailedInformationComponent } from '../package-detailed-information/package-detailed-information.component';
 
 @Component({
@@ -14,6 +14,7 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
   @Input() selectedEditionId = 0;
 
   productDetailsList: TenantEditionAddonDto[]=[];
+  StandAloneAddonList: SubscribedStandAloneAddonDto[]=[];
   showDetailedInformation: boolean = false;
   showEditionInformation:boolean = true;
   scrollLength = 500;
@@ -24,19 +25,24 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
   loading:boolean;
   SeletedProductIndex = 0
   dataFetched: boolean = false;
-  constructor( injector: Injector,  private _dashboardService: DashboardCustomizationServiceProxy,) { 
+  IsAddonExtend: boolean = false;
+  selectedEditionData: EditionList;
+  selectedAddonsData: AddOn[];
+  constructor( injector: Injector,  private _dashboardService: DashboardCustomizationServiceProxy,private _editionService: EditionServiceProxy) { 
     super(injector);
   }
   ngOnInit() {
   this.productDetailsList = new Array<TenantEditionAddonDto>();
+  this.StandAloneAddonList = new Array<SubscribedStandAloneAddonDto>()
   this.loading = true;
   this.dataFetched = false;
     this._dashboardService.getTenantEditionAddonDetailsByTenantId(this.appSession.tenantId)
     .subscribe(result => {
       this.loading = false;
       this.dataFetched = true;
-      if(result != null && result.length > 0){
-         this.productDetailsList = result;
+      if(result != null){
+         this.productDetailsList = result.tenantEditionAddon;
+         this.StandAloneAddonList = result.standAloneAddon;
         //  this.productDetailsList.push(result[0]);
         //  this.CheckScrollable();
         if(!this.ForDashboard){
@@ -71,6 +77,33 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
     this.showEditionInformation = true;
     this.ShowPackageDetails(0);
    }
+   checkExpiryTime(remainingDays) {
+    if (remainingDays <= 7) {
+      return true
+    }
+    return false;
+  }
+  BackToPackageList(){
+    this.IsAddonExtend = false;
+  }
+  ExtendAddonSubscription(addon)
+  {
+   this.loading = true;
+   this.selectedAddonsData = [];
+   this._editionService.getProductWithEdition(this.SelectedPackage.productId, 0 ,this.SelectedPackage.editionId, false, true)
+   .subscribe(result => {
+     this.loading = false;
+     if(result != null){
+       this.selectedEditionData = result[0].edition[0];
+       let adn = this.selectedEditionData.addons.filter(obj => obj.addOnName == addon.addonName);
+       if(adn != null && adn != undefined && adn.length > 0)
+       {
+        this.IsAddonExtend = true;
+        this.selectedAddonsData.push(adn[0]);
+       }
+     }
+   });
+  }
   // ScrollLeft() {
   //   let scroll = this.scrollLength;
   //   let ele = document.getElementById('product_content')

@@ -2,7 +2,8 @@
     <!-- Module list start -->
     <div class="moduleCard d-flex" id="module_content">
         <i class="pi pi-chevron-left p-1" (click)="ScrollLeft()" aria-hidden="true" *ngIf="IsScrollable && CanScrollLeft"></i>
-        <i class="pi pi-chevron-right p-1" (click)="ScrollRight()" aria-hidden="true" *ngIf="IsScrollable && CanScrollRight"></i>
+        <i class="pi pi-chevron-right p-1" (click)="ScrollRight()" aria-hidden="true" *ngIf="IsScrollable && CanScrollRight"
+        [ngClass]="ForTenantPage?'right-85':'right-52'"></i>
         
         <!-- Dependent edition module start -->
         <!-- <div *ngFor="let depEdition of DependEditionData;let editionInx = index;" class="d-flex">
@@ -21,11 +22,11 @@
         <!-- Module list start -->
         <div class="text-center module-card-width" *ngFor="let module of PageModuleList; let i=index"
             [ngClass]="(module?.selected) ? (SelectedIndex == i) ? 'selected-module-card module-focus':'selected-module-card':'module-card'">
-            <i class=" fa fa-check selected-check" *ngIf="module?.selected || module['DepEditionName'] != null" (click)="SelectModule(module, i, true)"
-            [ngClass]="!module?.selected ?'text-muted':null"></i>
-            <div (click)="SelectModule(module, i)" class="cursor">     <i class=" fa fa-cube iconSize">&nbsp;</i>
+            <i class=" fa fa-check selected-check" *ngIf="module?.selected || (module['DepEditionName'] != null && !ForTenantPage)" (click)="!ForTenantPage && SelectModule(module, i, true)"
+            [ngClass]="!module?.selected && !ForTenantPage ?'text-muted':null"></i>
+            <div (click)="!ForTenantPage && SelectModule(module, i)" class="cursor">     <i class=" fa fa-cube iconSize">&nbsp;</i>
                 <div class="moduleName">{{module.displayName}}</div>
-                <div class="text-danger" *ngIf="module['DepEditionName'] != null && module['DepEditionName'] != undefined">
+                <div class="text-danger" *ngIf="module['DepEditionName'] != null && module['DepEditionName'] != undefined && !ForTenantPage">
                     {{ module['DepEditionName'] }}</div>
             </div>
         </div>
@@ -37,14 +38,16 @@
         <div class="col pl-0">
             <span class="bold">{{'SubModuleList' | localize}}&nbsp;:-&nbsp;</span>
             {{SelectedModule?.displayName}}
-            <span class="text-danger" *ngIf="SelectedDependentEdition !=null">({{ SelectedDependentEdition }})</span>
+            <span class="text-danger" *ngIf="SelectedDependentEdition !=null && !ForTenantPage">
+                ({{ SelectedDependentEdition }})
+            </span>
         </div>
         <hr />
         <div  *ngIf="SubModuleList?.length > 0" class="row">
             <div class="col-sm-4 subModuleCheck d-flex"
                 *ngFor="let subModule of SubModuleList; let subIndex = index">
                 <input type="checkbox" [checked]="subModule.selected" 
-                [disabled]="subModule['dependent'] == true" (click)="SelectSubModule(subIndex)" />
+                [disabled]="subModule['dependent'] == true || ForTenantPage" (click)="SelectSubModule(subIndex)" />
                 &nbsp;&nbsp;{{subModule.displayName}}
             </div>
         </div>
@@ -65,7 +68,7 @@
             <div class="col-sm-4 subModuleCheck d-flex"
                 *ngFor="let subSubModule of SubSubModuleList">
                 <input type="checkbox" [checked]="subSubModule.selected" 
-                [disabled]="subSubModule['dependent'] == true" (click)="SelectSubSubModule(subSubModule.id)" />
+                [disabled]="subSubModule['dependent'] == true || ForTenantPage" (click)="SelectSubSubModule(subSubModule.id)" />
                 &nbsp;&nbsp;{{subSubModule.displayName}}
             </div>
         </div>
@@ -74,5 +77,13 @@
 </div>
 <div *ngIf="PageModuleList == null || PageModuleList == undefined || PageModuleList?.length == 0"
     class="primeng-no-data text-danger">
-    {{'NoData' | localize}}
+    <div *ngIf="ModuleDataFetched">
+        {{'NoData' | localize}}
+    </div>
+    <div class="d-flex justify-content-center">
+        <div *ngIf ="!ModuleDataFetched" class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+ 
 </div>

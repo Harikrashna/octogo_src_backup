@@ -24,5 +24,7 @@ namespace CF.Octogo.MultiTenancy
         Task ResetTenantSpecificFeatures(EntityDto input);
 
         Task UnlockTenantAdmin(EntityDto input);
+        Task<PagedResultDto<TenantListNewDto>> GetTenantsNew(GetTenantsInputNew input);
+        Task<int> CreateUpdateTenantNew(CreateEditTenantInputDto input);
     }
 }

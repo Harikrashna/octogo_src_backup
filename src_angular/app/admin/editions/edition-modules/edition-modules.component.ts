@@ -1,4 +1,4 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { DependEditionDto, EditionServiceProxy, ModuleDto, PageModulesDto, SubModuleListDto, SubModulesDto, SubSubModuleListDto } from '@shared/service-proxies/service-proxies';
 
@@ -8,8 +8,9 @@ import { DependEditionDto, EditionServiceProxy, ModuleDto, PageModulesDto, SubMo
   styleUrls: ['./edition-modules.component.css']
 })
 export class EditionModulesComponent extends AppComponentBase implements OnInit {
-
+  
   @Input() DependEditionData: DependEditionDto[];  //DependEditionDto
+  @Input() ForTenantPage: boolean = false
   SelectedIndex: number = -1;
   SelectedModule: PageModulesDto;
   IsScrollable: boolean = false;
@@ -24,7 +25,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
   IsDependentEditionModuleSelected: boolean = false;
   scrollLength = 500;
   SelectedDependentEdition = null;
-
+  ModuleDataFetched:boolean = false;
   constructor(injector: Injector, private _editionService: EditionServiceProxy) {
     super(injector);
   }
@@ -39,7 +40,9 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     this.ActualPageModuleList = [];
     this.ActualPageSubModuleList = [];
     if (productId != null && productId > 0) {
+      this.ModuleDataFetched = false;
       this._editionService.getModuleList(productId).subscribe(result => {
+        this.ModuleDataFetched = true;
         if (result != null) {
           this.PageModuleList = result.moduleList;
           this.ActualPageModuleList.push(...this.PageModuleList);
@@ -59,9 +62,12 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     this.PageSubModuleList = [];
     this.ActualPageModuleList = [];
     this.ActualPageSubModuleList = [];
+    this.ModuleDataFetched = false;
     this._editionService.getModuleList(productId).subscribe(async result => {
+      this.ModuleDataFetched = true;
       if (result != null) {
         this.PageModuleList = result.moduleList;
+        
         this.PageSubModuleList = result.subModuleList;
         this.ActualPageModuleList.push(...this.PageModuleList);
         this.ActualPageSubModuleList.push(...this.PageSubModuleList);
@@ -337,6 +343,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
   }
 
   SelectModule(module, index, isReset: boolean = false) {
+    
     this.SelectedDependentEdition = null;
     if (this.SelectedIndex >= 0 && this.SelectedIndex != index) {
       if (!this.SubModuleList) {
@@ -379,6 +386,29 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
         else {
           moduleChangeConfirmation = true;
         }
+        // this condition only checked when modules manage on Tenant creation page
+        if(this.ForTenantPage == true){ 
+          moduleChangeConfirmation = false; 
+          let selectedSubModule = this.SubModuleList.filter(obj => obj["selected"] == true);
+          if (selectedSubModule != null && selectedSubModule != undefined && selectedSubModule.length > 0) {
+            let flag = 0;
+            selectedSubModule.forEach(subModule => {
+              if (subModule["selected"] == true) {
+                if (flag == 0) moduleChangeConfirmation = false;
+              if (subModule.subSubModuleList != null && subModule.subSubModuleList != undefined) {
+                let selectedSubSubModIndex = subModule.subSubModuleList.findIndex(x => x["selected"] == true);
+                if (selectedSubSubModIndex < 0) {
+                  moduleChangeConfirmation = true;
+                  flag++;
+                }
+              }
+            }
+            })
+          }
+          else{
+            moduleChangeConfirmation = true;
+          }
+        }
         if (moduleChangeConfirmation == true) {
           this.message.confirm(
             this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.displayName),
@@ -403,29 +433,37 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     }
   }
   async SelectModuleAction(module, index, isReset: boolean = false, isConfirmed = false) {
+    
     this.IsDependentEditionModuleSelected = false;
     this.SubSubModuleList = [];
     this.SubModuleList = [];
     if (!isConfirmed) {
+      
       this.SelectedIndex = index;
       this.SelectedModule = module;
     }
     if (isReset == true) {
+      
       // reset module selection
       this.PageModuleList[this.SelectedIndex]["selected"] = false;       // reset module selection
       if (this.PageSubModuleList != null && this.PageSubModuleList != undefined) {
         this.PageSubModuleList.forEach(mod => {
           if (this.SelectedModule != null && mod.moduleId == this.SelectedModule.id) {
+            
             if (mod.subModuleList != null && mod.subModuleList != undefined) {
+              
               mod.subModuleList.forEach(subMod => {        // reset Sub Module selection
                 if (!subMod["dependent"]) subMod["selected"] = false;
+                
                 if (subMod.subSubModuleList != null && subMod.subSubModuleList != undefined) {
                   subMod.subSubModuleList.forEach(subSubMod => {        // reset Sub Sub Module selection
                     if (!subSubMod["dependent"]) subSubMod["selected"] = false;
+                    
                   });
                 }
               });
             }
+            
           }
         });
       }
@@ -433,19 +471,26 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
       this.SelectedIndex = -1;
       if (isConfirmed) {  // when user confirm YES while module selection change without selct any sub-module
         this.SelectModuleAction(module, index, false);
+        
       }
     }
     else {
+      
       this.PageModuleList[this.SelectedIndex]["selected"] = true;
       let subModule = this.PageSubModuleList.filter(obj => obj.moduleId == module.id);
       if (subModule != null && subModule != undefined && subModule.length > 0) {
+        
         this.SubModuleList = subModule[0].subModuleList;
         this.SubSubModuleList = [];
         let selectedSubModules = this.SubModuleList.filter(obj => obj["selected"] == true);
+        
+
         if (selectedSubModules != null && selectedSubModules != undefined) {
+          
           selectedSubModules.forEach(obj2 => {
             if (obj2.subSubModuleList != null && obj2.subSubModuleList != undefined && obj2.subSubModuleList.length > 0) {
               obj2.subSubModuleList.forEach(x => {
+                
                 this.SubSubModuleList.push(x);
               })
             }
@@ -455,9 +500,13 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     }
   }
   SelectSubModule(subIndex) {
+    
+
+
     this.PageSubModuleList.forEach(obj => {
       if (obj.moduleId == this.SelectedModule.id) {
         if (obj.subModuleList[subIndex]["selected"]) {
+          
           obj.subModuleList[subIndex]["selected"] = false;
           if (obj.subModuleList[subIndex].subSubModuleList != null && obj.subModuleList[subIndex].subSubModuleList != undefined) {
             obj.subModuleList[subIndex].subSubModuleList.forEach(x => {
@@ -466,16 +515,19 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
           }
         }
         else {
+          
           obj.subModuleList[subIndex]["selected"] = true;
         }
         this.SubSubModuleList = [];
         let selectedSubModules = obj.subModuleList.filter(obj1 => obj1["selected"] == true);
         if (selectedSubModules != null && selectedSubModules != undefined) {
+          
           selectedSubModules.forEach(obj2 => {
             if (obj2.subSubModuleList != null && obj2.subSubModuleList != undefined && obj2.subSubModuleList.length > 0) {
               obj2.subSubModuleList.forEach(subSubModule => {
                 this.SubSubModuleList.push(subSubModule);
               })
+              
             }
           });
         }

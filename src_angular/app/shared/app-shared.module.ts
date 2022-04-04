@@ -26,6 +26,7 @@ import { ThemesLayoutBaseComponent } from './layout/themes/themes-layout-base.co
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DividerModule } from 'primeng/divider';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 const imports = [
     CommonModule,
@@ -54,7 +55,8 @@ const imports = [
     AppBsModalModule,
     ProgressSpinnerModule,
     OverlayPanelModule,
-    DividerModule
+    DividerModule,
+    MultiSelectModule
 ];
 
 @NgModule({

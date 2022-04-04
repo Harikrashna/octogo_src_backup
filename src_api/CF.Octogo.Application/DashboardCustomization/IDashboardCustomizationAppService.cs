@@ -24,7 +24,7 @@ namespace CF.Octogo.DashboardCustomization
 
         List<WidgetOutput> GetAllWidgetDefinitions(GetDashboardInput input);
         Task<ListResultDto<EditionAndProductListDto>> GetProductAndEditionDetailByUserId(int userId);
-        Task<List<TenantEditionAddonDto>> GetTenantEditionAddonDetailsByTenantId(int TenantId);
+        Task<TenantSubscriotionsDto> GetTenantEditionAddonDetailsByTenantId(int TenantId);
         Task<List<TenantEditionAddonModulesDto>> GetTenantEditionAddonModuleDetails(int EditionId);
     }
 }

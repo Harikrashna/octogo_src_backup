@@ -1,0 +1,25 @@
+.header{
+    height: auto;
+}
+#billing{
+    display:flex; 
+    flex-direction: row; 
+    justify-content: center; 
+    align-items: center
+}
+ #drop{
+    width: 30%;
+}
+#down{
+    display: flex;
+}
+
+#add{
+    margin-top: 27px;
+    height: 35px;
+}
+.valid{
+    display: flex;
+}
+
+

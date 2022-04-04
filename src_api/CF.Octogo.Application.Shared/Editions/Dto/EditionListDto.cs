@@ -28,6 +28,8 @@ namespace CF.Octogo.Editions.Dto
         public string Name { get; set; }
 
         public string DisplayName { get; set; }
+        public int ApproachId { get; set; }
+        public bool IsFree { get; set; }
 
     }
     public class EditionListDtoNew : EntityDto

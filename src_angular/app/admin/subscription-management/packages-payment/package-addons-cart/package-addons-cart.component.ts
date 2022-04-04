@@ -17,7 +17,7 @@ export class PackageAddonsCartComponent extends AppComponentBase implements OnIn
   @Input() ForAddonOnly : boolean = false;
   @Input() ProductName;
   @Input() IsTenantRegistration = false;
-  @Input()Heading = '';
+  @Input() Heading = '';
 
   selectedEditionPricing;
   selectedAddonPricing = [];

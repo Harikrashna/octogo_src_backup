@@ -754,7 +754,7 @@ export class AddonServiceProxy {
      * @param productId (optional) 
      * @return Success
      */
-    getEditionListForAddon(productId: number | undefined): Observable<ListResultDtoOfEditionListByProductDto> {
+    getEditionListForAddon(productId: number | undefined): Observable<ListResultDtoOfEditionListByProductForAddonDto> {
         let url_ = this.baseUrl + "/api/services/app/Addon/GetEditionListForAddon?";
         if (productId === null)
             throw new Error("The parameter 'productId' cannot be null.");
@@ -777,14 +777,14 @@ export class AddonServiceProxy {
                 try {
                     return this.processGetEditionListForAddon(<any>response_);
                 } catch (e) {
-                    return <Observable<ListResultDtoOfEditionListByProductDto>><any>_observableThrow(e);
+                    return <Observable<ListResultDtoOfEditionListByProductForAddonDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<ListResultDtoOfEditionListByProductDto>><any>_observableThrow(response_);
+                return <Observable<ListResultDtoOfEditionListByProductForAddonDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetEditionListForAddon(response: HttpResponseBase): Observable<ListResultDtoOfEditionListByProductDto> {
+    protected processGetEditionListForAddon(response: HttpResponseBase): Observable<ListResultDtoOfEditionListByProductForAddonDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -795,7 +795,7 @@ export class AddonServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfEditionListByProductDto.fromJS(resultData200);
+            result200 = ListResultDtoOfEditionListByProductForAddonDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -803,7 +803,7 @@ export class AddonServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ListResultDtoOfEditionListByProductDto>(<any>null);
+        return _observableOf<ListResultDtoOfEditionListByProductForAddonDto>(<any>null);
     }
 
     /**
@@ -897,62 +897,6 @@ export class AddonServiceProxy {
     }
 
     protected processInsertUpdateAddonModuleAndPricing(response: HttpResponseBase): Observable<number> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<number>(<any>null);
-    }
-
-    /**
-     * @param body (optional) 
-     * @return Success
-     */
-    insertUpdateStandaloneAddOnModule(body: CreateAddonDto | undefined): Observable<number> {
-        let url_ = this.baseUrl + "/api/services/app/Addon/InsertUpdateStandaloneAddOnModule";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processInsertUpdateStandaloneAddOnModule(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processInsertUpdateStandaloneAddOnModule(<any>response_);
-                } catch (e) {
-                    return <Observable<number>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<number>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processInsertUpdateStandaloneAddOnModule(response: HttpResponseBase): Observable<number> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1147,6 +1091,69 @@ export class AddonServiceProxy {
             }));
         }
         return _observableOf<FeatureTreeEditModel>(<any>null);
+    }
+
+    /**
+     * @param editionId (optional) 
+     * @return Success
+     */
+    getAddonListByEditionId(editionId: number | undefined): Observable<AvailableAddonModulesDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Addon/GetAddonListByEditionId?";
+        if (editionId === null)
+            throw new Error("The parameter 'editionId' cannot be null.");
+        else if (editionId !== undefined)
+            url_ += "EditionId=" + encodeURIComponent("" + editionId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAddonListByEditionId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAddonListByEditionId(<any>response_);
+                } catch (e) {
+                    return <Observable<AvailableAddonModulesDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AvailableAddonModulesDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAddonListByEditionId(response: HttpResponseBase): Observable<AvailableAddonModulesDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AvailableAddonModulesDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AvailableAddonModulesDto[]>(<any>null);
     }
 }
 
@@ -4337,7 +4344,7 @@ export class DashboardCustomizationServiceProxy {
      * @param tenantId (optional) 
      * @return Success
      */
-    getTenantEditionAddonDetailsByTenantId(tenantId: number | undefined): Observable<TenantEditionAddonDto[]> {
+    getTenantEditionAddonDetailsByTenantId(tenantId: number | undefined): Observable<TenantSubscriotionsDto> {
         let url_ = this.baseUrl + "/api/services/app/DashboardCustomization/GetTenantEditionAddonDetailsByTenantId?";
         if (tenantId === null)
             throw new Error("The parameter 'tenantId' cannot be null.");
@@ -4360,14 +4367,14 @@ export class DashboardCustomizationServiceProxy {
                 try {
                     return this.processGetTenantEditionAddonDetailsByTenantId(<any>response_);
                 } catch (e) {
-                    return <Observable<TenantEditionAddonDto[]>><any>_observableThrow(e);
+                    return <Observable<TenantSubscriotionsDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<TenantEditionAddonDto[]>><any>_observableThrow(response_);
+                return <Observable<TenantSubscriotionsDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetTenantEditionAddonDetailsByTenantId(response: HttpResponseBase): Observable<TenantEditionAddonDto[]> {
+    protected processGetTenantEditionAddonDetailsByTenantId(response: HttpResponseBase): Observable<TenantSubscriotionsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -4378,14 +4385,7 @@ export class DashboardCustomizationServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(TenantEditionAddonDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = TenantSubscriotionsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -4393,7 +4393,7 @@ export class DashboardCustomizationServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<TenantEditionAddonDto[]>(<any>null);
+        return _observableOf<TenantSubscriotionsDto>(<any>null);
     }
 
     /**
@@ -8200,9 +8200,10 @@ export class EditionServiceProxy {
      * @param excludeProductId (optional) 
      * @param editionId (optional) 
      * @param isAvailableProduct (optional) 
+     * @param withStandAloneAddons (optional) 
      * @return Success
      */
-    getProductWithEdition(includeProductId: number | undefined, excludeProductId: number | undefined, editionId: number | undefined, isAvailableProduct: boolean | undefined): Observable<ProductWithEditionDto[]> {
+    getProductWithEdition(includeProductId: number | undefined, excludeProductId: number | undefined, editionId: number | undefined, isAvailableProduct: boolean | undefined, withStandAloneAddons: boolean | undefined): Observable<ProductWithEditionDto[]> {
         let url_ = this.baseUrl + "/api/services/app/Edition/GetProductWithEdition?";
         if (includeProductId === null)
             throw new Error("The parameter 'includeProductId' cannot be null.");
@@ -8220,6 +8221,10 @@ export class EditionServiceProxy {
             throw new Error("The parameter 'isAvailableProduct' cannot be null.");
         else if (isAvailableProduct !== undefined)
             url_ += "IsAvailableProduct=" + encodeURIComponent("" + isAvailableProduct) + "&";
+        if (withStandAloneAddons === null)
+            throw new Error("The parameter 'withStandAloneAddons' cannot be null.");
+        else if (withStandAloneAddons !== undefined)
+            url_ += "WithStandAloneAddons=" + encodeURIComponent("" + withStandAloneAddons) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -8334,6 +8339,132 @@ export class EditionServiceProxy {
             }));
         }
         return _observableOf<AvailableAddonModulesDto[]>(<any>null);
+    }
+
+    /**
+     * @param editionId (optional) 
+     * @return Success
+     */
+    getSubscribedAddonByEditionId(editionId: number | undefined): Observable<AvailableAddonModulesDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Edition/GetSubscribedAddonByEditionId?";
+        if (editionId === null)
+            throw new Error("The parameter 'editionId' cannot be null.");
+        else if (editionId !== undefined)
+            url_ += "EditionId=" + encodeURIComponent("" + editionId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSubscribedAddonByEditionId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSubscribedAddonByEditionId(<any>response_);
+                } catch (e) {
+                    return <Observable<AvailableAddonModulesDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AvailableAddonModulesDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSubscribedAddonByEditionId(response: HttpResponseBase): Observable<AvailableAddonModulesDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AvailableAddonModulesDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AvailableAddonModulesDto[]>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    prepareFeaturesList(body: AvailableModuleDto[] | undefined): Observable<AvailableModuleDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Edition/PrepareFeaturesList";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPrepareFeaturesList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPrepareFeaturesList(<any>response_);
+                } catch (e) {
+                    return <Observable<AvailableModuleDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AvailableModuleDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPrepareFeaturesList(response: HttpResponseBase): Observable<AvailableModuleDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AvailableModuleDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AvailableModuleDto[]>(<any>null);
     }
 }
 
@@ -15966,6 +16097,174 @@ export class TenantServiceProxy {
         }
         return _observableOf<void>(<any>null);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    getTenantsNew(body: GetTenantsInputNew | undefined): Observable<PagedResultDtoOfTenantListNewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Tenant/GetTenantsNew";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTenantsNew(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTenantsNew(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTenantListNewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTenantListNewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTenantsNew(response: HttpResponseBase): Observable<PagedResultDtoOfTenantListNewDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultDtoOfTenantListNewDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTenantListNewDto>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    createUpdateTenantNew(body: CreateEditTenantInputDto | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/services/app/Tenant/CreateUpdateTenantNew";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateUpdateTenantNew(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateUpdateTenantNew(<any>response_);
+                } catch (e) {
+                    return <Observable<number>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<number>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateUpdateTenantNew(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<number>(<any>null);
+    }
+
+    /**
+     * @param tenantId (optional) 
+     * @return Success
+     */
+    getTenantDetailsForEdit(tenantId: number | undefined): Observable<CreateEditTenantInputDto> {
+        let url_ = this.baseUrl + "/api/services/app/Tenant/GetTenantDetailsForEdit?";
+        if (tenantId === null)
+            throw new Error("The parameter 'tenantId' cannot be null.");
+        else if (tenantId !== undefined)
+            url_ += "tenantId=" + encodeURIComponent("" + tenantId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTenantDetailsForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTenantDetailsForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<CreateEditTenantInputDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CreateEditTenantInputDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTenantDetailsForEdit(response: HttpResponseBase): Observable<CreateEditTenantInputDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CreateEditTenantInputDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CreateEditTenantInputDto>(<any>null);
+    }
 }
 
 @Injectable()
@@ -21355,6 +21654,7 @@ export class AddOn implements IAddOn {
     addOnName!: string | undefined;
     addonPrice!: PricingType[] | undefined;
     moduleList!: AddonModules[] | undefined;
+    isStandAlone!: boolean | undefined;
 
     constructor(data?: IAddOn) {
         if (data) {
@@ -21379,6 +21679,7 @@ export class AddOn implements IAddOn {
                 for (let item of _data["moduleList"])
                     this.moduleList!.push(AddonModules.fromJS(item));
             }
+            this.isStandAlone = _data["isStandAlone"];
         }
     }
 
@@ -21403,6 +21704,7 @@ export class AddOn implements IAddOn {
             for (let item of this.moduleList)
                 data["moduleList"].push(item.toJSON());
         }
+        data["isStandAlone"] = this.isStandAlone;
         return data; 
     }
 }
@@ -21412,6 +21714,7 @@ export interface IAddOn {
     addOnName: string | undefined;
     addonPrice: PricingType[] | undefined;
     moduleList: AddonModules[] | undefined;
+    isStandAlone: boolean | undefined;
 }
 
 export class AddonListDto implements IAddonListDto {
@@ -22537,7 +22840,8 @@ export interface IAuthenticateResultModelNew {
 export class AvailableAddonModulesDto implements IAvailableAddonModulesDto {
     addonId!: number;
     addonName!: string | undefined;
-    editionId!: number;
+    editionId!: number | undefined;
+    isStandAlone!: boolean | undefined;
     moduleList!: AvailableModuleDto[] | undefined;
     pricingData!: PricingDataDto[] | undefined;
 
@@ -22555,6 +22859,7 @@ export class AvailableAddonModulesDto implements IAvailableAddonModulesDto {
             this.addonId = _data["addonId"];
             this.addonName = _data["addonName"];
             this.editionId = _data["editionId"];
+            this.isStandAlone = _data["isStandAlone"];
             if (Array.isArray(_data["moduleList"])) {
                 this.moduleList = [] as any;
                 for (let item of _data["moduleList"])
@@ -22580,6 +22885,7 @@ export class AvailableAddonModulesDto implements IAvailableAddonModulesDto {
         data["addonId"] = this.addonId;
         data["addonName"] = this.addonName;
         data["editionId"] = this.editionId;
+        data["isStandAlone"] = this.isStandAlone;
         if (Array.isArray(this.moduleList)) {
             data["moduleList"] = [];
             for (let item of this.moduleList)
@@ -22597,7 +22903,8 @@ export class AvailableAddonModulesDto implements IAvailableAddonModulesDto {
 export interface IAvailableAddonModulesDto {
     addonId: number;
     addonName: string | undefined;
-    editionId: number;
+    editionId: number | undefined;
+    isStandAlone: boolean | undefined;
     moduleList: AvailableModuleDto[] | undefined;
     pricingData: PricingDataDto[] | undefined;
 }
@@ -22692,6 +22999,58 @@ export interface IAwbCostApproachListDto {
     inApproachID: number;
     vcApproachName: string | undefined;
     vcDescription: string | undefined;
+}
+
+export class AwbCountsDto implements IAwbCountsDto {
+    costId!: number | undefined;
+    countMin!: number;
+    countMax!: number;
+    billingRate!: number;
+    amount!: number;
+
+    constructor(data?: IAwbCountsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.costId = _data["costId"];
+            this.countMin = _data["countMin"];
+            this.countMax = _data["countMax"];
+            this.billingRate = _data["billingRate"];
+            this.amount = _data["amount"];
+        }
+    }
+
+    static fromJS(data: any): AwbCountsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AwbCountsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["costId"] = this.costId;
+        data["countMin"] = this.countMin;
+        data["countMax"] = this.countMax;
+        data["billingRate"] = this.billingRate;
+        data["amount"] = this.amount;
+        return data; 
+    }
+}
+
+export interface IAwbCountsDto {
+    costId: number | undefined;
+    countMin: number;
+    countMax: number;
+    billingRate: number;
+    amount: number;
 }
 
 export class BlockUserInput implements IBlockUserInput {
@@ -23492,6 +23851,58 @@ export interface ICreateEditionDto {
     productId: number;
     approachId: number | undefined;
     isEdit: boolean;
+}
+
+export class CreateEditTenantInputDto implements ICreateEditTenantInputDto {
+    tenantDetails!: TenantDetailsInputDto;
+    packageDetails!: PackageDetailsInputDto[] | undefined;
+    transactionCharges!: TransactionDataInputDto;
+
+    constructor(data?: ICreateEditTenantInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tenantDetails = _data["tenantDetails"] ? TenantDetailsInputDto.fromJS(_data["tenantDetails"]) : <any>undefined;
+            if (Array.isArray(_data["packageDetails"])) {
+                this.packageDetails = [] as any;
+                for (let item of _data["packageDetails"])
+                    this.packageDetails!.push(PackageDetailsInputDto.fromJS(item));
+            }
+            this.transactionCharges = _data["transactionCharges"] ? TransactionDataInputDto.fromJS(_data["transactionCharges"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateEditTenantInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateEditTenantInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantDetails"] = this.tenantDetails ? this.tenantDetails.toJSON() : <any>undefined;
+        if (Array.isArray(this.packageDetails)) {
+            data["packageDetails"] = [];
+            for (let item of this.packageDetails)
+                data["packageDetails"].push(item.toJSON());
+        }
+        data["transactionCharges"] = this.transactionCharges ? this.transactionCharges.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ICreateEditTenantInputDto {
+    tenantDetails: TenantDetailsInputDto;
+    packageDetails: PackageDetailsInputDto[] | undefined;
+    transactionCharges: TransactionDataInputDto;
 }
 
 export class CreateFriendshipRequestByUserNameInput implements ICreateFriendshipRequestByUserNameInput {
@@ -26080,9 +26491,61 @@ export interface IEditionList {
 export class EditionListByProductDto implements IEditionListByProductDto {
     name!: string | undefined;
     displayName!: string | undefined;
+    approachId!: number;
+    isFree!: boolean;
     id!: number;
 
     constructor(data?: IEditionListByProductDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.approachId = _data["approachId"];
+            this.isFree = _data["isFree"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): EditionListByProductDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditionListByProductDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["approachId"] = this.approachId;
+        data["isFree"] = this.isFree;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IEditionListByProductDto {
+    name: string | undefined;
+    displayName: string | undefined;
+    approachId: number;
+    isFree: boolean;
+    id: number;
+}
+
+export class EditionListByProductForAddonDto implements IEditionListByProductForAddonDto {
+    name!: string | undefined;
+    displayName!: string | undefined;
+    id!: number;
+
+    constructor(data?: IEditionListByProductForAddonDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -26099,9 +26562,9 @@ export class EditionListByProductDto implements IEditionListByProductDto {
         }
     }
 
-    static fromJS(data: any): EditionListByProductDto {
+    static fromJS(data: any): EditionListByProductForAddonDto {
         data = typeof data === 'object' ? data : {};
-        let result = new EditionListByProductDto();
+        let result = new EditionListByProductForAddonDto();
         result.init(data);
         return result;
     }
@@ -26115,7 +26578,7 @@ export class EditionListByProductDto implements IEditionListByProductDto {
     }
 }
 
-export interface IEditionListByProductDto {
+export interface IEditionListByProductForAddonDto {
     name: string | undefined;
     displayName: string | undefined;
     id: number;
@@ -29631,6 +30094,82 @@ export interface IGetTenantFeaturesEditOutput {
     features: FlatFeatureDto[] | undefined;
 }
 
+export class GetTenantsInputNew implements IGetTenantsInputNew {
+    filter!: string | undefined;
+    subscriptionEndDateStart!: DateTime | undefined;
+    subscriptionEndDateEnd!: DateTime | undefined;
+    creationDateStart!: DateTime | undefined;
+    creationDateEnd!: DateTime | undefined;
+    editionId!: number | undefined;
+    editionIdSpecified!: boolean;
+    productId!: number | undefined;
+    sorting!: string | undefined;
+    maxResultCount!: number;
+    skipCount!: number;
+
+    constructor(data?: IGetTenantsInputNew) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.filter = _data["filter"];
+            this.subscriptionEndDateStart = _data["subscriptionEndDateStart"] ? DateTime.fromISO(_data["subscriptionEndDateStart"].toString()) : <any>undefined;
+            this.subscriptionEndDateEnd = _data["subscriptionEndDateEnd"] ? DateTime.fromISO(_data["subscriptionEndDateEnd"].toString()) : <any>undefined;
+            this.creationDateStart = _data["creationDateStart"] ? DateTime.fromISO(_data["creationDateStart"].toString()) : <any>undefined;
+            this.creationDateEnd = _data["creationDateEnd"] ? DateTime.fromISO(_data["creationDateEnd"].toString()) : <any>undefined;
+            this.editionId = _data["editionId"];
+            this.editionIdSpecified = _data["editionIdSpecified"];
+            this.productId = _data["productId"];
+            this.sorting = _data["sorting"];
+            this.maxResultCount = _data["maxResultCount"];
+            this.skipCount = _data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetTenantsInputNew {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTenantsInputNew();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["filter"] = this.filter;
+        data["subscriptionEndDateStart"] = this.subscriptionEndDateStart ? this.subscriptionEndDateStart.toString() : <any>undefined;
+        data["subscriptionEndDateEnd"] = this.subscriptionEndDateEnd ? this.subscriptionEndDateEnd.toString() : <any>undefined;
+        data["creationDateStart"] = this.creationDateStart ? this.creationDateStart.toString() : <any>undefined;
+        data["creationDateEnd"] = this.creationDateEnd ? this.creationDateEnd.toString() : <any>undefined;
+        data["editionId"] = this.editionId;
+        data["editionIdSpecified"] = this.editionIdSpecified;
+        data["productId"] = this.productId;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+}
+
+export interface IGetTenantsInputNew {
+    filter: string | undefined;
+    subscriptionEndDateStart: DateTime | undefined;
+    subscriptionEndDateEnd: DateTime | undefined;
+    creationDateStart: DateTime | undefined;
+    creationDateEnd: DateTime | undefined;
+    editionId: number | undefined;
+    editionIdSpecified: boolean;
+    productId: number | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 export class GetTopStatsOutput implements IGetTopStatsOutput {
     totalProfit!: number;
     newFeedbacks!: number;
@@ -31474,6 +32013,50 @@ export interface IListResultDtoOfEditionListByProductDto {
     items: EditionListByProductDto[] | undefined;
 }
 
+export class ListResultDtoOfEditionListByProductForAddonDto implements IListResultDtoOfEditionListByProductForAddonDto {
+    items!: EditionListByProductForAddonDto[] | undefined;
+
+    constructor(data?: IListResultDtoOfEditionListByProductForAddonDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(EditionListByProductForAddonDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ListResultDtoOfEditionListByProductForAddonDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListResultDtoOfEditionListByProductForAddonDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IListResultDtoOfEditionListByProductForAddonDto {
+    items: EditionListByProductForAddonDto[] | undefined;
+}
+
 export class ListResultDtoOfEditionListDto implements IListResultDtoOfEditionListDto {
     items!: EditionListDto[] | undefined;
 
@@ -33282,6 +33865,122 @@ export interface IOtherSettingsEditDto {
     isQuickThemeSelectEnabled: boolean;
 }
 
+export class PackageDetailsInputDto implements IPackageDetailsInputDto {
+    productId!: number;
+    editionId!: number;
+    productName!: string | undefined;
+    editionName!: string | undefined;
+    approachId!: number;
+    waitAfterExpiry!: boolean | undefined;
+    waitingDays!: number | undefined;
+    assignAnotherPackage!: boolean | undefined;
+    assignPackageId!: number | undefined;
+    pricingTypeId!: number | undefined;
+    amount!: number | undefined;
+    discountPercentage!: number | undefined;
+    paymentModeCode!: string | undefined;
+    paymentType!: number | undefined;
+    paymentDone!: boolean | undefined;
+    moduleList!: ModuleListDto[] | undefined;
+    addonSubscription!: AddonSubscriptionDto[] | undefined;
+
+    constructor(data?: IPackageDetailsInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.productId = _data["productId"];
+            this.editionId = _data["editionId"];
+            this.productName = _data["productName"];
+            this.editionName = _data["editionName"];
+            this.approachId = _data["approachId"];
+            this.waitAfterExpiry = _data["waitAfterExpiry"];
+            this.waitingDays = _data["waitingDays"];
+            this.assignAnotherPackage = _data["assignAnotherPackage"];
+            this.assignPackageId = _data["assignPackageId"];
+            this.pricingTypeId = _data["pricingTypeId"];
+            this.amount = _data["amount"];
+            this.discountPercentage = _data["discountPercentage"];
+            this.paymentModeCode = _data["paymentModeCode"];
+            this.paymentType = _data["paymentType"];
+            this.paymentDone = _data["paymentDone"];
+            if (Array.isArray(_data["moduleList"])) {
+                this.moduleList = [] as any;
+                for (let item of _data["moduleList"])
+                    this.moduleList!.push(ModuleListDto.fromJS(item));
+            }
+            if (Array.isArray(_data["addonSubscription"])) {
+                this.addonSubscription = [] as any;
+                for (let item of _data["addonSubscription"])
+                    this.addonSubscription!.push(AddonSubscriptionDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PackageDetailsInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PackageDetailsInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["productId"] = this.productId;
+        data["editionId"] = this.editionId;
+        data["productName"] = this.productName;
+        data["editionName"] = this.editionName;
+        data["approachId"] = this.approachId;
+        data["waitAfterExpiry"] = this.waitAfterExpiry;
+        data["waitingDays"] = this.waitingDays;
+        data["assignAnotherPackage"] = this.assignAnotherPackage;
+        data["assignPackageId"] = this.assignPackageId;
+        data["pricingTypeId"] = this.pricingTypeId;
+        data["amount"] = this.amount;
+        data["discountPercentage"] = this.discountPercentage;
+        data["paymentModeCode"] = this.paymentModeCode;
+        data["paymentType"] = this.paymentType;
+        data["paymentDone"] = this.paymentDone;
+        if (Array.isArray(this.moduleList)) {
+            data["moduleList"] = [];
+            for (let item of this.moduleList)
+                data["moduleList"].push(item.toJSON());
+        }
+        if (Array.isArray(this.addonSubscription)) {
+            data["addonSubscription"] = [];
+            for (let item of this.addonSubscription)
+                data["addonSubscription"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPackageDetailsInputDto {
+    productId: number;
+    editionId: number;
+    productName: string | undefined;
+    editionName: string | undefined;
+    approachId: number;
+    waitAfterExpiry: boolean | undefined;
+    waitingDays: number | undefined;
+    assignAnotherPackage: boolean | undefined;
+    assignPackageId: number | undefined;
+    pricingTypeId: number | undefined;
+    amount: number | undefined;
+    discountPercentage: number | undefined;
+    paymentModeCode: string | undefined;
+    paymentType: number | undefined;
+    paymentDone: boolean | undefined;
+    moduleList: ModuleListDto[] | undefined;
+    addonSubscription: AddonSubscriptionDto[] | undefined;
+}
+
 export class Page implements IPage {
     id!: string | undefined;
     name!: string | undefined;
@@ -34524,6 +35223,54 @@ export class PagedResultDtoOfTenantListDto implements IPagedResultDtoOfTenantLis
 export interface IPagedResultDtoOfTenantListDto {
     totalCount: number;
     items: TenantListDto[] | undefined;
+}
+
+export class PagedResultDtoOfTenantListNewDto implements IPagedResultDtoOfTenantListNewDto {
+    totalCount!: number;
+    items!: TenantListNewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfTenantListNewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(TenantListNewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfTenantListNewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfTenantListNewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfTenantListNewDto {
+    totalCount: number;
+    items: TenantListNewDto[] | undefined;
 }
 
 export class PagedResultDtoOfUserDelegationDto implements IPagedResultDtoOfUserDelegationDto {
@@ -36789,6 +37536,54 @@ export enum SettingScopes {
     All = 7,
 }
 
+export class StandAloneAddonModulesDto implements IStandAloneAddonModulesDto {
+    moduleName!: string | undefined;
+    subModule!: StandAloneAddonModulesDto[] | undefined;
+
+    constructor(data?: IStandAloneAddonModulesDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.moduleName = _data["moduleName"];
+            if (Array.isArray(_data["subModule"])) {
+                this.subModule = [] as any;
+                for (let item of _data["subModule"])
+                    this.subModule!.push(StandAloneAddonModulesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StandAloneAddonModulesDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StandAloneAddonModulesDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["moduleName"] = this.moduleName;
+        if (Array.isArray(this.subModule)) {
+            data["subModule"] = [];
+            for (let item of this.subModule)
+                data["subModule"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IStandAloneAddonModulesDto {
+    moduleName: string | undefined;
+    subModule: StandAloneAddonModulesDto[] | undefined;
+}
+
 export class StringOutput implements IStringOutput {
     output!: string | undefined;
 
@@ -37289,6 +38084,58 @@ export interface ISubscribableEditionComboboxItemDto {
     isSelected: boolean;
 }
 
+export class SubscribedAddonDetailsDto implements ISubscribedAddonDetailsDto {
+    addonId!: number;
+    addonName!: string | undefined;
+    pricing!: string | undefined;
+    subscriptionStartDateUtc!: DateTime;
+    subscriptionEndDateUtc!: DateTime | undefined;
+
+    constructor(data?: ISubscribedAddonDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addonId = _data["addonId"];
+            this.addonName = _data["addonName"];
+            this.pricing = _data["pricing"];
+            this.subscriptionStartDateUtc = _data["subscriptionStartDateUtc"] ? DateTime.fromISO(_data["subscriptionStartDateUtc"].toString()) : <any>undefined;
+            this.subscriptionEndDateUtc = _data["subscriptionEndDateUtc"] ? DateTime.fromISO(_data["subscriptionEndDateUtc"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SubscribedAddonDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubscribedAddonDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addonId"] = this.addonId;
+        data["addonName"] = this.addonName;
+        data["pricing"] = this.pricing;
+        data["subscriptionStartDateUtc"] = this.subscriptionStartDateUtc ? this.subscriptionStartDateUtc.toString() : <any>undefined;
+        data["subscriptionEndDateUtc"] = this.subscriptionEndDateUtc ? this.subscriptionEndDateUtc.toString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface ISubscribedAddonDetailsDto {
+    addonId: number;
+    addonName: string | undefined;
+    pricing: string | undefined;
+    subscriptionStartDateUtc: DateTime;
+    subscriptionEndDateUtc: DateTime | undefined;
+}
+
 export class SubscribedAddonDto implements ISubscribedAddonDto {
     addonName!: string | undefined;
     startDate!: DateTime;
@@ -37335,6 +38182,150 @@ export interface ISubscribedAddonDto {
     startDate: DateTime;
     endDate: DateTime | undefined;
     addonPrice: string | undefined;
+}
+
+export class SubscribedEditionDetailsDto implements ISubscribedEditionDetailsDto {
+    editionId!: number;
+    editionName!: string | undefined;
+    pricing!: string | undefined;
+    productId!: string | undefined;
+    productName!: string | undefined;
+    subscriptionStartDateUtc!: DateTime;
+    subscriptionEndDateUtc!: DateTime | undefined;
+    setupStatus!: string | undefined;
+    setupErrorMsg!: string | undefined;
+    isSetupCompleted!: boolean;
+    addon!: SubscribedAddonDetailsDto[] | undefined;
+
+    constructor(data?: ISubscribedEditionDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.editionId = _data["editionId"];
+            this.editionName = _data["editionName"];
+            this.pricing = _data["pricing"];
+            this.productId = _data["productId"];
+            this.productName = _data["productName"];
+            this.subscriptionStartDateUtc = _data["subscriptionStartDateUtc"] ? DateTime.fromISO(_data["subscriptionStartDateUtc"].toString()) : <any>undefined;
+            this.subscriptionEndDateUtc = _data["subscriptionEndDateUtc"] ? DateTime.fromISO(_data["subscriptionEndDateUtc"].toString()) : <any>undefined;
+            this.setupStatus = _data["setupStatus"];
+            this.setupErrorMsg = _data["setupErrorMsg"];
+            this.isSetupCompleted = _data["isSetupCompleted"];
+            if (Array.isArray(_data["addon"])) {
+                this.addon = [] as any;
+                for (let item of _data["addon"])
+                    this.addon!.push(SubscribedAddonDetailsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SubscribedEditionDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubscribedEditionDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["editionId"] = this.editionId;
+        data["editionName"] = this.editionName;
+        data["pricing"] = this.pricing;
+        data["productId"] = this.productId;
+        data["productName"] = this.productName;
+        data["subscriptionStartDateUtc"] = this.subscriptionStartDateUtc ? this.subscriptionStartDateUtc.toString() : <any>undefined;
+        data["subscriptionEndDateUtc"] = this.subscriptionEndDateUtc ? this.subscriptionEndDateUtc.toString() : <any>undefined;
+        data["setupStatus"] = this.setupStatus;
+        data["setupErrorMsg"] = this.setupErrorMsg;
+        data["isSetupCompleted"] = this.isSetupCompleted;
+        if (Array.isArray(this.addon)) {
+            data["addon"] = [];
+            for (let item of this.addon)
+                data["addon"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISubscribedEditionDetailsDto {
+    editionId: number;
+    editionName: string | undefined;
+    pricing: string | undefined;
+    productId: string | undefined;
+    productName: string | undefined;
+    subscriptionStartDateUtc: DateTime;
+    subscriptionEndDateUtc: DateTime | undefined;
+    setupStatus: string | undefined;
+    setupErrorMsg: string | undefined;
+    isSetupCompleted: boolean;
+    addon: SubscribedAddonDetailsDto[] | undefined;
+}
+
+export class SubscribedStandAloneAddonDto implements ISubscribedStandAloneAddonDto {
+    addonName!: string | undefined;
+    startDate!: DateTime;
+    endDate!: DateTime | undefined;
+    addonPrice!: string | undefined;
+    moduleList!: StandAloneAddonModulesDto[] | undefined;
+
+    constructor(data?: ISubscribedStandAloneAddonDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addonName = _data["addonName"];
+            this.startDate = _data["startDate"] ? DateTime.fromISO(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? DateTime.fromISO(_data["endDate"].toString()) : <any>undefined;
+            this.addonPrice = _data["addonPrice"];
+            if (Array.isArray(_data["moduleList"])) {
+                this.moduleList = [] as any;
+                for (let item of _data["moduleList"])
+                    this.moduleList!.push(StandAloneAddonModulesDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SubscribedStandAloneAddonDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubscribedStandAloneAddonDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addonName"] = this.addonName;
+        data["startDate"] = this.startDate ? this.startDate.toString() : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.toString() : <any>undefined;
+        data["addonPrice"] = this.addonPrice;
+        if (Array.isArray(this.moduleList)) {
+            data["moduleList"] = [];
+            for (let item of this.moduleList)
+                data["moduleList"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ISubscribedStandAloneAddonDto {
+    addonName: string | undefined;
+    startDate: DateTime;
+    endDate: DateTime | undefined;
+    addonPrice: string | undefined;
+    moduleList: StandAloneAddonModulesDto[] | undefined;
 }
 
 export class SubscriptionPaymentDto implements ISubscriptionPaymentDto {
@@ -37884,6 +38875,154 @@ export interface ITenantBillingSettingsEditDto {
     taxVatNo: string | undefined;
 }
 
+export class TenantDetailsInputDto implements ITenantDetailsInputDto {
+    tenantId!: number | undefined;
+    userTypeID!: number | undefined;
+    clientName!: string | undefined;
+    clientCode!: string | undefined;
+    adminUserId!: number | undefined;
+    firstName!: string | undefined;
+    lastName!: string | undefined;
+    airlineId!: number;
+    departmentId!: number;
+    department!: string | undefined;
+    designationId!: number;
+    designation!: string | undefined;
+    services!: string | undefined;
+    city!: number;
+    country!: number;
+    contact!: string | undefined;
+    representingAirlines!: string | undefined;
+    representingCountries!: string | undefined;
+    industryId!: number;
+    industry!: string | undefined;
+    isdCode!: string | undefined;
+    adminEmailAddress!: string | undefined;
+    adminPassword!: string | undefined;
+    connectionString!: string | undefined;
+    useHostDb!: boolean;
+    setRandomPassword!: boolean | undefined;
+    shouldChangePasswordOnNextLogin!: boolean;
+    sendActivationEmail!: boolean;
+    isActive!: boolean;
+
+    constructor(data?: ITenantDetailsInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tenantId = _data["tenantId"];
+            this.userTypeID = _data["userTypeID"];
+            this.clientName = _data["clientName"];
+            this.clientCode = _data["clientCode"];
+            this.adminUserId = _data["adminUserId"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.airlineId = _data["airlineId"];
+            this.departmentId = _data["departmentId"];
+            this.department = _data["department"];
+            this.designationId = _data["designationId"];
+            this.designation = _data["designation"];
+            this.services = _data["services"];
+            this.city = _data["city"];
+            this.country = _data["country"];
+            this.contact = _data["contact"];
+            this.representingAirlines = _data["representingAirlines"];
+            this.representingCountries = _data["representingCountries"];
+            this.industryId = _data["industryId"];
+            this.industry = _data["industry"];
+            this.isdCode = _data["isdCode"];
+            this.adminEmailAddress = _data["adminEmailAddress"];
+            this.adminPassword = _data["adminPassword"];
+            this.connectionString = _data["connectionString"];
+            this.useHostDb = _data["useHostDb"];
+            this.setRandomPassword = _data["setRandomPassword"];
+            this.shouldChangePasswordOnNextLogin = _data["shouldChangePasswordOnNextLogin"];
+            this.sendActivationEmail = _data["sendActivationEmail"];
+            this.isActive = _data["isActive"];
+        }
+    }
+
+    static fromJS(data: any): TenantDetailsInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantDetailsInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantId"] = this.tenantId;
+        data["userTypeID"] = this.userTypeID;
+        data["clientName"] = this.clientName;
+        data["clientCode"] = this.clientCode;
+        data["adminUserId"] = this.adminUserId;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["airlineId"] = this.airlineId;
+        data["departmentId"] = this.departmentId;
+        data["department"] = this.department;
+        data["designationId"] = this.designationId;
+        data["designation"] = this.designation;
+        data["services"] = this.services;
+        data["city"] = this.city;
+        data["country"] = this.country;
+        data["contact"] = this.contact;
+        data["representingAirlines"] = this.representingAirlines;
+        data["representingCountries"] = this.representingCountries;
+        data["industryId"] = this.industryId;
+        data["industry"] = this.industry;
+        data["isdCode"] = this.isdCode;
+        data["adminEmailAddress"] = this.adminEmailAddress;
+        data["adminPassword"] = this.adminPassword;
+        data["connectionString"] = this.connectionString;
+        data["useHostDb"] = this.useHostDb;
+        data["setRandomPassword"] = this.setRandomPassword;
+        data["shouldChangePasswordOnNextLogin"] = this.shouldChangePasswordOnNextLogin;
+        data["sendActivationEmail"] = this.sendActivationEmail;
+        data["isActive"] = this.isActive;
+        return data; 
+    }
+}
+
+export interface ITenantDetailsInputDto {
+    tenantId: number | undefined;
+    userTypeID: number | undefined;
+    clientName: string | undefined;
+    clientCode: string | undefined;
+    adminUserId: number | undefined;
+    firstName: string | undefined;
+    lastName: string | undefined;
+    airlineId: number;
+    departmentId: number;
+    department: string | undefined;
+    designationId: number;
+    designation: string | undefined;
+    services: string | undefined;
+    city: number;
+    country: number;
+    contact: string | undefined;
+    representingAirlines: string | undefined;
+    representingCountries: string | undefined;
+    industryId: number;
+    industry: string | undefined;
+    isdCode: string | undefined;
+    adminEmailAddress: string | undefined;
+    adminPassword: string | undefined;
+    connectionString: string | undefined;
+    useHostDb: boolean;
+    setRandomPassword: boolean | undefined;
+    shouldChangePasswordOnNextLogin: boolean;
+    sendActivationEmail: boolean;
+    isActive: boolean;
+}
+
 export class TenantEditDto implements ITenantEditDto {
     tenancyName!: string;
     name!: string;
@@ -38308,6 +39447,74 @@ export interface ITenantListDto {
     id: number;
 }
 
+export class TenantListNewDto implements ITenantListNewDto {
+    tenancyName!: string | undefined;
+    name!: string | undefined;
+    connectionString!: string | undefined;
+    isActive!: boolean;
+    creationTime!: DateTime;
+    edition!: SubscribedEditionDetailsDto[] | undefined;
+    id!: number;
+
+    constructor(data?: ITenantListNewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tenancyName = _data["tenancyName"];
+            this.name = _data["name"];
+            this.connectionString = _data["connectionString"];
+            this.isActive = _data["isActive"];
+            this.creationTime = _data["creationTime"] ? DateTime.fromISO(_data["creationTime"].toString()) : <any>undefined;
+            if (Array.isArray(_data["edition"])) {
+                this.edition = [] as any;
+                for (let item of _data["edition"])
+                    this.edition!.push(SubscribedEditionDetailsDto.fromJS(item));
+            }
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): TenantListNewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantListNewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenancyName"] = this.tenancyName;
+        data["name"] = this.name;
+        data["connectionString"] = this.connectionString;
+        data["isActive"] = this.isActive;
+        data["creationTime"] = this.creationTime ? this.creationTime.toString() : <any>undefined;
+        if (Array.isArray(this.edition)) {
+            data["edition"] = [];
+            for (let item of this.edition)
+                data["edition"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ITenantListNewDto {
+    tenancyName: string | undefined;
+    name: string | undefined;
+    connectionString: string | undefined;
+    isActive: boolean;
+    creationTime: DateTime;
+    edition: SubscribedEditionDetailsDto[] | undefined;
+    id: number;
+}
+
 export class TenantLoginInfoDto implements ITenantLoginInfoDto {
     tenancyName!: string | undefined;
     name!: string | undefined;
@@ -38669,6 +39876,62 @@ export interface ITenantSettingsEditDto {
     billing: TenantBillingSettingsEditDto;
     otherSettings: TenantOtherSettingsEditDto;
     externalLoginProviderSettings: ExternalLoginProviderSettingsEditDto;
+}
+
+export class TenantSubscriotionsDto implements ITenantSubscriotionsDto {
+    tenantEditionAddon!: TenantEditionAddonDto[] | undefined;
+    standAloneAddon!: SubscribedStandAloneAddonDto[] | undefined;
+
+    constructor(data?: ITenantSubscriotionsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["tenantEditionAddon"])) {
+                this.tenantEditionAddon = [] as any;
+                for (let item of _data["tenantEditionAddon"])
+                    this.tenantEditionAddon!.push(TenantEditionAddonDto.fromJS(item));
+            }
+            if (Array.isArray(_data["standAloneAddon"])) {
+                this.standAloneAddon = [] as any;
+                for (let item of _data["standAloneAddon"])
+                    this.standAloneAddon!.push(SubscribedStandAloneAddonDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): TenantSubscriotionsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TenantSubscriotionsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.tenantEditionAddon)) {
+            data["tenantEditionAddon"] = [];
+            for (let item of this.tenantEditionAddon)
+                data["tenantEditionAddon"].push(item.toJSON());
+        }
+        if (Array.isArray(this.standAloneAddon)) {
+            data["standAloneAddon"] = [];
+            for (let item of this.standAloneAddon)
+                data["standAloneAddon"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ITenantSubscriotionsDto {
+    tenantEditionAddon: TenantEditionAddonDto[] | undefined;
+    standAloneAddon: SubscribedStandAloneAddonDto[] | undefined;
 }
 
 export class TenantSummaryInputDto implements ITenantSummaryInputDto {
@@ -39177,6 +40440,54 @@ export interface ITopStatsData {
     newSubscriptionAmount: number;
     dashboardPlaceholder1: number;
     dashboardPlaceholder2: number;
+}
+
+export class TransactionDataInputDto implements ITransactionDataInputDto {
+    approachId!: number;
+    awbData!: AwbCountsDto[] | undefined;
+
+    constructor(data?: ITransactionDataInputDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.approachId = _data["approachId"];
+            if (Array.isArray(_data["awbData"])) {
+                this.awbData = [] as any;
+                for (let item of _data["awbData"])
+                    this.awbData!.push(AwbCountsDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): TransactionDataInputDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransactionDataInputDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["approachId"] = this.approachId;
+        if (Array.isArray(this.awbData)) {
+            data["awbData"] = [];
+            for (let item of this.awbData)
+                data["awbData"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ITransactionDataInputDto {
+    approachId: number;
+    awbData: AwbCountsDto[] | undefined;
 }
 
 export class TwitterExternalLoginProviderSettings implements ITwitterExternalLoginProviderSettings {

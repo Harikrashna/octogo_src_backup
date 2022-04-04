@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Abp.Application.Services.Dto;
 using Abp.Runtime.Validation;
 using CF.Octogo.Dto;
 
@@ -82,5 +83,11 @@ namespace CF.Octogo.Editions.Dto
  
 
     }
+    public class EditionListByProductForAddonDto : EntityDto
+    {
+        public string Name { get; set; }
 
+        public string DisplayName { get; set; }
+
+    }
 }

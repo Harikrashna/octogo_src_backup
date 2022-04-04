@@ -1,0 +1,352 @@
+<form #tenantDetailsForm="ngForm" role="form" novalidate class="form-validation" autocomplete="off">
+    <div class="form-group">
+        <div class="row">
+            <div class="mx-1" *ngFor="let usertype of UserTypelist">
+                <div class="d-flex px-4 divcolor ">
+                    <input class="checkbox mt-1" type="checkbox" id="checkboxs" [name]="usertype" [disabled]="TenantId > 0"
+                        (change)="onChange($event,usertype)" [checked]="usertype.id==tenantDetailsInput.userTypeID">
+                    <span class="checkboxText ml-2" id="checkName">{{usertype.name}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h6 class="mt-5">{{"CompanyDetails" | localize}}</h6>
+    <hr style="width: 100%;" class="mt-0" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"ClientCode" | localize}} *</label>
+                <input id="ClientCode" (keypress)="_validationService.NameValidation($event)" #ClientCodeInput="ngModel"
+                    class="form-control" type="text" name="ClientCode" [(ngModel)]="tenantDetailsInput.clientCode" required
+                    maxlength="100"  [readonly]="TenantId > 0">
+                <validation-messages [formCtrl]="ClientCodeInput"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"ClientName" | localize}} *</label>
+                <input id="ClientName" (keypress)="_validationService.NameValidation($event)" #ClientNameInput="ngModel"
+                    class="form-control" type="text" name="ClientName" [(ngModel)]="tenantDetailsInput.clientName" required
+                    maxlength="100">
+                <validation-messages [formCtrl]="ClientNameInput"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"ServicesLookingFor" | localize}}</label>
+                <p-multiSelect [options]="servicesArray" [showToggleAll]="true" [(ngModel)]="selectedServices" #services
+                    inputStyleClass="form-control-solid h-auto" optionValue="id" optionLabel="name" [filter]="false"
+                    [showHeader]="false" [virtualScroll]="true"
+                    class="multiselect-custom-virtual-scroll" name="first">
+                    <ng-template let-service pTemplate="item">
+                        <div class="service-item">
+                            <div>{{service.name}}</div>
+                        </div>
+                    </ng-template>
+                </p-multiSelect>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"City" | localize}} *</label>
+                <p-autoComplete inputStyleClass="form-control" id="city" #cityCode="ngModel" name="city" size="50"
+                    [(ngModel)]="selectedCityData" [size]="60" [suggestions]="cityCodeResult"
+                    (completeMethod)="getCity($event)" [forceSelection]="true"
+                    (keypress)="_validationService.NameValidation($event)" (onSelect)="fillCountry(selectedCityData)"
+                    field="name" maxlength="50" required (input)="resetCountry()">
+                </p-autoComplete>
+                <validation-messages [formCtrl]="cityCode"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"Country" | localize}} *</label>
+                <p-autoComplete id="country" inputId="country" inputStyleClass="form-control" #country="ngModel"
+                    name="country" (keypress)="_validationService.NameValidation($event)" [forceSelection]="true"
+                    (completeMethod)="getCountry($event)" field="name" [(ngModel)]="selectedCountryData" [size]="60"
+                    [suggestions]="countryCodeResult" maxlength="50" required>
+                </p-autoComplete>
+                <validation-messages [formCtrl]="country"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"Contact" | localize}} *</label>
+                <!-- <span [ngClass]="tenantDetailsInput.contact?.length > 0?'p-float-label':null"> -->
+                <div class="p-inputgroup" id="contact">
+                    <input id="isdCode" class="form-control" name="isdCode" #isdCode="ngModel" type="text"
+                        [disabled]="true" placeholder="{{'ISD' | localize}}"
+                        [ngClass]="{'p-filled':tenantDetailsInput.isdCode != null}" [ngModel]="tenantDetailsInput.isdCode"
+                        maxlength="5" pInputText required style="width: 30%;">
+                    &nbsp;
+
+                    <input id="phone" inputId="phone" [ngClass]="{'p-filled': tenantDetailsInput.contact?.length > 0}"
+                        class="form-control" name="phone" (keypress)="_validationService.IsNumeric($event)"
+                        #phone="ngModel" type="text" placeholder="{{'Contact' | localize}} *"
+                        [(ngModel)]="tenantDetailsInput.contact" maxlength="10" minlength="8" pInputText required>
+                    <!-- <label for="contact" *ngIf="tenantDetailsInput.contact?.length > 0">
+                            {{"Contact" | localize}}
+                            <span class="text-danger" id="req">*</span></label> -->
+                </div>
+                <!-- </span> -->
+                <validation-messages [formCtrl]="phone"></validation-messages>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4" *ngIf="false">
+            <label class="checkbox">
+                <input id="CreateTenant_UseHostDb" type="checkbox" name="UseHostDb"
+                    [(ngModel)]="tenantDetailsInput.useHostDb">
+                <span></span>
+                {{"UseHostDatabase" | localize}}
+            </label>
+        </div>
+        <div class="col-md-4">
+            <label for="createTenant_IsActive" class="checkbox">
+                <input id="createTenant_IsActive" type="checkbox" name="IsActive" [(ngModel)]="tenantDetailsInput.isActive">
+                <span></span>
+                {{"Active" | localize}}
+            </label>
+        </div>
+    </div>
+    <div class="row" *ngIf="!tenantDetailsInput.useHostDb && false">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="DatabaseConnectionString">{{"DatabaseConnectionString" | localize}} *</label>
+            <input id="DatabaseConnectionString" #connectionStringInput="ngModel" type="text"
+                name="ConnectionString" class="form-control" [(ngModel)]="tenantDetailsInput.connectionString"
+                [ngClass]="{'edited':tenantDetailsInput.connectionString}" required maxlength="1024">
+            <validation-messages [formCtrl]="connectionStringInput"></validation-messages>
+        </div>
+    </div>
+</div>
+    <!-- <div class="row">        
+    </div> -->
+    <h6 class="mt-5">{{ 'AdminUserDetails' | localize }}</h6>
+    <hr style="width: 100%;" class="mt-0"/>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"FirstName" | localize}} *</label>
+                <input id="FirstName" (keypress)="_validationService.NameValidation($event)" #FirstNameInput="ngModel"
+                    class="form-control" type="text" name="FirstName" [(ngModel)]="tenantDetailsInput.firstName" required
+                    maxlength="100">
+                <validation-messages [formCtrl]="FirstNameInput"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"LastName" | localize}} *</label>
+                <input id="LastName" (keypress)="_validationService.NameValidation($event)" #LastNameInput="ngModel"
+                    class="form-control" type="text" name="LastName" [(ngModel)]="tenantDetailsInput.lastName" required
+                    maxlength="100">
+                <validation-messages [formCtrl]="LastNameInput"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="AdminEmailAddress">{{"AdminEmailAddress" | localize}} *</label>
+                <input id="AdminEmailAddress" #adminEmailAddressInput="ngModel" type="email" name="AdminEmailAddress"
+                    class="form-control" [(ngModel)]="tenantDetailsInput.adminEmailAddress"
+                    [ngClass]="{'edited':tenantDetailsInput.adminEmailAddress}" required
+                    pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" maxlength="256">
+                <validation-messages [formCtrl]="adminEmailAddressInput"></validation-messages>
+            </div>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"Department" | localize}} *</label>
+                <p-autoComplete inputStyleClass="form-control" id="department" #department="ngModel"
+                    [forceSelection]="true" name="department" [(ngModel)]="selectedDepartmentData" [size]="60"
+                    [suggestions]="departmentResult" (completeMethod)="getDepartment($event)" maxlength="50"
+                    field="name" (onSelect)="selectDepartment(selectedDepartmentData)"
+                    (keypress)="_validationService.NameValidation($event)" required>
+                </p-autoComplete>
+                <validation-messages [formCtrl]="department"></validation-messages>
+            </div>
+        </div>
+        <div *ngIf="selectedDepartment=='OTHERS'" class="col-md-4">
+            <div class="form-group">
+                <label class="wrap">{{"DepartmentName" | localize}} *</label>
+                <input id="departmentName" class="form-control" name="departmentName" styleClass="width-percent-100"
+                    #departmentName="ngModel" type="text" [(ngModel)]="tenantDetailsInput.department" minlength="2"
+                    (input)="checkDuplicateDepartment(tenantDetailsInput.department)"
+                    [ngClass]="{'p-filled':tenantDetailsInput.department?.length > 0}" maxlength="50"
+                    (keypress)="_validationService.NameValidation($event)" pInputText required>
+                <validation-messages [formCtrl]="departmentName"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>{{"Designation" | localize}} *</label>
+                <p-autoComplete inputStyleClass="form-control " id="designation" #designation="ngModel"
+                    [forceSelection]="true" name="designation" size="50" minlength="2"
+                    [(ngModel)]="selectedDesignationData" (completeMethod)="getDesignation($event)" [size]="60"
+                    [suggestions]="designationResult" maxlength="50" field="name"
+                    (onSelect)="selectDesignation(selectedDesignationData)"
+                    (keypress)="_validationService.NameValidation($event)" required>
+                </p-autoComplete>
+                <validation-messages [formCtrl]="designation"></validation-messages>
+            </div>
+        </div>
+        <div *ngIf="selectedDesignation=='OTHERS'" class="col-md-4">
+            <div class="form-group">
+                <label>{{"DesignationName" | localize}} *</label>
+                <input id="designationName" class="form-control" name="designationName" #designationName="ngModel"
+                    type="text" [ngClass]="{'p-filled':tenantDetailsInput.designation?.length > 0}"
+                    (input)="checkDuplicateDesignation(tenantDetailsInput.designation)" [(ngModel)]="tenantDetailsInput.designation"
+                    minlength="2" maxlength="50" (keypress)="_validationService.NameValidation($event)" pInputText
+                    required>
+                <validation-messages [formCtrl]="designationName"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4" *ngIf="UserType.name=='Airline'">
+            <div class="form-group">
+                <label>{{"AirlineName" | localize}}*</label>
+                <p-autoComplete id="airlineName" inputStyleClass="form-control" #airlineName="ngModel"
+                    name="airlineName" [(ngModel)]="selectedAirlineData" [size]="60" [suggestions]="airlineResult"
+                    (keypress)="_validationService.NameValidation($event)" (completeMethod)="getAirline($event)"
+                    maxlength="50" [forceSelection]="true" field="name" required>
+                </p-autoComplete>
+                <validation-messages [formCtrl]="airlineName"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4" *ngIf="UserType.name=='Shipper' || UserType.name=='Others'">
+            <div class="form-group">
+                <label>{{"Industry" | localize}} *</label>
+                <p-autoComplete inputStyleClass="form-control" id="industry" #industry="ngModel" name="industry"
+                    [size]="60" [(ngModel)]="selectedIndustryData" [suggestions]="industryResult"
+                    (keypress)="_validationService.NameValidation($event)" (completeMethod)="getIndustry($event)"
+                    (onSelect)="selectIndustry(selectedIndustryData)" [forceSelection]="true" maxlength="50"
+                    field="name" required>
+                </p-autoComplete>
+                <validation-messages [formCtrl]="industry"></validation-messages>
+            </div>
+        </div>
+        <div *ngIf="selectedIndustry=='OTHERS'" class="col-md-4">
+            <div class="form-group">
+                <label>{{"IndustryName" | localize}} *</label>
+                <input id="industryName" class="form-control" name="industryName" #industryName="ngModel" type="text"
+                    minlength="2" [ngClass]="{'p-filled':tenantDetailsInput.industry != null}"
+                    (input)="checkDuplicateIndustry(tenantDetailsInput.industry)" maxlength="50"
+                    [(ngModel)]="tenantDetailsInput.industry" pInputText required>
+                <validation-messages [formCtrl]="industryName"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4" *ngIf="UserType.name=='GSA' || UserType.name=='GHA'">
+            <div class="form-group">
+                <label>{{"RepresentingAirlines" | localize}} *</label>
+                <p-autoComplete [(ngModel)]="selctedRepresentingAirlines"
+                    [suggestions]="representingAirlinesResult" (completeMethod)="getRepresentingAirlines($event)"
+                    field="name" #representingAirlines="ngModel" name="representingAirlines" [minLength]="1"
+                    maxlength="50" id="representingAirlines" [multiple]="true" [forceSelection]="true"
+                    styleClass="width-percent-100" (keypress)="_validationService.NameValidation($event)" required>
+                </p-autoComplete>
+                <validation-messages [formCtrl]="representingAirlines"></validation-messages>
+            </div>
+        </div>
+        <div class="col-md-4" *ngIf="UserType.name=='GSA' || UserType.name=='GHA'">
+            <div class="form-group">
+                <label class="wrap">{{"PresenceOrRepresentingCountries" | localize}} *</label>
+                <p-autoComplete [(ngModel)]="selectedRepresentingCountries"
+                    [suggestions]="representingCountriesResult" inputStyleClass="form-control-solid h-auto"
+                    (completeMethod)="getRepresentingCountries($event)" field="name" [minLength]="1"
+                    #presenceAndRepresentingCountries="ngModel" [forceSelection]="true"
+                    name="presenceAndRepresentingCountries" id="presenceOrRepresentingCountries" [multiple]="true"
+                    styleClass="width-percent-100" maxlength="50"
+                    (keypress)="_validationService.NameValidation($event)">
+                </p-autoComplete>
+            </div>
+        </div>
+        <div *ngIf="!setRandomPassword && !(TenantId > 0)" class="col-md-4">
+            <div class="form-group">
+                <label for="AdminPassword">{{"AdminPassword" | localize}} *</label>
+                <input id="AdminPassword" type="password" name="adminPassword" class="form-control" id="adminPassword"
+                    [(ngModel)]="tenantDetailsInput.adminPassword" [ngClass]="{'edited':tenantDetailsInput.adminPassword}"
+                    [required]="!setRandomPassword" #adminPassword="ngModel" validateEqual="adminPasswordRepeat"
+                    reverse="true" maxlength="32" [requireDigit]="passwordComplexitySetting.requireDigit"
+                    [requireLowercase]="passwordComplexitySetting.requireLowercase"
+                    [requireUppercase]="passwordComplexitySetting.requireUppercase"
+                    [requireNonAlphanumeric]="passwordComplexitySetting.requireNonAlphanumeric"
+                    [requiredLength]="passwordComplexitySetting.requiredLength">
+            </div>
+            <div [hidden]="tenantDetailsForm.form.valid || tenantDetailsForm.form.pristine">
+                <ul class="help-block text-danger"
+                    *ngIf="tenantDetailsForm.controls['adminPassword'] && tenantDetailsForm.controls['adminPassword'].errors">
+                    <li [hidden]="!tenantDetailsForm.controls['adminPassword'].errors.requireDigit">
+                        {{"PasswordComplexity_RequireDigit_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPassword'].errors.requireLowercase">
+                        {{"PasswordComplexity_RequireLowercase_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPassword'].errors.requireUppercase">
+                        {{"PasswordComplexity_RequireUppercase_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPassword'].errors.requireNonAlphanumeric">
+                        {{"PasswordComplexity_RequireNonAlphanumeric_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPassword'].errors.requiredLength">
+                        {{"PasswordComplexity_RequiredLength_Hint" | localize:passwordComplexitySetting.requiredLength}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div *ngIf="!setRandomPassword && !(TenantId > 0)" class="col-md-4">
+            <div class="form-group">
+                <label for="AdminPasswordRepeat">{{"AdminPasswordRepeat" | localize}}</label>
+                <input id="AdminPasswordRepeat" type="password" name="adminPasswordRepeat" class="form-control"
+                    [(ngModel)]="tenantAdminPasswordRepeat" [ngClass]="{'edited':adminPasswordRepeat}"
+                    [required]="!setRandomPassword" #adminPasswordRepeat="ngModel"
+                    [requireDigit]="passwordComplexitySetting.requireDigit"
+                    [requireLowercase]="passwordComplexitySetting.requireLowercase"
+                    [requireUppercase]="passwordComplexitySetting.requireUppercase"
+                    [requireNonAlphanumeric]="passwordComplexitySetting.requireNonAlphanumeric"
+                    [requiredLength]="passwordComplexitySetting.requiredLength" validateEqual="adminPassword"
+                    maxlength="32">
+            </div>
+            <div [hidden]="tenantDetailsForm.form.valid || tenantDetailsForm.form.pristine" class="form-group">
+                <ul class="help-block text-danger"
+                    *ngIf="tenantDetailsForm.controls['adminPasswordRepeat'] && tenantDetailsForm.controls['adminPasswordRepeat'].errors">
+                    <li [hidden]="!tenantDetailsForm.controls['adminPasswordRepeat'].errors.requireDigit">
+                        {{"PasswordComplexity_RequireDigit_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPasswordRepeat'].errors.requireLowercase">
+                        {{"PasswordComplexity_RequireLowercase_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPasswordRepeat'].errors.requireUppercase">
+                        {{"PasswordComplexity_RequireUppercase_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPasswordRepeat'].errors.requireNonAlphanumeric">
+                        {{"PasswordComplexity_RequireNonAlphanumeric_Hint" | localize}}</li>
+                    <li [hidden]="!tenantDetailsForm.controls['adminPasswordRepeat'].errors.requiredLength">
+                        {{"PasswordComplexity_RequiredLength_Hint" | localize:passwordComplexitySetting.requiredLength}}
+                    </li>
+                    <li [hidden]="tenantDetailsForm.controls['adminPasswordRepeat'].valid">
+                        {{"PasswordsDontMatch" | localize}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="!(TenantId > 0)">
+        <div class="col-md-4">
+            <label class="checkbox">
+                <input id="CreateTenant_SetRandomPassword" type="checkbox" name="SetRandomPassword"
+                    [(ngModel)]="setRandomPassword">
+                <span></span>
+                {{"SetRandomPassword" | localize}}
+            </label>
+        </div>
+        <div class="col-md-4">
+            <label for="CreateTenant_ShouldChangePasswordOnNextLogin" class="checkbox">
+                <input id="CreateTenant_ShouldChangePasswordOnNextLogin" type="checkbox"
+                    name="ShouldChangePasswordOnNextLogin" [(ngModel)]="tenantDetailsInput.shouldChangePasswordOnNextLogin">
+                <span></span>
+                {{"ShouldChangePasswordOnNextLogin" | localize}}
+            </label>
+        </div>
+        <div class="col-md-4">
+            <label for="CreateTenant_SendActivationEmail" class="checkbox">
+                <input id="CreateTenant_SendActivationEmail" type="checkbox" name="SendActivationEmail"
+                    [(ngModel)]="tenantDetailsInput.sendActivationEmail">
+                <span></span>
+                {{"SendActivationEmail" | localize}}
+            </label>
+        </div>
+    </div>
+</form>
