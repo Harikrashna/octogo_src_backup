@@ -51,7 +51,8 @@ namespace CF.Octogo.Configuration
                 .Union(GetTheme11Settings())
                 .Union(GetTheme12Settings())
                 .Union(GetDashboardSettings())
-                .Union(GetExternalLoginProviderSettings());
+                .Union(GetExternalLoginProviderSettings())
+                .Union(GetThemeXSettings());
         }
 
         private void ChangeEmailSettingScopes(SettingDefinitionProviderContext context)
@@ -490,7 +491,26 @@ namespace CF.Octogo.Configuration
                     clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.All)
             };
         }
+        private IEnumerable<SettingDefinition> GetThemeXSettings()
+        {
+            var themeName = "themeX";
 
+            return new[]
+            {
+                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType,
+                    GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fluid"),
+                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.All),
+                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader,
+                    GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),
+                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.All),
+                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LeftAside.FixedAside,
+                    GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LeftAside.FixedAside, "true"),
+                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.All),
+                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SearchActive,
+                    GetFromAppSettings(themeName + "." + AppSettings.UiManagement.SearchActive, "false"),
+                    clientVisibilityProvider: _visibleSettingClientVisibilityProvider, scopes: SettingScopes.All)
+            };
+        }
         private IEnumerable<SettingDefinition> GetTheme12Settings()
         {
             var themeName = "theme12";
@@ -626,6 +646,16 @@ namespace CF.Octogo.Configuration
                                     Width = 6,
                                     PositionX = 0,
                                     PositionY = 5
+                                },
+                                  new Widget
+                                {
+                                    WidgetId =
+                                        OctogoDashboardCustomizationConsts.Widgets.Tenant
+                                            .OctoCost,
+                                    Height = 11,
+                                    Width = 6,
+                                    PositionX = 6,
+                                    PositionY = 24
                                 }
                             }
                         }
@@ -686,6 +716,15 @@ namespace CF.Octogo.Configuration
                                     Width = 5,
                                     PositionX = 7,
                                     PositionY = 6
+                                },
+                                 new Widget
+                                {
+                                    WidgetId = OctogoDashboardCustomizationConsts.Widgets.Host
+                                        .LatestClient, // Octogo Widget // added by: merajuddin
+                                    Height = 6,
+                                    Width = 8,
+                                    PositionX = 0,
+                                    PositionY = 0
                                 }
                             }
                         }
@@ -772,6 +811,16 @@ namespace CF.Octogo.Configuration
                                     Width = 6,
                                     PositionX = 6,
                                     PositionY = 24
+                                },
+                                  new Widget
+                                {
+                                    WidgetId =
+                                        OctogoDashboardCustomizationConsts.Widgets.Tenant
+                                            .OctoCost,
+                                    Height = 11,
+                                    Width = 6,
+                                    PositionX = 6,
+                                    PositionY = 24
                                 }
                             }
                         }
@@ -833,6 +882,15 @@ namespace CF.Octogo.Configuration
                                     Width = 5,
                                     PositionX = 7,
                                     PositionY = 4
+                                },
+                                new Widget
+                                {
+                                    WidgetId = OctogoDashboardCustomizationConsts.Widgets.Host
+                                        .LatestClient, // Octogo Widget // added by: merajuddin
+                                    Height = 3,
+                                    Width = 6,
+                                    PositionX = 0,
+                                    PositionY = 0
                                 }
                             }
                         }

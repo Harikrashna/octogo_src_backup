@@ -12,6 +12,7 @@ namespace CF.Octogo.Editions.Dto
         public bool? IsStandAlone { get; set; }
         public List<AvailableModuleDto> ModuleList { get; set; }
         public List<PricingDataDto> PricingData { get; set; }
+        public string DependAddons { get; set; }
 
     }
     public class AvailableModuleDto
@@ -42,6 +43,7 @@ namespace CF.Octogo.Editions.Dto
         public bool? IsStandAlone { get; set; }
         public string ModuleList { get; set; }
         public string PricingData { get; set; }
+        public string DependAddons { get; set; }        
 
     }
 }

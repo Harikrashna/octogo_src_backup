@@ -62,6 +62,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
     ApproachList = [];
     ApproachId;
     FreeEditionList = [];
+    expiryNotificationDays:number;
 
     constructor(
         injector: Injector,
@@ -94,6 +95,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
         this.getEditionDetailsForEdit(EditionId);
     }
     getEditionDetailsForEdit(EditionId) {
+        debugger
         this._editionService.getEditionDetailsForEdit(EditionId).subscribe(result => {
             if (result != null) {
                 this.edition.edition.id = result.id;
@@ -107,6 +109,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                 this.isWaitingDayActive = result.waitAfterExpiry;
                 this.DependantEditionID = result.dependantEditionID;
                 this.IsDependent = result.dependantEdition;
+                this.expiryNotificationDays = result.expiryNotificationDays;
                 if (this.IsDependent) {
                     this.getEditions();
                 }
@@ -146,7 +149,7 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
             this.editionModule.SelectedIndex = -1;
             this.editionModule.DependEditionData = [];
             if (EditionId > 0) {
-                this._editionService.getEditionModules(EditionId).subscribe(async result => {
+                this._editionService.getEditionModules(EditionId,0).subscribe(async result => {
                     if (result != null) {
                         this.editionModule.DependEditionData = result.dependEditionData;
                         if (ForEdit == true) {
@@ -264,6 +267,8 @@ export class CreateEditionModalComponent extends AppComponentBase implements OnI
                 input.dependantEditionID = this.DependantEditionID;
                 input.productId = this.ProductId;
                 input.approachId = this.ApproachId;
+                input.expiryNotificationDays = this.expiryNotificationDays;
+                debugger
                 if (!this.isFree && this.pricingTypes.length > 0) {
                     input.priceDiscount = new Array<PriceDiscount>();
                     this.pricingTypes.forEach(obj => {

@@ -10,6 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using CF.Octogo.Authorization;
 using CF.Octogo.MultiTenancy.HostDashboard.Dto;
 using CF.Octogo.MultiTenancy.Payments;
+using System.Data.SqlClient;
+using CF.Octogo.Data;
+using Newtonsoft.Json;
+using Abp.Application.Services.Dto;
+using static CF.Octogo.MultiTenancy.HostDashboard.Dto.CommonDashboardDataInput;
 
 namespace CF.Octogo.MultiTenancy.HostDashboard
 {
@@ -177,6 +182,129 @@ namespace CF.Octogo.MultiTenancy.HostDashboard
             return (await query.ToListAsync())
                 .Select(t => ObjectMapper.Map<RecentTenant>(t))
                 .ToList();
+        }
+
+        /// <summary>
+        /// DESC:Get total client data for column chart widget
+        /// Created by: Merajuddin khan
+        /// Created on: 26-04-2022
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<List<TotalClientsDto>> GetTotalClientWithFilterForWidget(List<string> filters)
+        {
+            {
+       
+                    string filterData = String.Join<string>(",", filters);
+                    SqlParameter[] parameters = new SqlParameter[1];
+                    parameters[0] = new SqlParameter("Filter", filterData);
+                    var ds = await SqlHelper.ExecuteDatasetAsync(
+                        Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetTotalClientForWidget", parameters);
+                    var i = new TotalClientsDto();
+                    if (ds.Tables.Count > 0)
+                    {
+                        var res = SqlHelper.ConvertDataTable<TotalClientsRet>(ds.Tables[0]);
+                        var result = res.Select(rw => new TotalClientsDto
+                        {
+                            Name = rw.FilterName,
+                            Series = rw.Data != null ? JsonConvert.DeserializeObject<List<TotalClientSeries>>(rw.Data.ToString()) : null
+
+                        }).ToList();
+                        return result;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+              
+            }
+        }
+
+        /// <summary>
+        /// DESC:Get total revenue for column chart widget
+        /// Created by: Merajuddin khan
+        /// Created on: 29-04-2022
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<List<TotalRevenueDto>> GetTotalRevenueForWidget(List<string> filters)
+        {
+            {
+             
+                    string filterData = String.Join<string>(",", filters);
+                    SqlParameter[] parameters = new SqlParameter[1];
+                    parameters[0] = new SqlParameter("Filter", filterData);
+                    var ds = await SqlHelper.ExecuteDatasetAsync(
+                        Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetTotalRevenueForWidget", parameters);
+                    var i = new TotalClientsDto();
+                    if (ds.Tables.Count > 0)
+                    {
+                        var res = SqlHelper.ConvertDataTable<TotalRevenueRet>(ds.Tables[0]);
+                        var result = res.Select(rw => new TotalRevenueDto
+                        {
+                            Name = rw.FilterName,
+                            Series = rw.Data != null ? JsonConvert.DeserializeObject<List<TotalRevenueSeries>>(rw.Data.ToString()) : null
+
+                        }).ToList();
+                        return result;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
+            }
+        }
+        /// <summary>
+        /// Get pending payment details of client
+        /// Created by: Merajuddin khan
+        /// Created on: 29-04-2022
+        /// </summary>
+        /// <returns></returns>
+        public async Task<PagedResultDto<PendingPaymentDto>> GetClientPendingPaymentForWidget(DashboardInputBase input)
+        {
+           
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("StartDate", input.StartDate);
+                parameters[1] = new SqlParameter("EndDate", input.EndDate);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                        Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetClientPendingPaymentForWidget",parameters
+                        );
+                var totalCount = 0;
+                var result = new List<PendingPaymentDto>();
+                if (ds.Tables.Count > 0)
+                {
+                    var clienteResult = SqlHelper.ConvertDataTable<PendingPaymentDto>(ds.Tables[0]);
+                    result = clienteResult.Select(rw => new PendingPaymentDto
+                    {
+                        ClientId = rw.ClientId,
+                        ClientName = rw.ClientName,
+                        ProductName = rw.ProductName,
+                        PendingPayment =  rw.PendingPayment,
+                        PendingDays = rw.PendingDays
+                    }).ToList();
+                    if (clienteResult != null && clienteResult.Count > 0)
+                    {
+                        totalCount = clienteResult.FirstOrDefault().TotalCount;
+                    }
+
+                    return new PagedResultDto<PendingPaymentDto>(
+                       totalCount,
+                       result
+                       );
+                }
+
+                else
+                {
+                    return null;
+                }
+          
         }
     }
 }

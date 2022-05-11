@@ -69,6 +69,7 @@ namespace CF.Octogo.Dto
         public List<PricingType> ADDONPrice { get; set; }
         public List<AddonModules> ModuleList { get; set; }
         public bool? IsStandAlone { get; set; }
+        public string DependAddons { get; set; }
     }
     public class AddonModules
     {

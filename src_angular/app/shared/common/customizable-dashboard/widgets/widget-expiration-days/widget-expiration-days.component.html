@@ -1,0 +1,82 @@
+<div *ngIf="productDetailsList.length ==  1" class="card card-custom bgi-no-repeat card-stretch new-subscription-statistics h-100">
+    <div class="card-header align-items-center border-0">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="font-weight-bolder text-dark">
+                {{'ExpirationDaysLeft' | localize}}
+            </span>
+        </h3>
+    </div>
+    <div *ngFor="let ad of productDetailsList" class="card-body">
+        <!-- <a>
+            {{'ExpirationDaysLeft' | localize}}
+        </a> -->
+        <div class="text-left text-danger font-weight-bolder font-size-h2 mr-2">
+            <span *ngIf="ad.remainingDays != null">
+                {{ad.remainingDays}}
+            </span>
+            <span *ngIf="ad.remainingDays == null">
+                {{'Unlimited'| localize}}
+            </span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted mr-2 font-size-sm font-weight-bold">
+                {{'Product' | localize}} - {{ad.productName}}
+            </span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted mr-2 font-size-sm font-weight-bold">
+                {{'Package' | localize}} - {{ad.editionName}}
+            </span>
+        </div>
+    </div>
+</div>
+<div *ngIf="productDetailsList.length > 1" class="card card-custom h-100">
+    <div class="card-header align-items-center border-0">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="font-weight-bolder text-dark">
+                {{'ExpirationDaysLeft' | localize}}
+            </span>
+        </h3>
+    </div>
+    <div class="card-body" [perfectScrollbar]>
+        <div class="child">
+            <div class="table-scrollable table-scrollable-borderless">
+                <table class="table table-hover table-light">
+                    <thead>
+                        <tr class="uppercase">
+                            <th>
+                                {{'S.No.' | localize}}
+                            </th>
+                            <th>
+                                {{'Product' | localize}}
+                            </th>
+                            <th>
+                                {{'Package' | localize}}
+                            </th>
+                            <th>
+                                {{'ExpirationDays' | localize}}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr *ngFor="let m of productDetailsList; let index = index">  
+                    
+                    <td>
+                        {{index+1}}
+                    </td>
+                    <td>
+                        {{m.productName}}
+                    </td>
+                    <td>
+                        {{m.editionName}}
+                    </td>
+                    <td *ngIf="m.remainingDays != null">
+                        {{m.remainingDays}}
+                    </td>
+                    <td *ngIf="m.remainingDays == null">
+                        {{'Unlimited' | localize}}
+                    </td>
+                </tr>
+                </table>
+            </div>
+        </div>
+    </div>

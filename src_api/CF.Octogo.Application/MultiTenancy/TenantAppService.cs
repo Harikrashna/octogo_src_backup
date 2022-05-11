@@ -203,7 +203,7 @@ namespace CF.Octogo.MultiTenancy
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetTenantList", parameters
-        );
+            );
             var tenantCount = 0;
             var tenants = new List<TenantListNewDto>();
             if (ds.Tables.Count > 0)
@@ -217,7 +217,8 @@ namespace CF.Octogo.MultiTenancy
                     ConnectionString = rw.ConnectionString,
                     IsActive = rw.IsActive,
                     CreationTime = rw.CreationTime,
-                    Edition = rw.Edition != null ? JsonConvert.DeserializeObject<List<SubscribedEditionDetailsDto>>(rw.Edition.ToString()) : null
+                    Edition = rw.Edition != null ? JsonConvert.DeserializeObject<List<SubscribedEditionDetailsDto>>(rw.Edition.ToString()) : null,
+                    UserTypeName = rw.UserTypeName // adedd by : merajuddin
                 }).ToList();
                 if (tenantsRet != null && tenantsRet.Count > 0)
                 {
@@ -260,10 +261,10 @@ namespace CF.Octogo.MultiTenancy
                                     AppUrlService.CreateEmailActivationUrlFormat(input.TenantDetails.ClientCode)
                                     );
             }
-            var x = JsonConvert.SerializeObject(input.PackageDetails);
-            var y = JsonConvert.SerializeObject(input.TransactionCharges.AWBData);
-            try
-            {
+            //var x = JsonConvert.SerializeObject(input.PackageDetails);
+            //var y = JsonConvert.SerializeObject(input.TransactionCharges.AWBData);
+            //try
+            //{
                 SqlParameter[] parameters = new SqlParameter[25];
                 parameters[0] = new SqlParameter("TenantId", input.TenantDetails.TenantId);
                 parameters[1] = new SqlParameter("PackageDetails", JsonConvert.SerializeObject(input.PackageDetails));
@@ -297,12 +298,12 @@ namespace CF.Octogo.MultiTenancy
                 {
                     return (int)input.TenantDetails.TenantId;
                 }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                    return 0;
-            }
+            //}
+            //catch(Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //        return 0;
+            //}
             return (int)input.TenantDetails.TenantId;
         }
         [AbpAuthorize(AppPermissions.Pages_Tenants_Edit)]
@@ -325,6 +326,33 @@ namespace CF.Octogo.MultiTenancy
                     TransactionCharges = rw.TransactionCharges != null ? JsonConvert.DeserializeObject<List<TransactionDataInputDto>>(rw.TransactionCharges.ToString()).FirstOrDefault() : null
                 }).FirstOrDefault();
                 return TenantData;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async Task<List<AwbCountsDto>> GetAwbCostDataByApproachId(int ApproachId)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("ApproachId", ApproachId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_GetAwbCostData", parameters //USP_GetAwbCostApproachId
+            );
+
+            if (ds.Tables.Count > 0)
+            {
+                var res = SqlHelper.ConvertDataTable<AwbCountsDto>(ds.Tables[0]);
+                var result = res.Select(rw => new AwbCountsDto
+                {
+                    CountMin = rw.CountMin,
+                    CountMax = rw.CountMax,
+                    BillingRate = rw.BillingRate,
+                    Amount = rw.Amount
+                }).ToList();
+                return result;
             }
             else
             {

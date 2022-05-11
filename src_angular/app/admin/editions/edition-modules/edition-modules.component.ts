@@ -341,9 +341,20 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
     }
     this.SelectedIndex = -1;
   }
-
+  SelectModuleForTenant(module, index) {
+    this.IsDependentEditionModuleSelected = false;
+    this.SubSubModuleList = [];
+    this.SubModuleList = [];
+      this.SelectedIndex = index;
+      this.SelectedModule = module;
+    let subModule = this.PageSubModuleList.filter(obj => obj.moduleId == module.id);
+    if (subModule != null && subModule != undefined && subModule.length > 0) {
+      
+      this.SubModuleList = subModule[0].subModuleList;
+      this.SubSubModuleList = [];
+    }
+  }
   SelectModule(module, index, isReset: boolean = false) {
-    
     this.SelectedDependentEdition = null;
     if (this.SelectedIndex >= 0 && this.SelectedIndex != index) {
       if (!this.SubModuleList) {
@@ -409,6 +420,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
             moduleChangeConfirmation = true;
           }
         }
+        if(this.ForTenantPage == false){
         if (moduleChangeConfirmation == true) {
           this.message.confirm(
             this.l('EditionModuleChangeConfirmationMsg', this.SelectedModule.displayName),
@@ -426,6 +438,7 @@ export class EditionModulesComponent extends AppComponentBase implements OnInit 
         else {
           this.SelectModuleAction(module, index, isReset);
         }
+      }
       }
     }
     else {

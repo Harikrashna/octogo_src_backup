@@ -9,7 +9,7 @@ import { AddOn, AddonSubscriptionDto, AvailableAddonModulesDto, EditionList, Edi
   styleUrls: ['./payment-details.component.css']
 })
 export class PaymentDetailsComponent extends AppComponentBase implements OnInit {
-  @Input() SelectedPackagesData = [];
+  // @Input() SelectedPackagesData: EditionProductData[] = [];
   @Input()TenantId = 0;
   
 
@@ -83,13 +83,15 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
       {
         let i = 0;
         if(subscribedPkgIndex >= 0){
-          i = this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype.findIndex(f => f.pricingTypeID == this.PackagesDataForEdit[subscribedPkgIndex].pricingTypeId)
+          let j = this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype.findIndex(f => f.pricingTypeID == this.PackagesDataForEdit[subscribedPkgIndex].pricingTypeId)
+          if(j >= 0) i = j;
         }
         this.SelectedPackages[prodIndex].selectedEditionPricing = {
         "EditioName": this.SelectedPackages[prodIndex].SelectedEditionData.editionName,
         "PricingTypeId": this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype[i].pricingTypeID,
         "Price": this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype[i].price,
-        "Discount": this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype[i].discount
+        "Discount": this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype[i].discount,
+        "IsSubscribed": this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype[i]["IsSubscribed"]
       };
       this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype[i]["selected"] = true;
       this.isPaymentRequired = true;
@@ -99,21 +101,21 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
       this.SelectedPackages[prodIndex].SelectedAddonsData.forEach(addon => {
         if (addon != null && addon.addonPrice != null && addon.addonPrice != undefined && addon.addonPrice.length > 0) 
         {
-          debugger
+
           let i = 0;
           if(subscribedPkgIndex >= 0 && this.PackagesDataForEdit[subscribedPkgIndex].addonSubscription != null && this.PackagesDataForEdit[subscribedPkgIndex].addonSubscription != undefined)
           {
             let j = this.PackagesDataForEdit[subscribedPkgIndex].addonSubscription.findIndex(f => f.addonId == addon.addOnId && f.pricingTypeId > 0);
             if(j >= 0){
               i = addon.addonPrice.findIndex(f => f.pricingTypeID == this.PackagesDataForEdit[subscribedPkgIndex].addonSubscription[j].pricingTypeId);
-            } 
-
+            }  
           }
           this.SelectedPackages[prodIndex].selectedAddonPricing.push({
             "AddonId": addon.addOnId, "AddonName": addon.addOnName,
             "PricingTypeId": addon.addonPrice[i].pricingTypeID,
             "Discount": addon.addonPrice[i].discount,
-            "Price": addon.addonPrice[i].price - (addon.addonPrice[i].price * addon.addonPrice[i].discount) / 100
+            "Price": addon.addonPrice[i].price - (addon.addonPrice[i].price * addon.addonPrice[i].discount) / 100,
+            "IsSubscribed" : addon.addonPrice[i]["IsSubscribed"]
           });
           addon.addonPrice[i]["selected"] = true;
           this.isPaymentRequired = true;
@@ -123,7 +125,7 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
   }
   SetSubscribedPackagesPricing(index, prodIndex)
   {
-    // update Edition pricing andd Discount
+    // update Edition pricing and Discount
     if(this.PackagesDataForEdit[index].pricingTypeId > 0 && this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype != null
       && this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype != undefined){
         this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype.forEach( f =>{
@@ -131,14 +133,39 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
           {
             f.price = this.PackagesDataForEdit[index].amount;
             f.discount = this.PackagesDataForEdit[index].discountPercentage;
+            f["IsSubscribed"] = true;
           }
         })
     }
+    // set subscribed addon pricing flag to manage price changes
+    if(this.PackagesDataForEdit[index].addonSubscription != null && this.PackagesDataForEdit[index].addonSubscription != undefined)
+    {
+      this.PackagesDataForEdit[index].addonSubscription.forEach(adn =>
+        {
+          if(this.SelectedPackages[prodIndex].SelectedAddonsData != null && this.SelectedPackages[prodIndex].SelectedAddonsData != undefined)
+          {
+          let adonIndex = this.SelectedPackages[prodIndex].SelectedAddonsData.findIndex(x => x.addOnId == adn.addonId);
+          if(adonIndex != -1){
+            if(this.SelectedPackages[prodIndex].SelectedAddonsData[adonIndex].addonPrice != null && this.SelectedPackages[prodIndex].SelectedAddonsData[adonIndex].addonPrice != undefined)
+            {
+              let addonPriceInde = this.SelectedPackages[prodIndex].SelectedAddonsData[adonIndex].addonPrice.findIndex(x => x.pricingTypeID == adn.pricingTypeId)
+              {
+                if(addonPriceInde != -1){
+                  this.SelectedPackages[prodIndex].SelectedAddonsData[adonIndex].addonPrice[addonPriceInde]["IsSubscribed"] = true;
+                }
+              }
+            }
+          }
+        }
+        });
+      
+    }
   }
   EditionPriceChange(prodIndex, pricing, index) {
-    this.SelectedPackages[prodIndex].selectedEditionPricing["Price"] = pricing.price;// - (pricing.price * pricing.discount) / 100;
+    this.SelectedPackages[prodIndex].selectedEditionPricing["Price"] = pricing.price;
     this.SelectedPackages[prodIndex].selectedEditionPricing["Discount"] = pricing.discount;
     this.SelectedPackages[prodIndex].selectedEditionPricing["PricingTypeId"] = pricing.pricingTypeID;
+    this.SelectedPackages[prodIndex].selectedEditionPricing["IsSubscribed"] = pricing["IsSubscribed"];
     for (let i = 0; i < this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype.length; i++) {
       this.SelectedPackages[prodIndex].SelectedEditionData.pricingtype[i]["selected"] = false;
       if (i == index) {
@@ -153,12 +180,18 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
   AddonPriceChange(prodIndex, addon, addonIndex, index) {
     let pricingIndex = this.SelectedPackages[prodIndex].selectedAddonPricing.findIndex(x => x["AddonId"] == addon.addOnId);
     for (let i = 0; i < this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice.length; i++) {
-      this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i]["selected"] = false;
+      this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i]["selected"] = false;      
+      // if(this.SelectedPackages[prodIndex].selectedAddonPricing[pricingIndex]["PricingTypeId"] != addon.addonPrice[index].pricingTypeID)
+      // {
+      //   this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex]["IsSubscribed"] = false;
+      //   this.SelectedPackages[prodIndex].selectedAddonPricing[pricingIndex]["IsSubscribed"] = false;
+      // }
       if (i == index) {
         this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i]["selected"] = true;
         this.SelectedPackages[prodIndex].selectedAddonPricing[pricingIndex]["PricingTypeId"] = this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i].pricingTypeID;
         this.SelectedPackages[prodIndex].selectedAddonPricing[pricingIndex]["Price"] = this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i].price;// - (this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i].price * this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i].discount) / 100;
         this.SelectedPackages[prodIndex].selectedAddonPricing[pricingIndex]["Discount"] = this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i].discount;
+        this.SelectedPackages[prodIndex].selectedAddonPricing[pricingIndex]["IsSubscribed"] = this.SelectedPackages[prodIndex].SelectedAddonsData[addonIndex].addonPrice[i]["IsSubscribed"];
       }
     }
   }
@@ -185,12 +218,14 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
   CalculateTotal(pkgIndex1) {
     let total = 0;
     for(let i = 0; i < this.SelectedPackages.length; i++){
-    if (this.SelectedPackages[i].selectedEditionPricing != null && this.SelectedPackages[i].selectedEditionPricing["Price"] > 0) {
+    if (this.SelectedPackages[i].selectedEditionPricing != null && this.SelectedPackages[i].selectedEditionPricing["Price"] > 0 && !this.SelectedPackages[i].selectedEditionPricing["IsSubscribed"]) {
       total += this.SelectedPackages[i].selectedEditionPricing["Price"] - (this.SelectedPackages[i].selectedEditionPricing["Price"]*this.SelectedPackages[i].selectedEditionPricing["Discount"])/100;
     }
     if (this.SelectedPackages[i].selectedAddonPricing != null && this.SelectedPackages[i].selectedAddonPricing.length > 0) {
       this.SelectedPackages[i].selectedAddonPricing.forEach(x => {
+        if(!x["IsSubscribed"]){
         total += x["Price"] - (x["Price"]*x["Discount"])/100;
+        }
       });
     }
   }
@@ -205,7 +240,6 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
     return true;
   }
   GetDataToInsert(editionId){
-    debugger
     let pkgData:PackageDetailsInputDto = new PackageDetailsInputDto();;
     let pkgIndex = this.SelectedPackages.findIndex(obj => obj.SelectedEditionData.editionID == editionId);
     if(pkgIndex != -1){
@@ -239,6 +273,7 @@ export class SelectedPackagesAndAddons{
   selectedAddonPricing = [];
   ProductName;
   selectedEditionPricingDays = 0;
+  IsSubscribed: boolean = false
 }
 
 export class EditionProductData {
@@ -252,8 +287,10 @@ export class EditionProductData {
   SelectedAddons: SelectedAddons[] = [];
   EditionPricing : ModulePricingDto[] = [];
   AddonList: AvailableAddonModulesDto[] = [];
+  IsSubscribed: boolean = false
 }
 export class SelectedAddons{
   AddonId:number;
   AddonName: string;
+  IsSubscribed: boolean = false;
 }

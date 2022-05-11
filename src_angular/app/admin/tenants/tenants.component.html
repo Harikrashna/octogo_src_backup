@@ -152,6 +152,10 @@
                                                         (click)="editTenant(record.id)" >{{'Edit' | localize}}</a>
                                                             <!-- (click)="editTenantModal.show(record.id)" -->
                                                     </li>
+                                                    <li role="menuitem">
+                                                        <a href="javascript:;" class="dropdown-item"
+                                                        (click)="viewTenant(record.id)" >{{'View' | localize}}</a>
+                                                    </li>
                                                     <!-- <li *ngIf="'Pages.Tenants.ChangeFeatures' | permission" role="menuitem">
                                                         <a href="javascript:;"
                                                             class="dropdown-item"
@@ -241,6 +245,6 @@
         <app-tenant-subscription-details #subscriptionsModel></app-tenant-subscription-details>
     </div>
 </div>
-<app-create-edit-tenant-new #createEditTenantNew [TenantId]="selectedTenantId"
+<app-create-edit-tenant-new #createEditTenantNew [TenantId]="selectedTenantId" [viewForm]="viewForm" 
  (formClose)="CreateFormClosed($event)"  *ngIf="showCreateForm">
 </app-create-edit-tenant-new>

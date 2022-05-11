@@ -14,6 +14,7 @@ using CF.Octogo.Authorization;
 using CF.Octogo.Dto;
 using Abp.UI;
 using Abp.Runtime.Caching;
+using Newtonsoft.Json;
 
 namespace CF.Octogo.Master.AwbPricingApproach
 {
@@ -63,46 +64,66 @@ namespace CF.Octogo.Master.AwbPricingApproach
 
         [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Create, AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
         public async Task<int> CreateOrUpdateAwbCostType(CreateOrUpdateAwbCostApproachInput input)
+
         {
             var AwbCostApproach = GetAwbCostApproachDuplicacy(input.inApproachID, input.vcApproachName);
             if (AwbCostApproach.Result != null)
             {
                 throw new UserFriendlyException(L("DuplicateRecord"));
             }
-            SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
-            parameters[1] = new SqlParameter("vcApproachName", input.vcApproachName.Trim());
-            parameters[2] = new SqlParameter("vcDescription", input.vcDescription);
-            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
-
-
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CreateOrUpdateAwbCostApproach", parameters);
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            try
             {
-                await ClearCache();
-                return (int)ds.Tables[0].Rows[0]["Id"];
+                var x = JsonConvert.SerializeObject(input.AWBCostAppraochData);
+                SqlParameter[] parameters = new SqlParameter[5];
+                parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
+                parameters[1] = new SqlParameter("vcApproachName", input.vcApproachName);
+                parameters[2] = new SqlParameter("vcDescription", input.vcDescription);
+                parameters[3] = new SqlParameter("AWBCostAppraochData", JsonConvert.SerializeObject(input.AWBCostAppraochData));
+                parameters[4] = new SqlParameter("UserId", AbpSession.UserId);
+
+                var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_CreateOrUpdateAwbCostApproach", parameters);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    await ClearCache();
+                    return (int)ds.Tables[0].Rows[0]["Id"];
+                }
+                else
+                {
+                    return 0;
+                }
             }
-            else
+            catch (Exception e)
             {
-                return 0;
+                Console.WriteLine(e);
+                return 1;
             }
+
         }
 
         [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
-        public async Task<DataSet> GetPerAwbCostApproachForEdit(GetEditAwbCostApproachInput input)
+        public async Task<CreateOrUpdateAwbCostApproachInput> GetPerAwbCostApproachForEdit(GetEditAwbCostApproachInput input)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("AwbCostApproachId", input.inApproachID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetAwbCostApproachId", parameters
+            "USP_GetAwbCostApproachId", parameters //USP_GetAwbCostApproachId
             );
             if (ds.Tables.Count > 0)
             {
-                return ds;
+                var AwbDataRet = SqlHelper.ConvertDataTable<CreateOrUpdateAwbCostApproachInputRet>(ds.Tables[0]);
+                var AwbData = AwbDataRet.Select(rw => new CreateOrUpdateAwbCostApproachInput
+                {
+                    inApproachID = rw.inApproachID,
+                    vcApproachName = rw.vcApproachName,
+                    vcDescription = rw.vcDescription,
+                    AWBCostAppraochData = rw.AWBCostAppraochData != null ? JsonConvert.DeserializeObject<List<AwbCostApproachDto>>(rw.AWBCostAppraochData.ToString()) : null,
+
+                }).FirstOrDefault();
+                return AwbData;
             }
             else
             {

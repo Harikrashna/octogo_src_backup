@@ -7,15 +7,15 @@
     <hr style="width: 100%;" />
     <div class="form-group" style="width: 30%;">
         <label for="BillingApproach">{{"BillingApproach" | localize}} *</label>
-        <select class="form-control" required name="billingApproach" id="ddl_approach"
-            #approachNameSelect="ngModel" [(ngModel)]="approachId">
+        <select class="form-control" (change)="getAwbData(approachId)"  required name="billingApproach" id="ddl_approach"
+            #approachNameSelect="ngModel" [(ngModel)]="approachId" [disabled]="viewForm == true">
             <option disabled>{{ "Select" | localize}}</option>
-            <option *ngFor="let billing of BillingList" [value]="billing.id" >
+            <option *ngFor="let billing of BillingList"  [value]="billing.id" >
                 {{billing.name}}</option>
         </select>
         <validation-messages [formCtrl]="approachNameSelect"></validation-messages>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="!viewForm">
         <div class="col">
             <label for="AWBCounts">{{"AWBCounts" | localize}} *</label>
             <div id="billing">
@@ -67,7 +67,7 @@
                         <th style="width: 175px">
                             {{"Amount" | localize}}
                         </th>
-                        <th style="width: 200px">
+                        <th style="width: 200px" *ngIf="!viewForm">
                             {{'Actions' | localize}}
                         </th>
                     </tr>
@@ -86,7 +86,7 @@
                             <span class="p-column-title">{{'Amount' | localize}}</span>
                             {{data.amount}}
                         </td>
-                        <td style="width: 200px">
+                        <td style="width: 200px" *ngIf="!viewForm">
                             <span class="p-column-title">{{'Actions' | localize}}</span>
                             <button type="button" (click)="edit(i)" class="btn btn-success"><i
                                     class="fas fa-edit"></i></button>

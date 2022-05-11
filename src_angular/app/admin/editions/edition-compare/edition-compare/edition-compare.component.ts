@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CommonServiceProxy, EditionCompareResultDto, EditionListByProductDto, EditionPaymentType, EditionServiceProxy, MasterDataDto, ProductWithEditionDto, SubscriptionStartType } from '@shared/service-proxies/service-proxies';
@@ -27,14 +27,17 @@ export class EditionCompareComponent extends AppComponentBase implements OnInit 
   defaultIcon = "flaticon-bag";
   iconIndex = 0;
   canBack: boolean = false;
+  backPageUrl = "/"
 
   constructor(private injector: Injector, private _commonService: CommonServiceProxy,
-    private _activatedRoute: ActivatedRoute, private _editionService: EditionServiceProxy ) {
+    private _activatedRoute: ActivatedRoute, private _editionService: EditionServiceProxy,
+    private router: Router ) {
     super(injector);
   }
 
   ngOnInit(): void {
     this.canBack = this._activatedRoute.snapshot.queryParams['canBack'];
+    this.backPageUrl = this._activatedRoute.snapshot.queryParams['url'];
     this.GetProductList();
     this.ProductEditionData = [
                               { productId:0,editionId:0,editionList:[],icon:null},
@@ -43,7 +46,9 @@ export class EditionCompareComponent extends AppComponentBase implements OnInit 
                               {productId:0,editionId:0,editionList:[],icon:null}
                             ];
   }
-
+Back(){
+  this.router.navigate([this.backPageUrl]);
+}
   GetProductList() {
     this._commonService.getMasterData_Cache("PRODUCT").subscribe(result => {
       this.ProductList = result[0].masterData;
@@ -117,11 +122,11 @@ export class EditionCompareComponent extends AppComponentBase implements OnInit 
     }
 
     // this._editionCompareService.getEditionDeatilsByEditionIdForCompare
-    let editionId : string = null;
+    let editionIds : string = null;
     this.ProductEditionCompareList = null;
     this.compairing = true;
-    editionId = this.compareData.map(x=>x.editionId).toString();
-    this._editionService.getEditionDeatilsByEditionIdForCompare(editionId).pipe(finalize(() => { this.compairing = false; })).subscribe(result=>{
+    editionIds = this.compareData.map(x=>x.editionId).toString();
+    this._editionService.getEditionDeatilsByEditionIdForCompare(editionIds).pipe(finalize(() => { this.compairing = false; })).subscribe(result=>{
       this.ProductEditionCompareList = result;
 
       // console.log(this.ProductEditionCompareList)

@@ -77,12 +77,13 @@ export class TenantSetupSummaryComponent extends AppComponentBase implements OnI
             .subscribe(result => {
                 this.recordFetchd = true;
                 if (result != null) {
-                    this.totalRecordCount = result.table[0].totalCount
+                    this.totalRecordCount = result.totalCount
+                    debugger
                     if (this.skipCount > 0) {
-                        this.tenantStatusData = this.tenantStatusData.concat(result.table);
+                        this.tenantStatusData = this.tenantStatusData.concat(result);
                     }
                     else {
-                        this.tenantStatusData = result.table;
+                        this.tenantStatusData = result.items;
                     }
                 }
             });

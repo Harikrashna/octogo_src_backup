@@ -1,0 +1,53 @@
+<div class="card card-custom h-100">
+    <div class="card-header align-items-center border-0">
+        <div class="card-title">
+            <span class="card-icon">
+                <i class="la la-bar-chart text-primary"></i>
+            </span>
+            <h3 class="card-label text-success">
+                {{"ClientStatistics" | localize}}
+                <small class="text-muted"></small>
+            </h3>
+        </div>
+        <div class="card-toolbar" >
+            <button type="button" (click)="op.toggle($event)" class="btn btn-light-primary btn-filter btn-sm" >
+                <i class="fa fa-filter" ></i> 
+            </button>
+        </div>
+    </div>
+    <button hidden id="close">
+    
+    </button>
+    <p-overlayPanel #op appendTo="body" [style]="{width: '280px'}" [dismissable] ="true">
+        <label for="Usertype" class="checkbox">
+            <input id="Usertype" type="checkbox" name="Usertype"  (change)="onChangeCheckBoxvalue($event,'USERTYPE')"
+            checked>
+            <span></span>
+            {{"UserType" | localize}}
+        </label>
+        <label for="Product" class="checkbox"> 
+            <input id="Product" type="checkbox" name="Product" (change)="onChangeCheckBoxvalue($event,'PRODUCT')">
+            <span></span>
+            {{"Products" | localize}}
+        </label>
+        <label for="Country" class="checkbox">
+            <input id="Country" type="checkbox" name="Country" (change)="onChangeCheckBoxvalue($event,'COUNTRY')">
+            <span></span>
+            {{"Country" | localize}}
+        </label>
+        <label for="Packages" class="checkbox">
+            <input id="Packages" type="checkbox" name="Packages"  (change)="onChangeCheckBoxvalue($event,'PACKAGE')">
+            <span></span>
+            {{"Editions" | localize}}
+        </label> 
+    </p-overlayPanel>
+    <div class="card-body"  [busyIf]="loadingTotalClientStatistics"  [perfectScrollbar]>
+        <ngx-charts-bar-vertical-2d *ngIf="totalClientStatisticsData?.length > 0" 
+            [results]="totalClientStatisticsData" [showXAxisLabel]="true" showYAxisLabel="true" [xAxis]="true" [yAxis]="true"
+            [showDataLabel]="true" [groupPadding]="0" [barPadding]="0">
+        </ngx-charts-bar-vertical-2d>
+        <div class="note note-info text-center chart" [hidden]="totalClientStatisticsData?.length > 0">
+            <small class="text-muted ">{{"NoData" | localize}}</small>
+        </div>
+    </div>
+</div>

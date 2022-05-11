@@ -20,6 +20,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public int? RemainingDays { get; set; }
         public Boolean? IsSetupProcessComplete { get; set; }
         public List<SubscribedAddonDto> Addon { get; set; }
+        public int ExpiryNotificationDays { get; set; } // added by: merajuddin
     }
     public class TenantSubscriotionsDto
     {
@@ -32,6 +33,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string AddonPrice { get; set; }
+    
     }
     public class TenantEditionAddonRet
     {
@@ -46,6 +48,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public int? RemainingDays { get; set; }
         public Boolean? IsSetupProcessComplete { get; set; }
         public string Addon { get; set; }
+        public int ExpiryNotificationDays { get; set; } // added by merajuddin
     }
     public class SubscribedStandAloneAddonRet
     {
@@ -54,6 +57,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public DateTime? EndDate { get; set; }
         public string AddonPrice { get; set; }
         public string ModuleList { get; set; }
+        public int? RemainingDays { get; set; }
     }
     public class SubscribedStandAloneAddonDto
     {
@@ -62,6 +66,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public DateTime? EndDate { get; set; }
         public string AddonPrice { get; set; }
         public List<StandAloneAddonModulesDto> ModuleList { get; set; }
+        public int? RemainingDays { get; set; }
     }
     public class StandAloneAddonModulesDto
     {

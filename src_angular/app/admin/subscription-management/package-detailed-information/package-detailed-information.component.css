@@ -359,3 +359,8 @@ ul li{
     margin-left: auto;
     cursor: pointer;
 }
+
+.text-small {
+    font-size: x-small;
+    text-align:left;
+  }

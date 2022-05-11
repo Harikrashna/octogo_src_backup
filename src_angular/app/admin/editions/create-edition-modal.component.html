@@ -163,6 +163,13 @@
                                     </select>
                                     <validation-messages [formCtrl]="approachNameSelect"></validation-messages>
                                 </div>
+                                <div class="form-group trial-day-count">
+                                    <label>{{"ExpiryNotificationDays" | localize}}*</label>
+                                        <input  class="form-control" type="text" 
+                                        name="expiryNotificationDays"  #ExpiryNotificationDays="ngModel" [(ngModel)]="expiryNotificationDays" 
+                                        required maxlength="3">
+                                        <validation-messages [formCtrl]="ExpiryNotificationDays"></validation-messages>
+                                    </div>
                                 <div class="checkbox-list">
                                     <label for="EditEdition_IsTrialActive" class="checkbox">
                                         <input id="EditEdition_IsTrialActive" type="checkbox" name="isTrialActive"
@@ -212,7 +219,7 @@
                                         <span></span>
                                         {{"AssignToAnotherEdition" | localize}}
                                     </label>
-                                </div>
+                                </div>       
                                 <div class="form-group edition-list"
                                     *ngIf="expireAction == expireActionEnum.AssignToAnotherEdition">
                                     <select name="expiringEdition" class="form-control"

@@ -14,6 +14,16 @@ import { WidgetSubscriptionExpiringTenantsComponent } from './widgets/widget-sub
 import { WidgetHostTopStatsComponent } from './widgets/widget-host-top-stats/widget-host-top-stats.component';
 import { FilterDateRangePickerComponent } from './filters/filter-date-range-picker/filter-date-range-picker.component';
 import { WidgetTopStatsComponent } from './widgets/widget-top-stats/widget-top-stats.component';
+import { WidgetLatestClientComponent } from './widgets/widget-latest-client/widget-latest-client.component';
+import { WidgetOctogenProductsComponent } from './widgets/widget-octogen-products/widget-octogen-product.component';
+import { WidgetPlanExpirationComponent } from './widgets/widget-plan-expiration/widget-plan-expiration.component';
+import { WidgetTotalClientComponent } from './widgets/widget-total-client/widget-total-client.component';
+import { WidgetProductSegmentComponent } from './widgets/widget-product-segment/widget-product-segment.component';
+import { WidgetTotalRevenueComponent } from './widgets/widget-total-revenue/widget-total-revenue.component';
+import { WidgetPendingPaymentComponent } from './widgets/widget-pending-payment/widget-pending-payment.component';
+import { WidgetCurrentProductAndPackageComponent } from './widgets/widget-current-product-and-package/widget-current-product-and-package.component';
+import { WidgetExpirationDaysComponent } from './widgets/widget-expiration-days/widget-expiration-days.component';
+import { WidgetOctoCostComponent } from './widgets/widget-octo-cost/widget-octo-cost.component';
 
 @Injectable({
   providedIn: 'root'
@@ -97,7 +107,48 @@ export class DashboardViewConfigurationService {
       DashboardCustomizationConst.widgets.host.topStats,
       WidgetHostTopStatsComponent,
     );
+    let currentProductAndPackage = new WidgetViewDefinition(
+      DashboardCustomizationConst.widgets.tenant.currentProductAndPackage,
+      WidgetCurrentProductAndPackageComponent,
+    );
+
+    let expirationDays = new WidgetViewDefinition(
+      DashboardCustomizationConst.widgets.tenant.expirationDays,
+      WidgetExpirationDaysComponent,
+    );
+    let octoCost = new WidgetViewDefinition(
+      DashboardCustomizationConst.widgets.tenant.octoCost,
+      WidgetOctoCostComponent,
+    );
    //add your host side widgets here
+   let latestClient = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.host.latestClient,
+    WidgetLatestClientComponent,
+   );
+   let octogenProducts = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.host.octogenProducts,
+    WidgetOctogenProductsComponent,
+   );
+   let planExpiration = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.host.planExpiration,
+    WidgetPlanExpirationComponent,
+   );
+   let totalClient = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.host.totalClient,
+    WidgetTotalClientComponent,
+   );
+   let productSegmentation = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.host.productSegmentation,
+    WidgetProductSegmentComponent,
+   );
+   let totalRevenue = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.host.totalRevenue,
+    WidgetTotalRevenueComponent,
+   );
+   let pendingPayment = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.host.pendingPayment,
+    WidgetPendingPaymentComponent,
+   );
 
     this.WidgetViewDefinitions.push(generalStats);
     this.WidgetViewDefinitions.push(dailySales);
@@ -111,5 +162,17 @@ export class DashboardViewConfigurationService {
     this.WidgetViewDefinitions.push(recentTenants);
     this.WidgetViewDefinitions.push(subscriptionExpiringTenants);
     this.WidgetViewDefinitions.push(hostTopStats);
+    this.WidgetViewDefinitions.push(latestClient);
+    this.WidgetViewDefinitions.push(octogenProducts);
+    this.WidgetViewDefinitions.push(planExpiration);
+    this.WidgetViewDefinitions.push(totalClient);
+    this.WidgetViewDefinitions.push(productSegmentation);
+    this.WidgetViewDefinitions.push(totalRevenue);
+    this.WidgetViewDefinitions.push(pendingPayment);
+    this.WidgetViewDefinitions.push(currentProductAndPackage);
+    this.WidgetViewDefinitions.push(expirationDays);
+    this.WidgetViewDefinitions.push(octoCost);
+    
+    
   }
 }

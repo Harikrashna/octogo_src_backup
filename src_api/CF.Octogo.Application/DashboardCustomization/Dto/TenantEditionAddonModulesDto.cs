@@ -19,6 +19,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public Boolean? IsSetupProcessComplete { get; set; }
         public List<TenantAddonModulesDto> Addon { get; set; }
         public List<EditionAddonModules> Module { get; set; }
+        public int ExpiryNotificationDays { get; set; } // added by: merajuddin 
     }
     public class EditionAddonModules
     {
@@ -35,6 +36,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public string AddonPrice { get; set; }
         public int? RemainingDays { get; set; }
         public List<EditionAddonModules> ModuleList { get; set; }
+        public int ExpiryNotificationDays { get; set; } // Added by: merajuddin
     }
 
 
@@ -52,5 +54,6 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public Boolean? IsSetupProcessComplete { get; set; }
         public string Addon { get; set; }
         public string Module { get; set; }
+        public int ExpiryNotificationDays { get; set; } // added by : merajuddin
     }
 }

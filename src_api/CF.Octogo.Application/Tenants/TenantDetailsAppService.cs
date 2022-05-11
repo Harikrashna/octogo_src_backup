@@ -291,13 +291,12 @@ namespace CF.Octogo.Tenants
         /// Desc:Get tenant proccess completion status
         /// created by : Merajuddin khan
         /// created on :08-02-22
-        /// 
+        /// Modified on:04-04-22(Merajuddin khan)
         /// </summary>
         /// <param name="setUpId"></param>
         /// <returns></returns>
-        public async Task<DataSet> TenantAdminSetupProcessCompleteStatus(TenantSummaryInputDto input)
+        public async Task<PagedResultDto<TenantProcessLogsList>> TenantAdminSetupProcessCompleteStatus(TenantSummaryInputDto input)
         {
-
             SqlParameter[] parameters = new SqlParameter[14];
             parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
             parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
@@ -318,15 +317,49 @@ namespace CF.Octogo.Tenants
                System.Data.CommandType.StoredProcedure,
                "USP_GetTenantProcessLogs", parameters
                );
+            var tenantCount = 0;
+            var tenantSetUpProcess = new List<TenantProcessLogsList>();
             if (ds.Tables[0].Rows.Count > 0)
             {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
+                var tenantSetUpProcessRet = SqlHelper.ConvertDataTable<TenantProcessLogsList>(ds.Tables[0]);
+                tenantSetUpProcess = tenantSetUpProcessRet.Select(rw => new TenantProcessLogsList
+                {
+                    TenantId = rw.TenantId,
+                    ProductId = rw.ProductId,
+                    TenantName = rw.TenantName,
+                    ProductName = rw.ProductName,
+                    AdminName = rw.AdminName,
+                    AdminEmail = rw.AdminEmail,
+                    DBName = rw.DBName,
+                    AppURAL = rw.AppURAL,
+                    ApiURL = rw.ApiURL,
+                    AdminCreationCompleteDt = rw.AdminCreationCompleteDt,
+                    ApiurlSetupCompleteDt = rw.ApiurlSetupCompleteDt,
+                    AppURLSetupCompleteDt = rw.AppURLSetupCompleteDt,
+                    ApplicationHostDt = rw.ApplicationHostDt,
+                    DbSetupCompleteDt = rw.DbSetupCompleteDt,
+                    WsSetupCompleteDt = rw.WsSetupCompleteDt,
+                    ErrorMessage = rw.ErrorMessage,
+                    IsAPIURLSetup = rw.IsAPIURLSetup,
+                    IsAdminCreationCompleted = rw.IsAdminCreationCompleted,
+                    IsAppURLSetup = rw.IsAppURLSetup,
+                    IsApplicationHost = rw.IsApplicationHost,
+                    IsDBSetup = rw.IsDBSetup,
+                    IsWSSetup = rw.IsWSSetup,
+                    TotalCount = rw.TotalCount,
+                }).ToList();
 
+                if (tenantSetUpProcessRet != null && tenantSetUpProcessRet.Count > 0)
+                {
+                    tenantCount = tenantSetUpProcessRet.FirstOrDefault().TotalCount;
+
+                }
+            }
+            return new PagedResultDto<TenantProcessLogsList>
+            (
+              tenantCount,
+              tenantSetUpProcess
+            );
         }
 
         public async Task<string> CheckTeanantSetUpProcessAndErrorMessage()

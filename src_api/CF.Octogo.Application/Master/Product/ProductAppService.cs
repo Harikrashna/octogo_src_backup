@@ -194,5 +194,38 @@ namespace CF.Octogo.Master.Product
                     return null;
                 }
         }
+        /// <summary>
+        /// Desc:Get product list by UserTypeId
+        /// Author:Merajuddin
+        /// Date:11-04-2022
+        /// </summary>
+        /// <param name="UserTypeId"></param>
+        /// <param name="QueryFor"></param>
+        /// <returns></returns>
+        public async Task<List<ProductListByUserType>> GetProduclistByUsertypeId(int? UserTypeId, string QueryFor)
+        {
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("QueryFor", QueryFor);
+            parameters[1] = new SqlParameter("UserTypeId", UserTypeId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                Connection.GetSqlConnection("DefaultOctoGo"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_GetAddonsList", parameters);
+            if (ds.Tables.Count > 0)
+            {
+                var res = SqlHelper.ConvertDataTable<ProductListByUserType>(ds.Tables[0]);
+                var result = res.Select(rw => new ProductListByUserType
+                {
+                    Id = rw.Id,
+                    Name = rw.Name,
+                }).ToList();
+                return result;
+
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

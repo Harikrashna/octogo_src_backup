@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateInvoiceDto, InvoiceServiceProxy, PaymentServiceProxy } from '@shared/service-proxies/service-proxies';
 import { LazyLoadEvent } from 'primeng/api';
@@ -15,6 +15,7 @@ export class SubscriptionPaymentHistoryComponent  extends AppComponentBase imple
 
   @ViewChild('dataTable', { static: true }) dataTable: Table;
   @ViewChild('paginator', { static: true }) paginator: Paginator;
+  @Input() TenantId = 0;
   constructor(injector: Injector,private _paymentServiceProxy: PaymentServiceProxy,private _invoiceServiceProxy: InvoiceServiceProxy) {
     super(injector);
    }
@@ -30,10 +31,11 @@ export class SubscriptionPaymentHistoryComponent  extends AppComponentBase imple
 
     this.primengTableHelper.showLoadingIndicator();
 
-    this._paymentServiceProxy.getPaymentHistory(
+    this._paymentServiceProxy.getPaymentHistoryNew(
         this.primengTableHelper.getSorting(this.dataTable),
         this.primengTableHelper.getMaxResultCount(this.paginator, event),
-        this.primengTableHelper.getSkipCount(this.paginator, event)
+        this.primengTableHelper.getSkipCount(this.paginator, event),
+        this.TenantId
     ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
         this.primengTableHelper.totalRecordsCount = result.totalCount;
         this.primengTableHelper.records = result.items;

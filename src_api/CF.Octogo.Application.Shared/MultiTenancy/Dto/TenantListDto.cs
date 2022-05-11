@@ -38,6 +38,7 @@ namespace CF.Octogo.MultiTenancy.Dto
         public DateTime CreationTime { get; set; }
         public int TotalCount { get; set; }
         public string Edition { get; set; }
+        public string UserTypeName { get; set; }
     }
     public class TenantListNewDto : EntityDto, IPassivable, IHasCreationTime
     {
@@ -48,6 +49,7 @@ namespace CF.Octogo.MultiTenancy.Dto
         public bool IsActive { get; set; }
         public DateTime CreationTime { get; set; }
         public List<SubscribedEditionDetailsDto> Edition { get; set; }
+        public string UserTypeName { get; set; } //Added by : merajuddin
     }
     public class SubscribedEditionDetailsDto
     {

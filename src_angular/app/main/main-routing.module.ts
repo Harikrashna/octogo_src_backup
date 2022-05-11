@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AppRouteGuard } from '@app/shared/common/auth/auth-route-guard';
 import { TenantDashboardComponent } from './tenant-dashboard/tenant-dashboard.component';
 
 @NgModule({
@@ -13,7 +12,7 @@ import { TenantDashboardComponent } from './tenant-dashboard/tenant-dashboard.co
                     {
                         path: 'dashboard',
                         loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule),
-                        data: { permission: 'Pages.Tenant.Dashboard1' }
+                        data: { permission: 'Pages.Tenant.Dashboard' }
                     },
                     // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
                     // { path: '**', redirectTo: 'dashboard' }

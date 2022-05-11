@@ -1,5 +1,6 @@
-import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild, EventEmitter, Injector } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppComponentBase } from '@shared/common/app-component-base';
 import { TenantEditionAddonDto } from '@shared/service-proxies/service-proxies';
 import { TenantProductSetupSummaryComponent } from '../tenant-product-setup-summary/tenant-product-setup-summary.component';
 
@@ -9,7 +10,7 @@ import { TenantProductSetupSummaryComponent } from '../tenant-product-setup-summ
   templateUrl: './shared-package-details.component.html',
   styleUrls: ['./shared-package-details.component.css']
 })
-export class SharedPackageDetailsComponent implements OnInit {
+export class SharedPackageDetailsComponent  extends AppComponentBase implements OnInit {
   @ViewChild('tenantSummaryModel', {static: true}) tenantSummaryModel: TenantProductSetupSummaryComponent;
 
   @Input() PackageDetails: TenantEditionAddonDto;
@@ -20,13 +21,27 @@ export class SharedPackageDetailsComponent implements OnInit {
 
   isAddonCollapsed = false;
   addonIndex = null;
-  constructor(private _router: Router) { }
+  constructor(private _router: Router,injector: Injector) { 
+    super(injector)
+  }
 
   ngOnInit(): void {
+    this.PackageDetails
+  
   }
-  checkExpiryTime(remainingDays) {
-    if (remainingDays <= 7) {
-      return true
+  // checkExpiryTime(remainingDays) {  commented by:merajuddin
+  //   if (remainingDays <= 7) {
+  //     debugger
+  //     return true
+     
+  //   }
+  //   return false;
+  // }
+  checkExpiryTime(remainingDays, expiryNotificationDays) {  
+    if (remainingDays > 0) {
+      if (remainingDays <= expiryNotificationDays) {
+        return true
+      }
     }
     return false;
   }
@@ -66,3 +81,7 @@ export class SharedPackageDetailsComponent implements OnInit {
     this.showPackageDetails.emit(null);
   }
 }
+function injector(injector: any) {
+  throw new Error('Function not implemented.');
+}
+

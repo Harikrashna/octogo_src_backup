@@ -195,6 +195,7 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
 
   }
   BuyNow(edition: EditionList, productName) {
+    debugger
     if (this.IsTenantRegistration == true) {
       this.ShowRegisterTenant(edition, productName);
     }
@@ -203,6 +204,7 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
     }
   }
   Upgrade(edition: EditionList, productName) {
+    debugger
     this.selectedProductName = productName;
     this.isGoToCheckout = true;
     this.selectedEditionData = edition;
@@ -262,6 +264,14 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
         })
       }
     })
+  }
+  AddonDependencyMsg(isChecked, addon){
+    if(isChecked.target.checked == true && addon.dependAddons != null && addon.dependAddons != undefined){
+      this.message.info(
+        this.l('AddonDependencyMsg', addon.dependAddons),
+        this.l('AddOnInformation'),
+      );
+    }
   }
 }
 

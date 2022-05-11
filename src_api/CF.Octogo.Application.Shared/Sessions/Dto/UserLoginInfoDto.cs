@@ -26,6 +26,8 @@ namespace CF.Octogo.Sessions.Dto
 
         public string ProfilePictureId { get; set; }
         public bool IsEmailConfirmed { get; set; }
-        public long? UserDetailId { get; set; }
+        public long? UserDetailId { get; set; } // Added by:Merajuddin
+        public string UserTypeName { get; set; }// Added by:Merajuddin
+        public int UserTypeId { get; set; }// Added by:Merajuddin
     }
 }

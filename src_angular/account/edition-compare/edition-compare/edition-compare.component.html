@@ -49,7 +49,7 @@
                         <div class="" id="prod_group_1">
                             <select class="form-select" [(ngModel)]="item.editionId" (change)="SelectEdition(i)">
                                 <option value="0">{{"SelectEdition"| localize}}</option>
-                                <option *ngFor="let edition of item?.editionList; let editionIndex = index" [value]="edition.id" [disabled]="edition.disabled">{{edition.displayName}}
+                                <option *ngFor="let edition of item?.editionList; let editionIndex = index" [value]="edition.id">{{edition.displayName}}
                                 </option>
 
                             </select>

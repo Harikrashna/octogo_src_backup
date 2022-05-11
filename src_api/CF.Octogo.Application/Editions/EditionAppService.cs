@@ -128,13 +128,13 @@ namespace CF.Octogo.Editions
         [AbpAuthorize(AppPermissions.Pages_Editions_Delete)]
         public async Task DeleteEdition(EntityDto input)
         {
-            var tenantCount = await _tenantRepository.CountAsync(t => t.EditionId == input.Id);
-            if (tenantCount > 0)
+            //var tenantCount = await _tenantRepository.CountAsync(t => t.EditionId == input.Id);
+            var editionDependencyRes = await CheckEditionDependency(input.Id);
+            if (editionDependencyRes.TenantCounts > 0)
             {
                 throw new UserFriendlyException(L("ThereAreTenantsSubscribedToThisEdition"));
             }
-            var dependentEditionCount = await CheckEditionDependency(input.Id);
-            if (dependentEditionCount > 0)
+            if (editionDependencyRes.EditionCounts > 0)
             {
                 throw new UserFriendlyException(L("ThereAreDependentEdition"));
             }
@@ -314,9 +314,9 @@ namespace CF.Octogo.Editions
             //}
             //else
             //{
-          
+           
                 var x = JsonConvert.SerializeObject(input.ModuleList);
-                SqlParameter[] parameters = new SqlParameter[12];
+                SqlParameter[] parameters = new SqlParameter[13];
                 parameters[0] = new SqlParameter("ProductId", input.ProductId);
                 parameters[1] = new SqlParameter("ModuleData", JsonConvert.SerializeObject(input.ModuleList));
                 parameters[2] = new SqlParameter("PricingData", input.priceDiscount != null ? JsonConvert.SerializeObject(input.priceDiscount) : null);
@@ -329,9 +329,11 @@ namespace CF.Octogo.Editions
                 parameters[9] = new SqlParameter("TrialDayCount", input.Edition.TrialDayCount);
                 parameters[10] = new SqlParameter("WaitingDayAfterExpire", input.Edition.WaitingDayAfterExpire);
                 parameters[11] = new SqlParameter("isEdit", input.isEdit);
+                parameters[12] = new SqlParameter("ExpiryNotificationDays", input.expiryNotificationDays);
+
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                        System.Data.CommandType.StoredProcedure,
-                        "USP_InsertEditionModulesANDPricing", parameters);
+                            System.Data.CommandType.StoredProcedure,
+                            "USP_InsertEditionModulesANDPricing", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     //if (input.Edition.Id > 0)
@@ -344,7 +346,6 @@ namespace CF.Octogo.Editions
                 {
                     return 0;
                 }
-            
         }
         public async Task<EditionDetailsForEditDto> GetEditionDetailsForEdit(int EditionId)
         {
@@ -371,6 +372,7 @@ namespace CF.Octogo.Editions
                         WaitAfterExpiry = rw.WaitAfterExpiry,
                         DependantEditionID = rw.DependantEditionID,
                         DependantEdition = rw.DependantEdition,
+                        expiryNotificationDays = rw.ExpiryNotificationDays,
                         PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<ModulePricingDto>>(rw.PricingData.ToString()) : null
                     }).FirstOrDefault();
             }
@@ -396,10 +398,11 @@ namespace CF.Octogo.Editions
                 return null;
             }
         }
-        public async Task<EditionModulesDto> GetEditionModules(int EditionId)
+        public async Task<EditionModulesDto> GetEditionModules(int editionId, int tenantId = 0)
         {
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("EditionId", EditionId);
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("EditionId", editionId);
+            parameters[1] = new SqlParameter("TenantId", tenantId);
             var ds = await SqlHelper.ExecuteDatasetAsync(
                     Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
@@ -497,7 +500,7 @@ namespace CF.Octogo.Editions
                 return null;
             }
         }
-        public async Task<int> CheckEditionDependency(int EditionId)
+        public async Task<EditionDependencyDto> CheckEditionDependency(int EditionId)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("EditionId", EditionId);
@@ -506,15 +509,15 @@ namespace CF.Octogo.Editions
                     System.Data.CommandType.StoredProcedure,
                     "USP_CheckEditionDependency", parameters
                     );
+            EditionDependencyDto res = new EditionDependencyDto();
             if (ds.Tables.Count > 0)
             {
                 DataRow row = ds.Tables[0].Rows[0];
-                return Convert.ToInt32(row["EditionCounts"]);
+                res.EditionCounts = Convert.ToInt32(row["EditionCounts"]);
+                DataRow row1 = ds.Tables[1].Rows[0];
+                res.TenantCounts = Convert.ToInt32(row1["TenantCounts"]);
             }
-            else
-            {
-                return 0;
-            }
+            return res;
         }
         /// <summary>
         /// to get Page module data
@@ -586,14 +589,16 @@ namespace CF.Octogo.Editions
         public async Task<List<ProductWithEditionDto>> GetProductWithEdition(ProductWithEditionInputDto input)
         {
                 List<ProductWithEditionDto> list = new List<ProductWithEditionDto>();
+
                 // ProductWithEditionDto result = new ProductWithEditionDto();
-                SqlParameter[] parameters = new SqlParameter[6];
+                SqlParameter[] parameters = new SqlParameter[7];
                 parameters[0] = new SqlParameter("TenantId", AbpSession.TenantId);
                 parameters[1] = new SqlParameter("IncludeProductId", input.IncludeProductId);
                 parameters[2] = new SqlParameter("ExcludeProductId", input.ExcludeProductId);
                 parameters[3] = new SqlParameter("IsAvailableProduct", input.IsAvailableProduct);
                 parameters[4] = new SqlParameter("EditionId", input.EditionId);
                 parameters[5] = new SqlParameter("WithStandAloneAddons", input.WithStandAloneAddons);
+                parameters[6] = new SqlParameter("LoginUserId", AbpSession.UserId);
                 var ds = await SqlHelper.ExecuteDatasetAsync(
                 Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,
@@ -625,7 +630,8 @@ namespace CF.Octogo.Editions
                 {
                     return null;
                 }
-        }
+            
+         }
 
         private async Task<DataSet> CheckEditionDuplicacy(CreateEditionDto input)
         {

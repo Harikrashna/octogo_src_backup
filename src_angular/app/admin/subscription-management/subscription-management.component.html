@@ -1,8 +1,14 @@
 <div [@routerTransition]>
     <div class="content d-flex flex-column flex-column-fluid">
         <sub-header [title]="'Subscription' | localize">
-        </sub-header>
-
+        
+        <div role="actions">
+        <button [routerLink]="['/app/admin/edition-compare']" [queryParams]="{canBack: true, url:'/app/admin/subscription-management'}"
+                                    class="btn btn-primary" type="submit">
+                                        {{ 'Compare' | localize }}&nbsp;{{ 'Editions' | localize}}
+                                    </button>
+        </div>
+    </sub-header>
         <div [class]="containerClass">
             <div class="card card-custom gutter-b">
                 <div class="card-body">

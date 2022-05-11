@@ -50,6 +50,7 @@ namespace CF.Octogo.MultiTenancy
         private readonly IRepository<SubscribableEdition> _subscribableEditionRepository;
         protected readonly IBackgroundJobManager _backgroundJobManager;
         private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<UserRole, long> _userRoleRepository;
 
         public TenantManager(
             IRepository<Tenant> tenantRepository,
@@ -66,7 +67,8 @@ namespace CF.Octogo.MultiTenancy
             IPasswordHasher<User> passwordHasher,
             IRepository<SubscribableEdition> subscribableEditionRepository,
             IBackgroundJobManager backgroundJobManager,
-            IRepository<User, long> userRepository) : base(
+            IRepository<User, long> userRepository,
+            IRepository<UserRole, long> userRoleRepository) : base(
                 tenantRepository,
                 tenantFeatureRepository,
                 editionManager,
@@ -86,6 +88,7 @@ namespace CF.Octogo.MultiTenancy
             _subscribableEditionRepository = subscribableEditionRepository;
             _backgroundJobManager = backgroundJobManager;
             _userRepository = userRepository;
+            _userRoleRepository = userRoleRepository;
         }
 
         public async Task<int> CreateWithAdminUserAsync(
@@ -116,7 +119,18 @@ namespace CF.Octogo.MultiTenancy
 
             using (var uow = _unitOfWorkManager.Begin(TransactionScopeOption.RequiresNew))
             {
-                User existingUser = await CheckEmailIdAsync(adminEmailAddress);
+                User existingUser; // = await CheckEmailIdAsync(adminEmailAddress);
+                using (_unitOfWorkManager.Current.DisableFilter(AbpDataFilters.MayHaveTenant))
+                {
+                    var user = _userRepository.GetAll().Where(x => x.IsDeleted == false && x.EmailAddress.ToLower().Trim().Equals(adminEmailAddress.ToLower().Trim())).FirstOrDefault();
+                    if (user != null && user.Id > 0 && user.Id != AbpSession.UserId)
+                    {
+                        var error = LocalizationManager.GetSource(OctogoConsts.LocalizationSourceName).GetString("AdminEmailAddressDuplicate");
+                        throw new UserFriendlyException(error);
+                    }
+                    existingUser = user;            // Admin is same as SignUp user
+                }
+
                 //Create tenant
                 var tenant = new Tenant(tenancyName, name)
                 {
@@ -149,59 +163,91 @@ namespace CF.Octogo.MultiTenancy
                     userRole.IsDefault = true;
                     CheckErrors(await _roleManager.UpdateAsync(userRole));
 
-
-                    //Create admin user for the tenant
-                    var adminUser = User.CreateTenantAdminUser(tenant.Id, adminEmailAddress);
-                    adminUser.ShouldChangePasswordOnNextLogin = shouldChangePasswordOnNextLogin;
-                    adminUser.IsActive = true;
-
-                    if (adminPassword.IsNullOrEmpty())
-                    {
-                        adminPassword = await _userManager.CreateRandomPassword();
-                    }
-                    else
-                    {
-                        await _userManager.InitializeOptionsAsync(AbpSession.TenantId);
-                        foreach (var validator in _userManager.PasswordValidators)
-                        {
-                            CheckErrors(await validator.ValidateAsync(_userManager, adminUser, adminPassword));
-                        }
-
-                    }
-
-                    adminUser.Password = _passwordHasher.HashPassword(adminUser, adminPassword);
-                    adminUser.UserName = GetUserName(adminEmailAddress, tenancyName);
-                    adminUser.NormalizedUserName = adminUser.UserName.ToUpper();
-
                     // if SignUp user is Admin for new Tenant
                     if (existingUser != null && existingUser.EmailAddress.Trim().ToUpper() == adminEmailAddress.Trim().ToUpper())
                     {
-                        adminUser.Name = existingUser.Name;
-                        adminUser.Surname = existingUser.Surname;
+                        using (_unitOfWorkManager.Current.SetTenantId(null))
+                        {
+                            // Update existing User's UserRole and TenanetId
+                            var exstingUserRole = _userRoleRepository.GetAll().Where(f => f.UserId == existingUser.Id).FirstOrDefault();
+                            exstingUserRole.TenantId = tenant.Id;
+                            exstingUserRole.RoleId = userRole.Id;
+
+                            existingUser.ShouldChangePasswordOnNextLogin = shouldChangePasswordOnNextLogin;
+                            existingUser.IsActive = true;
+                            existingUser.TenantId = tenant.Id;
+                            existingUser.Password = _passwordHasher.HashPassword(existingUser, adminPassword);
+                            CheckErrors(await _userManager.UpdateAsync(existingUser));
+                            await _unitOfWorkManager.Current.SaveChangesAsync();
+                        }
+                            //Assign admin user to admin role!
+                            CheckErrors(await _userManager.AddToRoleAsync(existingUser, adminRole.Name));
+
+                            //Notifications
+                            await _appNotifier.WelcomeToTheApplicationAsync(existingUser);
+                            //Send activation email
+                            //if (sendActivationEmail)
+                            //{
+                            //    existingUser.SetNewEmailConfirmationCode();
+                            //    await _userEmailer.SendEmailActivationLinkAsync(existingUser, emailActivationLink, adminPassword);
+                            //}
+                            newAdminId = existingUser.Id;
+                        
                     }
-
-                    CheckErrors(await _userManager.CreateAsync(adminUser));
-                    await _unitOfWorkManager.Current.SaveChangesAsync(); //To get admin user's id
-
-                    //Assign admin user to admin role!
-                    CheckErrors(await _userManager.AddToRoleAsync(adminUser, adminRole.Name));
-
-                    //Notifications
-                    await _appNotifier.WelcomeToTheApplicationAsync(adminUser);
-
-                    //Send activation email
-                    if (sendActivationEmail)
+                    else
                     {
-                        adminUser.SetNewEmailConfirmationCode();
-                        await _userEmailer.SendEmailActivationLinkAsync(adminUser, emailActivationLink, adminPassword);
+                        //Create admin user for the tenant
+                        var adminUser = User.CreateTenantAdminUser(tenant.Id, adminEmailAddress);
+                        adminUser.ShouldChangePasswordOnNextLogin = shouldChangePasswordOnNextLogin;
+                        adminUser.IsActive = true;
+
+                        if (adminPassword.IsNullOrEmpty())
+                        {
+                            adminPassword = await _userManager.CreateRandomPassword();
+                        }
+                        else
+                        {
+                            await _userManager.InitializeOptionsAsync(AbpSession.TenantId);
+                            foreach (var validator in _userManager.PasswordValidators)
+                            {
+                                CheckErrors(await validator.ValidateAsync(_userManager, adminUser, adminPassword));
+                            }
+
+                        }
+                        adminUser.Password = _passwordHasher.HashPassword(adminUser, adminPassword);
+                        adminUser.UserName = GetUserName(adminEmailAddress, tenancyName);
+                        adminUser.NormalizedUserName = adminUser.UserName.ToUpper();
+                        CheckErrors(await _userManager.CreateAsync(adminUser));
+                        await _unitOfWorkManager.Current.SaveChangesAsync(); //To get admin user's id
+
+                        //Assign admin user to admin role!
+                        CheckErrors(await _userManager.AddToRoleAsync(adminUser, adminRole.Name));
+
+                        //Notifications
+                        await _appNotifier.WelcomeToTheApplicationAsync(adminUser);
+                        //Send activation email
+                        if (sendActivationEmail)
+                        {
+                            adminUser.SetNewEmailConfirmationCode();
+                            await _userEmailer.SendEmailActivationLinkAsync(adminUser, emailActivationLink, adminPassword);
+                        }
+                        newAdminId = adminUser.Id;
                     }
+
+
+                    //// if SignUp user is Admin for new Tenant
+                    //if (existingUser != null && existingUser.EmailAddress.Trim().ToUpper() == adminEmailAddress.Trim().ToUpper())
+                    //{
+                    //    adminUser.Name = existingUser.Name;
+                    //    adminUser.Surname = existingUser.Surname;
+                    //}
+
 
                     await _unitOfWorkManager.Current.SaveChangesAsync();
 
                     await _backgroundJobManager.EnqueueAsync<TenantDemoDataBuilderJob, int>(tenant.Id);
 
                     newTenantId = tenant.Id;
-                    newAdminId = adminUser.Id;
                 }
 
                 await uow.CompleteAsync();

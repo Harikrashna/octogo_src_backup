@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { AddOn, AvailableAddonModulesDto, DashboardCustomizationServiceProxy, EditionAddonModules, EditionList, EditionServiceProxy, PricingDataDto, PricingType, TenantEditionAddonDto, TenantEditionAddonModulesDto } from '@shared/service-proxies/service-proxies';
+import { result } from 'lodash-es';
 
 @Component({
   selector: 'app-package-detailed-information',
@@ -26,7 +27,6 @@ export class PackageDetailedInformationComponent extends AppComponentBase implem
   selectedAddonsData: AddOn[];
   selectedProductName;
   pageHeadding = '';
-  
 
   constructor(private _dsashboardCustomizationService: DashboardCustomizationServiceProxy,
      private _editionService: EditionServiceProxy, injector: Injector) {
@@ -34,6 +34,7 @@ export class PackageDetailedInformationComponent extends AppComponentBase implem
       }
 
   ngOnInit(): void {
+    debugger
     if(this.PackageDetails != null && this.PackageDetails != undefined){
     this.EditionId = this.PackageDetails.editionId;
     }
@@ -114,12 +115,14 @@ checkProcess(process){
   }
   return false;
 }
-checkExpiryTime(remainingDays){
-  if(remainingDays <= 7){
-    return true
-  }
-      return false;
+  checkExpiryTime(remainingDays: number,expiryNotificationDays: number) {
+    if (remainingDays > 0) {
+      if (remainingDays <= expiryNotificationDays) {
+        return true
+      }
     }
+    return false;
+  }
 
  BackToPackageDetails(){
   this.IsUpgrade = false;

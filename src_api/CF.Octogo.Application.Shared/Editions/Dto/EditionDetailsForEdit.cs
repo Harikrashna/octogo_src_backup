@@ -18,6 +18,7 @@ namespace CF.Octogo.Editions.Dto
         public int? DependantEditionID { get; set; }
         public bool DependantEdition { get; set; }
         public string PricingData { get; set; }
+        public int ExpiryNotificationDays { get; set; } // added by : merajuddin 
     }
     public class EditionDetailsForEditDto
     {
@@ -33,6 +34,7 @@ namespace CF.Octogo.Editions.Dto
         public int? DependantEditionID { get; set; }
         public bool DependantEdition { get; set; }
         public List<ModulePricingDto> PricingData { get; set; }
+        public int expiryNotificationDays { get; set; } // added by : merajuddin
     }
     public class EditionModulesDto
     {

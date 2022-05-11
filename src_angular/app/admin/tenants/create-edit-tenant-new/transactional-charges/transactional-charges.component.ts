@@ -1,7 +1,7 @@
 import { Component, Injector, Input, OnInit, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { ValidationServiceService } from '@app/admin/validation-service.service';
-import { AwbCostApproachListDto, AwbCountsDto, CommonServiceProxy, MasterDataDto, TenantServiceProxy, TransactionDataInputDto } from '@shared/service-proxies/service-proxies';
+import { AwbCostApproachDto, AwbCostApproachListDto, AwbCostApproachServiceProxy, AwbCountsDto, CommonServiceProxy, CreateOrUpdateAwbCostApproachInput, MasterDataDto, TenantServiceProxy, TransactionDataInputDto } from '@shared/service-proxies/service-proxies';
 import { PrimengTableHelper } from '@shared/helpers/PrimengTableHelper';
 import { NgForm } from '@angular/forms';
 
@@ -14,17 +14,21 @@ export class TransactionalChargesComponent extends AppComponentBase implements O
   
   @ViewChild('transactionalChargesForm') transactionalChargesForm: NgForm;
   @Input()TenantId = 0;
+  @Input()viewForm = false;
   active = false;
   BillingList: AwbCostApproachListDto[] = [];
   isEdit: boolean = false;
   listIndex: number = -1;
   model: AwbCountsDto = new AwbCountsDto();
   approachId: number;
-  public AWBData: AwbCountsDto[] = [];
+  AWBData: AwbCostApproachDto[]=[];
+  // public AWBCostAppraochData: AwbCostApproachDto[] = [];
+  AWBCountData : CreateOrUpdateAwbCostApproachInput;
   primengTableHelperAWBCharges = new PrimengTableHelper();
   constructor(injector: Injector,
     private _commonServiceProxy: CommonServiceProxy,
-    public _validationService: ValidationServiceService) {
+    private _tenantServiceProxy : TenantServiceProxy,
+    public _validationService: ValidationServiceService,private _awbcostapproachservice: AwbCostApproachServiceProxy) {
     super(injector);
   }
 
@@ -79,7 +83,16 @@ export class TransactionalChargesComponent extends AppComponentBase implements O
       }
     }
   }
-
+  getAwbData(inApproachid){
+    this._awbcostapproachservice.getPerAwbCostApproachForEdit(inApproachid).subscribe(response => {
+      
+      this.AWBData = response.awbCostAppraochData;
+      console.log(response);
+      console.log(response.awbCostAppraochData);
+      
+      //this.AWBData = result;
+    })
+  }
   CalculateAmount() {
     if (this.model.countMax != null && this.model.countMax > 0 && this.model.billingRate != null && this.model.billingRate > 0) {
       this.model.amount = this.model.countMax * this.model.billingRate;
@@ -111,7 +124,7 @@ export class TransactionalChargesComponent extends AppComponentBase implements O
     this.model.countMax = this.AWBData[index].countMax;
     this.model.billingRate = this.AWBData[index].billingRate;
     this.model.amount = this.AWBData[index].amount;
-    this.model.costId = this.AWBData[index].costId;
+    this.model.inPerAWBCostID = this.AWBData[index].inPerAWBCostID;
     this.listIndex = index;
   }
   CheckValidData() :boolean

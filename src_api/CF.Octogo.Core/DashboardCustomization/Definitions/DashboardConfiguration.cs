@@ -85,6 +85,24 @@ namespace CF.Octogo.DashboardCustomization.Definitions
                 side: MultiTenancySides.Tenant,
                 permissions: tenantWidgetsDefaultPermission);
 
+            var expirationDays = new WidgetDefinition(
+                OctogoDashboardCustomizationConsts.Widgets.Tenant.ExpirationDays,
+                "WidgetExpirationDays",
+                side: MultiTenancySides.Tenant,
+                permissions: tenantWidgetsDefaultPermission);
+
+            var currentProductAndPackage = new WidgetDefinition(
+                OctogoDashboardCustomizationConsts.Widgets.Tenant.CurrentProductAndPackge,
+                "currentProductAndPackage",
+                side: MultiTenancySides.Tenant,
+                permissions: tenantWidgetsDefaultPermission);
+            var octoCost = new WidgetDefinition(
+                OctogoDashboardCustomizationConsts.Widgets.Tenant.OctoCost,
+                "WidgetOctoCost",
+                side: MultiTenancySides.Tenant,
+                permissions: tenantWidgetsDefaultPermission);
+
+
             WidgetDefinitions.Add(generalStats);
             WidgetDefinitions.Add(dailySales);
             WidgetDefinitions.Add(profitShare);
@@ -92,6 +110,9 @@ namespace CF.Octogo.DashboardCustomization.Definitions
             WidgetDefinitions.Add(regionalStats);
             WidgetDefinitions.Add(topStats);
             WidgetDefinitions.Add(salesSummary);
+            WidgetDefinitions.Add(expirationDays);
+            WidgetDefinitions.Add(currentProductAndPackage);
+            WidgetDefinitions.Add(octoCost);
             // Add your tenant side widgets here
 
             #endregion
@@ -134,11 +155,66 @@ namespace CF.Octogo.DashboardCustomization.Definitions
                 usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
                 permissions: hostWidgetsDefaultPermission);
 
+            var latestClient = new WidgetDefinition(
+              OctogoDashboardCustomizationConsts.Widgets.Host.LatestClient,
+              "WidgetlatestClient",
+              side: MultiTenancySides.Host,
+              usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+              permissions: hostWidgetsDefaultPermission);
+
+            var octogenProducts = new WidgetDefinition(
+              OctogoDashboardCustomizationConsts.Widgets.Host.OctogenProducts,
+              "WidgetOctogenProducts",
+              side: MultiTenancySides.Host,
+              usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+              permissions: hostWidgetsDefaultPermission);
+            var totalClient = new WidgetDefinition(
+             OctogoDashboardCustomizationConsts.Widgets.Host.TotalClient,
+             "WidgetTotalClient",
+             side: MultiTenancySides.Host,
+             usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+             permissions: hostWidgetsDefaultPermission);
+
+            var planExpiration = new WidgetDefinition(
+              OctogoDashboardCustomizationConsts.Widgets.Host.PlanExpiration,
+              "WidgetPlanExpiration",
+              side: MultiTenancySides.Host,
+              usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+              permissions: hostWidgetsDefaultPermission);
+            var productSegmentation = new WidgetDefinition(
+              OctogoDashboardCustomizationConsts.Widgets.Host.ProductSegmentation,
+              "WidgeProductSegmentation",
+              side: MultiTenancySides.Host,
+              usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+              permissions: hostWidgetsDefaultPermission);
+
+            var totalRevenue = new WidgetDefinition(
+             OctogoDashboardCustomizationConsts.Widgets.Host.TotalRevenue,
+             "WidgeTotalRevenue",
+             side: MultiTenancySides.Host,
+             usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+             permissions: hostWidgetsDefaultPermission);
+            var pendingPayment = new WidgetDefinition(
+            OctogoDashboardCustomizationConsts.Widgets.Host.PendingPayment,
+            "WidgetPendingPaymen",
+            side: MultiTenancySides.Host,
+            usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+            permissions: hostWidgetsDefaultPermission);
+
+
+
             WidgetDefinitions.Add(incomeStatistics);
             WidgetDefinitions.Add(hostTopStats);
             WidgetDefinitions.Add(editionStatistics);
             WidgetDefinitions.Add(subscriptionExpiringTenants);
             WidgetDefinitions.Add(recentTenants);
+            WidgetDefinitions.Add(latestClient);
+            WidgetDefinitions.Add(octogenProducts);
+            WidgetDefinitions.Add(planExpiration);
+            WidgetDefinitions.Add(totalClient);
+            WidgetDefinitions.Add(productSegmentation);
+            WidgetDefinitions.Add(totalRevenue);
+            WidgetDefinitions.Add(pendingPayment);
 
             // Add your host side widgets here
 
@@ -153,7 +229,7 @@ namespace CF.Octogo.DashboardCustomization.Definitions
                 OctogoDashboardCustomizationConsts.DashboardNames.DefaultTenantDashboard,
                 new List<string>
                 {
-                    generalStats.Id, dailySales.Id, profitShare.Id, memberActivity.Id, regionalStats.Id, topStats.Id, salesSummary.Id
+                    generalStats.Id, dailySales.Id, profitShare.Id, memberActivity.Id, regionalStats.Id, topStats.Id, salesSummary.Id,expirationDays.Id, currentProductAndPackage.Id, octoCost.Id
                 });
 
             DashboardDefinitions.Add(defaultTenantDashboard);
@@ -166,8 +242,16 @@ namespace CF.Octogo.DashboardCustomization.Definitions
                     hostTopStats.Id,
                     editionStatistics.Id,
                     subscriptionExpiringTenants.Id,
-                    recentTenants.Id
-                });
+                    recentTenants.Id,
+                    latestClient.Id,
+                    octogenProducts.Id,
+                    planExpiration.Id,
+                    totalClient.Id,
+                    productSegmentation.Id,
+                    totalRevenue.Id,
+                    pendingPayment.Id
+
+                }) ;
 
             DashboardDefinitions.Add(defaultHostDashboard);
 

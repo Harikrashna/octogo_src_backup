@@ -369,11 +369,11 @@ namespace CF.Octogo.Editions
 
         }
         [AbpAuthorize]
-        public async Task<List<AvailableAddonModulesDto>> GetAddonListByEditionId(int EditionId)
+        public async Task<List<AvailableAddonModulesDto>> GetAddonListByEditionId(int EditionId, string QueryFor)
         {
             SqlParameter[] parameters = new SqlParameter[2]; 
              parameters[0] = new SqlParameter("EditionId", EditionId);
-            parameters[1] = new SqlParameter("QueryFor", "Edition");
+            parameters[1] = new SqlParameter("QueryFor", QueryFor);
             var ds = await SqlHelper.ExecuteDatasetAsync(
                 Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,
@@ -387,12 +387,43 @@ namespace CF.Octogo.Editions
                     AddonName = rw.AddonName,
                     EditionId = rw.EditionId,
                     IsStandAlone = rw.IsStandAlone,
+                    DependAddons = rw.DependAddons,
                     ModuleList = rw.ModuleList != null ? (rw.IsStandAlone == true ? _editionService.PrepareFeaturesList(JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : JsonConvert.DeserializeObject<List<AvailableModuleDto>>(rw.ModuleList.ToString())) : null,
                     PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<PricingDataDto>>(rw.PricingData.ToString()) : null,
 
                 }).ToList();
                 return result;
 
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public async Task<List<AddonCompareResultDto>> GetAddonDetailsByAddonIdsForCompare(string AddonIds)
+        {
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("AddonIds", AddonIds);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetAddonDetailsToCompare", parameters
+                    );
+            if (ds.Tables.Count > 0)
+            {
+                var CompareResult = SqlHelper.ConvertDataTable<AddonCompareResultRet>(ds.Tables[0]);
+                var result = CompareResult.Select(rw => new AddonCompareResultDto
+                {
+                    EditionID = rw.EditionID,
+                    EditionName = rw.EditionName,
+                    ProductId = rw.ProductId,
+                    ProductName = rw.ProductName,
+                    AddonId = rw.AddonId,
+                    AddonName = rw.AddonName,
+                    ModuleList = rw.ModuleList != null ? JsonConvert.DeserializeObject<List<AddonCompareModuleList>>(rw.ModuleList.ToString()) : null,
+                    PricingData = rw.PricingData != null ? JsonConvert.DeserializeObject<List<AddonComparePricingDto>>(rw.PricingData.ToString()) : null
+                }).ToList();
+                return result;
             }
             else
             {

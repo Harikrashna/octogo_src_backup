@@ -11,7 +11,7 @@ namespace CF.Octogo.MultiTenancy.Dto
     }
     public class AwbCountsDto
     {
-        public int? CostId { get; set; }
+        public Nullable<int> inPerAWBCostID { get; set; }
         public int CountMin { get; set; }
         public int CountMax { get; set; }
         public decimal BillingRate { get; set; }

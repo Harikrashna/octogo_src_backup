@@ -1,0 +1,50 @@
+<div class="card card-custom h-100" [perfectScrollbar]>
+    <div class="card-header align-items-center border-0">
+        <div class="card-title">
+            <span class="card-icon">
+                <i class="fas fa-hourglass-end text-primary"></i>
+            </span>
+            <h3 class="card-label text-primary">
+                {{"WidgetPlanExpiration" | localize}}
+            </h3>
+        </div>
+    </div>
+    <div [class]="containerClass">
+        <div class="scroller chart">
+            <div class="primeng-datatable-container recent-tenants-table" [busyIf]="primengTableHelper.isLoading">
+                <p-table #RecentTenantsTable [value]="primengTableHelper.records"
+                    rows="{{primengTableHelper.defaultRecordsCountPerPage}}" [paginator]="false" [lazy]="false"
+                    [responsive]="primengTableHelper.isResponsive">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>{{'Sno'}}</th>
+                            <th>{{'ClientName' | localize}}</th>
+                            <th>{{'ProductName' | localize}}</th>
+                            <th>{{'RemainingDay' | localize}}</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-record="$implicit" let-i="rowIndex">
+                        <tr>
+                            <td>
+                                <span class="p-column-title">{{'Sno' | localize}}</span>
+                                {{i+1}}
+                            </td>
+                            <td>
+                                <span class="p-column-title">{{'ClientName' | localize}}</span>
+                                {{record.clientName}}
+                            </td>
+                            <td>
+                                <span class="p-column-title">{{'ProductName' | localize}}</span>
+                                {{record.productName}}
+                            </td>
+                            <td>
+                                <span class="p-column-title">{{'RemainingDay' | localize}}</span>
+                                {{record.expirationDays}}
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>

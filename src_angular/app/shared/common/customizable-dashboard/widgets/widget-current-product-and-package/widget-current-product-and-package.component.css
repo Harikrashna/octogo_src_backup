@@ -1,0 +1,18 @@
+.row {
+    margin-left:-5px;
+    margin-right:-5px;
+  }
+    
+  .column {
+    float: left;
+    width: 50%;
+    padding: 5px;
+  }
+  #std{
+    width: 400px;
+    float: right;
+    height: 250px;
+  }
+  #main{
+      width: 800px;
+  }

@@ -45,6 +45,7 @@ export class TenantsComponent extends AppComponentBase implements OnInit {
     EditionList:any;
     selectedTenantId = 0;
     showCreateForm :boolean = false;
+    viewForm :boolean = false;
 
     filters: {
         filterText: string;
@@ -173,9 +174,9 @@ export class TenantsComponent extends AppComponentBase implements OnInit {
         // this.createOrEditTenant.show();
       }
     editTenant(tenantId) {
-        debugger
         this.showCreateForm = true;
         this.selectedTenantId = tenantId;
+        this.viewForm=false;
         // let timer = setInterval(() => {
         //     if (this.createEditTenantNew != null && this.createEditTenantNew != undefined) {
         //         clearInterval(timer);
@@ -184,8 +185,14 @@ export class TenantsComponent extends AppComponentBase implements OnInit {
         //     }
         // }, 50)
     }
+    viewTenant(tenantId) {
+        this.viewForm=true;
+        this.showCreateForm = true;
+        this.selectedTenantId = tenantId;
+    }
     CreateFormClosed(event) {
         this.showCreateForm = false;
+        this.viewForm=false;
         this.selectedTenantId = 0;
         if(event == true){
             this.getTenants();

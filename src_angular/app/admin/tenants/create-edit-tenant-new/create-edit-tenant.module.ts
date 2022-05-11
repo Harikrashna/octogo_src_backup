@@ -8,13 +8,14 @@ import { AdminSharedModule } from '@app/admin/shared/admin-shared.module';
 import { PackagesDetailComponent } from './packages-detail/packages-detail.component';
 import { PaymentDetailsComponent } from './payment-details/payment-details.component';
 import { EditionsModule } from '@app/admin/editions/editions.module';
+import { SubscriptionManagementModule } from '@app/admin/subscription-management/subscription-management.module';
 
 
 
 @NgModule({
   declarations: [CreateEditTenantNewComponent, TransactionalChargesComponent,
      TenantDetailsComponent,PaymentDetailsComponent, PackagesDetailComponent],
-  imports: [CommonModule, AppSharedModule, AdminSharedModule, EditionsModule],
+  imports: [CommonModule, AppSharedModule, AdminSharedModule, EditionsModule, SubscriptionManagementModule],
   exports:[CreateEditTenantNewComponent]
 })
 export class CreateEditTenantModule { }

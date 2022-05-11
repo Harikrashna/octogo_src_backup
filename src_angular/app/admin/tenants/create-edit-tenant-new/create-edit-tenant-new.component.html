@@ -1,11 +1,11 @@
 <div>
     <div class="content d-flex flex-column flex-column-fluid">
-        <sub-header [title]="(TenantId > 0 ?'EditTenant':'CreateNewTenant') | localize">
+        <sub-header [title]="viewForm==true?'TenantDetails':(TenantId > 0 ?'EditTenant':'CreateNewTenant') | localize">
             <div role="actions">
             </div>
         </sub-header>
 
-        <div [class]="containerClass" >
+        <div [class]="containerClass">
             <div class="card card-custom gutter-b">
                 <div class="card-body">
                     <div class="col-sm mb-2 pl-0">
@@ -13,35 +13,46 @@
                             <i class="fa fa-arrow-left"></i> {{"Back" | localize}}
                         </button>
                     </div>
-                    <form #tenantCreateForm="ngForm" role="form" novalidate class="form-validation"
-            (submit)="save()">
-        
-            <div>
-                <tabset #staticTabs>
-                    <tab heading="{{'CompanyDetails' | localize}}" class="p-5">
-                        <app-tenant-details #tenantDetails [TenantId]="TenantId"></app-tenant-details>
-                </tab>
-                <tab heading="{{'ProductDetails' | localize}}" class="p-5">
-                    <app-packages-detail #packagesDetail (SelectedPackagesData)="GetSelectedPackagesData($event)"  [TenantId]="TenantId"></app-packages-detail>
-                </tab>
-                <tab heading="{{'Payment' | localize}}" class="p-5">
-                    <app-payment-details #paymentDetail [SelectedPackagesData]="SelectedPackagesData" [TenantId]="TenantId"></app-payment-details>
-                </tab>
-                <tab heading="{{'TransactionalCharges' | localize}}" class="p-5">
-                    <app-transactional-charges #transactionalCharges [TenantId]="TenantId"></app-transactional-charges>
-                </tab>
-                </tabset>
-                </div>
+                    <form #tenantCreateForm="ngForm" role="form" novalidate class="form-validation" (submit)="save()">
 
-            <div class="modal-footer">
-                <button type="button" [disabled]="saving" class="btn btn-light-primary font-weight-bold"
-                    (click)="Cancel()">{{"Cancel" | localize}}</button>
-                <button type="submit" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"
-                    class="btn btn-primary font-weight-bold"
-                    [disabled]="!tenantCreateForm.form.valid || saving "><i
-                        class="fa fa-save"></i> <span>{{"Save" | localize}}</span></button>
-            </div>
-            </form>
+                        <div>
+                            <tabset #staticTabs>
+                                <tab heading="{{'CompanyDetails' | localize}}" class="p-5">
+                                    <app-tenant-details #tenantDetails [TenantId]="TenantId" [viewForm]="viewForm"
+                                    (UserTypeId) = "GetUserTypeId($event)">
+                                    </app-tenant-details>
+                                </tab>
+                                <tab heading="{{'ProductDetails' | localize}}" class="p-5">
+                                    <app-packages-detail #packagesDetail
+                                        (SelectedPackagesData)="GetSelectedPackagesData($event)" [TenantId]="TenantId" 
+                                        [viewForm]="viewForm" >
+                                    </app-packages-detail>
+                                </tab>
+                                <tab heading="{{'Payment' | localize}}" class="p-5">
+                                    <app-payment-details #paymentDetail [hidden]="viewForm==true"
+                                         [TenantId]="TenantId">
+                                    </app-payment-details>
+                                    <app-subscription-payment-history #subscriptionpaymenthistory *ngIf="viewForm==true"
+                                        [TenantId]="TenantId">
+                                    </app-subscription-payment-history>
+                                </tab>
+                                <tab heading="{{'TransactionalCharges' | localize}}" class="p-5">
+                                    <app-transactional-charges #transactionalCharges [TenantId]="TenantId"
+                                        [viewForm]="viewForm">
+                                    </app-transactional-charges>
+                                </tab>
+                            </tabset>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" [disabled]="saving" class="btn btn-light-primary font-weight-bold"
+                                (click)="Cancel()">{{"Cancel" | localize}}</button>
+                            <button *ngIf="viewForm != true" type="submit" [buttonBusy]="saving"
+                                [busyText]="l('SavingWithThreeDot')" class="btn btn-primary font-weight-bold"
+                                [disabled]="!tenantCreateForm.form.valid ||  saving "><i class="fa fa-save"></i>
+                                <span>{{"Save" | localize}}</span></button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

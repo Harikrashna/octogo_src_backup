@@ -43,7 +43,7 @@ namespace CF.Octogo.MultiTenancy.Dto
         {
             if (string.IsNullOrEmpty(Sorting))
             {
-                Sorting = "TenancyName";
+                // Sorting = "TenancyName";
             }
 
             Sorting = DtoSortingHelper.ReplaceSorting(Sorting, s =>

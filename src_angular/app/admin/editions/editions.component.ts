@@ -34,6 +34,7 @@ export class EditionsComponent extends AppComponentBase {
             this.paginator.changePage(0);
             return;
         }
+        debugger
         this.primengTableHelper.showLoadingIndicator();
         this._editionService.getEditionsList(this.filterText,
                     this.primengTableHelper.getSorting(this.dataTable),
@@ -42,9 +43,13 @@ export class EditionsComponent extends AppComponentBase {
         )
             .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
             .subscribe(result => {
+                debugger
                 this.primengTableHelper.totalRecordsCount = result.totalCount;
                 this.primengTableHelper.records = result.items;
+                debugger
                 this.primengTableHelper.hideLoadingIndicator();
+                //var i = this.primengTableHelper.records[0].expiryNotificationDays
+               // debugger
             });
     }
 

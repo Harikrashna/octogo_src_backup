@@ -39,5 +39,6 @@ namespace CF.Octogo.MultiTenancy.Payments
 
         Task<bool> HasAnyPayment();
         Task<long> CreatePaymentNew(CreatePaymentNewDto input);
+        Task<PagedResultDto<SubscriptionPaymentListDto>> GetPaymentHistoryNew(GetPaymentHistoryInput input, int tenantId = 0);
     }
 }

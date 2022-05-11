@@ -24,7 +24,7 @@ import { PackagesPaymentModule } from './packages-payment/packages-payment.modul
         SubscriptionManagementRoutingModule,
         PackageSelectionModule,
         PackagesPaymentModule],
-    exports: [SharedPackageDetailsComponent, SubscribedProductsDetailsComponent]
+    exports: [SharedPackageDetailsComponent, SubscribedProductsDetailsComponent,SubscriptionPaymentHistoryComponent]
 })
 export class SubscriptionManagementModule {
 }

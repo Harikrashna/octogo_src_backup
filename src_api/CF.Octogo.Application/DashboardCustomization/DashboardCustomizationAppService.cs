@@ -17,6 +17,7 @@ using CF.Octogo.DashboardCustomization.Definitions;
 using CF.Octogo.DashboardCustomization.Dto;
 using CF.Octogo.Data;
 using CF.Octogo.Editions.Dto;
+using CF.Octogo.MultiTenancy.HostDashboard.Dto;
 using Newtonsoft.Json;
 
 namespace CF.Octogo.DashboardCustomization
@@ -371,6 +372,7 @@ namespace CF.Octogo.DashboardCustomization
                     EndDate = rw.EndDate,
                     RemainingDays = rw.RemainingDays,
                     IsSetupProcessComplete = rw.IsSetupProcessComplete,
+                    ExpiryNotificationDays = rw.ExpiryNotificationDays,// added by: merajuddin 
                     Addon = rw.Addon != null ? JsonConvert.DeserializeObject<List<SubscribedAddonDto>>(rw.Addon.ToString()) : null
 
                 }).ToList();
@@ -380,6 +382,7 @@ namespace CF.Octogo.DashboardCustomization
                     StartDate = rw.StartDate,
                     EndDate = rw.EndDate,
                     AddonPrice = rw.AddonPrice,
+                    RemainingDays = rw.RemainingDays,// Added by:merajudin
                     ModuleList = rw.ModuleList != null ? PrepareFeaturesList(JsonConvert.DeserializeObject<List<StandAloneAddonModulesDto>>(rw.ModuleList.ToString())) : null
                 }).ToList();
                 return new TenantSubscriotionsDto
@@ -451,17 +454,69 @@ namespace CF.Octogo.DashboardCustomization
                         EndDate = rw.EndDate,
                         RemainingDays = rw.RemainingDays,
                         IsSetupProcessComplete = rw.IsSetupProcessComplete,
+                        ExpiryNotificationDays = rw.ExpiryNotificationDays, // added by: merajuddin
                         Addon = rw.Addon != null ? JsonConvert.DeserializeObject<List<TenantAddonModulesDto>>(rw.Addon.ToString()) : null,
                         Module = rw.Module != null ? JsonConvert.DeserializeObject<List<EditionAddonModules>>(rw.Module.ToString()) : null,
 
                     }).ToList();
                     return result;
-
                 }
                 else
                 {
                     return null;
                 }
+        }
+        /// <summary>
+        /// Created by:Deepak
+        /// Created On: 06-may-2022
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <param name="tenantId"></param>
+        /// <param name="Dateinput"></param>
+        /// <returns></returns>
+        public async Task<List<TotalOctoCostDto>> GetTotalOctoCostWidget(List<string> filters, int tenantId, DashboardInputBase Dateinput)
+        {
+            {
+                try
+                {
+                    string filterData = String.Join<string>(",", filters);
+                    SqlParameter[] parameters = new SqlParameter[4];
+                    parameters[0] = new SqlParameter("TenantId", tenantId);
+                    parameters[1] = new SqlParameter("Filter", filterData);
+                    parameters[2] = new SqlParameter("StartDate", Dateinput.StartDate);
+                    parameters[3] = new SqlParameter("EndDate", Dateinput.EndDate);
+
+                    var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetTotalOctoCostForWidget", parameters);
+                    var i = new TotalOctoCostDto();
+                    if (ds.Tables.Count > 0)
+                    {
+                        var res = SqlHelper.ConvertDataTable<TotalOctoCostRet>(ds.Tables[0]);
+                        var result = res.Select(rw => new TotalOctoCostDto
+                        {
+                            Name = rw.FilterName,
+                            Series = rw.Data != null ? JsonConvert.DeserializeObject<List<TotalOctoCostSeries>>(rw.Data.ToString()) : null
+
+
+
+                        }).ToList();
+                        return result;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                return null;
+
+
+            }
         }
     }
 }

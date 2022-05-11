@@ -222,7 +222,7 @@
                                                                 <span class="d-flex">
                                                                     <input type="checkbox"
                                                                         [checked]="addon['selected']==true"
-                                                                        style="margin-top: 2px;"
+                                                                        style="margin-top: 2px;" (click)="AddonDependencyMsg($event,addon)" 
                                                                         (change)="addon['selected']= addon['selected']==true? false:true" />
                                                                     &nbsp;<b (click)="addons.toggle($event)"
                                                                         class="text-success cursor">{{addon.addOnName}}</b>
@@ -334,9 +334,15 @@
                                                 </div>
 
                                                 <!-- (click)="FreeTrail(editionWithFeatures)" -->
+                                                <!-- <button class="btn btn-warning btn-block btn-lg"
+                                                    *ngIf="isUserLoggedIn && !isFree(editionWithFeatures) && editionWithFeatures.trialDayCount > 0 && !OnlyAvailableProducts"
+                                                    (click)="Upgrade(editionWithFeatures,product.productName)">
+                                                    {{"WithFreeTrial" | localize}}
+                                                </button> -->
                                                 <button class="btn btn-warning btn-block btn-lg"
-                                                    *ngIf="isUserLoggedIn && !isFree(editionWithFeatures) && editionWithFeatures.trialDayCount > 0">
-                                                    {{"FreeTrial" | localize}}
+                                                   *ngIf="isUserLoggedIn && !isFree(editionWithFeatures) && editionWithFeatures.trialDayCount > 0"
+                                                    (click)="OnlyAvailableProducts ? BuyNow(editionWithFeatures,product.productName) : Upgrade(editionWithFeatures,product.productName)">
+                                                {{"WithFreeTrial" | localize}}
                                                 </button>
                                                 <button class="btn btn-success btn-block btn-lg"
                                                     (click)="BuyNow(editionWithFeatures,product.productName)"

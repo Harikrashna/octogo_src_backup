@@ -149,6 +149,9 @@ background: rgba(129, 127, 127, 0.4);
   margin-left: 20px;
   font-size: x-small;
 }
+.text-small {
+  font-size: x-small;
+}
 
 .subscribe-card{
   display: flex;

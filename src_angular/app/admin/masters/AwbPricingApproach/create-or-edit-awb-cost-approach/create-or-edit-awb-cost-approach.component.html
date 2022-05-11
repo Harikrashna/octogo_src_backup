@@ -27,25 +27,107 @@
                     <div class="form-group">
                         <label>{{"Description" | localize}} </label>
                         <input id="Description" class="form-control" type="text" name="Description"
-                            (keypress)="_validationService.NameValidation($event)" [(ngModel)]="createAwbApproach.vcDescription"
-                            maxlength="250">
+                            (keypress)="_validationService.NameValidation($event)"
+                            [(ngModel)]="createAwbApproach.vcDescription" maxlength="250">
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="AWBCounts">{{"AWBCounts" | localize}} *</label>
+                            <div id="billing">
+                                <input class="form-control" placeholder="MIN" id="min"
+                                    (keypress)="_validationService.IsNumeric($event)" #awbmin="ngModel" type="text"
+                                    name="countMin" required [(ngModel)]="model.countMin">
+                                &nbsp;&nbsp;-&nbsp;&nbsp;
+                                <input class="form-control" placeholder="MAX" id="max"
+                                    (keypress)="_validationService.IsNumeric($event)" #awbmax="ngModel" type="text"
+                                    (change)="checkValidMaxCount(model.countMin, model.countMax)" name="countMax"
+                                    required [(ngModel)]="model.countMax" (keyup)="CalculateAmount()">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label class="billingRate" for="Rate">{{"Rate" | localize}} *</label>
+                            <input class="form-control" id="rate" name="billingRate" (keyup)="CalculateAmount()"
+                                [(ngModel)]="model.billingRate"
+                                (keypress)="_validationService.IsNumericWithDot($event,model.billingRate,2)" required
+                                #AWBRate="ngModel" type="text" maxlength="5">
+                        </div>
 
+                        <div class="col-md-2">
+                            <label class="amount" for="amount">{{"Amount" | localize}} *</label>
+                            <input class="form-control" name="amount" [(ngModel)]="model.amount" id="amount" type="text"
+                                maxlength="10" #Amount="ngModel" [attr.disabled]="true">
+                        </div>
+                        <div class="col-md-2 mt-4">
+                            <button id="add" type="button" (click)="addAWB()" class="btn btn-primary font-weight-bold"
+                                [disabled]="!(AwbCostApproachForm.form.valid)"><i class="fa fa-save"></i>
+                                <span>{{listIndex >= 0?'Update':'Add'}}</span></button>
+                            <button type="submit" id="hdn_btn" hidden></button>
+                        </div>
+
+                    </div>
+                    <div class="col pl-0 pr-0 align-items-center">
+                        <!--<Primeng-TurboTable-Start>-->
+                        <div class="primeng-datatable-container" [busyIf]="primengTableHelperAWBCharges.isLoading">
+                            <p-table #dataTableAWBCharges sortMode="multiple" [value]="AWBCostAppraochData"
+                                rows="{{primengTableHelperAWBCharges.defaultRecordsCountPerPage}}" [paginator]="false"
+                                [lazy]="true" scrollable="true" ScrollWidth="100%"
+                                responsive="primengTableHelperAWBCharges.isResponsive"
+                                resizableColumns="primengTableHelperAWBCharges.resizableColumns">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 100px">
+                                            {{'AWBCounts' | localize}}
+                                        </th>
+                                        <th style="width: 100px">
+                                            {{'Rate($/AWB)' | localize}}
+                                        </th>
+                                        <th style="width: 100px">
+                                            {{"Amount" | localize}}
+                                        </th>
+                                        <th style="width: 200px">
+                                            {{'Actions' | localize}}
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-data="$implicit" let-i="rowIndex">
+                                    <tr>
+                                        <td style="width: 100px">
+                                            <span class="p-column-title">{{'AWBCounts' | localize}}</span>
+                                            {{data.countMin}}-{{data.countMax}}
+                                        </td>
+                                        <td style="width: 100px">
+                                            <span class="p-column-title">{{'Rate($/AWB)' | localize}}</span>
+                                            {{data.billingRate}}
+                                        </td>
+                                        <td style="width: 100px">
+                                            <span class="p-column-title">{{'Amount' | localize}}</span>
+                                            {{data.amount}}
+                                        </td>
+                                        <td style="width: 200px">
+                                            <span class="p-column-title">{{'Actions' | localize}}</span>
+                                            <button type="button" (click)="edit(i)" class="btn btn-success"><i
+                                                    class="fas fa-edit"></i></button>
+                                            <button type="button" (click)="delete(i)" class="btn btn-danger"><i
+                                                    class="far fa-trash-alt"></i></button>
+                                        </td>
+
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                            <div class="primeng-no-data text-danger" *ngIf="!(AWBCostAppraochData?.length > 0)">
+                                {{'NoData' | localize}}
+                            </div>
+                        </div>
+                        <!--<Primeng-TurboTable-End>-->
+                    </div>
                 </div>
-                <!-- <div class="modal-footer">
-                    <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
-                        (click)="close(AwbCostApproachForm)">{{"Cancel" | localize}}</button>
-                    <button type="submit" class="btn btn-primary font-weight-bold"
-                        [disabled]="!AwbCostApproachForm.form.valid" [buttonBusy]="saving"
-                        [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i> <span>{{"Save" |
-                            localize}}</span></button>
-                </div> -->
                 <div class="modal-footer">
                     <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
                         (click)="close(AwbCostApproachForm)">{{"Cancel" | localize}}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold"
-                        [disabled]="!AwbCostApproachForm.form.valid" [buttonBusy]="saving"
-                        [busyText]="l('SavingWithThreeDot')" (click)="save(AwbCostApproachForm)"><i class="fa fa-save"></i> <span>{{"Save" |
+                        [disabled]="AWBCostAppraochData.length== 0 " [buttonBusy]="saving"
+                        [busyText]="l('SavingWithThreeDot')" (click)="save(AwbCostApproachForm)"><i
+                            class="fa fa-save"></i> <span>{{"Save" |
                             localize}}</span></button>
                 </div>
 

@@ -30,7 +30,17 @@ import { CountoModule } from 'angular2-counto';
 import { TableModule } from 'primeng/table';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { SubheaderModule } from '../sub-header/subheader.module';
-
+import { WidgetLatestClientComponent } from '@app/shared/common/customizable-dashboard/widgets/widget-latest-client/widget-latest-client.component';
+import { WidgetOctogenProductsComponent } from '@app/shared/common/customizable-dashboard/widgets/widget-octogen-products/widget-octogen-product.component';
+import {  WidgetPlanExpirationComponent } from '@app/shared/common/customizable-dashboard/widgets/widget-plan-expiration/widget-plan-expiration.component';
+import {OverlayPanelModule } from 'primeng/overlaypanel';
+import { WidgetTotalClientComponent } from './widgets/widget-total-client/widget-total-client.component';
+import { WidgetProductSegmentComponent } from './widgets/widget-product-segment/widget-product-segment.component';
+import { WidgetTotalRevenueComponent } from './widgets/widget-total-revenue/widget-total-revenue.component';
+import { WidgetPendingPaymentComponent } from './widgets/widget-pending-payment/widget-pending-payment.component';
+import { WidgetCurrentProductAndPackageComponent } from './widgets/widget-current-product-and-package/widget-current-product-and-package.component';
+import { WidgetExpirationDaysComponent } from './widgets/widget-expiration-days/widget-expiration-days.component';
+import { WidgetOctoCostComponent } from './widgets/widget-octo-cost/widget-octo-cost.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -49,7 +59,8 @@ import { SubheaderModule } from '../sub-header/subheader.module';
         CountoModule,
         TableModule,
         BsDatepickerModule,
-        SubheaderModule
+        SubheaderModule,
+        OverlayPanelModule
     ],
 
     declarations: [
@@ -68,7 +79,19 @@ import { SubheaderModule } from '../sub-header/subheader.module';
         WidgetTopStatsComponent,
         FilterDateRangePickerComponent,
         AddWidgetModalComponent,
-        WidgetComponentBaseComponent
+        WidgetComponentBaseComponent,
+        WidgetLatestClientComponent,
+        WidgetOctogenProductsComponent,
+        WidgetPlanExpirationComponent,
+        WidgetTotalClientComponent,
+        WidgetProductSegmentComponent,
+        WidgetTotalRevenueComponent,
+        WidgetPendingPaymentComponent,
+        WidgetCurrentProductAndPackageComponent,
+        WidgetExpirationDaysComponent,
+        WidgetOctoCostComponent
+        
+        
     ],
 
     providers: [

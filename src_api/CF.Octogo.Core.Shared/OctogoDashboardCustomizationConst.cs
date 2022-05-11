@@ -20,6 +20,12 @@
                 public const string RegionalStats = "Widgets_Tenant_RegionalStats";
                 public const string SalesSummary = "Widgets_Tenant_SalesSummary";
                 public const string TopStats = "Widgets_Tenant_TopStats";
+                public const string OctogoWidget = "Widgets_Tenant_Octogo1";
+                //Added customize widget for tenant and added by "Vishal dogra and deepak"
+                public const string ExpirationDays = "Widgets_Tenant_ExpirationDays";
+                public const string CurrentProductAndPackge = "Widgets_Tenant_CurrentProductAndPackage";
+                public const string OctoCost = "Widgets_Tenant_OctoCost";
+
             }
 
             public class Host
@@ -29,6 +35,17 @@
                 public const string EditionStatistics = "Widgets_Host_EditionStatistics";
                 public const string SubscriptionExpiringTenants = "Widgets_Host_SubscriptionExpiringTenants";
                 public const string RecentTenants = "Widgets_Host_RecentTenants";
+                //Added custom widget for host and added by "Merajuddin khan "
+                public const string LatestClient = "Widgets_Host_LatestClient";
+                public const string OctogenProducts = "Widget_Host_OctogenProducts";
+                public const string PlanExpiration = "Widget_Host_PlanExpiration";
+                public const string TotalClient = "Widget_Host_TotalClient";
+                public const string ProductSegmentation = "Widget_Host_ProductSegmentation";
+                public const string TotalRevenue = "Widget_Host_TotalRevenue";
+                public const string PendingPayment = "Widget_Host_PendingPayment";
+                public const string OctogoWidget = "Widgets_Tenant_Octogo1";
+
+
             }
         }
 

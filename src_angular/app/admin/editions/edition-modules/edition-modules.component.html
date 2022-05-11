@@ -22,9 +22,11 @@
         <!-- Module list start -->
         <div class="text-center module-card-width" *ngFor="let module of PageModuleList; let i=index"
             [ngClass]="(module?.selected) ? (SelectedIndex == i) ? 'selected-module-card module-focus':'selected-module-card':'module-card'">
-            <i class=" fa fa-check selected-check" *ngIf="module?.selected || (module['DepEditionName'] != null && !ForTenantPage)" (click)="!ForTenantPage && SelectModule(module, i, true)"
+            <i class=" fa fa-check selected-check" *ngIf="module?.selected || (module['DepEditionName'] != null && !ForTenantPage)" 
+            (click)="!ForTenantPage && SelectModule(module, i, true)"
             [ngClass]="!module?.selected && !ForTenantPage ?'text-muted':null"></i>
-            <div (click)="!ForTenantPage && SelectModule(module, i)" class="cursor">     <i class=" fa fa-cube iconSize">&nbsp;</i>
+            <div (click)="ForTenantPage==true ? SelectModuleForTenant(module, i) : SelectModule(module, i)" class="cursor">     
+                <i class=" fa fa-cube iconSize">&nbsp;</i>
                 <div class="moduleName">{{module.displayName}}</div>
                 <div class="text-danger" *ngIf="module['DepEditionName'] != null && module['DepEditionName'] != undefined && !ForTenantPage">
                     {{ module['DepEditionName'] }}</div>

@@ -42,7 +42,9 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
       this.dataFetched = true;
       if(result != null){
          this.productDetailsList = result.tenantEditionAddon;
+         debugger
          this.StandAloneAddonList = result.standAloneAddon;
+         debugger
         //  this.productDetailsList.push(result[0]);
         //  this.CheckScrollable();
         if(!this.ForDashboard){
@@ -78,9 +80,11 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
     this.ShowPackageDetails(0);
    }
    checkExpiryTime(remainingDays) {
-    if (remainingDays <= 7) {
-      return true
-    }
+     if(remainingDays > 0){
+      if (remainingDays <= 7) {
+        return true
+      }
+     }
     return false;
   }
   BackToPackageList(){

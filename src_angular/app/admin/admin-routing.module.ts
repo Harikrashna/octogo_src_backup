@@ -193,8 +193,13 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
                     {
                         path: 'edition-compare',
                         loadChildren: () =>
-                            import('./editions/edition-compare/edition-compare.module').then((m) => m.EditionCompareModule),
-                        data: { permission: 'Pages.Editions' }
+                            import('./editions/edition-compare/edition-compare.module').then((m) => m.EditionCompareModule)
+                    },
+                    {
+                        path: 'addon-compare',
+                        loadChildren: () =>
+                            import('./addons/addon-compare/addon-compare.module').then((m) => m.AddonCompareModule),
+                        data: { permission: 'Pages.Addons' }
                     },
                     {
                         path: 'tenant-setup-summary',

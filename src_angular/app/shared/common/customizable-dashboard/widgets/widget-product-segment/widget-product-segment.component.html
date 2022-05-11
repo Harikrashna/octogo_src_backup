@@ -1,0 +1,18 @@
+<div class="card card-custom h-100">
+    <div class="card-header align-items-center border-0">
+        <div class="card-title">
+            <span class="card-icon">
+                <i class="la la-pie-chart text-primary"></i>
+            </span>
+            <h3 class="card-label text-success">
+                {{"ProductWiseClientStatistics" | localize}}
+                <small class="text-muted"></small>
+            </h3>
+        </div>
+    </div>
+    <div class="card-body" [perfectScrollbar]>
+        <ngx-charts-pie-chart [busyIf]="loadingProductWiseClientStatistics"
+            [results]="productWiseClientStatisticsData" [labels]="showLabels" [legend]="showLegend">
+        </ngx-charts-pie-chart>
+    </div>
+</div>

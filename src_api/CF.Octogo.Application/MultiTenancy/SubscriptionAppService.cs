@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
 using Abp.Authorization.Users;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
@@ -108,7 +110,48 @@ namespace CF.Octogo.MultiTenancy
                     return 0;
                 }
         }
+        /// <summary>
+        /// DESC:Get Plan expiration list
+        /// Created by: Merajuddin khan
+        /// Created on: 29-04-2022
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<PagedResultDto<ClientSubscribedProductAndExpirationDto>> GetClientSubscriptionExpirationAndProductForWidget()
+        {
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetPlanExpirationForWidget"
+                    );
+            var totalCount = 0;
+            var result = new List<ClientSubscribedProductAndExpirationDto>();
+            if (ds.Tables.Count > 0)
+            {
+                var clienteResult = SqlHelper.ConvertDataTable<ClientSubscribedProductAndExpirationRet>(ds.Tables[0]);
+                 result = clienteResult.Select(rw => new ClientSubscribedProductAndExpirationDto
+                {
+                    ClientId = rw.ClientId,
+                    ClientName = rw.ClientName,
+                    ExpirationDays = rw.ExpirationDays,
+                    ProductName = rw.ProductName
+                }).ToList();
+                if (clienteResult != null && clienteResult.Count > 0)
+                {
+                    totalCount = clienteResult.FirstOrDefault().TotalCount;
+                }
 
-     
+                return new PagedResultDto<ClientSubscribedProductAndExpirationDto>(
+                   totalCount,
+                   result
+                   );
+            }
+           
+            else
+            {
+                return null;
+            }
+        }
+
     }
 }

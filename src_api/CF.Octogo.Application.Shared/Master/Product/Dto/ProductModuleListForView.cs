@@ -32,4 +32,11 @@ namespace CF.Octogo.Master.Product.Dto
         public string DisplayName { get; set; }
         public string SubModuleList { get; set; }
     }
+    public class ProductListByUserType
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+
+    }
 }

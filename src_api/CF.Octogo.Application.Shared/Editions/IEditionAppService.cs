@@ -30,7 +30,7 @@ namespace CF.Octogo.Editions
         Task<List<EditionCompareResultDto>> GetEditionDeatilsByEditionIdForCompare(string EditionIds);
         Task<List<ProductWithEditionDto>> GetProductWithEdition(ProductWithEditionInputDto input);
         Task<DataSet> GetMasterDataForEdition();
-        Task<EditionModulesDto> GetEditionModules(int EditionId);
+        Task<EditionModulesDto> GetEditionModules(int editionId, int tenantId = 0);
         Task<List<AvailableAddonModulesDto>> GetAvailableAddonBySubscribedEditionId(int EditionId);
         List<AvailableModuleDto> PrepareFeaturesList(List<AvailableModuleDto> modules);
     }

@@ -191,6 +191,7 @@ namespace CF.Octogo.Sessions
         /// <summary>
         /// CREATED BY: HARI KRASHNA
         /// CREATED ON: 16/12/2021
+        /// MODIFIED BY:MERAJUDDIN (06-MAY-2022)
         /// Add some additional information of user in existing user detail service 
         /// </summary>
         /// <returns></returns>
@@ -204,8 +205,7 @@ namespace CF.Octogo.Sessions
                 {
                     User userdata = await GetCurrentUserAsync();
                     IsEmailConfirmed = userdata.IsEmailConfirmed;
-                    RegisteredUserDetailDto userRegistrationDetails = await GetUserRegistrationDetailsByUserId(userdata.Id);
-
+                    List<RegisteredUserDetailDto>userRegistrationDetails = await GetUserRegistrationDetailsByUserId(userdata.Id);
                     user.Id = res.User.Id;
                     user.Name = res.User.Name;
                     user.Surname = res.User.Surname;
@@ -213,8 +213,10 @@ namespace CF.Octogo.Sessions
                     user.EmailAddress = res.User.EmailAddress;
                     user.ProfilePictureId = res.User.ProfilePictureId;
                     user.IsEmailConfirmed = IsEmailConfirmed;
-                    user.UserDetailId = userRegistrationDetails!= null ? userRegistrationDetails.UserDetailId : 0;           
-                }
+                    user.UserDetailId = userRegistrationDetails!= null ? userRegistrationDetails[0].UserDetailId : 0; // Added by:Merajuddin
+                    user.UserTypeName = userRegistrationDetails != null ? userRegistrationDetails[0].UserTypeName : null; // Added by:Merajuddin
+                    user.UserTypeId = userRegistrationDetails != null ? userRegistrationDetails[0].UserTypeId : 0; // Added by:Merajuddin   
+            }
                 else
                 {
                     user = null;
@@ -232,26 +234,27 @@ namespace CF.Octogo.Sessions
             };
             return output;
         }
-        private async Task<RegisteredUserDetailDto> GetUserRegistrationDetailsByUserId(long userId)
+        private async Task < List<RegisteredUserDetailDto> >GetUserRegistrationDetailsByUserId(long userId)
         {
-            SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("UserId", userId);
-            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                        System.Data.CommandType.StoredProcedure,
-                        "USP_GetRegisteredUserDetailsByUserId", parameters);
-            if (ds.Tables.Count > 0)
-            {
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("UserId", userId);
+                var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                            System.Data.CommandType.StoredProcedure,
+                            "USP_GetRegisteredUserDetailsByUserId", parameters);
+                if (ds.Tables.Count > 0)
+                {
                     var result = SqlHelper.ConvertDataTable<RegisteredUserDetailDto>(ds.Tables[0]);
                     if (result.Count > 0)
                     {
-                        return result.FirstOrDefault();
+                        return result;
                     }
-                return null;
-            }
-            else
-            {
-                return null;
-            }
+                    return null;
+                }
+                else
+                {
+                    return null;
+                }
+            return null;
         }
     }
 }

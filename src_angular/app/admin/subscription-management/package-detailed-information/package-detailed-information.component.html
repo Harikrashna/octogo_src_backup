@@ -24,8 +24,7 @@
                             <span *ngIf="product.endDate == null" class="text-danger">
                                 {{'UnlimitedLimit' | localize}}
                             </span>
-                            <span *ngIf="product.endDate != null" class="text-danger"
-                                [ngClass]="checkExpiryTime(product.remainingDays) == true ? 'expiring': null">
+                            <span *ngIf="product.endDate != null" class="text-danger">
                                 {{product.endDate.toString() | date}}
                             </span>)
                         </b>
@@ -40,7 +39,10 @@
                     <div class="row mt-2">
                         <div class="col-sm d-flex">
                             <button class="btn btn-primary btn-sm float-right" (click)="ExtendPackage(product.editionId,product.productName)"
-                                *ngIf="PackageDetails?.price != 'FREE'">{{'Extend' | localize}}</button>
+                                *ngIf="PackageDetails?.price != 'FREE' && product?.remainingDays > 0 ">{{'Extend' | localize}}</button>
+                            <button class="btn btn-primary btn-sm float-right" (click)="ExtendPackage(product.editionId,product.productName)"
+                                *ngIf="PackageDetails?.price != 'FREE' && product?.remainingDays < 0 ">{{'Renew' | localize}}</button>
+
                             <button class="btn btn-success btn-sm float-right" (click)="UpgradePackage()">{{'Upgrade' | localize}}</button>
                         </div>
                     </div>
@@ -83,8 +85,7 @@
                             <span *ngIf="add.endDate == null" class="text-danger">
                                 {{'UnlimitedLimit' | localize}}
                             </span>
-                            <span *ngIf="add.endDate != null" class="text-danger"
-                                [ngClass]="checkExpiryTime(add.remainingDays) == true ? 'expiring': null">
+                            <span *ngIf="add.endDate != null" class="text-danger">
                                 {{add.endDate.toString() | date}}
                             </span>)
                         </b>
@@ -96,11 +97,21 @@
                         style="{{CalculateExpiryPercentage(add.startDate,add.endDate,add.remainingDays)}}">
                         </div>
                     </div>
+                        <span *ngIf="add.remainingDays <= add.expiryNotificationDays && add.remainingDays > 0"
+                            [ngClass]="checkExpiryTime(add.remainingDays,add.expiryNotificationDays) == true ? 'expiring': null"
+                            class="text-danger text-small cursor">
+                            {{l('CurrentSubscriptionIsAboutToEnd',add.remainingDays)}}
+                        </span>
                     <div class="row mt-2">
                         <div class="col-sm d-flex">
                             <button class="btn btn-primary btn-sm float-right" (click)="ExtendAddonSubscription(add)"
                             *ngIf="add?.addonPrice != 'FREE' && (add.remainingDays < product.remainingDays || product.endDate == null)">
                                 {{'Extend' | localize}}</button>
+                        </div>
+                        <div class="col-sm d-flex">
+                            <button class="btn btn-primary btn-sm float-right" (click)="ExtendAddonSubscription(add)"
+                            *ngIf="add?.addonPrice != 'FREE' && add.remainingDays < 0">
+                                {{'Renew' | localize}}</button>
                         </div>
                     </div>
                     
@@ -189,7 +200,7 @@
                                                                     </ul>
                                                                 </li>
                                                             </ul>
-                                                        </div>
+                                                        </div>zz
                                                     </li>
                                                 </ol>
                                             </div>

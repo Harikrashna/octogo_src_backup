@@ -18,5 +18,6 @@ namespace CF.Octogo.Editions
         Task<string> DeleteAddon(EntityDto input);
         Task<int> InsertUpdateAddonModuleAndPricing(CreateAddonDto input);
         Task<FeatureTreeEditModel> GetStandaloneAddonFeaturesById(int? addOnId);
+        Task<List<AddonCompareResultDto>> GetAddonDetailsByAddonIdsForCompare(string AddonIds);
     }
 }

@@ -399,5 +399,17 @@ namespace CF.Octogo.MultiTenancy.Payments
 
             return await _subscriptionPaymentRepository.InsertAndGetIdAsync(payment);
         }
+        public async Task<PagedResultDto<SubscriptionPaymentListDto>> GetPaymentHistoryNew(GetPaymentHistoryInput input, int tenantId = 0)
+        {
+            var query = _subscriptionPaymentRepository.GetAll()
+                .Include(sp => sp.Edition)
+                .Where(sp => sp.TenantId == (tenantId > 0 ? tenantId : AbpSession.TenantId))
+                .OrderBy(input.Sorting);
+
+            var payments = await query.OrderBy(input.Sorting).PageBy(input).ToListAsync();
+            var paymentsCount = query.Count();
+
+            return new PagedResultDto<SubscriptionPaymentListDto>(paymentsCount, ObjectMapper.Map<List<SubscriptionPaymentListDto>>(payments));
+        }
     }
 }

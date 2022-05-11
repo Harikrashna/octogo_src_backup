@@ -36,7 +36,7 @@ export class TenantProductSetupSummaryComponent extends AppComponentBase impleme
           .subscribe(result => {
             this.recordFetchd = true;
             if( result != null){
-                this.TenantSetupData = result.table[0];
+                this.TenantSetupData = result;
             }
             else{
               this.TenantSetupData = {

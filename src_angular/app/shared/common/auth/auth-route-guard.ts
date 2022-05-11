@@ -72,6 +72,7 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     selectBestRoute(): string {
+        debugger
         if (!this._sessionService.user) {
             return '/account/login';
         }
@@ -103,6 +104,12 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
         return '/app/notifications';
     }
     getTenantDefaultdashBoard(): string {
-        return '/app/main/tenant-dashboard'
+        if(this._sessionService.user.userTypeName == "Airline")
+        {
+            return '/app/main/dashboard';
+        }
+        else{
+            return '/app/main/tenant-dashboard';
+        }
     }
 }

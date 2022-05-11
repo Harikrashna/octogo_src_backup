@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label>{{"ClientCode" | localize}} *</label>
+                <label>{{"TenancyName" | localize}} *</label>
                 <input id="ClientCode" (keypress)="_validationService.NameValidation($event)" #ClientCodeInput="ngModel"
                     class="form-control" type="text" name="ClientCode" [(ngModel)]="tenantDetailsInput.clientCode" required
                     maxlength="100"  [readonly]="TenantId > 0">
@@ -24,10 +24,10 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label>{{"ClientName" | localize}} *</label>
+                <label>{{"TenantName" | localize}} *</label>
                 <input id="ClientName" (keypress)="_validationService.NameValidation($event)" #ClientNameInput="ngModel"
                     class="form-control" type="text" name="ClientName" [(ngModel)]="tenantDetailsInput.clientName" required
-                    maxlength="100">
+                    maxlength="100" [readonly]="viewForm == true">
                 <validation-messages [formCtrl]="ClientNameInput"></validation-messages>
             </div>
         </div>
@@ -37,7 +37,7 @@
                 <p-multiSelect [options]="servicesArray" [showToggleAll]="true" [(ngModel)]="selectedServices" #services
                     inputStyleClass="form-control-solid h-auto" optionValue="id" optionLabel="name" [filter]="false"
                     [showHeader]="false" [virtualScroll]="true"
-                    class="multiselect-custom-virtual-scroll" name="first">
+                    class="multiselect-custom-virtual-scroll" name="first" [readonly]="viewForm == true">
                     <ng-template let-service pTemplate="item">
                         <div class="service-item">
                             <div>{{service.name}}</div>
@@ -53,7 +53,7 @@
                     [(ngModel)]="selectedCityData" [size]="60" [suggestions]="cityCodeResult"
                     (completeMethod)="getCity($event)" [forceSelection]="true"
                     (keypress)="_validationService.NameValidation($event)" (onSelect)="fillCountry(selectedCityData)"
-                    field="name" maxlength="50" required (input)="resetCountry()">
+                    field="name" maxlength="50" required (input)="resetCountry()" [readonly]="viewForm == true">
                 </p-autoComplete>
                 <validation-messages [formCtrl]="cityCode"></validation-messages>
             </div>
@@ -64,7 +64,7 @@
                 <p-autoComplete id="country" inputId="country" inputStyleClass="form-control" #country="ngModel"
                     name="country" (keypress)="_validationService.NameValidation($event)" [forceSelection]="true"
                     (completeMethod)="getCountry($event)" field="name" [(ngModel)]="selectedCountryData" [size]="60"
-                    [suggestions]="countryCodeResult" maxlength="50" required>
+                    [suggestions]="countryCodeResult" maxlength="50" required [readonly]="viewForm == true">
                 </p-autoComplete>
                 <validation-messages [formCtrl]="country"></validation-messages>
             </div>
@@ -83,7 +83,7 @@
                     <input id="phone" inputId="phone" [ngClass]="{'p-filled': tenantDetailsInput.contact?.length > 0}"
                         class="form-control" name="phone" (keypress)="_validationService.IsNumeric($event)"
                         #phone="ngModel" type="text" placeholder="{{'Contact' | localize}} *"
-                        [(ngModel)]="tenantDetailsInput.contact" maxlength="10" minlength="8" pInputText required>
+                        [(ngModel)]="tenantDetailsInput.contact" maxlength="10" minlength="8" pInputText required [readonly]="viewForm == true">
                     <!-- <label for="contact" *ngIf="tenantDetailsInput.contact?.length > 0">
                             {{"Contact" | localize}}
                             <span class="text-danger" id="req">*</span></label> -->
@@ -97,14 +97,14 @@
         <div class="col-md-4" *ngIf="false">
             <label class="checkbox">
                 <input id="CreateTenant_UseHostDb" type="checkbox" name="UseHostDb"
-                    [(ngModel)]="tenantDetailsInput.useHostDb">
+                    [(ngModel)]="tenantDetailsInput.useHostDb" [disabled]="viewForm == true">
                 <span></span>
                 {{"UseHostDatabase" | localize}}
             </label>
         </div>
         <div class="col-md-4">
             <label for="createTenant_IsActive" class="checkbox">
-                <input id="createTenant_IsActive" type="checkbox" name="IsActive" [(ngModel)]="tenantDetailsInput.isActive">
+                <input id="createTenant_IsActive" type="checkbox" name="IsActive" [(ngModel)]="tenantDetailsInput.isActive" [disabled]="viewForm == true"> 
                 <span></span>
                 {{"Active" | localize}}
             </label>
@@ -116,7 +116,7 @@
             <label for="DatabaseConnectionString">{{"DatabaseConnectionString" | localize}} *</label>
             <input id="DatabaseConnectionString" #connectionStringInput="ngModel" type="text"
                 name="ConnectionString" class="form-control" [(ngModel)]="tenantDetailsInput.connectionString"
-                [ngClass]="{'edited':tenantDetailsInput.connectionString}" required maxlength="1024">
+                [ngClass]="{'edited':tenantDetailsInput.connectionString}" required maxlength="1024" [readonly]="viewForm == true">
             <validation-messages [formCtrl]="connectionStringInput"></validation-messages>
         </div>
     </div>
@@ -131,7 +131,7 @@
                 <label>{{"FirstName" | localize}} *</label>
                 <input id="FirstName" (keypress)="_validationService.NameValidation($event)" #FirstNameInput="ngModel"
                     class="form-control" type="text" name="FirstName" [(ngModel)]="tenantDetailsInput.firstName" required
-                    maxlength="100">
+                    maxlength="100" [readonly]="viewForm == true">
                 <validation-messages [formCtrl]="FirstNameInput"></validation-messages>
             </div>
         </div>
@@ -140,7 +140,7 @@
                 <label>{{"LastName" | localize}} *</label>
                 <input id="LastName" (keypress)="_validationService.NameValidation($event)" #LastNameInput="ngModel"
                     class="form-control" type="text" name="LastName" [(ngModel)]="tenantDetailsInput.lastName" required
-                    maxlength="100">
+                    maxlength="100" [readonly]="viewForm == true">
                 <validation-messages [formCtrl]="LastNameInput"></validation-messages>
             </div>
         </div>
@@ -150,7 +150,7 @@
                 <input id="AdminEmailAddress" #adminEmailAddressInput="ngModel" type="email" name="AdminEmailAddress"
                     class="form-control" [(ngModel)]="tenantDetailsInput.adminEmailAddress"
                     [ngClass]="{'edited':tenantDetailsInput.adminEmailAddress}" required
-                    pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" maxlength="256">
+                    pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" maxlength="256" [readonly]="viewForm == true">
                 <validation-messages [formCtrl]="adminEmailAddressInput"></validation-messages>
             </div>
         </div>
@@ -163,7 +163,7 @@
                     [forceSelection]="true" name="department" [(ngModel)]="selectedDepartmentData" [size]="60"
                     [suggestions]="departmentResult" (completeMethod)="getDepartment($event)" maxlength="50"
                     field="name" (onSelect)="selectDepartment(selectedDepartmentData)"
-                    (keypress)="_validationService.NameValidation($event)" required>
+                    (keypress)="_validationService.NameValidation($event)" required [readonly]="viewForm == true">
                 </p-autoComplete>
                 <validation-messages [formCtrl]="department"></validation-messages>
             </div>
@@ -175,7 +175,7 @@
                     #departmentName="ngModel" type="text" [(ngModel)]="tenantDetailsInput.department" minlength="2"
                     (input)="checkDuplicateDepartment(tenantDetailsInput.department)"
                     [ngClass]="{'p-filled':tenantDetailsInput.department?.length > 0}" maxlength="50"
-                    (keypress)="_validationService.NameValidation($event)" pInputText required>
+                    (keypress)="_validationService.NameValidation($event)" pInputText required [readonly]="viewForm == true">
                 <validation-messages [formCtrl]="departmentName"></validation-messages>
             </div>
         </div>
@@ -187,7 +187,7 @@
                     [(ngModel)]="selectedDesignationData" (completeMethod)="getDesignation($event)" [size]="60"
                     [suggestions]="designationResult" maxlength="50" field="name"
                     (onSelect)="selectDesignation(selectedDesignationData)"
-                    (keypress)="_validationService.NameValidation($event)" required>
+                    (keypress)="_validationService.NameValidation($event)" required [readonly]="viewForm == true">
                 </p-autoComplete>
                 <validation-messages [formCtrl]="designation"></validation-messages>
             </div>
@@ -199,7 +199,7 @@
                     type="text" [ngClass]="{'p-filled':tenantDetailsInput.designation?.length > 0}"
                     (input)="checkDuplicateDesignation(tenantDetailsInput.designation)" [(ngModel)]="tenantDetailsInput.designation"
                     minlength="2" maxlength="50" (keypress)="_validationService.NameValidation($event)" pInputText
-                    required>
+                    required [readonly]="viewForm == true">
                 <validation-messages [formCtrl]="designationName"></validation-messages>
             </div>
         </div>
@@ -209,7 +209,7 @@
                 <p-autoComplete id="airlineName" inputStyleClass="form-control" #airlineName="ngModel"
                     name="airlineName" [(ngModel)]="selectedAirlineData" [size]="60" [suggestions]="airlineResult"
                     (keypress)="_validationService.NameValidation($event)" (completeMethod)="getAirline($event)"
-                    maxlength="50" [forceSelection]="true" field="name" required>
+                    maxlength="50" [forceSelection]="true" field="name" required [readonly]="viewForm == true">
                 </p-autoComplete>
                 <validation-messages [formCtrl]="airlineName"></validation-messages>
             </div>
@@ -221,7 +221,7 @@
                     [size]="60" [(ngModel)]="selectedIndustryData" [suggestions]="industryResult"
                     (keypress)="_validationService.NameValidation($event)" (completeMethod)="getIndustry($event)"
                     (onSelect)="selectIndustry(selectedIndustryData)" [forceSelection]="true" maxlength="50"
-                    field="name" required>
+                    field="name" required [readonly]="viewForm == true">
                 </p-autoComplete>
                 <validation-messages [formCtrl]="industry"></validation-messages>
             </div>
@@ -232,7 +232,7 @@
                 <input id="industryName" class="form-control" name="industryName" #industryName="ngModel" type="text"
                     minlength="2" [ngClass]="{'p-filled':tenantDetailsInput.industry != null}"
                     (input)="checkDuplicateIndustry(tenantDetailsInput.industry)" maxlength="50"
-                    [(ngModel)]="tenantDetailsInput.industry" pInputText required>
+                    [(ngModel)]="tenantDetailsInput.industry" pInputText required [readonly]="viewForm == true">
                 <validation-messages [formCtrl]="industryName"></validation-messages>
             </div>
         </div>
@@ -243,7 +243,7 @@
                     [suggestions]="representingAirlinesResult" (completeMethod)="getRepresentingAirlines($event)"
                     field="name" #representingAirlines="ngModel" name="representingAirlines" [minLength]="1"
                     maxlength="50" id="representingAirlines" [multiple]="true" [forceSelection]="true"
-                    styleClass="width-percent-100" (keypress)="_validationService.NameValidation($event)" required>
+                    styleClass="width-percent-100" (keypress)="_validationService.NameValidation($event)" required [readonly]="viewForm == true">
                 </p-autoComplete>
                 <validation-messages [formCtrl]="representingAirlines"></validation-messages>
             </div>
@@ -257,7 +257,7 @@
                     #presenceAndRepresentingCountries="ngModel" [forceSelection]="true"
                     name="presenceAndRepresentingCountries" id="presenceOrRepresentingCountries" [multiple]="true"
                     styleClass="width-percent-100" maxlength="50"
-                    (keypress)="_validationService.NameValidation($event)">
+                    (keypress)="_validationService.NameValidation($event)" [readonly]="viewForm == true">
                 </p-autoComplete>
             </div>
         </div>
@@ -271,7 +271,7 @@
                     [requireLowercase]="passwordComplexitySetting.requireLowercase"
                     [requireUppercase]="passwordComplexitySetting.requireUppercase"
                     [requireNonAlphanumeric]="passwordComplexitySetting.requireNonAlphanumeric"
-                    [requiredLength]="passwordComplexitySetting.requiredLength">
+                    [requiredLength]="passwordComplexitySetting.requiredLength" [readonly]="viewForm == true">
             </div>
             <div [hidden]="tenantDetailsForm.form.valid || tenantDetailsForm.form.pristine">
                 <ul class="help-block text-danger"
@@ -301,7 +301,7 @@
                     [requireUppercase]="passwordComplexitySetting.requireUppercase"
                     [requireNonAlphanumeric]="passwordComplexitySetting.requireNonAlphanumeric"
                     [requiredLength]="passwordComplexitySetting.requiredLength" validateEqual="adminPassword"
-                    maxlength="32">
+                    maxlength="32"[readonly]="viewForm == true">
             </div>
             <div [hidden]="tenantDetailsForm.form.valid || tenantDetailsForm.form.pristine" class="form-group">
                 <ul class="help-block text-danger"
@@ -327,7 +327,7 @@
         <div class="col-md-4">
             <label class="checkbox">
                 <input id="CreateTenant_SetRandomPassword" type="checkbox" name="SetRandomPassword"
-                    [(ngModel)]="setRandomPassword">
+                    [(ngModel)]="setRandomPassword" [disabled]="viewForm == true">
                 <span></span>
                 {{"SetRandomPassword" | localize}}
             </label>
@@ -335,7 +335,7 @@
         <div class="col-md-4">
             <label for="CreateTenant_ShouldChangePasswordOnNextLogin" class="checkbox">
                 <input id="CreateTenant_ShouldChangePasswordOnNextLogin" type="checkbox"
-                    name="ShouldChangePasswordOnNextLogin" [(ngModel)]="tenantDetailsInput.shouldChangePasswordOnNextLogin">
+                    name="ShouldChangePasswordOnNextLogin" [(ngModel)]="tenantDetailsInput.shouldChangePasswordOnNextLogin" [disabled]="viewForm == true">
                 <span></span>
                 {{"ShouldChangePasswordOnNextLogin" | localize}}
             </label>
@@ -343,7 +343,7 @@
         <div class="col-md-4">
             <label for="CreateTenant_SendActivationEmail" class="checkbox">
                 <input id="CreateTenant_SendActivationEmail" type="checkbox" name="SendActivationEmail"
-                    [(ngModel)]="tenantDetailsInput.sendActivationEmail">
+                    [(ngModel)]="tenantDetailsInput.sendActivationEmail" [disabled]="viewForm == true">
                 <span></span>
                 {{"SendActivationEmail" | localize}}
             </label>

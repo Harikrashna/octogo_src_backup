@@ -18,5 +18,7 @@ namespace CF.Octogo.Editions.Dto
         public int? ApproachId { get; set; }
         public bool isEdit { get; set; } = false;
 
+        public int? expiryNotificationDays { get; set; } // added by: merajuddin
+
     }
 }

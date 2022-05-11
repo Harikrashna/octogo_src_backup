@@ -45,6 +45,8 @@ namespace CF.Octogo.Editions.Dto
         public string ExpiringEditionDisplayName { get; set; }
         public string ProductName { get; set; }
         public bool isFree { get; set; }
+
+        public int ExpiryNotificationDays { get; set; } // added by : merajuddin
     }
     public class GetEditionInput : PagedAndSortedInputDto
     {

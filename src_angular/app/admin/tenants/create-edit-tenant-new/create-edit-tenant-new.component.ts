@@ -23,6 +23,8 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
   @ViewChild('transactionalCharges') TransactionalCharges: TransactionalChargesComponent;
   @Output() formClose = new EventEmitter();
   @Input() TenantId = 0;
+  @Input() viewForm :boolean =false;
+  @Input() editForm:boolean;
   active = false;
   saving = false;
   EditData: CreateEditTenantInputDto;
@@ -47,12 +49,17 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
             this.EditData = result;
             if(this.EditData.tenantDetails != null && this.EditData.tenantDetails != undefined){
               this.TenantDetails.SetDataForEdit(this.EditData.tenantDetails);
+              
             }
+           
             else{
               this.TenantDetails.GetMastersData();
             }
             if(this.EditData.packageDetails != null && this.EditData.packageDetails != undefined){
               this.PackagesDetail.SetDataForEdit(this.EditData.packageDetails);
+              if(this.EditData.tenantDetails.userTypeID > 0){
+                this.PackagesDetail.GetProduclistByUserTypeId(this.EditData.tenantDetails.userTypeID)  
+              }
               this.PaymentDetail.PackagesDataForEdit = this.EditData.packageDetails
             }
             if(this.EditData.transactionCharges != null && this.EditData.transactionCharges != undefined){
@@ -125,13 +132,16 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
   }
   Cancel(): void {
     this.active = false;
+    this.viewForm=false;
     this.formClose.emit(false);
   }
   GetSelectedPackagesData(data) {
     this.SelectedPackagesData = data;
     this.PaymentDetail.GetPackageAndAddonDetails(this.SelectedPackagesData);
   }
-
+  GetUserTypeId(userTypeId:number){
+    this.PackagesDetail.GetProduclistByUserTypeId(userTypeId) 
+  }
 
 }
 

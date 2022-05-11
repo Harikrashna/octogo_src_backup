@@ -148,10 +148,65 @@
             <param name="TenantId"></param>
             <returns></returns>
         </member>
+        <member name="M:CF.Octogo.DashboardCustomization.DashboardCustomizationAppService.GetTotalOctoCostWidget(System.Collections.Generic.List{System.String},System.Int32,CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
+            <summary>
+            Created by:Deepak
+            Created On: 06-may-2022
+            </summary>
+            <param name="filters"></param>
+            <param name="tenantId"></param>
+            <param name="Dateinput"></param>
+            <returns></returns>
+        </member>
         <member name="T:CF.Octogo.DashboardCustomization.Dto.DashboardOutput">
             <summary>
             This class stores filtered dashboard information by user
             </summary>
+        </member>
+        <member name="M:CF.Octogo.Master.Product.ProductAppService.GetProduclistByUsertypeId(System.Nullable{System.Int32},System.String)">
+            <summary>
+            Desc:Get product list by UserTypeId
+            Author:Merajuddin
+            Date:11-04-2022
+            </summary>
+            <param name="UserTypeId"></param>
+            <param name="QueryFor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalClientWithFilterForWidget(System.Collections.Generic.List{System.String})">
+            <summary>
+            DESC:Get total client data for column chart widget
+            Created by: Merajuddin khan
+            Created on: 26-04-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalRevenueForWidget(System.Collections.Generic.List{System.String})">
+            <summary>
+            DESC:Get total revenue for column chart widget
+            Created by: Merajuddin khan
+            Created on: 29-04-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetClientPendingPaymentForWidget(CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
+            <summary>
+            Get pending payment details of client
+            Created by: Merajuddin khan
+            Created on: 29-04-2022
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.SubscriptionAppService.GetClientSubscriptionExpirationAndProductForWidget">
+            <summary>
+            DESC:Get Plan expiration list
+            Created by: Merajuddin khan
+            Created on: 29-04-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
         </member>
         <member name="M:CF.Octogo.MultiTenancy.TenantAppService.DeactivateTenantUsers(System.Int32)">
             <summary>
@@ -181,6 +236,7 @@
             <summary>
             CREATED BY: HARI KRASHNA
             CREATED ON: 16/12/2021
+            MODIFIED BY:MERAJUDDIN (06-MAY-2022)
             Add some additional information of user in existing user detail service 
             </summary>
             <returns></returns>
@@ -227,7 +283,7 @@
             Desc:Get tenant proccess completion status
             created by : Merajuddin khan
             created on :08-02-22
-            
+            Modified on:04-04-22(Merajuddin khan)
             </summary>
             <param name="setUpId"></param>
             <returns></returns>

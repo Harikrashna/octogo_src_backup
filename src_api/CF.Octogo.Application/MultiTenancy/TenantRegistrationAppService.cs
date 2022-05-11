@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using CF.Octogo.Data;
 using System.Data.SqlClient;
 using CF.Octogo.Authorization.Users;
+using Abp.Domain.Uow;
 
 namespace CF.Octogo.MultiTenancy
 {
@@ -38,6 +39,7 @@ namespace CF.Octogo.MultiTenancy
         private readonly IAppNotifier _appNotifier;
         private readonly ILocalizationContext _localizationContext;
         private readonly ISubscriptionPaymentRepository _subscriptionPaymentRepository;
+        private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public TenantRegistrationAppService(
             IMultiTenancyConfig multiTenancyConfig,
@@ -45,7 +47,8 @@ namespace CF.Octogo.MultiTenancy
             EditionManager editionManager,
             IAppNotifier appNotifier,
             ILocalizationContext localizationContext,
-            ISubscriptionPaymentRepository subscriptionPaymentRepository)
+            ISubscriptionPaymentRepository subscriptionPaymentRepository,
+            IUnitOfWorkManager unitOfWorkManager)
         {
             _multiTenancyConfig = multiTenancyConfig;
             _recaptchaValidator = recaptchaValidator;
@@ -53,107 +56,119 @@ namespace CF.Octogo.MultiTenancy
             _appNotifier = appNotifier;
             _localizationContext = localizationContext;
             _subscriptionPaymentRepository = subscriptionPaymentRepository;
+            _unitOfWorkManager = unitOfWorkManager;
 
             AppUrlService = NullAppUrlService.Instance;
         }
-
+        [UnitOfWork(IsDisabled = true)]
         public async Task<RegisterTenantOutput> RegisterTenant(RegisterTenantInput input)
         {
-            // Added for Signed Up user - Added By: HARI KRASHNA(17/12/2021)
+                // Used to register tenant by SignUp user's Email address
+                User currentUser = new User();
+                Tenant tenant;
+                bool isEmailConfirmationRequired = false;
+                bool isActive = false;
 
-            // Used to register tenant by SignUp user's Email address
-            //User currentUser = new User();
-            //if (AbpSession.UserId.HasValue)
-            //{
-            //    currentUser = checkEmailDuplicacy(input.AdminEmailAddress);
-            //}
-            if (input.EditionId.HasValue)
-            {
-                // await CheckEditionSubscriptionAsync(input.EditionId.Value, input.SubscriptionStartType);
-                 await CheckEditionSubscriptionNew(input.EditionId.Value, input.SubscriptionStartType);
-            }
-            else
-            {
-                await CheckRegistrationWithoutEdition();
-            }
-
-            using (CurrentUnitOfWork.SetTenantId(null))
-            {
-                CheckTenantRegistrationIsEnabled();
-
-                if (UseCaptchaOnRegistration())
+                // Added for Signed Up user - Added By: HARI KRASHNA(17/12/2021)
+                using (var unitofwork = _unitOfWorkManager.Begin())
                 {
-                    await _recaptchaValidator.ValidateAsync(input.CaptchaResponse);
-                }
-
-                //Getting host-specific settings
-                var isActive = await IsNewRegisteredTenantActiveByDefault(input.SubscriptionStartType);
-                var isEmailConfirmationRequired = await SettingManager.GetSettingValueForApplicationAsync<bool>(
-                    AbpZeroSettingNames.UserManagement.IsEmailConfirmationRequiredForLogin
-                );
-
-                DateTime? subscriptionEndDate = null;
-                var isInTrialPeriod = false;
-
-                if (input.EditionId.HasValue)
-                {
-                    isInTrialPeriod = input.SubscriptionStartType == SubscriptionStartType.Trial;
-
-                    if (isInTrialPeriod)
+                    if (AbpSession.UserId.HasValue)
                     {
-                        var edition = (SubscribableEdition)await _editionManager.GetByIdAsync(input.EditionId.Value);
-                        subscriptionEndDate = Clock.Now.AddDays(edition.TrialDayCount ?? 0);
+                        currentUser = checkEmailDuplicacy(input.AdminEmailAddress);
                     }
+                    if (input.EditionId.HasValue)
+                    {
+                        // await CheckEditionSubscriptionAsync(input.EditionId.Value, input.SubscriptionStartType);
+                        await CheckEditionSubscriptionNew(input.EditionId.Value, input.SubscriptionStartType);
+                    }
+                    else
+                    {
+                        await CheckRegistrationWithoutEdition();
+                    }
+
+                    using (CurrentUnitOfWork.SetTenantId(null))
+                    {
+                        CheckTenantRegistrationIsEnabled();
+
+                        if (UseCaptchaOnRegistration())
+                        {
+                            await _recaptchaValidator.ValidateAsync(input.CaptchaResponse);
+                        }
+
+                        //Getting host-specific settings
+                        isActive = await IsNewRegisteredTenantActiveByDefault(input.SubscriptionStartType);
+                        isEmailConfirmationRequired = await SettingManager.GetSettingValueForApplicationAsync<bool>(
+                            AbpZeroSettingNames.UserManagement.IsEmailConfirmationRequiredForLogin
+                        );
+
+                        DateTime? subscriptionEndDate = null;
+                        var isInTrialPeriod = false;
+
+                        if (input.EditionId.HasValue)
+                        {
+                            isInTrialPeriod = input.SubscriptionStartType == SubscriptionStartType.Trial;
+
+                            if (isInTrialPeriod)
+                            {
+                                var edition = (SubscribableEdition)await _editionManager.GetByIdAsync(input.EditionId.Value);
+                                subscriptionEndDate = Clock.Now.AddDays(edition.TrialDayCount ?? 0);
+                            }
+                        }
+
+                        var tenantId = await TenantManager.CreateWithAdminUserAsync(
+                            input.TenancyName,
+                            input.Name,
+                            input.AdminPassword,
+                            input.AdminEmailAddress,
+                            null,
+                            isActive,
+                            input.EditionId,
+                            shouldChangePasswordOnNextLogin: false,
+                            sendActivationEmail: true,
+                            subscriptionEndDate,
+                            isInTrialPeriod,
+                            AppUrlService.CreateEmailActivationUrlFormat(input.TenancyName)
+                        );
+
+                        tenant = await TenantManager.GetByIdAsync(tenantId);
+
+                        // Update Tenant Id of Logged In user
+                        // Added for Logged In users only
+                        if (AbpSession.UserId.HasValue)
+                        {
+                            //var user = UserManager.GetUserById((long)AbpSession.UserId);             // get user details for update TenantId
+                            //user.TenantId = tenant.Id;
+                            //user.LastModificationTime = DateTime.UtcNow;
+                            //user.LastModifierUserId = user.Id;
+                            //await CurrentUnitOfWork.SaveChangesAsync();
+
+                            // Used to register tenant by SignUp user's Email address
+                            // Deactivate current user if current user is Admin of new Tenant
+                            //if (currentUser.EmailAddress.Trim().ToUpper() == input.AdminEmailAddress.Trim().ToUpper())
+                            //{
+                            //    CheckErrors(await UserManager.DeleteAsync(user));
+                            //}
+                        }
+                        await _appNotifier.NewTenantRegisteredAsync(tenant);
+                        unitofwork.Complete();      // UOW Transaction completed
+                    }
+                    // If admin user is other than signUp user
+                    if (currentUser.EmailAddress.Trim().ToUpper() != input.AdminEmailAddress.Trim().ToUpper())
+                    {
+                        InsertUserTypeAndUserDetailsForTenantUsers(tenant.Id, (int)AbpSession.UserId, input.AdminEmailAddress);
+                    }
+                    return new RegisterTenantOutput
+                    {
+                        TenantId = tenant.Id,
+                        TenancyName = input.TenancyName,
+                        Name = input.Name,
+                        UserName = TenantManager.GetUserName(input.AdminEmailAddress, input.TenancyName),
+                        EmailAddress = input.AdminEmailAddress,
+                        IsActive = tenant.IsActive,
+                        IsEmailConfirmationRequired = isEmailConfirmationRequired,
+                        IsTenantActive = tenant.IsActive
+                    };
                 }
-
-                var tenantId = await TenantManager.CreateWithAdminUserAsync(
-                    input.TenancyName,
-                    input.Name,
-                    input.AdminPassword,
-                    input.AdminEmailAddress,
-                    null,
-                    isActive,
-                    input.EditionId,
-                    shouldChangePasswordOnNextLogin: false,
-                    sendActivationEmail: true,
-                    subscriptionEndDate,
-                    isInTrialPeriod,
-                    AppUrlService.CreateEmailActivationUrlFormat(input.TenancyName)
-                );
-
-                var tenant = await TenantManager.GetByIdAsync(tenantId);
-
-                // Update Tenant Id of Logged In user
-                // Added for Logged In users only
-                if (AbpSession.UserId.HasValue)
-                {
-                    var user = UserManager.GetUserById((long)AbpSession.UserId);             // get user details for update TenantId
-                    user.TenantId = tenant.Id;
-                    user.LastModificationTime = DateTime.UtcNow;
-                    user.LastModifierUserId = user.Id;
-                    await CurrentUnitOfWork.SaveChangesAsync();
-
-                    // Used to register tenant by SignUp user's Email address
-                    // Deactivate current user if current user is Admin of new Tenant
-                    //if (currentUser.EmailAddress.Trim().ToUpper() == input.AdminEmailAddress.Trim().ToUpper())
-                    //{
-                    //    CheckErrors(await UserManager.DeleteAsync(user));
-                    //}
-                }
-                await _appNotifier.NewTenantRegisteredAsync(tenant);
-
-                return new RegisterTenantOutput
-                {
-                    TenantId = tenant.Id,
-                    TenancyName = input.TenancyName,
-                    Name = input.Name,
-                    UserName = TenantManager.GetUserName(input.AdminEmailAddress, input.TenancyName),
-                    EmailAddress = input.AdminEmailAddress,
-                    IsActive = tenant.IsActive,
-                    IsEmailConfirmationRequired = isEmailConfirmationRequired,
-                    IsTenantActive = tenant.IsActive
-                };
-            }
         }
 
         private async Task<bool> IsNewRegisteredTenantActiveByDefault(SubscriptionStartType subscriptionStartType)
@@ -411,6 +426,19 @@ namespace CF.Octogo.MultiTenancy
             {
                 return null;
             }
+        }
+        public async Task InsertUserTypeAndUserDetailsForTenantUsers(int tenantId, long fromUserId, string emailAddress)
+        {
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("TenantId", tenantId);
+            parameters[1] = new SqlParameter("FromUserId", fromUserId);
+            parameters[2] = new SqlParameter("AdminEmailId", emailAddress);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_InsertUserTypeAndUserDetailsForTenantAdmin", parameters
+                    );
         }
     }
 }

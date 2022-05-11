@@ -1354,7 +1354,7 @@
 		<text name="PleaseSelectMoreThanOneEditions">Please choose minimum two editions to compare</text>
 		<text name="DuplicateEdition">Duplicate Package</text>
 		<text name="EditionCompare">Compare Package</text>
-		<text name="ThereAreTenantsSubscribedToThisAddon">There are tenants subscribed to this addon.</text>
+		<text name="ThereAreTenantsSubscribedToThisAddon">There are clients subscribed to this addon.</text>
 		<text name="ViewTenantSummary">View client summary</text>
 		<text name="TenantSearch">Client search</text>
 		<text name="AppUrlSetup">AppURL</text>
@@ -1403,7 +1403,6 @@
 		<text name="DearUser">Dear User</text>
 		<text name="TenantSetupFailed_Subject">Octogo tenant setup failed</text>
 		<text name="AvailableAddons">Available Addons</text>
-		
 		<text name="Congratulations">Congratulations!!!</text>
 		<text name="ClientRegistrationHeaddingMsg">Your product setup starts as soon as you register your company.</text>
 		<text name="TenantRegistrationCompleteWithSubscriptionMsg">You have successfully selected the {0} product. The application setup is in progress.It will be ready to use within 24 hours.</text>
@@ -1447,6 +1446,35 @@
 		<text name="EditionRemoveConfirmationMsg">{0} package subscription will be removed with all subscribed addons.</text>
 		<text name="AddonRemoveConfirmationMsg">{0} addon subscription will be removed.</text>
 		<text name="SomthingWrong">There is something wrong!!</text>
+		<text name="CurrentSubscriptionIsExpired">The current subscription is expired. Kindly renew the subscription to continue the services</text>
+		<text name="ExpiryNotificationDays">Expiry notification days</text>
+		<text name="Renew">Renew</text>
+		<text name="CurrentSubscriptionIsAboutToEnd">The current subscription is about to end in next {0} days. Kindly extend the subscription to continue the services</text>
+		<text name="AddonCompare">Addon Compare</text>
+		<text name="SelectAddon">Select Addon</text>
+		<text name="PleaseSelectMoreThanOneAddon">Please Select More Than One Addon</text>
+		<text name="WithFreeTrial">With Free Trial</text>
+		<text name="AddonDependencyMsg">The selected addon is dependent on {0}. Kindly choose that as well in order to utilise the same</text>""
+		<text name="WidgetlatestClient">Latest Client</text>
+		<text name="WidgetOctogenProducts">Octogen Products</text>
+		<text name="ClientName">Client name</text>
+		<text name="ExpirationDays">Expiration days</text>
+		<text name="PlanExpirationNotification">Client expiration </text>
+		<text name="ClientStatistics">Client statistics </text>
+		<text name="WidgetTotalClient">Total client</text>
+		<text name="WidgetPlanExpiration">Plan expiration</text>
+		<text name="WidgeTotalRevenue">Total Revenue</text>
+		<text name="WidgeProductSegmentation">Product segment </text>
+		<text name="ProductWiseClientStatistics">Product Wise Client statistics</text>
+		<text name="PendingPayment">Pending Payment</text>
+		<text name="PendingAmount">Pending Amount</text>
+		<text name="TotalRevenue">Total Revenue </text>
+		<text name="WidgetPendingPaymen">Pending payment </text>
+		<text name="PendingDays">Pending days </text>
+		<text name="Sno">Sno</text>
+		<text name="ExpirationDaysLeft">Expiration Days (Left)</text>
+		<text name="CurrentProductAndPackage">Current Product And Package</text>
+		<text name="StandAloneAddons">Stand Alone Addons</text>
 	</texts>
 </localizationDictionary>
 

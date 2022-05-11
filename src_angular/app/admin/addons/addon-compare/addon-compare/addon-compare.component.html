@@ -1,0 +1,196 @@
+<div>
+    <div class="content d-flex flex-column flex-column-fluid">
+        <sub-header [title]="'AddonCompare' | localize">
+        </sub-header>
+
+        <div [class]="containerClass">
+            <div class="card card-custom gutter-b">
+                <div class="card-body">
+                    <div class="col-sm" *ngIf="canBack">
+                        <button class="btn btn-primary btn-sm" routerLink="/app/admin/addons">
+                            <i class="fa fa-arrow-left"></i> {{"Back" | localize}}
+                        </button>
+                    </div>
+                    <div class="col d-flex page-width">
+                        <div class="col-sm-3 px-0" *ngFor="let item of ProductEditionData; let i = index">
+                            <div class="card">
+                                <div class="text-center">
+                                    <span *ngIf="item.editionId == 0">
+                                        <div class="d-flex flex-center position-relative mb-5 p-2">
+                                            <span class="svg svg-fill-primary opacity-4 position-absolute">
+                                                <svg width="105" height="100">
+                                                    <polyline points="87,0 174,50 174,150 87,200 0,150 0,50 87,0">
+                                                    </polyline>
+                                                </svg>
+                                            </span>
+                                            <span class="pricing-item-icon text-primary">
+                                                <i class="fa fa-plus-circle" style="color: aliceblue;"></i>
+                                            </span>
+                                        </div>
+                                    </span>
+
+                                    <span *ngIf="item?.editionId > 0">
+                                        <div class="d-flex flex-center position-relative mb-5 p-2">
+                                            <span class="svg svg-fill-primary opacity-4 position-absolute">
+                                                <svg width="105" height="100">
+                                                    <polyline points="87,0 174,50 174,150 87,200 0,150 0,50 87,0">
+                                                    </polyline>
+                                                </svg>
+                                            </span>
+                                            <span class="pricing-item-icon text-primary">
+                                                <i class="fa {{item.icon}}"></i>
+                                            </span>
+                                        </div>
+                                    </span>
+                                </div>
+                                <div>
+                                    <div style="margin-top: 2px;">
+                                        <select class="form-select" [(ngModel)]="item.productId"
+                                            (change)="SelectedProduct(i)">
+                                            <option value="0">{{"SelectProduct" | localize}}</option>
+                                            <option *ngFor="let product of ProductList" [value]="product.id">
+                                                {{product.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="" id="prod_group_1">
+                                        <select class="form-select" [(ngModel)]="item.editionId"
+                                            (change)="SelectEdition(i)">
+                                            <option value="0">{{"SelectEdition"| localize}}</option>
+                                            <option *ngFor="let edition of item?.editionList; let editionIndex = index"
+                                                [value]="edition.id" [disabled]="edition.disabled">
+                                                {{edition.displayName}}
+                                            </option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="" id="prod_group_1">
+                                        <select class="form-select" [(ngModel)]="item.addonId">
+                                            <option value="0">{{"SelectAddon"| localize}}</option>
+                                            <option *ngFor="let addon of item?.addonList; let addonIndex = index"
+                                                [value]="addon.addonId" [disabled]="addon.disabled">{{addon.addonName}}
+                                            </option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col" style="text-align: center;margin-top: 20px;">
+                        <button class="btn btn-primary" style="width: 30%;" [buttonBusy]="compairing"
+                            [busyText]="l('CompairingWithThreeDot' | localize)"
+                            (click)="compare(ProductEditionData)">{{"Compare" |
+                            localize}}</button>
+                    </div>
+                    <div class="mt-5"
+                        *ngIf="AddonCompareList != null && AddonCompareList != undefined &&  AddonCompareList.length > 0 ">
+                        <p-table [value]="[{}]" id="dataTables">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="td-border"></th>
+                                    <th id="center" *ngFor="let item of AddonCompareList  ; let i = index" class="td-border">
+                                        <h2>{{item.addonName}}</h2>
+                                        <h3 class="text-primary text-12">{{item.editionName}}({{item.productName}})</h3>
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData>
+                                <tr>
+                                    <td id="center" class="td-border">
+                                        <span class="text-success font-weight-bold font-size-h4">{{"Pricing" |
+                                            localize}}</span>
+                                    </td>
+                                    <td id="center" class="td-border" *ngFor="let item of AddonCompareList">
+                                        <span *ngIf="isFree(item.pricingData)"
+                                            class="text-info font-size-h5 d-block d-block">
+                                            {{"Free" | localize}}
+                                        </span>
+
+                                        <span *ngIf="!isFree(item.pricingData)" class="pricingType-price">
+                                            <div class="d-flex justify-content-center"
+                                                *ngFor="let price of item.pricingData; let i = index">
+                                                <div *ngIf="i % 2 == 0" class="row no-gutters">
+                                                    <span id="price">
+                                                        {{appSession.application.currencySign}} {{price.amount}} /
+                                                        {{price.pricingTypeName}} , &nbsp;
+                                                    </span>
+                                                    <span id="price" *ngIf="i + 1 < item.pricingData?.length">
+                                                        {{appSession.application.currencySign}}
+                                                        {{item.pricingData[i+1].amount}} /
+                                                        {{item.pricingData[i+1].pricingTypeName}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td id="center" class="td-border"><span class="text-success font-weight-bold font-size-h4">{{"Modules"
+                                            |
+                                            localize}}</span></td>
+                                    <td id="center" *ngFor="let item of AddonCompareList;let i = index " class="td-border">
+                                        <span *ngIf="item?.moduleList != null">
+                                            <div *ngFor="let addon of item?.moduleList; let moduleIndex=index">
+                                                <div class="mod">
+                                                
+                                                            <span class="text-success">
+                                                                    <i class="fa fa-check module" *ngIf="!addon?.expended"></i>
+                                                                        <b><span class="text-success"> &nbsp;{{addon.moduleName}}</span></b>
+                                                            </span>
+
+                                                            <span *ngIf="addon.subModuleList != null">
+                                                                
+                                                                    <div class="submodule text-primary"
+                                                                        *ngIf="addon.subModuleList?.length > 0">
+                                                                        <div class="pl-2"
+                                                                            *ngFor="let subModule of addon.subModuleList; let subModuleIndex = index ">
+                                                                            <div class="text-11">
+                                                        
+                                                                                    <i  class="fa fa-check sub-module"></i>
+                                                            
+                                                                                {{subModule.subModuleName}}&nbsp;
+                                                                                <span class="text-10 cursor" *ngIf="subModule.subSubModuleList?.length > 0" 
+                                                                                    (click)="subModule?.expended ? toggleSubShow(moduleIndex,i,subModuleIndex, false): toggleSubShow(moduleIndex,i,subModuleIndex, true)">
+                                                                                    ({{subModule?.subSubModuleList?.length}})
+                                                                                </span>
+                                                                            
+                                                                                <span
+                                                                                    *ngIf="subModule.subSubModuleList?.length > 0">
+                                                                                    <div
+                                                                                        *ngIf="subModule.expended ==  true">
+                                                                                        <div
+                                                                                            *ngIf="subModule.subSubModuleList != null">
+                                                                                            <div class="subsubmodule" style="list-style: none;"
+                                                                                                *ngFor="let subSubModule of subModule.subSubModuleList;let k = index">
+                                                                                                {{subSubModule.subModuleName}}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                
+                                                            </span>
+                                                        
+                                                    
+
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

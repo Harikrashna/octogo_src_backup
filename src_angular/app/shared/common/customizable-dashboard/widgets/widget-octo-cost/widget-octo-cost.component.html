@@ -1,0 +1,57 @@
+<div class="card card-custom h-100">
+    <div class="card-header align-items-center border-0">
+        <div class="card-title">
+            <!-- <span class="card-icon">
+                <i class="la la-bar-chart text-primary"></i>
+            </span> -->
+            <h3 class="card-label font-weight-bolder text-dark">
+                {{"OctoCost" | localize}}
+                <small class="text-muted"></small>
+            </h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" (click)="op.toggle($event)" class="btn btn-light-primary btn-filter">
+                <i class="fa fa-filter"></i>
+            </button>
+
+        </div>
+    </div>
+    <button hidden id="close"></button>
+
+    <p-overlayPanel #op appendTo="body" [style]="{width: '180px'}">
+        <label for="Packages" class="checkbox">
+            <input id="Packages" type="checkbox" [(ngModel)]="model.packages" name="Packages"
+                (change)="onChangeCheckBoxvalue($event,'PACKAGE')">
+            <span></span>
+            {{"Editions" | localize}}
+        </label>
+        <label for="Products" class="checkbox">
+            <input id="Products" type="checkbox" [(ngModel)]="model.products" name="Products"
+                (change)="onChangeCheckBoxvalue($event,'PRODUCT')">
+            <span></span>
+            {{"Products" | localize}}
+        </label>
+        <label for="AddOns" class="checkbox">
+            <input id="AddOns" type="checkbox" [(ngModel)]="model.addons" name="addOns"
+                (change)="onChangeCheckBoxvalue($event,'ADDON')">
+            <span></span>
+            {{"AddOns" | localize}}
+        </label>
+        <label for="Standalones" class="checkbox">
+            <input id="Standalones" type="checkbox" [(ngModel)]="model.standalones" name="Standalones"
+                (change)="onChangeCheckBoxvalue($event,'STANDALONE')">
+            <span></span>
+            {{"Standalones" | localize}}
+        </label>
+    </p-overlayPanel>
+    <div class="card-body" [perfectScrollbar]>
+        <ngx-charts-bar-vertical-2d *ngIf="totalOctoCostStatisticsData?.length > 0"
+            [busyIf]="loadingTotalOctoCostStatistics" [results]="totalOctoCostStatisticsData" [showXAxisLabel]="true"
+            showYAxisLabel="true" [xAxis]="true" [yAxis]="true" [showDataLabel]="true"
+            [yAxisTickFormatting]="myYAxisTickFormatting" [groupPadding]="0" [barPadding]="0">
+        </ngx-charts-bar-vertical-2d>
+        <div class="note note-info text-center chart" [hidden]="totalOctoCostStatisticsData?.length > 0">
+            <small class="text-muted ">{{"NoData" | localize}}</small>
+        </div>
+    </div>
+</div>

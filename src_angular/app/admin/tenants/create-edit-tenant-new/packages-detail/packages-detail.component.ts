@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EditionModulesComponent } from '@app/admin/editions/edition-modules/edition-modules.component';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { AddonServiceProxy, AvailableAddonModulesDto, CommonServiceProxy, EditionModulesDto, EditionServiceProxy, MasterDataDto, ModuleListDto, ModuleListForAddonDto, ModulePricingDto, PackageDetailsInputDto, SubModuleForAddonDto } from '@shared/service-proxies/service-proxies';
+import { AddonServiceProxy, AvailableAddonModulesDto, CommonServiceProxy, EditionModulesDto, EditionServiceProxy, MasterDataDto, ModuleListDto, ModuleListForAddonDto, ModulePricingDto, PackageDetailsInputDto, ProductServiceProxy, SubModuleForAddonDto } from '@shared/service-proxies/service-proxies';
 
 @Component({
     selector: 'app-packages-detail',
@@ -15,6 +15,8 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
     @ViewChildren(EditionModulesComponent) editionModule: QueryList<EditionModulesComponent>;
     @Output() SelectedPackagesData = new EventEmitter();
     @Input() TenantId = 0;
+    @Input() viewForm :boolean =false;
+    
     ProductList = [];
     ApproachList = [];
     EditionList = [];
@@ -29,21 +31,27 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
     SelectedIndex: number = -1;
     scrollLength = 500;
     SelectedProductIndex = -1;
-    filterAddonList: AvailableAddonModulesDto[]
+    filterAddonList: AvailableAddonModulesDto[];
+    UserTypeId:number;
     constructor(
         injector: Injector, private _router: Router, private _editionService: EditionServiceProxy,
-        private addonServiceProxy: AddonServiceProxy, private _commonServiceProxy: CommonServiceProxy) {
+        private addonServiceProxy: AddonServiceProxy, private _commonServiceProxy: CommonServiceProxy,
+        private _product: ProductServiceProxy) {
         super(injector);
     }
     ngOnInit() {
-        this._commonServiceProxy.getMasterData_Cache("PRODUCT,PRICINGAPPROACH").subscribe(result => {
+        // this._product.getProduclistByUsertypeId(24,"ProductWithUserType").subscribe(result => {
+        //     if (result != null) {
+        //         this.ProductList = result;
+        //         let ii= this.UserTypeId
+        //         debugger
+        //     }
+        // });
+        this._commonServiceProxy.getMasterData_Cache("PRICINGAPPROACH").subscribe(result => {
             if (result != null) {
-                this.ProductList = this.fillMasterData(result, 'PRODUCT');
                 this.ApproachList = this.fillMasterData(result, 'PRICINGAPPROACH');
             }
-
         });
-
     }
     fillMasterData(Data: MasterDataDto[], MasterName) {
         if (Data != null && Data.length > 0) {
@@ -73,7 +81,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
             this.SelctedPackagesDetail = new Array<EditionProductData>();
             data.forEach(pkg => {
                 // setTimeout(() =>{
-                    this.addSubscribedEditionProductData(pkg);
+                this.addSubscribedEditionProductData(pkg);
                 // },500)
             });
         }
@@ -105,26 +113,26 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
                     this.l('EditionRemoveConfirmationMsg', this.SelctedPackagesDetail[editionIndex].EditionName),
                     this.l('AreYouSure'),
                     isConfirmed => {
-                        if(isConfirmed){
-                        this.removeDuplicatePackage(editionIndex)
-                        this.AddProduct();
+                        if (isConfirmed) {
+                            this.removeDuplicatePackage(editionIndex)
+                            this.AddProduct();
                         }
                     }
                 );
             }
-            else{
+            else {
                 this.removeDuplicatePackage(editionIndex)
                 this.AddProduct();
             }
         }
-        else if(editionIndex == -1){
+        else if (editionIndex == -1) {
             this.AddProduct();
         }
-        else{
+        else {
             this.notify.warn("Duplicate");
         }
     }
-    AddProduct(){
+    AddProduct() {
         let editionData = this.EditionList.filter(el => el.id == this.EditionID)
         let productData = this.ProductList.filter(pl => pl.id == this.ProductId)
         let approachData = this.ApproachList.filter(al => al.id == this.ApproachId)
@@ -158,20 +166,27 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
         }, 1500)
     }
     removeDuplicatePackage(index: number, forCloseButton = false) {
-        if(forCloseButton == true){
-        this.message.confirm(
-            this.l('EditionRemoveConfirmationMsg', this.SelctedPackagesDetail[index].EditionName),
-            this.l('AreYouSure'),
-            isConfirmed => {
-                if(isConfirmed){
-                    this.SelctedPackagesDetail.splice(index, 1);
-                    this.SelectedProductIndex = this.SelctedPackagesDetail.length - 1;
-                    this.PushDataOnPaymentPage();
-                }
+        if (forCloseButton == true) {
+            if (this.SelctedPackagesDetail[index].IsSubscribed) {
+                this.message.confirm(
+                    this.l('EditionRemoveConfirmationMsg', this.SelctedPackagesDetail[index].EditionName),
+                    this.l('AreYouSure'),
+                    isConfirmed => {
+                        if (isConfirmed) {
+                            this.SelctedPackagesDetail.splice(index, 1);
+                            this.SelectedProductIndex = this.SelctedPackagesDetail.length - 1;
+                            this.PushDataOnPaymentPage();
+                        }
+                    }
+                );
             }
-        );
+            else {
+                this.SelctedPackagesDetail.splice(index, 1);
+                this.SelectedProductIndex = this.SelctedPackagesDetail.length - 1;
+                this.PushDataOnPaymentPage();
+            }
         }
-        else{
+        else {
             this.SelctedPackagesDetail.splice(index, 1);
             this.SelectedProductIndex = this.SelctedPackagesDetail.length - 1;
         }
@@ -190,7 +205,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
                     this.editionModule.get(prodIndex).SelectedIndex = -1;
                     this.editionModule.get(prodIndex).DependEditionData = [];
                     if (EditionId > 0) {
-                        this._editionService.getEditionModules(EditionId).subscribe(async result => {
+                        this._editionService.getEditionModules(EditionId, this.TenantId).subscribe(async result => {
                             this.editionModule.get(prodIndex).ModuleDataFetched = true;
                             if (result != null) {
                                 this.SelctedPackagesDetail[prodIndex].ModulesFetched = true;
@@ -218,7 +233,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
     GetAvailableAddonBySubscribedEditionId(editionId: number, prodIndex, subscribedAddons?): void {
         this.SelctedPackagesDetail[prodIndex].AddonList = new Array<AvailableAddonModulesDto>();
 
-        this.addonServiceProxy.getAddonListByEditionId(editionId)
+        this.addonServiceProxy.getAddonListByEditionId(editionId, "All")
             .subscribe(result => {
                 this.SelctedPackagesDetail[prodIndex].AddonList = result;
                 if (subscribedAddons != null && subscribedAddons != undefined) { /// for Edit mode
@@ -231,7 +246,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
     }
 
     selectAddons(index: number, addonId: number, prodIndex, isSubscribed: boolean = false) {
-        this.CheckAndRemoveDuplicateAddonSelection(addonId,prodIndex);
+        this.CheckAndRemoveDuplicateAddonSelection(addonId, prodIndex);
         this.SelctedPackagesDetail[prodIndex].AddonList[index]["selected"] = true;
         if (this.SelctedPackagesDetail[prodIndex].SelectedAddons == null || this.SelctedPackagesDetail[prodIndex].SelectedAddons == undefined) {
             this.SelctedPackagesDetail[prodIndex].SelectedAddons = new Array<SelectedAddons>();
@@ -240,24 +255,23 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
         if (tempIndex == -1) {
             let addon = new SelectedAddons();
             addon.AddonId = this.SelctedPackagesDetail[prodIndex].AddonList[index].addonId,
-            addon.AddonName = this.SelctedPackagesDetail[prodIndex].AddonList[index].addonName
+                addon.AddonName = this.SelctedPackagesDetail[prodIndex].AddonList[index].addonName
             addon.IsSubscribed = isSubscribed;
             this.SelctedPackagesDetail[prodIndex].SelectedAddons.push(addon);
             this.PushDataOnPaymentPage();
         }
     }
-    CheckAndRemoveDuplicateAddonSelection(addonId,prodIndex?){
-        this.SelctedPackagesDetail.forEach(pkg =>{
-            if(!(prodIndex >= 0)){          // if addon already subscribed(in edit mode)- calls on Page Load
+    CheckAndRemoveDuplicateAddonSelection(addonId, prodIndex?) {
+        this.SelctedPackagesDetail.forEach(pkg => {
+            if (!(prodIndex >= 0)) {          // if addon already subscribed(in edit mode)- calls on Page Load
                 let addonIndex = pkg.AddonList.findIndex(f => f.addonId == addonId);
-                if(addonIndex >= 0){
+                if (addonIndex >= 0) {
                     pkg.AddonList[addonIndex]["hideAddon"] = false;
                 }
             }
-            else if(pkg.AddonList != null && pkg.AddonList != undefined && pkg.EditionId != this.SelctedPackagesDetail[prodIndex].EditionId)
-            {
+            else if (pkg.AddonList != null && pkg.AddonList != undefined && pkg.EditionId != this.SelctedPackagesDetail[prodIndex].EditionId) {
                 let addonIndex = pkg.AddonList.findIndex(f => f.addonId == addonId);
-                if(addonIndex >= 0){
+                if (addonIndex >= 0) {
                     pkg.AddonList[addonIndex]["hideAddon"] = true;
                 }
             }
@@ -436,6 +450,18 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
             }
         }
         return InValidModulesProductIndex;
+    }
+    //Added by: Merajuddin 
+    GetProduclistByUserTypeId(userTypeId:number){
+        this.ProductId = null;
+        this.EditionID = null;
+        this.ProductList = [];
+        this.EditionList = [];
+        this._product.getProduclistByUsertypeId(userTypeId,"ProductWithUserType").subscribe(result => {
+            if (result != null) {
+                this.ProductList = result;
+            }
+        });
     }
 }
 class EditionProductData {

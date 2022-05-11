@@ -1,6 +1,6 @@
 import { RegisterModel } from '@account/register/register.model';
 import { InputValidationService } from '@account/shared/input-validation.service';
-import { Component, ElementRef, Injector, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ValidationServiceService } from '@app/admin/validation-service.service';
@@ -16,6 +16,9 @@ import { CommonServiceProxy, MasterDataDto, PasswordComplexitySetting, ProfileSe
 export class TenantDetailsComponent extends AppComponentBase implements OnInit {
   @ViewChild('tenantDetailsForm') tenantDetailsForm: NgForm;
   @Input()TenantId = 0;
+  @Input() viewForm :boolean=false;
+  @Output() UserTypeId = new EventEmitter(); 
+  
   isChecked: boolean = false
   UserTypelist: any = [];
   UserType: AutoComplete;
@@ -150,6 +153,7 @@ export class TenantDetailsComponent extends AppComponentBase implements OnInit {
       this.tenantDetailsInput.userTypeID = userType.id
       this.UserType.id = userType.id;
       this.UserType.name = userType.name;
+      this.UserTypeId.emit(this.UserType.id); // Added by: Merajuddin
     }
     else {
       this.UserType.name = null;
@@ -292,6 +296,7 @@ CheckValidData():boolean{
   return true;
 }
 GetDataToInsert(): TenantDetailsInputDto {
+  debugger
     this.tenantDetailsInput.city = this.selectedCityData?.id;   
     this.tenantDetailsInput.country = this.selectedCountryData?.id;
     this.tenantDetailsInput.setRandomPassword = this.setRandomPassword;

@@ -1,7 +1,7 @@
 
                 <form #packagesDetailForm="ngForm" role="form" novalidate class="form-validation" autocomplete="off">
                     <div class="row align-items-center px-3">
-                        <div class="col-md-3">
+                        <div *ngIf="viewForm != true" class="col-md-3">
                             <label for="product">{{"Product" | localize}} *</label>
                             <select class="form-control" [(ngModel)]="ProductId" required name="product"
                                 id="ddl_Product" #productNameSelect="ngModel" [disabled]="isEdit"
@@ -11,7 +11,7 @@
                                     {{product.name}}</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div *ngIf="viewForm != true" class="col-md-3">
                             <label for="EditionDisplayName">{{"EditionName" | localize}} *</label>
                             <select class="form-control" [(ngModel)]="EditionID" [required]="true"
                                 name="EditionDisplayName" (ngModelChange)="SetDefaultApproach()"
@@ -30,7 +30,7 @@
                             </select>
                         </div>
                         <div style="margin-top: 28px;" class="col-md-3">
-                            <button type="submit" [disabled]="saving" (click)="addEditionProductData()"
+                            <button *ngIf="viewForm != true" type="submit" [disabled]="saving" (click)="addEditionProductData()"
                                 class="btn btn-primary font-weight-bold"><i class="fa fa-plus"></i>
                                 <span>{{"Add" | localize}}</span></button>
 
@@ -41,7 +41,7 @@
                             <div class="product-card" *ngFor="let result of SelctedPackagesDetail ;let i = index;"
                                 (click)="SelectPackageCardData(i);GetEditionModulesData(result.EditionId,result.ProductId,i)"
                                 [ngClass]="SelectedProductIndex == i ?'selected-productEdition-card':'productEdition-card'">
-                                <i class=" fa fa-times text-danger selected-check" (click)="removeDuplicatePackage(i, true)"></i>
+                                <i *ngIf="viewForm != true " class=" fa fa-times text-danger selected-check" (click)="removeDuplicatePackage(i, true)"></i>
                                 <span class="product-name">{{result.ProductName}}</span>
                                 <div class="ed-name">{{result.EditionName}}
                                     <span *ngIf="result.IsFree" class="price-edition">{{'Free' | localize}}</span>
@@ -77,7 +77,7 @@
                             <div class="card">
                                 <div class="row">
                                     <div class="addon-card col-sm-2 ml-5 mt-2" *ngFor="let addons of package.AddonList ;let i = index;" [hidden]="addons?.hideAddon && !addons?.selected">
-                                        <i *ngIf="addons?.selected == true" class=" fa fa-check selected-check addon-check" (click)="removeSelectedAddon(i,addons.addonId,prodIndex)"></i>
+                                        <i *ngIf="addons?.selected == true && viewForm != true" class=" fa fa-check selected-check addon-check" (click)="removeSelectedAddon(i,addons.addonId,prodIndex)"></i>
                                         <div (click)="selectAddons(i,addons.addonId,prodIndex)">                                        
                                         <div class="bold text-primary ">{{addons.addonName}}</div>
                                         <span *ngIf="addons.pricingData == null" class="text-success mt-2">{{'Free' |

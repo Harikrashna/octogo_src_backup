@@ -25,8 +25,11 @@
             <span *ngIf="PackageDetails.endDate == null" class="text-danger">
                 {{'UnlimitedLimit' | localize}}
             </span>
-            <span *ngIf="PackageDetails.endDate != null" class="text-danger"
+            <!-- <span *ngIf="PackageDetails.endDate != null" class="text-danger"
                 [ngClass]="checkExpiryTime(PackageDetails.remainingDays) == true ? 'expiring': null">
+                {{PackageDetails.endDate.toString() | date}}
+            </span>) -->
+            <span *ngIf="PackageDetails.endDate != null" class="text-danger">
                 {{PackageDetails.endDate.toString() | date}}
             </span>)
         </b>
@@ -42,6 +45,14 @@
         style="{{CalculateExpiryPercentage(PackageDetails.startDate,PackageDetails.endDate,PackageDetails.remainingDays)}}">
         </div>
     </div>
+        <span *ngIf="PackageDetails.remainingDays <= PackageDetails.expiryNotificationDays && PackageDetails.remainingDays > 0"
+        [ngClass]="checkExpiryTime(PackageDetails.remainingDays,PackageDetails.expiryNotificationDays) == true ? 'expiring': null"
+            class="text-danger text-small cursor">
+            {{l('CurrentSubscriptionIsAboutToEnd',PackageDetails.remainingDays)}}
+         </span>
+         <span *ngIf="PackageDetails.remainingDays < 0" class="text-danger text-small cursor">
+            {{'CurrentSubscriptionIsExpired' | localize}}
+        </span>
     <div class="add mt-2" *ngIf="PackageDetails.addon?.length > 0">
         <div class="subscribe-card">
             {{'SubscribedAddons' | localize}}&nbsp;({{PackageDetails.addon.length}})
@@ -55,8 +66,7 @@
                     <span class="start-date-card text-muted"> ({{ado.startDate | date}} -</span>
                     <span class="end-date-card" *ngIf="ado.endDate == null">{{'UnlimitedLimit' |
                         localize}}</span>
-                    <span class="end-date-card" *ngIf="ado.endDate != null"
-                        [ngClass]="checkExpiryTime(ado.remainingDays) == true ? 'expiring': null">
+                    <span class="end-date-card" *ngIf="ado.endDate != null">
                         {{ado.endDate | date}}
                     </span>
                     <span class="brkt">)</span>
@@ -74,8 +84,7 @@
                             <span class="start-date-card text-muted"> ({{ado.startDate | date}} -</span>
                             <span class="end-date-card" *ngIf="ado.endDate == null">{{'UnlimitedLimit' |
                                 localize}}</span>
-                            <span class="end-date-card" *ngIf="ado.endDate != null"
-                                [ngClass]="checkExpiryTime(ado.remainingDays) == true ? 'expiring': null">
+                            <span class="end-date-card" *ngIf="ado.endDate != null">
                                 {{ado.endDate}}
                             </span>
                             <span class="brkt">)</span>
