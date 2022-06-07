@@ -6,13 +6,13 @@ namespace CF.Octogo.Master.Airline.Dto
 {
     public class AirlineListDto
     {
-        public int inAirlineID { get; set; }
+        public int AirlineId { get; set; }
 
-        public string vcCarrierCode { get; set; }
+        public string CarrierCode { get; set; }
 
-        public string vcAirlineName { get; set; }
-        public string isInterline { get; set; }
-        public bool isActive { get; set; }
+        public string AirlineName { get; set; }
+        public bool IsInterline { get; set; }
+        public bool Active { get; set; }
     }
 }
 

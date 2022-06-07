@@ -191,34 +191,36 @@ namespace CF.Octogo.MultiTenancy.HostDashboard
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<List<TotalClientsDto>> GetTotalClientWithFilterForWidget(List<string> filters)
+        public async Task<List<TotalClientsDto>> GetTotalClientWithFilterForWidget(List<string> filters, DashboardInputBase input)
         {
             {
-       
-                    string filterData = String.Join<string>(",", filters);
-                    SqlParameter[] parameters = new SqlParameter[1];
-                    parameters[0] = new SqlParameter("Filter", filterData);
-                    var ds = await SqlHelper.ExecuteDatasetAsync(
-                        Connection.GetSqlConnection("DefaultOctoGo"),
-                        System.Data.CommandType.StoredProcedure,
-                        "USP_GetTotalClientForWidget", parameters);
-                    var i = new TotalClientsDto();
-                    if (ds.Tables.Count > 0)
-                    {
-                        var res = SqlHelper.ConvertDataTable<TotalClientsRet>(ds.Tables[0]);
-                        var result = res.Select(rw => new TotalClientsDto
-                        {
-                            Name = rw.FilterName,
-                            Series = rw.Data != null ? JsonConvert.DeserializeObject<List<TotalClientSeries>>(rw.Data.ToString()) : null
 
-                        }).ToList();
-                        return result;
-                    }
-                    else
+                string filterData = String.Join<string>(",", filters);
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("StartDate", input.StartDate);
+                parameters[1] = new SqlParameter("EndDate", input.EndDate);
+                parameters[2] = new SqlParameter("Filter", filterData);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetTotalClientForWidget", parameters);
+                var i = new TotalClientsDto();
+                if (ds.Tables.Count > 0)
+                {
+                    var res = SqlHelper.ConvertDataTable<TotalClientsRet>(ds.Tables[0]);
+                    var result = res.Select(rw => new TotalClientsDto
                     {
-                        return null;
-                    }
-              
+                        Name = rw.FilterName,
+                        Series = rw.Data != null ? JsonConvert.DeserializeObject<List<TotalClientSeries>>(rw.Data.ToString()) : null
+
+                    }).ToList();
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
+
             }
         }
 
@@ -229,35 +231,39 @@ namespace CF.Octogo.MultiTenancy.HostDashboard
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<List<TotalRevenueDto>> GetTotalRevenueForWidget(List<string> filters)
+        public async Task<List<TotalRevenueDto>> GetTotalRevenueForWidget(List<string> filters, DashboardInputBase input)
         {
             {
-             
-                    string filterData = String.Join<string>(",", filters);
-                    SqlParameter[] parameters = new SqlParameter[1];
-                    parameters[0] = new SqlParameter("Filter", filterData);
-                    var ds = await SqlHelper.ExecuteDatasetAsync(
-                        Connection.GetSqlConnection("DefaultOctoGo"),
-                        System.Data.CommandType.StoredProcedure,
-                        "USP_GetTotalRevenueForWidget", parameters);
-                    var i = new TotalClientsDto();
-                    if (ds.Tables.Count > 0)
-                    {
-                        var res = SqlHelper.ConvertDataTable<TotalRevenueRet>(ds.Tables[0]);
-                        var result = res.Select(rw => new TotalRevenueDto
-                        {
-                            Name = rw.FilterName,
-                            Series = rw.Data != null ? JsonConvert.DeserializeObject<List<TotalRevenueSeries>>(rw.Data.ToString()) : null
 
-                        }).ToList();
-                        return result;
-                    }
-                    else
+                string filterData = String.Join<string>(",", filters);
+                SqlParameter[] parameters = new SqlParameter[3];
+                parameters[0] = new SqlParameter("Filter", filterData);
+                parameters[1] = new SqlParameter("StartDate", input.StartDate);
+                parameters[2] = new SqlParameter("EndDate", input.EndDate);
+
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                  Connection.GetSqlConnection("DefaultOctoGo"),
+                  System.Data.CommandType.StoredProcedure,
+                  "USP_GetTotalRevenueForWidget", parameters);
+                var i = new TotalClientsDto();
+                if (ds.Tables.Count > 0)
+                {
+                    var res = SqlHelper.ConvertDataTable<TotalRevenueRet>(ds.Tables[0]);
+                    var result = res.Select(rw => new TotalRevenueDto
                     {
-                        return null;
-                    }
+                        Name = rw.FilterName,
+                        Series = rw.Data != null ? JsonConvert.DeserializeObject<List<TotalRevenueSeries>>(rw.Data.ToString()) : null
+
+                    }).ToList();
+                    return result;
+                }
+                else
+                {
+                    return null;
+                }
 
             }
+
         }
         /// <summary>
         /// Get pending payment details of client

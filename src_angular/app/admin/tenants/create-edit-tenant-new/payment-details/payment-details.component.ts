@@ -18,6 +18,7 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
   // selectedEditionPricingDays = 0;
   submitted: boolean = false;
   dataFetched: boolean = true;
+  IsEdit: boolean = false;
   PackagesDataForEdit: PackageDetailsInputDto[];
   constructor(injector: Injector,private _editionService: EditionServiceProxy,public _validationService:InputValidationService) {
     super(injector)
@@ -224,6 +225,22 @@ export class PaymentDetailsComponent extends AppComponentBase implements OnInit 
     if (this.SelectedPackages[i].selectedAddonPricing != null && this.SelectedPackages[i].selectedAddonPricing.length > 0) {
       this.SelectedPackages[i].selectedAddonPricing.forEach(x => {
         if(!x["IsSubscribed"]){
+        total += x["Price"] - (x["Price"]*x["Discount"])/100;
+        }
+      });
+    }
+  }
+    return total;
+  }
+  CalculateSubscribedTotal() {
+    let total = 0;
+    for(let i = 0; i < this.SelectedPackages.length; i++){
+    if (this.SelectedPackages[i].selectedEditionPricing != null && this.SelectedPackages[i].selectedEditionPricing["Price"] > 0 && this.SelectedPackages[i].selectedEditionPricing["IsSubscribed"]) {
+      total += this.SelectedPackages[i].selectedEditionPricing["Price"] - (this.SelectedPackages[i].selectedEditionPricing["Price"]*this.SelectedPackages[i].selectedEditionPricing["Discount"])/100;
+    }
+    if (this.SelectedPackages[i].selectedAddonPricing != null && this.SelectedPackages[i].selectedAddonPricing.length > 0) {
+      this.SelectedPackages[i].selectedAddonPricing.forEach(x => {
+        if(x["IsSubscribed"]){
         total += x["Price"] - (x["Price"]*x["Discount"])/100;
         }
       });

@@ -5,6 +5,7 @@ import { WidgetComponentBaseComponent } from '../widget-component-base';
 import { Paginator } from 'primeng/paginator';
 import { DateTimeService } from '@app/shared/common/timing/date-time.service';
 import { finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class WidgetOctogenProductsComponent extends WidgetComponentBaseComponent
   
   constructor(injector: Injector,
     private _editionService: EditionServiceProxy,
+    private _router: Router
     ) {
     super(injector);
     this.getEditionsAndProduct();
@@ -32,8 +34,8 @@ export class WidgetOctogenProductsComponent extends WidgetComponentBaseComponent
 
     this.primengTableHelper.showLoadingIndicator();
     this._editionService.getEditionsList("",
-      "EditionName ASC",
-      10,
+      "CREATIONDATE DESC",
+      5,
       0
     )
       .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator()))
@@ -43,5 +45,7 @@ export class WidgetOctogenProductsComponent extends WidgetComponentBaseComponent
         this.primengTableHelper.hideLoadingIndicator();
       });
   }
-
+  GoToEditionPage() {
+    this._router.navigate(['app/admin/editions'])
+  }
 }

@@ -39,29 +39,18 @@ namespace CF.Octogo.Master.Airline
                 System.Data.CommandType.StoredProcedure,
                 "USP_GetAirline", parameters
                 );
-
+                var totalCount = 0;
+                var airlineList = new List<AirlineListDto>();
                 if (ds.Tables.Count > 0)
                 {
-                    int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                    var totalCount = v;
-                    DataTable dt = ds.Tables[0];
-
-                    AirlineList = (from DataRow dr in dt.Rows
-                                   select new AirlineListDto()
-                                   {
-                                       inAirlineID = Convert.ToInt32(dr["AirlineId"]),
-                                       vcCarrierCode = dr["CarrierCode"].ToString(),
-                                       vcAirlineName = dr["AirlineName"].ToString(),
-                                       isInterline = dr["IsInterline"].ToString(),
-                                       isActive = Convert.ToBoolean(dr["Active"])
-
-                                   }).ToList();
-                    return new PagedResultDto<AirlineListDto>(totalCount, AirlineList);
+                    airlineList = SqlHelper.ConvertDataTable<AirlineListDto>(ds.Tables[0]);
+                    DataRow row = ds.Tables[1].Rows[0];
+                    totalCount = Convert.ToInt32(row["totalCount"]);
                 }
-                else
-                {
-                    return null;
-                }
+                return new PagedResultDto<AirlineListDto>(
+                    totalCount,
+                    airlineList
+                );
             }
 
             catch (Exception e)
@@ -78,7 +67,6 @@ namespace CF.Octogo.Master.Airline
         {
 
             var dup_data = GetAirlineByAirlineId(inp.inAirlineID, inp.vcAirlineName);
-
             if (dup_data.Result != null)
             {
                 throw new UserFriendlyException(L("DuplicateRecord"));
@@ -102,7 +90,6 @@ namespace CF.Octogo.Master.Airline
             parameters[14] = new SqlParameter("vcHandlingInformation", inp.vcHandlingInformation);
             parameters[15] = new SqlParameter("isInterline", inp.isInterline);
             parameters[16] = new SqlParameter("vcAirlineWebsite", inp.vcAirlineWebsite);
-
             parameters[17] = new SqlParameter("isInvoiceGeneration", inp.isInvoiceGeneration);
             parameters[18] = new SqlParameter("isCCShipment", inp.isCCShipment);
             parameters[19] = new SqlParameter("isPartShipment", inp.isPartShipment);
@@ -134,16 +121,11 @@ namespace CF.Octogo.Master.Airline
 
         }
         [AbpAuthorize(AppPermissions.Pages_Administration_Airline_Delete)]
-
         public async Task DeleteAirline(EntityDto input)
         {
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("AirlineID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
-
-
-
-
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_DeleteAirline", parameters);
@@ -154,30 +136,24 @@ namespace CF.Octogo.Master.Airline
         [AbpAuthorize(AppPermissions.Pages_Administration_Airline_Edit)]
         public async Task<DataSet> GetAirlineForEdit(GetEditAirlineinput input)
         {
-            try
+
+            SqlParameter[] parameters = new SqlParameter[1];
+            parameters[0] = new SqlParameter("AirlineId", input.inAirlineId);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("Default"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_GetAirline", parameters
+            );
+            if (ds.Tables.Count > 0)
             {
-                SqlParameter[] parameters = new SqlParameter[1];
-                parameters[0] = new SqlParameter("AirlineID", input.inAirlineID);
-                var ds = await SqlHelper.ExecuteDatasetAsync(
-                Connection.GetSqlConnection("Default"),
-                System.Data.CommandType.StoredProcedure,
-                "USP_GetAirlineById", parameters
-                );
-                if (ds.Tables.Count > 0)
-                {
-                    Console.WriteLine(ds);
-                    return ds;
-                }
-                else
-                {
-                    return null;
-                }
+                Console.WriteLine(ds);
+                return ds;
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e);
                 return null;
             }
+
 
 
 

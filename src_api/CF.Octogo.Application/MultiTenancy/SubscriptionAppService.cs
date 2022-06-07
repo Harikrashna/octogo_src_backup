@@ -13,6 +13,7 @@ using CF.Octogo.Authorization.Roles;
 using CF.Octogo.Authorization.Users;
 using CF.Octogo.Data;
 using CF.Octogo.MultiTenancy.Dto;
+using CF.Octogo.MultiTenancy.HostDashboard.Dto;
 using CF.Octogo.MultiTenancy.Payments;
 using Newtonsoft.Json;
 
@@ -73,6 +74,7 @@ namespace CF.Octogo.MultiTenancy
         }
         public async Task<int> InsertEditionAddonSubscription(EditionAddonSubscriptionInputDto input)
         {
+            // var x = JsonConvert.SerializeObject(input.AddonSubscription);
                 string Remark = string.Empty;
                 SqlParameter[] parameters = new SqlParameter[10];
                 parameters[0] = new SqlParameter("EditionId", input.EditionId);
@@ -117,40 +119,44 @@ namespace CF.Octogo.MultiTenancy
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public async Task<PagedResultDto<ClientSubscribedProductAndExpirationDto>> GetClientSubscriptionExpirationAndProductForWidget()
+        public async Task<PagedResultDto<ClientSubscribedProductAndExpirationDto>> GetClientSubscriptionExpirationAndProductForWidget(DashboardInputBase input)
         {
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-                    Connection.GetSqlConnection("DefaultOctoGo"),
-                    System.Data.CommandType.StoredProcedure,
-                    "USP_GetPlanExpirationForWidget"
-                    );
-            var totalCount = 0;
-            var result = new List<ClientSubscribedProductAndExpirationDto>();
-            if (ds.Tables.Count > 0)
-            {
-                var clienteResult = SqlHelper.ConvertDataTable<ClientSubscribedProductAndExpirationRet>(ds.Tables[0]);
-                 result = clienteResult.Select(rw => new ClientSubscribedProductAndExpirationDto
+                SqlParameter[] parameters = new SqlParameter[2];
+                parameters[0] = new SqlParameter("StartDate", input.StartDate);
+                parameters[1] = new SqlParameter("EndDate", input.EndDate);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                        Connection.GetSqlConnection("DefaultOctoGo"),
+                        System.Data.CommandType.StoredProcedure,
+                        "USP_GetPlanExpirationForWidget", parameters
+                        );
+                var totalCount = 0;
+                var result = new List<ClientSubscribedProductAndExpirationDto>();
+                if (ds.Tables.Count > 0)
                 {
-                    ClientId = rw.ClientId,
-                    ClientName = rw.ClientName,
-                    ExpirationDays = rw.ExpirationDays,
-                    ProductName = rw.ProductName
-                }).ToList();
-                if (clienteResult != null && clienteResult.Count > 0)
-                {
-                    totalCount = clienteResult.FirstOrDefault().TotalCount;
+                    var clienteResult = SqlHelper.ConvertDataTable<ClientSubscribedProductAndExpirationRet>(ds.Tables[0]);
+                    result = clienteResult.Select(rw => new ClientSubscribedProductAndExpirationDto
+                    {
+                        ClientId = rw.ClientId,
+                        ClientName = rw.ClientName,
+                        ExpirationDays = rw.ExpirationDays,
+                        ProductName = rw.ProductName
+                    }).ToList();
+                    if (clienteResult != null && clienteResult.Count > 0)
+                    {
+                        totalCount = clienteResult.FirstOrDefault().TotalCount;
+                    }
+
+                    return new PagedResultDto<ClientSubscribedProductAndExpirationDto>(
+                       totalCount,
+                       result
+                       );
                 }
 
-                return new PagedResultDto<ClientSubscribedProductAndExpirationDto>(
-                   totalCount,
-                   result
-                   );
-            }
+                else
+                {
+                    return null;
+                }
            
-            else
-            {
-                return null;
-            }
         }
 
     }

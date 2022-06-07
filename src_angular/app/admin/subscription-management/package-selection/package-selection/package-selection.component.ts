@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Injector, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { AddOn, EditionList, EditionPaymentType, EditionServiceProxy, EditionsSelectOutput, ProductWithEditionDto, SubscriptionStartType } from '@shared/service-proxies/service-proxies';
+import { AddOn, EditionList, EditionPaymentType, EditionServiceProxy, EditionsSelectOutput, InvoiceDataInputDto, ProductWithEditionDto, SubscriptionStartType } from '@shared/service-proxies/service-proxies';
 
 @Component({
   selector: 'app-package-selection',
@@ -20,6 +20,7 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
     { label: 'Product Selection' },
     { label: 'Registration' },
     { label: 'Payment' },
+    { label: 'Invoice Details' },
     { label: 'Complete' }
   ];
 
@@ -42,6 +43,7 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
   isModuleCollapsed = false;
   isReadMore = true;
   isGoToCheckout: boolean = false;
+  isGoToInvoice: boolean = false;
   showTenantRegistration: boolean = false;
   isTenantSuccessfullyRegister: boolean = false;
   dataFetched: boolean = false;
@@ -52,7 +54,7 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
   subscriptionStartType: typeof SubscriptionStartType = SubscriptionStartType;
   editionPaymentType: typeof EditionPaymentType = EditionPaymentType;
   editionIcons: string[] = ['flaticon-open-box', 'flaticon-rocket', 'flaticon-gift', 'flaticon-confetti', 'flaticon-cogwheel-2', 'flaticon-app', 'flaticon-coins', 'flaticon-piggy-bank', 'flaticon-bag', 'flaticon-lifebuoy', 'flaticon-technology-1', 'flaticon-cogwheel-1', 'flaticon-infinity', 'flaticon-interface-5', 'flaticon-squares-3', 'flaticon-interface-6', 'flaticon-mark', 'flaticon-business', 'flaticon-interface-7', 'flaticon-list-2', 'flaticon-bell', 'flaticon-technology', 'flaticon-squares-2', 'flaticon-notes', 'flaticon-profile', 'flaticon-layers', 'flaticon-interface-4', 'flaticon-signs', 'flaticon-menu-1', 'flaticon-symbol'];
-
+  InvoiceDetails:InvoiceDataInputDto = new InvoiceDataInputDto() //Added by:Merajuddin
   constructor(private injector: Injector, private _editionService: EditionServiceProxy, router: Router) {
     super(injector);
   }
@@ -195,7 +197,6 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
 
   }
   BuyNow(edition: EditionList, productName) {
-    debugger
     if (this.IsTenantRegistration == true) {
       this.ShowRegisterTenant(edition, productName);
     }
@@ -204,7 +205,6 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
     }
   }
   Upgrade(edition: EditionList, productName) {
-    debugger
     this.selectedProductName = productName;
     this.isGoToCheckout = true;
     this.selectedEditionData = edition;
@@ -233,10 +233,22 @@ export class PackageSelectionComponent extends AppComponentBase implements OnIni
     this.IsTenantRegistration = false;
     this.RegistarationSelectedStep = 2;
   }
+  SubscriptionCompleted() {
+    // this.isTenantSuccessfullyRegister = true;
+    this.isGoToInvoice = true;
+    this.isGoToCheckout = false;
+    this.showTenantRegistration = false;
+    this.IsTenantRegistration = false;
+    this.RegistarationSelectedStep = 3;
+  }
+  InsertInvoiceDetails(){
+    location.reload();
+  }
   BackClick() {
     this.RegistarationSelectedStep = 0;
     this.showTenantRegistration = false;
-    this.isGoToCheckout = false
+    this.isGoToCheckout = false;
+    this.isGoToInvoice = false;
     this.ResetAllSelection();
     this.upgradeClicked.emit(false);
   }

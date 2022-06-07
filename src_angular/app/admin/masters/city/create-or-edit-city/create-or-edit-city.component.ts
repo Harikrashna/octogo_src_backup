@@ -157,7 +157,7 @@ export class CreateOrEditCityComponent extends AppComponentBase implements OnIni
     inputData.isActive=this.createCity.isActive;
     if (inputData.sNo == null || inputData.sNo == 0) {
       this.saving = true;
-      this._cityService.createOrUpdateCityType(inputData).pipe(finalize(() => { this.saving = false; })).subscribe(e => {
+      this._cityService.createOrUpdateCity(inputData).pipe(finalize(() => { this.saving = false; })).subscribe(e => {
         this.notify.info(this.l('SavedSuccessfully'));
         this.close(form);
         this.modalSave.emit(null);
@@ -166,7 +166,7 @@ export class CreateOrEditCityComponent extends AppComponentBase implements OnIni
 
     else {
       this.saving = true;
-      this._cityService.createOrUpdateCityType(inputData).pipe(finalize(() => { this.saving = false; })).subscribe(e => {
+      this._cityService.createOrUpdateCity(inputData).pipe(finalize(() => { this.saving = false; })).subscribe(e => {
         this.notify.info(this.l('Updated'));
         this.close(form);
         this.modalSave.emit(null);

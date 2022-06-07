@@ -40,77 +40,55 @@ namespace CF.Octogo.Master.AwbPricingApproach
             System.Data.CommandType.StoredProcedure,
             "USP_GetPerAWBCostApproach", parameters
             );
+            var totalCount = 0;
+            var awbList = new List<AwbCostApproachListDto>();
             if (ds.Tables.Count > 0)
             {
-                var totalCount = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                DataTable dt = ds.Tables[0];
-                List<AwbCostApproachListDto> AwbCostApproachList = new List<AwbCostApproachListDto>();
-                AwbCostApproachList = (from DataRow dr in dt.Rows
-                                       select new AwbCostApproachListDto()
-                                       {
-                                           inApproachID = Convert.ToInt32(dr["id"]),
-                                           vcApproachName = dr["ApproachName"].ToString(),
-                                           vcDescription = dr["Description"].ToString(),
-
-                                       }).ToList();
-                return new PagedResultDto<AwbCostApproachListDto>(totalCount, AwbCostApproachList);
+                awbList = SqlHelper.ConvertDataTable<AwbCostApproachListDto>(ds.Tables[0]);
+                DataRow row = ds.Tables[1].Rows[0];
+                totalCount = Convert.ToInt32(row["totalCount"]);
             }
-            else
-            {
-                return null;
-            }
+            return new PagedResultDto<AwbCostApproachListDto>(
+                totalCount,
+                awbList
+            );
         }
 
 
         [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Create, AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
         public async Task<int> CreateOrUpdateAwbCostType(CreateOrUpdateAwbCostApproachInput input)
-
         {
-            var AwbCostApproach = GetAwbCostApproachDuplicacy(input.inApproachID, input.vcApproachName);
-            if (AwbCostApproach.Result != null)
-            {
-                throw new UserFriendlyException(L("DuplicateRecord"));
-            }
-            try
-            {
-                var x = JsonConvert.SerializeObject(input.AWBCostAppraochData);
-                SqlParameter[] parameters = new SqlParameter[5];
-                parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
-                parameters[1] = new SqlParameter("vcApproachName", input.vcApproachName);
-                parameters[2] = new SqlParameter("vcDescription", input.vcDescription);
-                parameters[3] = new SqlParameter("AWBCostAppraochData", JsonConvert.SerializeObject(input.AWBCostAppraochData));
-                parameters[4] = new SqlParameter("UserId", AbpSession.UserId);
+            var x = JsonConvert.SerializeObject(input.AWBCostAppraochData);
+            SqlParameter[] parameters = new SqlParameter[5];
+            parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
+            parameters[1] = new SqlParameter("vcApproachName", input.vcApproachName);
+            parameters[2] = new SqlParameter("vcDescription", input.vcDescription);
+            parameters[3] = new SqlParameter("AWBCostAppraochData", JsonConvert.SerializeObject(input.AWBCostAppraochData));
+            parameters[4] = new SqlParameter("UserId", AbpSession.UserId);
 
-                var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                System.Data.CommandType.StoredProcedure,
-                "USP_CreateOrUpdateAwbCostApproach", parameters);
-                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                {
-                    await ClearCache();
-                    return (int)ds.Tables[0].Rows[0]["Id"];
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            catch (Exception e)
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_CreateOrUpdateOrDeleteAwbCostApproach", parameters);
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
-                Console.WriteLine(e);
-                return 1;
+                await ClearCache();
+                return (int)ds.Tables[0].Rows[0]["Id"];
             }
-
+            else
+            {
+                return 0;
+            }
         }
 
-        [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
+        // [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
         public async Task<CreateOrUpdateAwbCostApproachInput> GetPerAwbCostApproachForEdit(GetEditAwbCostApproachInput input)
         {
             SqlParameter[] parameters = new SqlParameter[1];
-            parameters[0] = new SqlParameter("AwbCostApproachId", input.inApproachID);
+            parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetAwbCostApproachId", parameters //USP_GetAwbCostApproachId
+            "USP_GetPerAWBCostApproach", parameters //USP_GetAwbCostApproachId
             );
             if (ds.Tables.Count > 0)
             {
@@ -133,34 +111,17 @@ namespace CF.Octogo.Master.AwbPricingApproach
         [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Delete)]
         public async Task DeleteAwbCostApproach(EntityDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("AwbCostApproachId", input.Id);
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("inApproachID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
-
+            parameters[2] = new SqlParameter("IsDelete", true);
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_DeleteAwbCostApproach", parameters);
+           "USP_CreateOrUpdateOrDeleteAwbCostApproach", parameters);
             await ClearCache();
+
         }
-        public async Task<DataSet> GetAwbCostApproachDuplicacy(int? inApproachID, string vcApproachName)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("ApproachId", inApproachID);
-            parameters[1] = new SqlParameter("ApproachName", vcApproachName);
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CheckAwbCostApproachDuplicateData", parameters
-            );
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
-        }
+
         public async Task ClearCache()
         {
             var allMasterCache = _cacheManager.GetCache(masterCacheKey);

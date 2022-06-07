@@ -11,6 +11,7 @@ export class WidgetExpirationDaysComponent extends WidgetComponentBaseComponent 
   productDetailsList: TenantEditionAddonDto[]=[];
   StandAloneAddonList: SubscribedStandAloneAddonDto[]=[];
   loading:boolean;
+  daysBetweenDates
   dataFetched: boolean = false;
 
   constructor(private _dashboardCustomizationService: DashboardCustomizationServiceProxy, injector: Injector) {
@@ -29,9 +30,9 @@ export class WidgetExpirationDaysComponent extends WidgetComponentBaseComponent 
         this.dataFetched = true;
         if(result != null){
            this.productDetailsList = result.tenantEditionAddon;
+           this.StandAloneAddonList = result.standAloneAddon;
            console.log(this.productDetailsList);
         }
       });
     }
-
 }

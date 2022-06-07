@@ -33,48 +33,28 @@ namespace CF.Octogo.Master.Industry
             parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
             parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
             parameters[3] = new SqlParameter("Filter", filter);
-            List<IndustryListDto> IndustryList = new List<IndustryListDto>();
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetIndustry", parameters
             );
 
+            var totalCount = 0;
+            var industryList = new List<IndustryListDto>();
             if (ds.Tables.Count > 0)
             {
-                int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                var totalCount = v;
-                DataTable dt = ds.Tables[0];
-
-                IndustryList = (from DataRow dr in dt.Rows
-                                select new IndustryListDto()
-                                {
-                                    inIndustryID = Convert.ToInt32(dr["IndustryId"]),
-                                    vcIndustryName = dr["IndustryName"].ToString(),
-                                    vcDescription = dr["Description"].ToString(),
-
-                                }).ToList();
-                return new PagedResultDto<IndustryListDto>(totalCount, IndustryList);
+                industryList = SqlHelper.ConvertDataTable<IndustryListDto>(ds.Tables[0]);
+                DataRow row = ds.Tables[1].Rows[0];
+                totalCount = Convert.ToInt32(row["totalCount"]);
             }
-            else
-            {
-                return null;
-            }
+            return new PagedResultDto<IndustryListDto>(
+                totalCount,
+                industryList
+            );
         }
 
-
-
-        [AbpAuthorize(AppPermissions.Pages_Administration_Industry_CreateIndustry, AppPermissions.Pages_Administration_Industry_Edit)]
         public async Task<int> CreateorUpdateIndustry(CreateOrUpdateIndustryInput inp)
         {
-
-            var dup_data = GetIndustryByIndustryId(inp.inIndustryID, inp.vcIndustryName);
-
-            if (dup_data.Result != null)
-            {
-                throw new UserFriendlyException(L("DuplicateRecord"));
-            }
-
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inIndustryID", inp.inIndustryID);
             parameters[1] = new SqlParameter("vcIndustryName", inp.vcIndustryName.Trim());
@@ -82,13 +62,13 @@ namespace CF.Octogo.Master.Industry
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_CreateOrUpdateIndustry", parameters);
+           "USP_CreateOrUpdateOrDeleteIndustry", parameters);
 
-
-
-
-
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
@@ -97,59 +77,29 @@ namespace CF.Octogo.Master.Industry
             {
                 return 0;
             }
-
         }
         [AbpAuthorize(AppPermissions.Pages_Administration_Industry_Delete)]
-
         public async Task DeleteIndustry(EntityDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("IndustryID", input.Id);
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("inIndustryID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
-
-
-
-
+            parameters[2] = new SqlParameter("IsDelete", true);
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_DeleteIndustry", parameters);
+           "USP_CreateOrUpdateOrDeleteIndustry", parameters);
             await ClearCache();
         }
-
-
-
-        public async Task<DataSet> GetIndustryForEdit(GetEditIndustryinput input)
+        public async Task<DataSet> GetIndustryById(GetEditIndustryinput input)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("IndustryID", input.inIndustryID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetIndustryById", parameters
+            "USP_GetIndustry", parameters
             );
             if (ds.Tables.Count > 0)
-            {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        public async Task<DataSet> GetIndustryByIndustryId(int? inIndustryID, string vcIndustryName)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("IndustryId", inIndustryID);
-            parameters[1] = new SqlParameter("IndustryName", vcIndustryName);
-
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicateIndustry", parameters
-            );
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 return ds;
             }

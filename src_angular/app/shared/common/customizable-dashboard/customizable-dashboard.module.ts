@@ -41,6 +41,7 @@ import { WidgetPendingPaymentComponent } from './widgets/widget-pending-payment/
 import { WidgetCurrentProductAndPackageComponent } from './widgets/widget-current-product-and-package/widget-current-product-and-package.component';
 import { WidgetExpirationDaysComponent } from './widgets/widget-expiration-days/widget-expiration-days.component';
 import { WidgetOctoCostComponent } from './widgets/widget-octo-cost/widget-octo-cost.component';
+import { WidgetAwbcountsComponent } from './widgets/widget-awbcounts/widget-awbcounts.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -89,8 +90,8 @@ import { WidgetOctoCostComponent } from './widgets/widget-octo-cost/widget-octo-
         WidgetPendingPaymentComponent,
         WidgetCurrentProductAndPackageComponent,
         WidgetExpirationDaysComponent,
-        WidgetOctoCostComponent
-        
+        WidgetOctoCostComponent,
+        WidgetAwbcountsComponent
         
     ],
 

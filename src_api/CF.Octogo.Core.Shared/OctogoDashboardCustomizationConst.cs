@@ -25,6 +25,7 @@
                 public const string ExpirationDays = "Widgets_Tenant_ExpirationDays";
                 public const string CurrentProductAndPackge = "Widgets_Tenant_CurrentProductAndPackage";
                 public const string OctoCost = "Widgets_Tenant_OctoCost";
+                public const string AwbCounts = "Widgets_Tenant_AwbCounts";
 
             }
 

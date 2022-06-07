@@ -1,10 +1,11 @@
-import { Component, Injector, Input, OnInit } from '@angular/core';
+import { Component, Injector, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppConsts } from '@shared/AppConsts';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { AddOn, AddonSubscriptionDto, CreatePaymentNewDto, EditionAddonSubscriptionInputDto, EditionList, PaymentServiceProxy, SubscriptionServiceProxy, SubscriptionStartType } from '@shared/service-proxies/service-proxies';
 import { AbpSessionService } from 'abp-ng2-module';
 import { finalize } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-package-addons-cart',
@@ -18,6 +19,7 @@ export class PackageAddonsCartComponent extends AppComponentBase implements OnIn
   @Input() ProductName;
   @Input() IsTenantRegistration = false;
   @Input() Heading = '';
+  @Output() SubscriptionCompleted = new EventEmitter();
 
   selectedEditionPricing;
   selectedAddonPricing = [];
@@ -170,7 +172,7 @@ export class PackageAddonsCartComponent extends AppComponentBase implements OnIn
 
     input.editionId = this.SelectedEditionData.editionID;
     input.pricingTypeId = this.selectedEditionPricing != null ? this.selectedEditionPricing["PricingTypeId"] : null;
-    input.amount = this.CalculateTotal();
+    input.amount = this.selectedEditionPricing != null ? this.selectedEditionPricing["Price"] : 0;
     input.paymentModeCode = PaymentModeCode;
     input.paymentDone = paymentDone;
     input.paymentType = this.selectedEditionPricing != null ? SubscriptionStartType.Paid : SubscriptionStartType.Free;
@@ -196,12 +198,17 @@ export class PackageAddonsCartComponent extends AppComponentBase implements OnIn
           abp.auth.clearRefreshToken();
           this.message.success(this.l('TenantRegistrationCompleteWithSubscriptionMsg',this.ProductName), this.l('Congratulations'))
           .then(() => {
-            location.reload();
+            this.SubscriptionCompleted.emit();
+            // setTimeout(() =>{
+            //   location.reload();
+            // },200)
           });
         }
         else{
           this.notify.info(this.l('SavedSuccessfully')); 
-          location.reload();         
+          setTimeout(() =>{
+            location.reload();
+          },200)        
         }
 
       });

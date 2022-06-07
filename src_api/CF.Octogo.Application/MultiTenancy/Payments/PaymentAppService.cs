@@ -17,6 +17,8 @@ using System.Linq.Dynamic.Core;
 using Abp.Collections.Extensions;
 using Abp.Linq.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using CF.Octogo.Configuration.Tenants.Dto;
+using CF.Octogo.Configuration;
 
 namespace CF.Octogo.MultiTenancy.Payments
 {
@@ -411,5 +413,12 @@ namespace CF.Octogo.MultiTenancy.Payments
 
             return new PagedResultDto<SubscriptionPaymentListDto>(paymentsCount, ObjectMapper.Map<List<SubscriptionPaymentListDto>>(payments));
         }
+        public async Task UpdateInvoiceSettings(TenantInvoiceSettingsEditDto input)
+        {
+            await SettingManager.ChangeSettingForTenantAsync(input.TenantId, AppSettings.TenantManagement.BillingLegalName, input.LegalName);
+            await SettingManager.ChangeSettingForTenantAsync(input.TenantId, AppSettings.TenantManagement.BillingAddress, input.Address);
+            await SettingManager.ChangeSettingForTenantAsync(input.TenantId, AppSettings.TenantManagement.BillingTaxVatNo, input.TaxVatNo);
+        }
+
     }
 }

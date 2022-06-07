@@ -72,7 +72,6 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
     }
 
     selectBestRoute(): string {
-        debugger
         if (!this._sessionService.user) {
             return '/account/login';
         }
@@ -92,21 +91,21 @@ export class AppRouteGuard implements CanActivate, CanActivateChild, CanLoad {
         // if (this._permissionChecker.isGranted('Pages.Administration.Users')) {
         //     return '/app/admin/users';
         // }
-        // Added By : Hari Krashna (only for Signed Up User)
-        if (this._permissionChecker.isGranted('Pages.isdefaultRegisterUser')) {
-            return '/app/registered-user';
-        }
         // Added By : Hari Krashna (only for Signed Up User(who SignedUp on Host, later transffered to Tenant))
         // this functionality will build using setting management
         else if (this._sessionService.tenant != null && this._sessionService.tenant != undefined && this._sessionService.tenant.id > 0) {
-            return this.getTenantDefaultdashBoard();;
+            return this.getTenantDefaultdashBoard();
+        }
+        // Added By : Hari Krashna (only for Signed Up User)
+        else if (this._permissionChecker.isGranted('Pages.isdefaultRegisterUser')) {
+            return '/app/registered-user';
         }
         return '/app/notifications';
     }
     getTenantDefaultdashBoard(): string {
-        if(this._sessionService.user.userTypeName == "Airline")
+        if(this._sessionService.user.userTypeName.toUpperCase() == "AIRLINE")
         {
-            return '/app/main/dashboard';
+            return "/app/main/dashboard";
         }
         else{
             return '/app/main/tenant-dashboard';

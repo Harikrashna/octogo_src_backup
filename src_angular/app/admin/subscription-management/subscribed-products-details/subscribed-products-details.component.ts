@@ -57,7 +57,7 @@ export class SubscribedProductsDetailsComponent extends AppComponentBase impleme
     });
   }
   ShowPackageDetails(prodIndex) {
-    this.SeletedProductIndex = prodIndex;
+    this.SeletedProductIndex = prodIndex < 0 ? 0 : prodIndex;
     this.showDetailedInformation = true;
     this.SelectedPackage = this.productDetailsList[prodIndex];
     let timer = setInterval(() => {

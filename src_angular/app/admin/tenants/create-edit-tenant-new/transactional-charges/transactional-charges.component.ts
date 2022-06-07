@@ -66,6 +66,9 @@ export class TransactionalChargesComponent extends AppComponentBase implements O
     return true;
   }
   addAWB() {
+    if(this.AWBData == null || this.AWBData == undefined){
+      this.AWBData = new Array<AwbCostApproachDto>();
+    }
     if (this.IsValidInput(this.model.countMin, this.model.countMax)) {
       if (!(this.listIndex >= 0)) {
         this.AWBData.push(this.model);
@@ -84,11 +87,12 @@ export class TransactionalChargesComponent extends AppComponentBase implements O
     }
   }
   getAwbData(inApproachid){
+    this.AWBData = new Array<AwbCostApproachDto>();
     this._awbcostapproachservice.getPerAwbCostApproachForEdit(inApproachid).subscribe(response => {
       
       this.AWBData = response.awbCostAppraochData;
-      console.log(response);
-      console.log(response.awbCostAppraochData);
+      // console.log(response);
+      // console.log(response.awbCostAppraochData);
       
       //this.AWBData = result;
     })

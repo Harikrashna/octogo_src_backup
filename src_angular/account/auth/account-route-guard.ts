@@ -44,6 +44,6 @@ export class AccountRouteGuard implements CanActivate {
         return '/app/notifications';
     }
     getTenantDefaultdashBoard(): string {
-        return '/app/main/tenant-dashboard';
+        return '/app/main/tenant-dashboard'
     }
 }

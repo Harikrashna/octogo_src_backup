@@ -6,6 +6,6 @@ namespace CF.Octogo.Master.Airline.Dto
 {
     public class GetEditAirlineinput
     {
-        public int inAirlineID { get; set; }
+        public int inAirlineId { get; set; }
     }
 }

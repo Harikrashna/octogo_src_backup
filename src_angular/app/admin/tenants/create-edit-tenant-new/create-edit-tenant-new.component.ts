@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Injector, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { CreateEditTenantInputDto, SubscriptionStartType, TenantServiceProxy, TransactionDataInputDto } from '@shared/service-proxies/service-proxies';
+import { CreateEditTenantInputDto, InvoiceDataInputDto, SubscriptionStartType, TenantBillingSettingsEditDto, TenantServiceProxy, TenantSettingsEditDto, TransactionDataInputDto } from '@shared/service-proxies/service-proxies';
 import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import { TransactionalChargesComponent } from './transactional-charges/transactional-charges.component';
 import { TenantDetailsComponent } from './tenant-details/tenant-details.component';
@@ -21,6 +21,7 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
   @ViewChild('packagesDetail') PackagesDetail: PackagesDetailComponent;
   @ViewChild('paymentDetail') PaymentDetail: PaymentDetailsComponent;
   @ViewChild('transactionalCharges') TransactionalCharges: TransactionalChargesComponent;
+ // @ViewChild('LegalNameInput', { static: false }) nameInput: ElementRef;
   @Output() formClose = new EventEmitter();
   @Input() TenantId = 0;
   @Input() viewForm :boolean =false;
@@ -28,6 +29,9 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
   active = false;
   saving = false;
   EditData: CreateEditTenantInputDto;
+  //settings: TenantSettingsEditDto =  new TenantSettingsEditDto();
+  InvoiceDetails:InvoiceDataInputDto = new InvoiceDataInputDto() //Added by:Merajuddin
+ 
 
   TransactionalChargesInput: TransactionDataInputDto;
   TransactionalChargesData: TransactionDataInputDto = new TransactionDataInputDto();
@@ -41,6 +45,7 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
 
   ngOnInit(): void {
     // If page open in Edit mode
+    //this.settings.billing = new TenantBillingSettingsEditDto()
     if (this.TenantId > 0) {
       this.EditData = new CreateEditTenantInputDto();
       this._tenantAppService.getTenantDetailsForEdit(this.TenantId)
@@ -60,12 +65,32 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
               if(this.EditData.tenantDetails.userTypeID > 0){
                 this.PackagesDetail.GetProduclistByUserTypeId(this.EditData.tenantDetails.userTypeID)  
               }
-              this.PaymentDetail.PackagesDataForEdit = this.EditData.packageDetails
+              this.PaymentDetail.PackagesDataForEdit = this.EditData.packageDetails;
+              this.PaymentDetail.IsEdit = true;
             }
             if(this.EditData.transactionCharges != null && this.EditData.transactionCharges != undefined){
               this.TransactionalCharges.approachId = this.EditData.transactionCharges.approachId;
               this.TransactionalCharges.AWBData = this.EditData.transactionCharges.awbData;
-            }            
+            }     
+            if(this.EditData.invoiceData != null && this.EditData.invoiceData != undefined) //Added by:Merajuddin
+            {
+              //A loop is added here to prevent the assign incorrect data if order of 'this.EditData.invoiceData.name' will be changed.
+              for(var i = 0; i < this.EditData.invoiceData.length; i++) 
+              {
+                if(this.EditData.invoiceData[i].name.toUpperCase() == 'App.TenantManagement.BillingLegalName'.toUpperCase())
+                {
+                  this.InvoiceDetails.legalName = this.EditData.invoiceData[i].value
+                }
+                if(this.EditData.invoiceData[i].name.toUpperCase() == 'App.TenantManagement.BillingAddress'.toUpperCase())
+                {
+                  this.InvoiceDetails.address = this.EditData.invoiceData[i].value
+                }
+                if(this.EditData.invoiceData[i].name.toUpperCase() == 'App.TenantManagement.BillingTaxVatNo'.toUpperCase())
+                {
+                  this.InvoiceDetails.taxVatNo = this.EditData.invoiceData[i].value
+                }
+              }
+            }      
           }
         })
     }
@@ -83,6 +108,7 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
             input.tenantDetails = this.TenantDetails.GetDataToInsert();   // Get Tenant Details data to Insert
             input.tenantDetails.tenantId = this.TenantId
             input.packageDetails = this.PackagesDetail.GetDataToInsert();   // Get Packages data to Insert
+            input.invoiceDetails = this.InvoiceDetails //Added by:Merajuddin
             input.packageDetails.forEach(pkg => {
               let payments = this.PaymentDetail.GetDataToInsert(pkg.editionId);
               pkg.pricingTypeId = payments["pricingTypeId"];

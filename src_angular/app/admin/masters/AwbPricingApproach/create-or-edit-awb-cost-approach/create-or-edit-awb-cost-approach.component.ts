@@ -130,7 +130,10 @@ export class CreateOrEditAwbCostApproachComponent extends AppComponentBase {
   }
 
   addAWB() {
-    let Duplicacy = this.perAWBCostApproach.filter((a) => a.vcApproachName.trim().toLowerCase() === this.createAwbApproach.vcApproachName.trim().toLowerCase() && a.inApproachID != this.createAwbApproach.inApproachID).length === 1;;
+    let Duplicacy = false;
+    if(this.perAWBCostApproach != null && this.perAWBCostApproach != undefined && this.perAWBCostApproach.length > 0){
+      Duplicacy = this.perAWBCostApproach.filter((a) => a.vcApproachName.trim().toLowerCase() === this.createAwbApproach.vcApproachName.trim().toLowerCase() && a.inApproachID != this.createAwbApproach.inApproachID).length === 1;
+    }
     if (Duplicacy) {
       return this.notify.warn(this.l('DuplicateRecord'));
     }

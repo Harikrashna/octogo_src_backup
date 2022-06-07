@@ -15,9 +15,9 @@ namespace CF.Octogo.Master.Department
     public interface IDepartmentAppService : IApplicationService
     {
         Task<PagedResultDto<DepartmentListDto>> GetDepartment(DepartmentListInputDto input);
-        Task<int> CreateorUpdateDepartment(CreateOrUpdateDepartmentInput inp);
+        Task<int> CreateOrUpdateDepartment(CreateOrUpdateDepartmentInput inp);
         Task DeleteDepartment(EntityDto input);
-        Task<DataSet> GetDepartmentForEdit(EditDepartmentDto input);
-        Task<DataSet> GetDepartmentByDepartmentId(int? inDepartmentID, string vcDepartmentName);
+        Task<DataSet> GetDepartmentById(EditDepartmentDto input);
+        // Task<DataSet> GetDepartmentByDepartmentId(int? inDepartmentID, string vcDepartmentName);
     }
 }

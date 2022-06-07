@@ -65,32 +65,38 @@
                                                         <li *ngIf="'Pages.Administration.Airline.Edit' | permission"
                                                             role="menuitem">
                                                             <a class="dropdown-item" href="javascript:;"
-                                                                (click)="viewAirline.show(Airline.inAirlineID)">{{'View'|localize}}</a>
+                                                                (click)="viewAirline.show(Airline.airlineId)">{{'View'|localize}}</a>
                                                         </li>                                                        
                                                     </ul>
                                                 </div>
                                             </td>
                                             <td>
                                                 <span class="p-column-title"> {{'CarrierCode' | localize}}</span>
-                                                {{Airline.vcCarrierCode }}
+                                                {{Airline.carrierCode }}
                                             </td>
                                             <td>
                                                 <span class="p-column-title"> {{'AirlineName' | localize}}</span>
-                                                {{Airline.vcAirlineName }}
+                                                {{Airline.airlineName }}
                                             </td>
                                             <td>
                                                 <span class="p-column-title"> {{'Interline' | localize}}</span>
-                                                {{Airline.isInterline }}
+                                                
+                                                <span class="label label-success label-inline"
+                                                    *ngIf="Airline.isInterline">{{'Yes'
+                                                    | localize}}</span>
+                                                <span class="label label-dark label-inline"
+                                                    *ngIf="!Airline.isInterline">{{'No' |
+                                                    localize}}</span>
                                             </td>
 
                                             <td>
                                                 <span class="p-column-title"> {{'Active' | localize}}</span>
 
                                                 <span class="label label-success label-inline"
-                                                    *ngIf="Airline.isActive">{{'Yes'
+                                                    *ngIf="Airline.active">{{'Yes'
                                                     | localize}}</span>
                                                 <span class="label label-dark label-inline"
-                                                    *ngIf="!Airline.isActive">{{'No' |
+                                                    *ngIf="!Airline.active">{{'No' |
                                                     localize}}</span>
                                             </td>
                                         </tr>

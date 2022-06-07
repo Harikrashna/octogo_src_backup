@@ -40,28 +40,18 @@ namespace CF.Octogo.Master.PricingApproach
             System.Data.CommandType.StoredProcedure,
             "USP_GetPricingApproach", parameters
             );
+            var totalCount = 0;
+            var pricingApproachList = new List<PriceApproachListDto>();
             if (ds.Tables.Count > 0)
             {
-
-                var totalCount = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                DataTable dt = ds.Tables[0];
-                List<PriceApproachListDto> PricingApproachList = new List<PriceApproachListDto>();
-
-                PricingApproachList = (from DataRow dr in dt.Rows
-                                       select new PriceApproachListDto()
-                                       {
-                                           Id = Convert.ToInt32(dr["id"]),
-                                           ApproachName = dr["ApproachName"].ToString(),
-                                           Description = dr["Description"].ToString(),
-                                       }).ToList();
-                return new PagedResultDto<PriceApproachListDto>(totalCount, PricingApproachList);
+                pricingApproachList = SqlHelper.ConvertDataTable<PriceApproachListDto>(ds.Tables[0]);
+                DataRow row = ds.Tables[1].Rows[0];
+                totalCount = Convert.ToInt32(row["totalCount"]);
             }
-
-            else
-            {
-                return null;
-            }
-
+            return new PagedResultDto<PriceApproachListDto>(
+                totalCount,
+                pricingApproachList
+            );
 
         }
 
@@ -69,112 +59,67 @@ namespace CF.Octogo.Master.PricingApproach
         {
             if (input.ApproachId != 0)
             {
-                var PricingApproach = GetPricingApproachDuplicateCheck(input.ApproachId, input.ApproachName);
-
-                if (PricingApproach.Result.Rows.Count > 0)
-                {
-
-                    throw new UserFriendlyException(L("DuplicateApproachName"));
-
-                }
-
-                else
-                {
-                    await UpdatePriceApproachAsync(input);
-
-                }
-
+                await UpdatePriceApproachAsync(input);
             }
-
             else
             {
-
-                var PricingApproach = GetPricingApproachDuplicateCheck(input.ApproachId, input.ApproachName);
-                if (PricingApproach.Result.Rows.Count > 0)
-                {
-                    throw new UserFriendlyException(L("DuplicateApproachName"));
-                }
-
-                else
-                {
-
-                    await CreatePriceApproachAsync(input);
-
-                }
-
+                await CreatePriceApproachAsync(input);
             }
         }
 
-
-        [AbpAuthorize(AppPermissions.Pages_Administration_PriceApproach_Create)]
         protected virtual async Task<int> CreatePriceApproachAsync(CreateOrUpdatePriceApproachDto input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("ApproachId", input.ApproachId);
             parameters[1] = new SqlParameter("ApproachName", input.ApproachName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
-            parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
+            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_InsertUpdatePricingApproach", parameters);
+                    "USP_CreateOrUpdateOrDeletePricingApproach", parameters);
 
-
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
-
             }
             else
             {
-                return 1;
+                return 0;
             }
-
         }
 
-        public async Task<DataTable> GetPricingApproachDuplicateCheck(int? ApproachId, string ApproachName)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("ApproachName", ApproachName);
-            parameters[1] = new SqlParameter("ApproachId", ApproachId);
-
-
-            DataSet ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_GetPricingApproachDuplicacyCheck", parameters
-            );
-            return ds.Tables[0];
-        }
-
-
-
-        [AbpAuthorize(AppPermissions.Pages_Administration_PriceApproach_Edit)]
         protected virtual async Task<int> UpdatePriceApproachAsync(CreateOrUpdatePriceApproachDto input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("ApproachId", input.ApproachId);
             parameters[1] = new SqlParameter("ApproachName", input.ApproachName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
-            parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
+            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_InsertUpdatePricingApproach", parameters);
+                    "USP_CreateOrUpdateOrDeletePricingApproach", parameters);
 
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
             {
-                return 1;
+                return 0;
             }
-
         }
-
 
         [AbpAuthorize(AppPermissions.Pages_Administration_PriceApproach_Delete)]
         public async Task<string> DeletePricingApproach(int ApproachId)
@@ -182,11 +127,12 @@ namespace CF.Octogo.Master.PricingApproach
             {
                 SqlParameter[] parameters ={
                      new SqlParameter("@ApproachId",(ApproachId)),
-                     new SqlParameter("@LoginBy",  AbpSession.UserId)
+                     new SqlParameter("@UserId",  AbpSession.UserId),
+                     new SqlParameter("@IsDelete",  true)
                 };
                 await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,
-                "USP_DeletePricingApproach", parameters);
+                "USP_CreateOrUpdateOrDeletePricingApproach", parameters);
                 await ClearCache();
                 return "Success";
             }

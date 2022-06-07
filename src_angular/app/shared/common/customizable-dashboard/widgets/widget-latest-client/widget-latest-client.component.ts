@@ -19,7 +19,7 @@ export class WidgetLatestClientComponent extends WidgetComponentBaseComponent {
 
   constructor(injector: Injector,
     private _tenantService: TenantServiceProxy,
-    private _router: Router,) {
+    private _router: Router) {
     super(injector);
     this.getTenants();
   }
@@ -37,7 +37,6 @@ export class WidgetLatestClientComponent extends WidgetComponentBaseComponent {
       this.primengTableHelper.totalRecordsCount = result.totalCount;
       this.primengTableHelper.records = result.items;
       this.primengTableHelper.hideLoadingIndicator();
-      debugger
     });
   }
   gotoAllTenants() {

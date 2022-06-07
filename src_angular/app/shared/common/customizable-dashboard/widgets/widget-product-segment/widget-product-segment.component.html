@@ -5,14 +5,23 @@
                 <i class="la la-pie-chart text-primary"></i>
             </span>
             <h3 class="card-label text-success">
-                {{"ProductWiseClientStatistics" | localize}}
+                {{"WidgeProductSegmentation" | localize}}
                 <small class="text-muted"></small>
             </h3>
         </div>
     </div>
     <div class="card-body" [perfectScrollbar]>
-        <ngx-charts-pie-chart [busyIf]="loadingProductWiseClientStatistics"
-            [results]="productWiseClientStatisticsData" [labels]="showLabels" [legend]="showLegend">
+        <ngx-charts-pie-chart [busyIf]="loadingProductWiseClientStatistics" *ngIf="productWiseClientStatisticsData[0]?.value != 0"
+            [results]="productWiseClientStatisticsData" [labels]="showLabels" [legend]="showLegend" 
+            [legendTitle]="'Product' | localize">
+            <ng-template #tooltipTemplate let-model="model">
+                <p>{{model.name}}</p>
+                <p>{{model.value}}({{(model.value*100/totalClients) | number:'1.0-2'}}%)</p>
+            </ng-template>
         </ngx-charts-pie-chart>
+        <div class="primeng-no-data text-center chart" *ngIf="productWiseClientStatisticsData[0]?.value == 0">
+            {{'NoData' | localize}}
+        </div>
     </div>
+    
 </div>

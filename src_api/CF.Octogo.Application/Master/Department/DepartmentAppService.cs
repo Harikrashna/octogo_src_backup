@@ -32,48 +32,27 @@ namespace CF.Octogo.Master.Department
             parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
             parameters[2] = new SqlParameter("Sort", input.Sorting);
             parameters[3] = new SqlParameter("Filter", input.filter);
-            List<DepartmentListDto> DepartmentList = new List<DepartmentListDto>();
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetDepartment", parameters
             );
 
+            var totalCount = 0;
+            var departmentList = new List<DepartmentListDto>();
             if (ds.Tables.Count > 0)
             {
-                int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                var totalCount = v;
-                DataTable dt = ds.Tables[0];
-
-                DepartmentList = (from DataRow dr in dt.Rows
-                                  select new DepartmentListDto()
-                                  {
-                                      inDepartmentID = Convert.ToInt32(dr["DepartmentId"]),
-                                      vcDepartmentName = dr["DepartmentName"].ToString(),
-                                      vcDescription = dr["Description"].ToString(),
-
-                                  }).ToList();
-                return new PagedResultDto<DepartmentListDto>(totalCount, DepartmentList);
+                departmentList = SqlHelper.ConvertDataTable<DepartmentListDto>(ds.Tables[0]);
+                DataRow row = ds.Tables[1].Rows[0];
+                totalCount = Convert.ToInt32(row["totalCount"]);
             }
-            else
-            {
-                return null;
-            }
+            return new PagedResultDto<DepartmentListDto>(
+                totalCount,
+                departmentList
+            );
         }
-
-
-
-        [AbpAuthorize(AppPermissions.Pages_Administration_Department_CreateDepartment, AppPermissions.Pages_Administration_Department_Edit)]
-        public async Task<int> CreateorUpdateDepartment(CreateOrUpdateDepartmentInput inp)
+        public async Task<int> CreateOrUpdateDepartment(CreateOrUpdateDepartmentInput inp)
         {
-
-            var dup_data = GetDepartmentByDepartmentId(inp.inDepartmentID, inp.vcDepartmentName);
-
-            if (dup_data.Result != null)
-            {
-                throw new UserFriendlyException(L("DuplicateRecord"));
-            }
-
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("inDepartmentID", inp.inDepartmentID);
             parameters[1] = new SqlParameter("vcDepartmentName", inp.vcDepartmentName.Trim());
@@ -81,13 +60,14 @@ namespace CF.Octogo.Master.Department
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_CreateOrUpdateDepartment", parameters);
+           "USP_CreateOrUpdateOrDeleteDepartment", parameters);
 
 
-
-
-
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
@@ -96,57 +76,29 @@ namespace CF.Octogo.Master.Department
             {
                 return 0;
             }
-
         }
         [AbpAuthorize(AppPermissions.Pages_Administration_Department_Delete)]
-
         public async Task DeleteDepartment(EntityDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("DepartmentID", input.Id);
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("inDepartmentID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[2] = new SqlParameter("IsDelete", true);
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_DeleteDepartment", parameters);
+           "USP_CreateOrUpdateOrDeleteDepartment", parameters);
             await ClearCache();
-
         }
-
-
-
-        public async Task<DataSet> GetDepartmentForEdit(EditDepartmentDto input)
+        public async Task<DataSet> GetDepartmentById(EditDepartmentDto input)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("DepartmentID", input.inDepartmentID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetDepartmentById", parameters
+            "USP_GetDepartment", parameters
             );
             if (ds.Tables.Count > 0)
-            {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        public async Task<DataSet> GetDepartmentByDepartmentId(int? inDepartmentID, string vcDepartmentName)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("DepartmentId", inDepartmentID);
-            parameters[1] = new SqlParameter("DepartmentName", vcDepartmentName);
-
-
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicateDepart", parameters
-            );
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 return ds;
             }

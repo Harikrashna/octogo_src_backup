@@ -1,0 +1,24 @@
+<div class="card card-custom h-100">
+    <div class="card-header align-items-center border-0">
+        <div class="card-title">
+            <h3 class="card-label font-weight-bolder text-dark">
+                {{"AWBCounts" | localize}}
+                <small class="text-muted"></small>
+            </h3>
+        </div>
+    </div>
+
+    <div class="card-body" [perfectScrollbar]>
+        <ngx-charts-bar-vertical *ngIf="totalAwbCountsStatisticsData?.length > 0"
+            [busyIf]="loadingTotalAwbCountsStatistics" [results]="totalAwbCountsStatisticsData" [showXAxisLabel]="true"
+            showYAxisLabel="true" [xAxis]="true" [yAxis]="true" [showDataLabel]="true" [showGridLines]="true">
+        </ngx-charts-bar-vertical>
+        <div class="note note-info text-center chart" [hidden]="totalAwbCountsStatisticsData?.length > 0">
+            <small class="text-muted ">{{"NoData" | localize}}</small>
+        </div>
+    </div>
+    <div class="dateRange">
+        <u><em> {{selectedDateRange[0] | luxonFormat:'DD'}} - {{selectedDateRange[1] | luxonFormat:'DD'}}</em></u>
+    </div>
+
+</div>

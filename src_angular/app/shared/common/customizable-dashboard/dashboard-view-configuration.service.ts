@@ -24,6 +24,7 @@ import { WidgetPendingPaymentComponent } from './widgets/widget-pending-payment/
 import { WidgetCurrentProductAndPackageComponent } from './widgets/widget-current-product-and-package/widget-current-product-and-package.component';
 import { WidgetExpirationDaysComponent } from './widgets/widget-expiration-days/widget-expiration-days.component';
 import { WidgetOctoCostComponent } from './widgets/widget-octo-cost/widget-octo-cost.component';
+import { WidgetAwbcountsComponent } from './widgets/widget-awbcounts/widget-awbcounts.component';
 
 @Injectable({
   providedIn: 'root'
@@ -150,6 +151,11 @@ export class DashboardViewConfigurationService {
     WidgetPendingPaymentComponent,
    );
 
+   let awbCounts = new WidgetViewDefinition(
+    DashboardCustomizationConst.widgets.tenant.awbCounts,
+    WidgetAwbcountsComponent,
+  );
+
     this.WidgetViewDefinitions.push(generalStats);
     this.WidgetViewDefinitions.push(dailySales);
     this.WidgetViewDefinitions.push(profitShare);
@@ -172,6 +178,7 @@ export class DashboardViewConfigurationService {
     this.WidgetViewDefinitions.push(currentProductAndPackage);
     this.WidgetViewDefinitions.push(expirationDays);
     this.WidgetViewDefinitions.push(octoCost);
+    this.WidgetViewDefinitions.push(awbCounts);
     
     
   }

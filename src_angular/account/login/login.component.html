@@ -82,7 +82,8 @@
         <a routerLink="/account/register">{{"CreateAnAccount" | localize}}</a>
         <span> | </span>
     </span> -->
-    <span *ngIf="!multiTenancySideIsTeanant && isTenantSelfRegistrationAllowed">
+    <!-- !multiTenancySideIsTeanant &&  -->
+    <span *ngIf="isTenantSelfRegistrationAllowed">
         <!-- <a routerLink="/account/select-edition">{{"NewTenant" | localize}}</a> -->
         <a routerLink="/account/sign-up/user-sign-up">{{"CreateNewAccount" | localize}}</a>
         <span> | </span>

@@ -265,7 +265,8 @@ namespace CF.Octogo.MultiTenancy
             //var y = JsonConvert.SerializeObject(input.TransactionCharges.AWBData);
             //try
             //{
-                SqlParameter[] parameters = new SqlParameter[25];
+                //input.InvoiceDetails = new InvoiceDataInputDto();
+                SqlParameter[] parameters = new SqlParameter[28];
                 parameters[0] = new SqlParameter("TenantId", input.TenantDetails.TenantId);
                 parameters[1] = new SqlParameter("PackageDetails", JsonConvert.SerializeObject(input.PackageDetails));
                 parameters[2] = new SqlParameter("UserTypeId", input.TenantDetails.UserTypeID);
@@ -290,19 +291,23 @@ namespace CF.Octogo.MultiTenancy
                 parameters[21] = new SqlParameter("Name", input.TenantDetails.FirstName);
                 parameters[22] = new SqlParameter("Surname", input.TenantDetails.LastName);
                 parameters[23] = new SqlParameter("Email", input.TenantDetails.AdminEmailAddress);
-                parameters[24] = new SqlParameter("LoginUserId", AbpSession.UserId); 
+                parameters[24] = new SqlParameter("LoginUserId", AbpSession.UserId);
+                parameters[25] = new SqlParameter("LegalName", input.InvoiceDetails.LegalName);
+                parameters[26] = new SqlParameter("Address", input.InvoiceDetails.Address);
+                parameters[27] = new SqlParameter("TaxVatNo", input.InvoiceDetails.TaxVatNo);
                 var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                         System.Data.CommandType.StoredProcedure,
-                        "USP_InsertUpdateTenantWithSubscription", parameters);
+                        "USP_InsertUpdateTenantWithSubscription_Test", parameters);
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     return (int)input.TenantDetails.TenantId;
                 }
+
             //}
-            //catch(Exception e)
+            //catch (Exception e)
             //{
             //    Console.WriteLine(e.Message);
-            //        return 0;
+            //    return 0;
             //}
             return (int)input.TenantDetails.TenantId;
         }
@@ -323,7 +328,8 @@ namespace CF.Octogo.MultiTenancy
                 {
                     TenantDetails = rw.TenantDetails != null ? JsonConvert.DeserializeObject<List<TenantDetailsInputDto>>(rw.TenantDetails.ToString()).FirstOrDefault() : null,
                     PackageDetails = rw.PackageDetails != null ? JsonConvert.DeserializeObject<List<PackageDetailsInputDto>>(rw.PackageDetails.ToString()) : null,
-                    TransactionCharges = rw.TransactionCharges != null ? JsonConvert.DeserializeObject<List<TransactionDataInputDto>>(rw.TransactionCharges.ToString()).FirstOrDefault() : null
+                    TransactionCharges = rw.TransactionCharges != null ? JsonConvert.DeserializeObject<List<TransactionDataInputDto>>(rw.TransactionCharges.ToString()).FirstOrDefault() : null,
+                    InvoiceData = rw.InvoiceDetails != null ? JsonConvert.DeserializeObject<List<InvoiceDataForEditDto>>(rw.InvoiceDetails.ToString()).ToList() : null
                 }).FirstOrDefault();
                 return TenantData;
             }

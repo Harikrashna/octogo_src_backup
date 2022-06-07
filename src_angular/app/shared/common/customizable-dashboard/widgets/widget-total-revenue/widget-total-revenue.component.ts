@@ -15,32 +15,37 @@ export class WidgetTotalRevenueComponent extends WidgetComponentBaseComponent im
 
   FilterValue: string
   loadingTotalRevenueStatistics = true;
-  selectedDateRange: DateTime[] = [this._dateTimeService.getStartOfDayMinusDays(7), this._dateTimeService.getEndOfDay()];
+  //selectedDateRange: DateTime[] = [this._dateTimeService.getStartOfDayMinusDays(7), this._dateTimeService.getEndOfDay()];
   totalRevenueData: any = [];
   incomeStatisticsHasData = false;
   view: any[] = [0, 0];
-  filterValue = ["Product"] 
+  filterValue = ["PRODUCT"] 
   SelectedFilterName: string;
   public yAxisTickFormattingFn = this.yAxisTickFormatting.bind(this);
 
   @ViewChild('filterModal', { static: true }) modal: ModalDirective;
+  selectedDateRange: DateTime[] = [this._dateTimeService.getStartOfDayMinusDays(7), this._dateTimeService.getEndOfDay()];
+  creationDateRange: DateTime[] = [this._dateTimeService.getStartOfDay(), this._dateTimeService.getEndOfDay()];
   constructor(injector: Injector,
     private _hostDashboardServiceProxy: HostDashboardServiceProxy,
     private _dateTimeService: DateTimeService
   ) {
     super(injector);
-  }
+    }
 
   ngOnInit() {
+    this.subDateRangeFilter();
     this.runDelayed(this.loadTotalRevenueData);
   }
   yAxisTickFormatting(value) {
-    return value + " $" // this is where you can change the formatting
+    return "$ " + value  // this is where you can change the formatting
   }
   loadTotalRevenueData = () => {
     this.loadingTotalRevenueStatistics = true;
     this._hostDashboardServiceProxy.getTotalRevenueForWidget(
-      this.filterValue
+      this.filterValue,
+      this.selectedDateRange[0],
+      this.selectedDateRange[1],
     ).subscribe(result => {
       this.totalRevenueData = result;
       this.loadingTotalRevenueStatistics = false;
@@ -48,6 +53,7 @@ export class WidgetTotalRevenueComponent extends WidgetComponentBaseComponent im
   }
 
   onChangeCheckBoxvalue(event, FilterName: string) {
+    debugger
     let index = this.filterValue.findIndex(fv => fv == FilterName);
     if (event.target.checked == true) {
       if (index == -1)
@@ -64,5 +70,25 @@ export class WidgetTotalRevenueComponent extends WidgetComponentBaseComponent im
     }, 150);
 
   }
+  onDateRangeFilterChange = (dateRange) => {
+    if (!dateRange || dateRange.length !== 2 || (this.selectedDateRange[0] === dateRange[0] && this.selectedDateRange[1] === dateRange[1])) {
+      return;
+    }
+  
+    this.selectedDateRange[0] = dateRange[0];
+    this.selectedDateRange[1] = dateRange[1];
+    this.runDelayed(this.loadTotalRevenueData);
+  }
+    subDateRangeFilter() {
+      abp.event.on('app.dashboardFilters.dateRangePicker.onDateChange', this.onDateRangeFilterChange);
+    }
+  
+    unSubDateRangeFilter() {
+      abp.event.off('app.dashboardFilters.dateRangePicker.onDateChange', this.onDateRangeFilterChange);
+    }
+    ngOnDestroy(): void {
+      this.unSubDateRangeFilter();
+    }
+  
   
 }

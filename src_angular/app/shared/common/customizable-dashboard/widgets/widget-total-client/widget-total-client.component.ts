@@ -3,6 +3,8 @@ import { ChartDateInterval, HostDashboardServiceProxy } from '@shared/service-pr
 import { filter as _filter } from 'lodash-es';
 import { WidgetComponentBaseComponent } from '../widget-component-base';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { DateTime } from 'luxon';
+import { DateTimeService } from '@app/shared/common/timing/date-time.service';
 
 @Component({
   selector: 'app-widget-total-client',
@@ -19,20 +21,26 @@ export class WidgetTotalClientComponent extends WidgetComponentBaseComponent imp
  
 
   @ViewChild('filterModal', { static: true }) modal: ModalDirective;
+  selectedDateRange: DateTime[] = [this._dateTimeService.getStartOfDayMinusDays(7), this._dateTimeService.getEndOfDay()];
+  creationDateRange: DateTime[] = [this._dateTimeService.getStartOfDay(), this._dateTimeService.getEndOfDay()];
   constructor(injector: Injector,
     private _hostDashboardServiceProxy: HostDashboardServiceProxy,
+    private _dateTimeService: DateTimeService
   ) {
     super(injector);
   }
 
   ngOnInit() {
+    this.subDateRangeFilter();
     this.runDelayed(this.loadTotalClientData);
   }
 
   loadTotalClientData = () => {
     this.loadingTotalClientStatistics = true;
     this._hostDashboardServiceProxy.getTotalClientWithFilterForWidget(
-      this.filterValue
+      this.filterValue,
+      this.selectedDateRange[0],
+      this.selectedDateRange[1],
     ).subscribe(result => {
       this.totalClientStatisticsData = result;
       this.loadingTotalClientStatistics = false;
@@ -59,6 +67,25 @@ export class WidgetTotalClientComponent extends WidgetComponentBaseComponent imp
    
 
   }
+  onDateRangeFilterChange = (dateRange) => {
+    if (!dateRange || dateRange.length !== 2 || (this.selectedDateRange[0] === dateRange[0] && this.selectedDateRange[1] === dateRange[1])) {
+      return;
+    }
+  
+    this.selectedDateRange[0] = dateRange[0];
+    this.selectedDateRange[1] = dateRange[1];
+    this.runDelayed(this.loadTotalClientData);
+  }
+    subDateRangeFilter() {
+      abp.event.on('app.dashboardFilters.dateRangePicker.onDateChange', this.onDateRangeFilterChange);
+    }
+  
+    unSubDateRangeFilter() {
+      abp.event.off('app.dashboardFilters.dateRangePicker.onDateChange', this.onDateRangeFilterChange);
+    }
+    ngOnDestroy(): void {
+      this.unSubDateRangeFilter();
+    }
   
 
 }

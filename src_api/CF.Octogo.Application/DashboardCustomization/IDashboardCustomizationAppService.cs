@@ -3,6 +3,7 @@ using Abp.Application.Services;
 using System.Threading.Tasks;
 using CF.Octogo.DashboardCustomization.Dto;
 using Abp.Application.Services.Dto;
+using CF.Octogo.MultiTenancy.HostDashboard.Dto;
 
 namespace CF.Octogo.DashboardCustomization
 {
@@ -26,5 +27,6 @@ namespace CF.Octogo.DashboardCustomization
         Task<ListResultDto<EditionAndProductListDto>> GetProductAndEditionDetailByUserId(int userId);
         Task<TenantSubscriotionsDto> GetTenantEditionAddonDetailsByTenantId(int TenantId);
         Task<List<TenantEditionAddonModulesDto>> GetTenantEditionAddonModuleDetails(int EditionId);
+        Task<List<AWBCountsResultDto>> GetAWBCountsByTenantId(int tenantId, DashboardInputBase Dateinput, int? productId = null);
     }
 }

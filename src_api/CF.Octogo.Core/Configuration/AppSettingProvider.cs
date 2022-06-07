@@ -656,6 +656,24 @@ namespace CF.Octogo.Configuration
                                     Width = 6,
                                     PositionX = 6,
                                     PositionY = 24
+                                },
+                                  new Widget
+                                {
+                                    WidgetId =
+                                        OctogoDashboardCustomizationConsts.Widgets.Tenant.AwbCounts,
+                                    Height = 11,
+                                    Width = 6,
+                                    PositionX = 6,
+                                    PositionY = 24
+                                },
+                                new Widget
+                                {
+                                    WidgetId =
+                                        OctogoDashboardCustomizationConsts.Widgets.Tenant.AwbCounts,
+                                    Height = 11,
+                                    Width = 6,
+                                    PositionX = 6,
+                                    PositionY = 24
                                 }
                             }
                         }

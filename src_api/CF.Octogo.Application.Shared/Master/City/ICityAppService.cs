@@ -11,7 +11,7 @@ namespace CF.Octogo.Master.City.Dto
     public interface ICityAppService
     {
         Task<PagedResultDto<CityListDto>> GetCityList(PagedAndSortedInputDto input, string Filter);
-        Task<int> CreateOrUpdateCityType(CreateOrUpdateCityInput input);
+        Task<int> CreateOrUpdateCity(CreateOrUpdateCityInput input);
         Task<DataSet> GetCityForEdit(GetEditCityInput input);
         Task DeleteCity(EntityDto input);
     }

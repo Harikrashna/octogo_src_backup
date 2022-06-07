@@ -7,6 +7,7 @@ import { PackagesPaymentModule } from '../packages-payment/packages-payment.modu
 import { StepsModule } from 'primeng/steps';
 import { TenantRegistrationFormComponent } from './tenant-registration-form/tenant-registration-form.component';
 import { PasswordModule } from 'primeng/password';
+import { InvoiceDetailsComponent } from '../invoice-details/invoice-details.component';
 
 
 
@@ -14,7 +15,7 @@ import { PasswordModule } from 'primeng/password';
 
 @NgModule({
   declarations: [
-    PackageSelectionComponent,TenantRegistrationFormComponent
+    PackageSelectionComponent,TenantRegistrationFormComponent,InvoiceDetailsComponent
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,5 @@
-<div *ngIf="productDetailsList.length ==  1" class="card card-custom bgi-no-repeat card-stretch new-subscription-statistics h-100">
+<div *ngIf="productDetailsList.length ==  1"
+    class="card card-custom bgi-no-repeat card-stretch new-subscription-statistics h-100">
     <div class="card-header align-items-center border-0">
         <h3 class="card-title align-items-start flex-column">
             <span class="font-weight-bolder text-dark">
@@ -28,6 +29,22 @@
                 {{'Package' | localize}} - {{ad.editionName}}
             </span>
         </div>
+        <div class="row">
+            <div class="column" *ngFor="let add of ad.addon">
+                <div class="availablecard">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted mr-2 font-size-sm font-weight-bold">
+                            {{'Addon' | localize}} - {{add.addonName}}
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted mr-2 font-size-sm font-weight-bold">
+                            {{'ExpirationDaysLeft' | localize}} - {{add.remainingDays}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div *ngIf="productDetailsList.length > 1" class="card card-custom h-100">
@@ -39,44 +56,95 @@
         </h3>
     </div>
     <div class="card-body" [perfectScrollbar]>
-        <div class="child">
-            <div class="table-scrollable table-scrollable-borderless">
-                <table class="table table-hover table-light">
-                    <thead>
-                        <tr class="uppercase">
-                            <th>
-                                {{'S.No.' | localize}}
-                            </th>
-                            <th>
-                                {{'Product' | localize}}
-                            </th>
-                            <th>
-                                {{'Package' | localize}}
-                            </th>
-                            <th>
-                                {{'ExpirationDays' | localize}}
-                            </th>
+        <div class="row">
+            <div [ngClass]="StandAloneAddonList?.length > 0 ?'col-sm-8':'col-sm-12'">
+                <div class="table-scrollable table-scrollable-borderless">
+                    <table class="table table-hover table-light">
+                        <thead>
+                            <tr class="uppercase">
+                                <th>
+                                    {{'S.No.' | localize}}
+                                </th>
+                                <th>
+                                    {{'Product' | localize}}
+                                </th>
+                                <th>
+                                    {{'Package' | localize}}
+                                </th>
+                                <th>
+                                    {{'ExpirationDays' | localize}}
+                                </th>
+                                <th>
+                                    {{'Addons' | localize}}({{'ExpirationDays'| localize}})
+                                </th>
+                            </tr>
+                        </thead>
+                        <tr *ngFor="let m of productDetailsList; let index = index">
+
+                            <td>
+                                {{index+1}}
+                            </td>
+                            <td>
+                                {{m.productName}}
+                            </td>
+                            <td>
+                                {{m.editionName}}
+                            </td>
+                            <td *ngIf="m.remainingDays != null">
+                                {{m.remainingDays}}
+                            </td>
+                            <td *ngIf="m.remainingDays == null">
+                                {{'Unlimited' | localize}}
+                            </td>
+                            <td>
+                                <span *ngFor="let ad of m.addon; let i = index">
+                                    <span *ngIf="i > 0">,&nbsp;</span>
+                                    {{ad.addonName}}({{ad.remainingDays}})
+                                </span>
+                            </td>
                         </tr>
-                    </thead>
-                    <tr *ngFor="let m of productDetailsList; let index = index">  
-                    
-                    <td>
-                        {{index+1}}
-                    </td>
-                    <td>
-                        {{m.productName}}
-                    </td>
-                    <td>
-                        {{m.editionName}}
-                    </td>
-                    <td *ngIf="m.remainingDays != null">
-                        {{m.remainingDays}}
-                    </td>
-                    <td *ngIf="m.remainingDays == null">
-                        {{'Unlimited' | localize}}
-                    </td>
-                </tr>
-                </table>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-4" *ngIf="StandAloneAddonList?.length > 0">
+                <div class="card" [perfectScrollbar]>
+                    <div class="card-header align-items-center border-0">
+                        <h5 class="card-title align-items-start flex-column">
+                            <span class="font-weight-bolder text-dark">
+                                {{'StandAloneAddons' | localize}}
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="table-scrollable table-scrollable-borderless">
+                        <table class="table table-hover table-light" style="margin-top: -40px;">
+                            <thead>
+                                <tr class="uppercase">
+                                    <th>
+                                        {{'S.No.' | localize}}
+                                    </th>
+                                    <th>
+                                        {{'AddonName' | localize}}
+                                    </th>
+                                    <th>
+                                        {{'Price'| localize}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tr *ngFor="let a of StandAloneAddonList; let index = index">
+
+                                <td>
+                                    {{index+1}}
+                                </td>
+                                <td>
+                                    {{a.addonName}}
+                                </td>
+                                <td>
+                                    {{a.addonPrice}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

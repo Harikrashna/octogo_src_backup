@@ -18,6 +18,7 @@ using CF.Octogo.DashboardCustomization.Dto;
 using CF.Octogo.Data;
 using CF.Octogo.Editions.Dto;
 using CF.Octogo.MultiTenancy.HostDashboard.Dto;
+using CF.Octogo.Tenants.Dto;
 using Newtonsoft.Json;
 
 namespace CF.Octogo.DashboardCustomization
@@ -476,9 +477,6 @@ namespace CF.Octogo.DashboardCustomization
         /// <returns></returns>
         public async Task<List<TotalOctoCostDto>> GetTotalOctoCostWidget(List<string> filters, int tenantId, DashboardInputBase Dateinput)
         {
-            {
-                try
-                {
                     string filterData = String.Join<string>(",", filters);
                     SqlParameter[] parameters = new SqlParameter[4];
                     parameters[0] = new SqlParameter("TenantId", tenantId);
@@ -508,15 +506,64 @@ namespace CF.Octogo.DashboardCustomization
                     {
                         return null;
                     }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-                return null;
-
-
+                return null;           
+        }
+        public async Task<List<AWBCountsResultDto>> GetAWBCountsByTenantId(int tenantId, DashboardInputBase Dateinput, int? productId = null)
+        {
+            List<AWBCountsDto> AwbCounts = new List<AWBCountsDto>()
+            {
+                new AWBCountsDto() { AwbTypeId=0, Name="Cargo", Value = 0 },
+                new AWBCountsDto() { AwbTypeId=1, Name="Courier", Value = 0 },
+                new AWBCountsDto() { AwbTypeId=2, Name="CBV", Value = 0 },      // Baggage Voucher
+                new AWBCountsDto() { AwbTypeId=3, Name="PO Mail", Value = 0 }
+            };
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("TenantId", tenantId);
+            parameters[1] = new SqlParameter("AdminCreationCompleted", true);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+                    Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_GetTenantDataBaseDetails", parameters
+                    );
+            if (ds.Tables.Count > 0)
+            {
+                    var result = SqlHelper.ConvertDataTable<TenantDBDetailsDto>(ds.Tables[0]);
+                    if (result.Count > 0)
+                    {
+                        foreach (var tenantDetails in result)
+                        {
+                            if (!(productId > 0) || tenantDetails.ProductId == productId)
+                            {
+                                var awbRet = await SqlHelper.ExecuteDatasetAsync(tenantDetails.ConnectionString,
+                                        System.Data.CommandType.Text,
+                                        "SELECT AWBType, COUNT(AWBNO) AS AWBCount FROM AWB WHERE AWBDate >= '"+ Dateinput.StartDate.ToString() + "' AND AWBDate <= '"+ Dateinput.StartDate.ToString() + "' GROUP BY AWBType"
+                                        );
+                                if (awbRet.Tables.Count > 0)
+                                {
+                                    if(awbRet.Tables[0].Rows.Count > 0)
+                                    {
+                                        for(int i = 0; i < awbRet.Tables[0].Rows.Count; i++)
+                                        {
+                                            var row = awbRet.Tables[0].Rows[i];
+                                            var awbTypeId = row["AWBType"];
+                                            var awbCounts = row["AWBCount"];
+                                            // AwbCounts
+                                            var index = AwbCounts.FindIndex(x => x.AwbTypeId == Convert.ToInt32(awbTypeId));
+                                            if(index >= 0)
+                                            {
+                                                AwbCounts[index].Value = AwbCounts[index].Value + Convert.ToInt32(awbCounts);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
             }
+            return AwbCounts.Select(f => new AWBCountsResultDto { 
+                Name = f.Name,
+                Value = f.Value
+            }).ToList();
         }
     }
 }

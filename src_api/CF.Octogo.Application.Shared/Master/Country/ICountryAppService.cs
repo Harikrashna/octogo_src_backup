@@ -16,6 +16,6 @@ namespace CF.Octogo.Master.Country
         Task<int> CreateorUpdateCountry(CreateOrUpdateCountryInput inp);
         Task DeleteCountry(EntityDto input);
         Task<DataSet> GetCountryForEdit(GetEditCountryInput input);
-        Task<DataSet> GetCountryByCountryId(int? SNo, string CountryName, string CountryCode);
+        // Task<DataSet> GetCountryByCountryId(int? SNo, string CountryName, string CountryCode);
     }
 }

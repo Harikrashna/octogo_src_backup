@@ -93,26 +93,35 @@ namespace CF.Octogo.DashboardCustomization.Definitions
 
             var currentProductAndPackage = new WidgetDefinition(
                 OctogoDashboardCustomizationConsts.Widgets.Tenant.CurrentProductAndPackge,
-                "currentProductAndPackage",
+                "CurrentProductAndPackage",
                 side: MultiTenancySides.Tenant,
                 permissions: tenantWidgetsDefaultPermission);
             var octoCost = new WidgetDefinition(
                 OctogoDashboardCustomizationConsts.Widgets.Tenant.OctoCost,
                 "WidgetOctoCost",
                 side: MultiTenancySides.Tenant,
+                usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
+                permissions: tenantWidgetsDefaultPermission);
+
+            var awbCounts = new WidgetDefinition(
+                OctogoDashboardCustomizationConsts.Widgets.Tenant.AwbCounts,
+                "WidgetAwbCounts",
+                side: MultiTenancySides.Tenant,
+                usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
                 permissions: tenantWidgetsDefaultPermission);
 
 
-            WidgetDefinitions.Add(generalStats);
-            WidgetDefinitions.Add(dailySales);
-            WidgetDefinitions.Add(profitShare);
-            WidgetDefinitions.Add(memberActivity);
-            WidgetDefinitions.Add(regionalStats);
-            WidgetDefinitions.Add(topStats);
-            WidgetDefinitions.Add(salesSummary);
+            // WidgetDefinitions.Add(generalStats);
+            // WidgetDefinitions.Add(dailySales);
+            // WidgetDefinitions.Add(profitShare);
+            // WidgetDefinitions.Add(memberActivity);
+            // WidgetDefinitions.Add(regionalStats);
+            // WidgetDefinitions.Add(topStats);
+            // WidgetDefinitions.Add(salesSummary);
             WidgetDefinitions.Add(expirationDays);
             WidgetDefinitions.Add(currentProductAndPackage);
             WidgetDefinitions.Add(octoCost);
+            WidgetDefinitions.Add(awbCounts);
             // Add your tenant side widgets here
 
             #endregion
@@ -194,6 +203,7 @@ namespace CF.Octogo.DashboardCustomization.Definitions
              side: MultiTenancySides.Host,
              usedWidgetFilters: new List<string>() { dateRangeFilter.Id },
              permissions: hostWidgetsDefaultPermission);
+
             var pendingPayment = new WidgetDefinition(
             OctogoDashboardCustomizationConsts.Widgets.Host.PendingPayment,
             "WidgetPendingPaymen",
@@ -203,11 +213,11 @@ namespace CF.Octogo.DashboardCustomization.Definitions
 
 
 
-            WidgetDefinitions.Add(incomeStatistics);
-            WidgetDefinitions.Add(hostTopStats);
-            WidgetDefinitions.Add(editionStatistics);
-            WidgetDefinitions.Add(subscriptionExpiringTenants);
-            WidgetDefinitions.Add(recentTenants);
+            // WidgetDefinitions.Add(incomeStatistics);
+            // WidgetDefinitions.Add(hostTopStats);
+            // WidgetDefinitions.Add(editionStatistics);
+            // WidgetDefinitions.Add(subscriptionExpiringTenants);
+            // WidgetDefinitions.Add(recentTenants);
             WidgetDefinitions.Add(latestClient);
             WidgetDefinitions.Add(octogenProducts);
             WidgetDefinitions.Add(planExpiration);
@@ -229,7 +239,10 @@ namespace CF.Octogo.DashboardCustomization.Definitions
                 OctogoDashboardCustomizationConsts.DashboardNames.DefaultTenantDashboard,
                 new List<string>
                 {
-                    generalStats.Id, dailySales.Id, profitShare.Id, memberActivity.Id, regionalStats.Id, topStats.Id, salesSummary.Id,expirationDays.Id, currentProductAndPackage.Id, octoCost.Id
+                    generalStats.Id, dailySales.Id, profitShare.Id,
+                    memberActivity.Id, regionalStats.Id, topStats.Id,
+                    salesSummary.Id,expirationDays.Id, currentProductAndPackage.Id,
+                    octoCost.Id, awbCounts.Id
                 });
 
             DashboardDefinitions.Add(defaultTenantDashboard);

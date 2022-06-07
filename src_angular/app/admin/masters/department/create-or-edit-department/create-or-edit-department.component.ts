@@ -5,6 +5,7 @@ import { ValidationServiceService } from '@app/admin/validation-service.service'
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateOrUpdateDepartmentInput, DepartmentListDto, DepartmentServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-or-edit-department',
@@ -43,7 +44,7 @@ export class CreateOrEditDepartmentComponent  extends AppComponentBase {
     }
     else {
       this.active = true;
-      this._Department.getDepartmentForEdit(e).subscribe(res => {
+      this._Department.getDepartmentById(e).subscribe(res => {
         this.createDepartment.inDepartmentID = res.table[0].inDepartmentID;
         this.createDepartment.vcDepartmentName = res.table[0].vcDepartmentName;
         this.createDepartment.vcDescription = res.table[0].vcDescription;
@@ -73,7 +74,8 @@ export class CreateOrEditDepartmentComponent  extends AppComponentBase {
     
     else if (this.createDepartment.inDepartmentID == 0 || this.createDepartment.inDepartmentID == null) {
       this.saving = true;
-      this._Department.createorUpdateDepartment(this.createDepartment).subscribe(e => {
+      this._Department.createOrUpdateDepartment(this.createDepartment)
+      .pipe(finalize(() => { this.saving = false; })).subscribe(e => {
         this.saving = false;
         this.notify.info(this.l('SavedSuccessfully'));
 
@@ -85,7 +87,8 @@ export class CreateOrEditDepartmentComponent  extends AppComponentBase {
     }
     else {
       this.saving = true;
-      this._Department.createorUpdateDepartment(this.createDepartment).subscribe(e => {
+      this._Department.createOrUpdateDepartment(this.createDepartment)
+      .pipe(finalize(() => { this.saving = false; })).subscribe(e => {
         this.saving = false;
         this.notify.info(this.l('UpdateDepartmentMessage'));
         this.close(form);

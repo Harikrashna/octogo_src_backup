@@ -173,7 +173,7 @@
             <param name="QueryFor"></param>
             <returns></returns>
         </member>
-        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalClientWithFilterForWidget(System.Collections.Generic.List{System.String})">
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalClientWithFilterForWidget(System.Collections.Generic.List{System.String},CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
             <summary>
             DESC:Get total client data for column chart widget
             Created by: Merajuddin khan
@@ -182,7 +182,7 @@
             <param name="input"></param>
             <returns></returns>
         </member>
-        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalRevenueForWidget(System.Collections.Generic.List{System.String})">
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalRevenueForWidget(System.Collections.Generic.List{System.String},CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
             <summary>
             DESC:Get total revenue for column chart widget
             Created by: Merajuddin khan
@@ -199,7 +199,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:CF.Octogo.MultiTenancy.SubscriptionAppService.GetClientSubscriptionExpirationAndProductForWidget">
+        <member name="M:CF.Octogo.MultiTenancy.SubscriptionAppService.GetClientSubscriptionExpirationAndProductForWidget(CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
             <summary>
             DESC:Get Plan expiration list
             Created by: Merajuddin khan

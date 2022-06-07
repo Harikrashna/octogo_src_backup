@@ -13,6 +13,8 @@ namespace CF.Octogo.MultiTenancy.Dto
         public TenantDetailsInputDto TenantDetails { get; set; }
         public List<PackageDetailsInputDto> PackageDetails { get; set; }
         public TransactionDataInputDto TransactionCharges { get; set; }
+        public InvoiceDataInputDto InvoiceDetails { get; set; }
+        public List<InvoiceDataForEditDto> InvoiceData { get; set; } //Added by: Merajuddin
     }
     public class TenantDetailsInputDto
     {
@@ -75,5 +77,24 @@ namespace CF.Octogo.MultiTenancy.Dto
         public string TenantDetails { get; set; }
         public string PackageDetails { get; set; }
         public string TransactionCharges { get; set; }
+        public string InvoiceDetails { get; set; }
+
+    }
+    public class InvoiceDataInputDto //Added by: merajuddin
+    {
+        public string LegalName { get; set; }
+        public string Address { get; set; }
+        public string TaxVatNo { get; set; }
+
+    }
+    public class InvoiceDataForEditDto //Added by: Merajuddin
+    {
+        public string name { get; set; }
+        public string Value { get; set; }
+    }
+    public class Invoicedata
+    {
+        public string name { get; set; }
+        public string Value { get; set; }
     }
 }

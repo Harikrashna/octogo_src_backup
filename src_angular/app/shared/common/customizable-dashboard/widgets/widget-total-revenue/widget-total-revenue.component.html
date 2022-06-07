@@ -21,7 +21,8 @@
 
     <p-overlayPanel #op appendTo="body" [style]="{width: '280px'}" [dismissable] ="true">
         <label for="Product" class="checkbox">
-            <input id="Product" type="checkbox" name="Product" (change)="onChangeCheckBoxvalue($event,'PRODUCT')" checked>
+            <input id="Product" type="checkbox" name="Product" (change)="onChangeCheckBoxvalue($event,'PRODUCT')" 
+            checked>
             <span></span>
             {{"Products" | localize}}
         </label>
@@ -39,7 +40,7 @@
     <div class="card-body"   [perfectScrollbar]>
         <ngx-charts-bar-vertical-2d *ngIf="totalRevenueData?.length > 0" [busyIf]="loadingTotalRevenueStatistics" 
             [results]="totalRevenueData" [showXAxisLabel]="true" showYAxisLabel="true" [xAxis]="true" [yAxis]="true"
-            [showDataLabel]="true" [groupPadding]="0" [barPadding]="0" [yAxisTickFormatting]="yAxisTickFormattingFn">
+            [showDataLabel]="true"  [groupPadding]="0" [barPadding]="0" [yAxisTickFormatting]="yAxisTickFormattingFn">
         </ngx-charts-bar-vertical-2d>
         <div class="note note-info text-center chart" [hidden]="totalRevenueData?.length > 0">
             <small class="text-muted ">{{"NoData" | localize}}</small>

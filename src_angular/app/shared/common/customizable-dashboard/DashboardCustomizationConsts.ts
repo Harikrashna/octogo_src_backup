@@ -10,7 +10,8 @@ export class DashboardCustomizationConst {
             dailySales: 'Widgets_Tenant_DailySales',
             expirationDays: 'Widgets_Tenant_ExpirationDays',
             currentProductAndPackage : 'Widgets_Tenant_CurrentProductAndPackage',
-            octoCost :'Widgets_Tenant_OctoCost'
+            octoCost :'Widgets_Tenant_OctoCost',
+            awbCounts :'Widgets_Tenant_AwbCounts'
         },
         host: {
             topStats: 'Widgets_Host_TopStats',

@@ -1,0 +1,24 @@
+.availablecard {
+    border-radius: 5px;
+    border: 1px solid rgba(94, 61, 61, 0.233);
+    box-shadow: 1px 7px 10px 1px rgba(226, 175, 175, 0.253);
+    padding: 16px;
+    background: rgba(160, 201, 85, 0.027);
+    min-width: 194px;
+}
+
+.column {
+    float: left;
+    width: 25%;
+    padding: 0 10px;
+}
+
+.row {
+    margin: 0 -5px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}

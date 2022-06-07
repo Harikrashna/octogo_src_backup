@@ -10,7 +10,7 @@ namespace CF.Octogo.DashboardCustomization.Dto
     {
         public int EditionId { get; set; }
         public int ProductId { get; set; }
-        
+
         public string EditionName { get; set; }
         public string Price { get; set; }
         public string ProductName { get; set; }
@@ -33,7 +33,8 @@ namespace CF.Octogo.DashboardCustomization.Dto
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string AddonPrice { get; set; }
-    
+        public int? RemainingDays { get; set; }
+
     }
     public class TenantEditionAddonRet
     {

@@ -1,5 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
+using Abp.Runtime.Caching;
 using Abp.UI;
 using CF.Octogo.Authorization;
 using CF.Octogo.Data;
@@ -17,6 +18,13 @@ namespace CF.Octogo.Master.Country
 {
     public class CountryAppService : OctogoAppServiceBase, ICountryAppService
     {
+        private const string masterCacheKey = OctogoCacheKeyConst.MasterDataCacheKey;
+        private readonly ICacheManager _cacheManager;
+
+        public CountryAppService(ICacheManager cacheManager)
+        {
+            _cacheManager = cacheManager;
+        }
         [AbpAuthorize(AppPermissions.Pages_Administration_Country)]
         public async Task<PagedResultDto<CountryListDto>> GetCountry(PagedAndSortedInputDto input, string filter)
         {
@@ -31,32 +39,18 @@ namespace CF.Octogo.Master.Country
             System.Data.CommandType.StoredProcedure,
             "USP_GetCountryList", parameters
             );
-
+            var totalCount = 0;
+            var countryList = new List<CountryListDto>();
             if (ds.Tables.Count > 0)
             {
-                int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                var totalCount = v;
-                DataTable dt = ds.Tables[0];
-
-                CountryList = (from DataRow dr in dt.Rows
-                               select new CountryListDto()
-                               {
-                                   SNo = Convert.ToInt32(dr["SNo"]),
-                                   CountryCode = dr["CountryCode"].ToString(),
-                                   CountryName = dr["CountryName"].ToString(),
-                                   CurrencyCode = dr["CurrencyCode"].ToString(),
-                                   Continent = dr["Continent"].ToString(),
-                               }).ToList();
-                return new PagedResultDto<CountryListDto>(totalCount, CountryList);
+                countryList = SqlHelper.ConvertDataTable<CountryListDto>(ds.Tables[0]);
+                DataRow row = ds.Tables[1].Rows[0];
+                totalCount = Convert.ToInt32(row["totalCount"]);
             }
-            else
-            {
-                return null;
-            }
-
-
-
-
+            return new PagedResultDto<CountryListDto>(
+                totalCount,
+                countryList
+            );
         }
 
 
@@ -64,12 +58,6 @@ namespace CF.Octogo.Master.Country
         [AbpAuthorize(AppPermissions.Pages_Administration_Country_Create, AppPermissions.Pages_Administration_Country_Edit)]
         public async Task<int> CreateorUpdateCountry(CreateOrUpdateCountryInput inp)
         {
-            var dup_data = GetCountryByCountryId(inp.SNo, inp.CountryName, inp.CountryCode);
-
-            if (dup_data.Result != null)
-            {
-                throw new UserFriendlyException(L("DuplicateRecord"));
-            }
 
             SqlParameter[] parameters = new SqlParameter[10];
             parameters[0] = new SqlParameter("SNo", inp.SNo);
@@ -86,52 +74,44 @@ namespace CF.Octogo.Master.Country
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_CreateOrUpdateCountry", parameters);
-
-
-
-
-
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+           "USP_CreateOrUpdateOrDeleteCountry", parameters);
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
             {
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
+            {
+                await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
             }
             else
             {
                 return 0;
             }
-
-
-
         }
         [AbpAuthorize(AppPermissions.Pages_Administration_Country_Delete)]
-
         public async Task DeleteCountry(EntityDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
+
+            SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("SNo", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
-
-
-
-
+            parameters[2] = new SqlParameter("IsDelete", true);
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_DeleteCountry", parameters);
-
+           "USP_CreateOrUpdateOrDeleteCountry", parameters);
         }
 
 
-        [AbpAuthorize(AppPermissions.Pages_Administration_Country_Edit)]
+        //[AbpAuthorize(AppPermissions.Pages_Administration_Country_Edit)]
         public async Task<DataSet> GetCountryForEdit(GetEditCountryInput input)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("SNo", input.SNo);
-
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetCountryById", parameters
+            "USP_GetCountryList", parameters
             );
             if (ds.Tables.Count > 0)
             {
@@ -143,30 +123,11 @@ namespace CF.Octogo.Master.Country
             }
         }
 
-
-        public async Task<DataSet> GetCountryByCountryId(int? SNo, string CountryName, string CountryCode)
+        public async Task ClearCache()
         {
-            SqlParameter[] parameters = new SqlParameter[3];
-            parameters[0] = new SqlParameter("SNo", SNo);
-            parameters[1] = new SqlParameter("CountryName", CountryName);
-            parameters[2] = new SqlParameter("CountryCode", CountryCode);
-
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicateCountry", parameters
-            );
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
+            var allMasterCache = _cacheManager.GetCache(masterCacheKey);
+            await allMasterCache.ClearAsync();
         }
-
-
     }
 
 }

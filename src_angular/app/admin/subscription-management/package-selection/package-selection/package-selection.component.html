@@ -2,7 +2,7 @@
     <p-steps [model]="RegistarationStepItems" [readonly]="true" [activeIndex]="RegistarationSelectedStep"></p-steps>
 </div>
 
-<div class="card1 card-custom1 gutter-b" [busyIf]="loading" *ngIf="!isGoToCheckout && !showTenantRegistration">
+<div class="card1 card-custom1 gutter-b" [busyIf]="loading" *ngIf="!isGoToCheckout && !showTenantRegistration && !isGoToInvoice">
     <div class="mt-4" *ngIf="ProductWithEditionList != null && ProductWithEditionList?.length > 0">
         <div *ngFor="let product of ProductWithEditionList; let i=index">
             <div class="card mb-5"
@@ -400,7 +400,12 @@
         </div>
     </div>
     <app-package-addons-cart [SelectedEditionData]="selectedEditionData" [SelectedAddonsData]="selectedAddonsData"
-        [ProductName]="selectedProductName" [IsTenantRegistration]="isTenantSuccessfullyRegister"></app-package-addons-cart>
+        [ProductName]="selectedProductName" [IsTenantRegistration]="isTenantSuccessfullyRegister" 
+        (SubscriptionCompleted)="SubscriptionCompleted()">
+    </app-package-addons-cart>
+</div>
+<div *ngIf="isGoToInvoice && !isGoToCheckout"> <!--added by : meraj-- for invoice -->
+   <app-invoice-detail  (newItemEvent) = "InsertInvoiceDetails()" ></app-invoice-detail>
 </div>
 <div *ngIf="showTenantRegistration && !isGoToCheckout">
     <div class="row">
@@ -410,6 +415,8 @@
             </button>
         </div>
     </div>
-<app-tenant-registration-form (TenantCreated)="TenantSuccessfullyRegistered($event)"
- [EditionData]="selectedEditionData" [AddonsData]="selectedAddonsData" [ProductName]="selectedProductName"></app-tenant-registration-form>
+    <app-tenant-registration-form (TenantCreated)="TenantSuccessfullyRegistered($event)"
+     [EditionData]="selectedEditionData" [AddonsData]="selectedAddonsData" [ProductName]="selectedProductName">
+    </app-tenant-registration-form>
+   
 </div>

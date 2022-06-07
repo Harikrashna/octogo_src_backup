@@ -1455,26 +1455,32 @@
 		<text name="PleaseSelectMoreThanOneAddon">Please Select More Than One Addon</text>
 		<text name="WithFreeTrial">With Free Trial</text>
 		<text name="AddonDependencyMsg">The selected addon is dependent on {0}. Kindly choose that as well in order to utilise the same</text>""
-		<text name="WidgetlatestClient">Latest Client</text>
+		<text name="WidgetlatestClient">Latest Clients</text>
 		<text name="WidgetOctogenProducts">Octogen Products</text>
 		<text name="ClientName">Client name</text>
 		<text name="ExpirationDays">Expiration days</text>
 		<text name="PlanExpirationNotification">Client expiration </text>
 		<text name="ClientStatistics">Client statistics </text>
-		<text name="WidgetTotalClient">Total client</text>
-		<text name="WidgetPlanExpiration">Plan expiration</text>
+		<text name="WidgetTotalClient">Total Clients</text>
+		<text name="WidgetPlanExpiration">Plan Expiration</text>
 		<text name="WidgeTotalRevenue">Total Revenue</text>
-		<text name="WidgeProductSegmentation">Product segment </text>
+		<text name="WidgeProductSegmentation">Product Segmentation</text>
 		<text name="ProductWiseClientStatistics">Product Wise Client statistics</text>
 		<text name="PendingPayment">Pending Payment</text>
 		<text name="PendingAmount">Pending Amount</text>
 		<text name="TotalRevenue">Total Revenue </text>
-		<text name="WidgetPendingPaymen">Pending payment </text>
+		<text name="WidgetPendingPaymen">Pending payment</text>
 		<text name="PendingDays">Pending days </text>
 		<text name="Sno">Sno</text>
 		<text name="ExpirationDaysLeft">Expiration Days (Left)</text>
 		<text name="CurrentProductAndPackage">Current Product And Package</text>
 		<text name="StandAloneAddons">Stand Alone Addons</text>
+		<text name="WidgetOctoCost">Octo Cost</text>
+		<text name="WidgetExpirationDays">Expiration Days</text>
+		<text name="WidgetAwbCounts">AWB Counts</text>
+		<text name="TenantDetails">Client Details</text>
+		<text name="OctogenProduct">Octogen Products</text>
+		<text name="PayableAmount">Payable Amount</text>
 	</texts>
 </localizationDictionary>
 
