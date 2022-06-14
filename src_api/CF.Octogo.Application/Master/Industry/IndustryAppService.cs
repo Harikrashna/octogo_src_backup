@@ -30,22 +30,30 @@ namespace CF.Octogo.Master.Industry
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("Sorting", input.Sorting);
-            parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[1] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[2] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[3] = new SqlParameter("Filter", filter);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetIndustry", parameters
+            "USP_GetIndustryList", parameters
             );
 
             var totalCount = 0;
             var industryList = new List<IndustryListDto>();
             if (ds.Tables.Count > 0)
             {
-                industryList = SqlHelper.ConvertDataTable<IndustryListDto>(ds.Tables[0]);
-                DataRow row = ds.Tables[1].Rows[0];
-                totalCount = Convert.ToInt32(row["totalCount"]);
+                var industryRet = SqlHelper.ConvertDataTable<IndustryListRet>(ds.Tables[0]);
+                industryList = industryRet.Select(rw => new IndustryListDto
+                {
+                    inIndustryID = rw.inIndustryID,
+                    vcIndustryName = rw.vcIndustryName,
+                    vcDescription = rw.vcDescription
+                }).ToList();
+                if (industryRet != null && industryRet.Count > 0)
+                {
+                    totalCount = industryRet.FirstOrDefault().TotalCount;
+                }
             }
             return new PagedResultDto<IndustryListDto>(
                 totalCount,
@@ -59,7 +67,7 @@ namespace CF.Octogo.Master.Industry
             parameters[0] = new SqlParameter("inIndustryID", inp.inIndustryID);
             parameters[1] = new SqlParameter("vcIndustryName", inp.vcIndustryName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
-            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateOrDeleteIndustry", parameters);
@@ -83,7 +91,7 @@ namespace CF.Octogo.Master.Industry
         {
             SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("inIndustryID", input.Id);
-            parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[1] = new SqlParameter("LoginUserId", AbpSession.UserId);
             parameters[2] = new SqlParameter("IsDelete", true);
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
@@ -97,7 +105,7 @@ namespace CF.Octogo.Master.Industry
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetIndustry", parameters
+            "USP_GetIndustryList", parameters
             );
             if (ds.Tables.Count > 0)
             {

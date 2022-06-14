@@ -1419,8 +1419,8 @@ export class AirlineServiceProxy {
      * @param inAirlineId (optional) 
      * @return Success
      */
-    getAirlineForEdit(inAirlineId: number | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Airline/GetAirlineForEdit?";
+    getAirlineById(inAirlineId: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/Airline/GetAirlineById?";
         if (inAirlineId === null)
             throw new Error("The parameter 'inAirlineId' cannot be null.");
         else if (inAirlineId !== undefined)
@@ -1436,11 +1436,11 @@ export class AirlineServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAirlineForEdit(response_);
+            return this.processGetAirlineById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetAirlineForEdit(<any>response_);
+                    return this.processGetAirlineById(<any>response_);
                 } catch (e) {
                     return <Observable<any>><any>_observableThrow(e);
                 }
@@ -1449,68 +1449,7 @@ export class AirlineServiceProxy {
         }));
     }
 
-    protected processGetAirlineForEdit(response: HttpResponseBase): Observable<any> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<any>(<any>null);
-    }
-
-    /**
-     * @param inAirlineID (optional) 
-     * @param vcAirlineName (optional) 
-     * @return Success
-     */
-    getAirlineByAirlineId(inAirlineID: number | undefined, vcAirlineName: string | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Airline/GetAirlineByAirlineId?";
-        if (inAirlineID === null)
-            throw new Error("The parameter 'inAirlineID' cannot be null.");
-        else if (inAirlineID !== undefined)
-            url_ += "inAirlineID=" + encodeURIComponent("" + inAirlineID) + "&";
-        if (vcAirlineName === null)
-            throw new Error("The parameter 'vcAirlineName' cannot be null.");
-        else if (vcAirlineName !== undefined)
-            url_ += "vcAirlineName=" + encodeURIComponent("" + vcAirlineName) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetAirlineByAirlineId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetAirlineByAirlineId(<any>response_);
-                } catch (e) {
-                    return <Observable<any>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<any>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetAirlineByAirlineId(response: HttpResponseBase): Observable<any> {
+    protected processGetAirlineById(response: HttpResponseBase): Observable<any> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2325,8 +2264,8 @@ export class AwbCostApproachServiceProxy {
      * @param inApproachID (optional) 
      * @return Success
      */
-    getPerAwbCostApproachForEdit(inApproachID: number | undefined): Observable<CreateOrUpdateAwbCostApproachInput> {
-        let url_ = this.baseUrl + "/api/services/app/AwbCostApproach/GetPerAwbCostApproachForEdit?";
+    getPerAwbCostApproachById(inApproachID: number | undefined): Observable<CreateOrUpdateAwbCostApproachInput> {
+        let url_ = this.baseUrl + "/api/services/app/AwbCostApproach/GetPerAwbCostApproachById?";
         if (inApproachID === null)
             throw new Error("The parameter 'inApproachID' cannot be null.");
         else if (inApproachID !== undefined)
@@ -2342,11 +2281,11 @@ export class AwbCostApproachServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPerAwbCostApproachForEdit(response_);
+            return this.processGetPerAwbCostApproachById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPerAwbCostApproachForEdit(<any>response_);
+                    return this.processGetPerAwbCostApproachById(<any>response_);
                 } catch (e) {
                     return <Observable<CreateOrUpdateAwbCostApproachInput>><any>_observableThrow(e);
                 }
@@ -2355,7 +2294,7 @@ export class AwbCostApproachServiceProxy {
         }));
     }
 
-    protected processGetPerAwbCostApproachForEdit(response: HttpResponseBase): Observable<CreateOrUpdateAwbCostApproachInput> {
+    protected processGetPerAwbCostApproachById(response: HttpResponseBase): Observable<CreateOrUpdateAwbCostApproachInput> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2962,8 +2901,8 @@ export class CityServiceProxy {
      * @param sNo (optional) 
      * @return Success
      */
-    getCityForEdit(sNo: number | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/City/GetCityForEdit?";
+    getCityById(sNo: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/City/GetCityById?";
         if (sNo === null)
             throw new Error("The parameter 'sNo' cannot be null.");
         else if (sNo !== undefined)
@@ -2979,11 +2918,11 @@ export class CityServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetCityForEdit(response_);
+            return this.processGetCityById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetCityForEdit(<any>response_);
+                    return this.processGetCityById(<any>response_);
                 } catch (e) {
                     return <Observable<any>><any>_observableThrow(e);
                 }
@@ -2992,7 +2931,7 @@ export class CityServiceProxy {
         }));
     }
 
-    protected processGetCityForEdit(response: HttpResponseBase): Observable<any> {
+    protected processGetCityById(response: HttpResponseBase): Observable<any> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3684,8 +3623,8 @@ export class CountryServiceProxy {
      * @param sNo (optional) 
      * @return Success
      */
-    getCountryForEdit(sNo: number | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Country/GetCountryForEdit?";
+    getCountryById(sNo: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/Country/GetCountryById?";
         if (sNo === null)
             throw new Error("The parameter 'sNo' cannot be null.");
         else if (sNo !== undefined)
@@ -3701,11 +3640,11 @@ export class CountryServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetCountryForEdit(response_);
+            return this.processGetCountryById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetCountryForEdit(<any>response_);
+                    return this.processGetCountryById(<any>response_);
                 } catch (e) {
                     return <Observable<any>><any>_observableThrow(e);
                 }
@@ -3714,7 +3653,7 @@ export class CountryServiceProxy {
         }));
     }
 
-    protected processGetCountryForEdit(response: HttpResponseBase): Observable<any> {
+    protected processGetCountryById(response: HttpResponseBase): Observable<any> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -10137,6 +10076,62 @@ export class InvoiceServiceProxy {
     }
 
     /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getInvoiceInfoNew(id: number | undefined): Observable<InvoiceNewDto> {
+        let url_ = this.baseUrl + "/api/services/app/Invoice/GetInvoiceInfoNew?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetInvoiceInfoNew(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetInvoiceInfoNew(<any>response_);
+                } catch (e) {
+                    return <Observable<InvoiceNewDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<InvoiceNewDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetInvoiceInfoNew(response: HttpResponseBase): Observable<InvoiceNewDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InvoiceNewDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<InvoiceNewDto>(<any>null);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -12653,7 +12648,7 @@ export class PaymentServiceProxy {
      * @param tenantId (optional) 
      * @return Success
      */
-    getPaymentHistoryNew(sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, tenantId: number | undefined): Observable<PagedResultDtoOfSubscriptionPaymentListDto> {
+    getPaymentHistoryNew(sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, tenantId: number | undefined): Observable<PagedResultDtoOfSubscriptionPaymentListNewDto> {
         let url_ = this.baseUrl + "/api/services/app/Payment/GetPaymentHistoryNew?";
         if (sorting === null)
             throw new Error("The parameter 'sorting' cannot be null.");
@@ -12688,14 +12683,14 @@ export class PaymentServiceProxy {
                 try {
                     return this.processGetPaymentHistoryNew(<any>response_);
                 } catch (e) {
-                    return <Observable<PagedResultDtoOfSubscriptionPaymentListDto>><any>_observableThrow(e);
+                    return <Observable<PagedResultDtoOfSubscriptionPaymentListNewDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<PagedResultDtoOfSubscriptionPaymentListDto>><any>_observableThrow(response_);
+                return <Observable<PagedResultDtoOfSubscriptionPaymentListNewDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPaymentHistoryNew(response: HttpResponseBase): Observable<PagedResultDtoOfSubscriptionPaymentListDto> {
+    protected processGetPaymentHistoryNew(response: HttpResponseBase): Observable<PagedResultDtoOfSubscriptionPaymentListNewDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -12706,7 +12701,7 @@ export class PaymentServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PagedResultDtoOfSubscriptionPaymentListDto.fromJS(resultData200);
+            result200 = PagedResultDtoOfSubscriptionPaymentListNewDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -12714,7 +12709,7 @@ export class PaymentServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<PagedResultDtoOfSubscriptionPaymentListDto>(<any>null);
+        return _observableOf<PagedResultDtoOfSubscriptionPaymentListNewDto>(<any>null);
     }
 
     /**
@@ -13385,8 +13380,8 @@ export class PricingTypeServiceProxy {
      * @param inPricingTypeId (optional) 
      * @return Success
      */
-    getPricingTypeForEdit(inPricingTypeId: number | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/PricingType/GetPricingTypeForEdit?";
+    getPricingTypeById(inPricingTypeId: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/PricingType/GetPricingTypeById?";
         if (inPricingTypeId === null)
             throw new Error("The parameter 'inPricingTypeId' cannot be null.");
         else if (inPricingTypeId !== undefined)
@@ -13402,11 +13397,11 @@ export class PricingTypeServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPricingTypeForEdit(response_);
+            return this.processGetPricingTypeById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPricingTypeForEdit(<any>response_);
+                    return this.processGetPricingTypeById(<any>response_);
                 } catch (e) {
                     return <Observable<any>><any>_observableThrow(e);
                 }
@@ -13415,73 +13410,7 @@ export class PricingTypeServiceProxy {
         }));
     }
 
-    protected processGetPricingTypeForEdit(response: HttpResponseBase): Observable<any> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<any>(<any>null);
-    }
-
-    /**
-     * @param inPricingTypeId (optional) 
-     * @param vcTypeName (optional) 
-     * @param inNoOfDays (optional) 
-     * @return Success
-     */
-    getPricingTypeByPricingId(inPricingTypeId: number | undefined, vcTypeName: string | undefined, inNoOfDays: number | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/PricingType/GetPricingTypeByPricingId?";
-        if (inPricingTypeId === null)
-            throw new Error("The parameter 'inPricingTypeId' cannot be null.");
-        else if (inPricingTypeId !== undefined)
-            url_ += "inPricingTypeId=" + encodeURIComponent("" + inPricingTypeId) + "&";
-        if (vcTypeName === null)
-            throw new Error("The parameter 'vcTypeName' cannot be null.");
-        else if (vcTypeName !== undefined)
-            url_ += "vcTypeName=" + encodeURIComponent("" + vcTypeName) + "&";
-        if (inNoOfDays === null)
-            throw new Error("The parameter 'inNoOfDays' cannot be null.");
-        else if (inNoOfDays !== undefined)
-            url_ += "inNoOfDays=" + encodeURIComponent("" + inNoOfDays) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPricingTypeByPricingId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetPricingTypeByPricingId(<any>response_);
-                } catch (e) {
-                    return <Observable<any>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<any>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetPricingTypeByPricingId(response: HttpResponseBase): Observable<any> {
+    protected processGetPricingTypeById(response: HttpResponseBase): Observable<any> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13745,8 +13674,8 @@ export class ProductServiceProxy {
      * @param inProductID (optional) 
      * @return Success
      */
-    getProductForEdit(inProductID: number | undefined): Observable<ProductandUserEdit> {
-        let url_ = this.baseUrl + "/api/services/app/Product/GetProductForEdit?";
+    getProductById(inProductID: number | undefined): Observable<ProductandUserEdit> {
+        let url_ = this.baseUrl + "/api/services/app/Product/GetProductById?";
         if (inProductID === null)
             throw new Error("The parameter 'inProductID' cannot be null.");
         else if (inProductID !== undefined)
@@ -13762,11 +13691,11 @@ export class ProductServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetProductForEdit(response_);
+            return this.processGetProductById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetProductForEdit(<any>response_);
+                    return this.processGetProductById(<any>response_);
                 } catch (e) {
                     return <Observable<ProductandUserEdit>><any>_observableThrow(e);
                 }
@@ -13775,7 +13704,7 @@ export class ProductServiceProxy {
         }));
     }
 
-    protected processGetProductForEdit(response: HttpResponseBase): Observable<ProductandUserEdit> {
+    protected processGetProductById(response: HttpResponseBase): Observable<ProductandUserEdit> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -13795,67 +13724,6 @@ export class ProductServiceProxy {
             }));
         }
         return _observableOf<ProductandUserEdit>(<any>null);
-    }
-
-    /**
-     * @param inProductID (optional) 
-     * @param vcProductName (optional) 
-     * @return Success
-     */
-    getProductByProductId(inProductID: number | undefined, vcProductName: string | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Product/GetProductByProductId?";
-        if (inProductID === null)
-            throw new Error("The parameter 'inProductID' cannot be null.");
-        else if (inProductID !== undefined)
-            url_ += "inProductID=" + encodeURIComponent("" + inProductID) + "&";
-        if (vcProductName === null)
-            throw new Error("The parameter 'vcProductName' cannot be null.");
-        else if (vcProductName !== undefined)
-            url_ += "vcProductName=" + encodeURIComponent("" + vcProductName) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetProductByProductId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetProductByProductId(<any>response_);
-                } catch (e) {
-                    return <Observable<any>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<any>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetProductByProductId(response: HttpResponseBase): Observable<any> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<any>(<any>null);
     }
 
     /**
@@ -15078,8 +14946,8 @@ export class ServicesServiceProxy {
      * @param filter (optional) 
      * @return Success
      */
-    getService(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, filter: string | undefined): Observable<PagedResultDtoOfServicesListDto> {
-        let url_ = this.baseUrl + "/api/services/app/Services/GetService?";
+    getServiceList(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, filter: string | undefined): Observable<PagedResultDtoOfServicesListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Services/GetServiceList?";
         if (maxResultCount === null)
             throw new Error("The parameter 'maxResultCount' cannot be null.");
         else if (maxResultCount !== undefined)
@@ -15107,11 +14975,11 @@ export class ServicesServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetService(response_);
+            return this.processGetServiceList(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetService(<any>response_);
+                    return this.processGetServiceList(<any>response_);
                 } catch (e) {
                     return <Observable<PagedResultDtoOfServicesListDto>><any>_observableThrow(e);
                 }
@@ -15120,7 +14988,7 @@ export class ServicesServiceProxy {
         }));
     }
 
-    protected processGetService(response: HttpResponseBase): Observable<PagedResultDtoOfServicesListDto> {
+    protected processGetServiceList(response: HttpResponseBase): Observable<PagedResultDtoOfServicesListDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -15254,8 +15122,8 @@ export class ServicesServiceProxy {
      * @param inServiceID (optional) 
      * @return Success
      */
-    getServiceForEdit(inServiceID: number | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Services/GetServiceForEdit?";
+    getServiceById(inServiceID: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/Services/GetServiceById?";
         if (inServiceID === null)
             throw new Error("The parameter 'inServiceID' cannot be null.");
         else if (inServiceID !== undefined)
@@ -15271,11 +15139,11 @@ export class ServicesServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetServiceForEdit(response_);
+            return this.processGetServiceById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetServiceForEdit(<any>response_);
+                    return this.processGetServiceById(<any>response_);
                 } catch (e) {
                     return <Observable<any>><any>_observableThrow(e);
                 }
@@ -15284,68 +15152,7 @@ export class ServicesServiceProxy {
         }));
     }
 
-    protected processGetServiceForEdit(response: HttpResponseBase): Observable<any> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<any>(<any>null);
-    }
-
-    /**
-     * @param inServiceID (optional) 
-     * @param vcServiceName (optional) 
-     * @return Success
-     */
-    getServiceByServiceId(inServiceID: number | undefined, vcServiceName: string | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Services/GetServiceByServiceId?";
-        if (inServiceID === null)
-            throw new Error("The parameter 'inServiceID' cannot be null.");
-        else if (inServiceID !== undefined)
-            url_ += "inServiceID=" + encodeURIComponent("" + inServiceID) + "&";
-        if (vcServiceName === null)
-            throw new Error("The parameter 'vcServiceName' cannot be null.");
-        else if (vcServiceName !== undefined)
-            url_ += "vcServiceName=" + encodeURIComponent("" + vcServiceName) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetServiceByServiceId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetServiceByServiceId(<any>response_);
-                } catch (e) {
-                    return <Observable<any>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<any>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetServiceByServiceId(response: HttpResponseBase): Observable<any> {
+    protected processGetServiceById(response: HttpResponseBase): Observable<any> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -20799,8 +20606,8 @@ export class UserTypeServiceProxy {
      * @param filter (optional) 
      * @return Success
      */
-    getUserType(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, filter: string | undefined): Observable<PagedResultDtoOfUserTypeListDto> {
-        let url_ = this.baseUrl + "/api/services/app/UserType/GetUserType?";
+    getUserTypeList(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, filter: string | undefined): Observable<PagedResultDtoOfUserTypeListDto> {
+        let url_ = this.baseUrl + "/api/services/app/UserType/GetUserTypeList?";
         if (maxResultCount === null)
             throw new Error("The parameter 'maxResultCount' cannot be null.");
         else if (maxResultCount !== undefined)
@@ -20828,11 +20635,11 @@ export class UserTypeServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetUserType(response_);
+            return this.processGetUserTypeList(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetUserType(<any>response_);
+                    return this.processGetUserTypeList(<any>response_);
                 } catch (e) {
                     return <Observable<PagedResultDtoOfUserTypeListDto>><any>_observableThrow(e);
                 }
@@ -20841,7 +20648,7 @@ export class UserTypeServiceProxy {
         }));
     }
 
-    protected processGetUserType(response: HttpResponseBase): Observable<PagedResultDtoOfUserTypeListDto> {
+    protected processGetUserTypeList(response: HttpResponseBase): Observable<PagedResultDtoOfUserTypeListDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -20975,8 +20782,8 @@ export class UserTypeServiceProxy {
      * @param inUserTypeID (optional) 
      * @return Success
      */
-    getUserTypeForEdit(inUserTypeID: number | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/UserType/GetUserTypeForEdit?";
+    getUserTypeById(inUserTypeID: number | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/services/app/UserType/GetUserTypeById?";
         if (inUserTypeID === null)
             throw new Error("The parameter 'inUserTypeID' cannot be null.");
         else if (inUserTypeID !== undefined)
@@ -20992,11 +20799,11 @@ export class UserTypeServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetUserTypeForEdit(response_);
+            return this.processGetUserTypeById(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetUserTypeForEdit(<any>response_);
+                    return this.processGetUserTypeById(<any>response_);
                 } catch (e) {
                     return <Observable<any>><any>_observableThrow(e);
                 }
@@ -21005,68 +20812,7 @@ export class UserTypeServiceProxy {
         }));
     }
 
-    protected processGetUserTypeForEdit(response: HttpResponseBase): Observable<any> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<any>(<any>null);
-    }
-
-    /**
-     * @param inUserTypeID (optional) 
-     * @param vcUserTypeName (optional) 
-     * @return Success
-     */
-    getUserTypeByUserTypeId(inUserTypeID: number | undefined, vcUserTypeName: string | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/UserType/GetUserTypeByUserTypeId?";
-        if (inUserTypeID === null)
-            throw new Error("The parameter 'inUserTypeID' cannot be null.");
-        else if (inUserTypeID !== undefined)
-            url_ += "inUserTypeID=" + encodeURIComponent("" + inUserTypeID) + "&";
-        if (vcUserTypeName === null)
-            throw new Error("The parameter 'vcUserTypeName' cannot be null.");
-        else if (vcUserTypeName !== undefined)
-            url_ += "vcUserTypeName=" + encodeURIComponent("" + vcUserTypeName) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetUserTypeByUserTypeId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetUserTypeByUserTypeId(<any>response_);
-                } catch (e) {
-                    return <Observable<any>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<any>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetUserTypeByUserTypeId(response: HttpResponseBase): Observable<any> {
+    protected processGetUserTypeById(response: HttpResponseBase): Observable<any> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -25367,7 +25113,7 @@ export class CreateOrUpdateCountryInput implements ICreateOrUpdateCountryInput {
     countryName!: string | undefined;
     currencySNo!: number | undefined;
     countryCode!: string | undefined;
-    isdCode!: number;
+    isdCode!: number | undefined;
     currencyCode!: string | undefined;
     continent!: string | undefined;
     iataAreaCode!: string | undefined;
@@ -25423,7 +25169,7 @@ export interface ICreateOrUpdateCountryInput {
     countryName: string | undefined;
     currencySNo: number | undefined;
     countryCode: string | undefined;
-    isdCode: number;
+    isdCode: number | undefined;
     currencyCode: string | undefined;
     continent: string | undefined;
     iataAreaCode: string | undefined;
@@ -32402,6 +32148,82 @@ export interface IInvoiceDto {
     hostAddress: string[] | undefined;
 }
 
+export class InvoiceNewDto implements IInvoiceNewDto {
+    amount!: number;
+    editionName!: string | undefined;
+    addonName!: string | undefined;
+    productName!: string | undefined;
+    invoiceNo!: string | undefined;
+    invoiceDate!: DateTime;
+    tenantLegalName!: string | undefined;
+    tenantAddress!: string | undefined;
+    tenantTaxNo!: string | undefined;
+    hostLegalName!: string | undefined;
+    hostAddress!: string | undefined;
+
+    constructor(data?: IInvoiceNewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.amount = _data["amount"];
+            this.editionName = _data["editionName"];
+            this.addonName = _data["addonName"];
+            this.productName = _data["productName"];
+            this.invoiceNo = _data["invoiceNo"];
+            this.invoiceDate = _data["invoiceDate"] ? DateTime.fromISO(_data["invoiceDate"].toString()) : <any>undefined;
+            this.tenantLegalName = _data["tenantLegalName"];
+            this.tenantAddress = _data["tenantAddress"];
+            this.tenantTaxNo = _data["tenantTaxNo"];
+            this.hostLegalName = _data["hostLegalName"];
+            this.hostAddress = _data["hostAddress"];
+        }
+    }
+
+    static fromJS(data: any): InvoiceNewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new InvoiceNewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amount"] = this.amount;
+        data["editionName"] = this.editionName;
+        data["addonName"] = this.addonName;
+        data["productName"] = this.productName;
+        data["invoiceNo"] = this.invoiceNo;
+        data["invoiceDate"] = this.invoiceDate ? this.invoiceDate.toString() : <any>undefined;
+        data["tenantLegalName"] = this.tenantLegalName;
+        data["tenantAddress"] = this.tenantAddress;
+        data["tenantTaxNo"] = this.tenantTaxNo;
+        data["hostLegalName"] = this.hostLegalName;
+        data["hostAddress"] = this.hostAddress;
+        return data; 
+    }
+}
+
+export interface IInvoiceNewDto {
+    amount: number;
+    editionName: string | undefined;
+    addonName: string | undefined;
+    productName: string | undefined;
+    invoiceNo: string | undefined;
+    invoiceDate: DateTime;
+    tenantLegalName: string | undefined;
+    tenantAddress: string | undefined;
+    tenantTaxNo: string | undefined;
+    hostLegalName: string | undefined;
+    hostAddress: string | undefined;
+}
+
 export class IsTenantAvailableInput implements IIsTenantAvailableInput {
     tenancyName!: string;
 
@@ -36418,6 +36240,54 @@ export interface IPagedResultDtoOfSubscriptionPaymentListDto {
     items: SubscriptionPaymentListDto[] | undefined;
 }
 
+export class PagedResultDtoOfSubscriptionPaymentListNewDto implements IPagedResultDtoOfSubscriptionPaymentListNewDto {
+    totalCount!: number;
+    items!: SubscriptionPaymentListNewDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfSubscriptionPaymentListNewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(SubscriptionPaymentListNewDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfSubscriptionPaymentListNewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfSubscriptionPaymentListNewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IPagedResultDtoOfSubscriptionPaymentListNewDto {
+    totalCount: number;
+    items: SubscriptionPaymentListNewDto[] | undefined;
+}
+
 export class PagedResultDtoOfTenantListDto implements IPagedResultDtoOfTenantListDto {
     totalCount!: number;
     items!: TenantListDto[] | undefined;
@@ -39931,6 +39801,106 @@ export interface ISubscriptionPaymentListDto {
     editionDisplayName: string | undefined;
     tenantId: number;
     invoiceNo: string | undefined;
+    lastModificationTime: DateTime | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: DateTime;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class SubscriptionPaymentListNewDto implements ISubscriptionPaymentListNewDto {
+    paymentId!: number;
+    gateway!: string | undefined;
+    amount!: number;
+    editionId!: number;
+    dayCount!: number;
+    paymentPeriodType!: string | undefined;
+    status!: string | undefined;
+    editionName!: string | undefined;
+    addonName!: string | undefined;
+    tenantId!: number;
+    invoiceNo!: string | undefined;
+    description!: string | undefined;
+    lastModificationTime!: DateTime | undefined;
+    lastModifierUserId!: number | undefined;
+    creationTime!: DateTime;
+    creatorUserId!: number | undefined;
+    id!: number;
+
+    constructor(data?: ISubscriptionPaymentListNewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.paymentId = _data["paymentId"];
+            this.gateway = _data["gateway"];
+            this.amount = _data["amount"];
+            this.editionId = _data["editionId"];
+            this.dayCount = _data["dayCount"];
+            this.paymentPeriodType = _data["paymentPeriodType"];
+            this.status = _data["status"];
+            this.editionName = _data["editionName"];
+            this.addonName = _data["addonName"];
+            this.tenantId = _data["tenantId"];
+            this.invoiceNo = _data["invoiceNo"];
+            this.description = _data["description"];
+            this.lastModificationTime = _data["lastModificationTime"] ? DateTime.fromISO(_data["lastModificationTime"].toString()) : <any>undefined;
+            this.lastModifierUserId = _data["lastModifierUserId"];
+            this.creationTime = _data["creationTime"] ? DateTime.fromISO(_data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = _data["creatorUserId"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): SubscriptionPaymentListNewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SubscriptionPaymentListNewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["paymentId"] = this.paymentId;
+        data["gateway"] = this.gateway;
+        data["amount"] = this.amount;
+        data["editionId"] = this.editionId;
+        data["dayCount"] = this.dayCount;
+        data["paymentPeriodType"] = this.paymentPeriodType;
+        data["status"] = this.status;
+        data["editionName"] = this.editionName;
+        data["addonName"] = this.addonName;
+        data["tenantId"] = this.tenantId;
+        data["invoiceNo"] = this.invoiceNo;
+        data["description"] = this.description;
+        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toString() : <any>undefined;
+        data["lastModifierUserId"] = this.lastModifierUserId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ISubscriptionPaymentListNewDto {
+    paymentId: number;
+    gateway: string | undefined;
+    amount: number;
+    editionId: number;
+    dayCount: number;
+    paymentPeriodType: string | undefined;
+    status: string | undefined;
+    editionName: string | undefined;
+    addonName: string | undefined;
+    tenantId: number;
+    invoiceNo: string | undefined;
+    description: string | undefined;
     lastModificationTime: DateTime | undefined;
     lastModifierUserId: number | undefined;
     creationTime: DateTime;

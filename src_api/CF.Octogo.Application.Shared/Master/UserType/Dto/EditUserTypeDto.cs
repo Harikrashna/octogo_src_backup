@@ -11,6 +11,14 @@ namespace CF.Octogo.Master.UserType.Dto
         {
             public int inUserTypeID { get; set; }
         }
+    public class UserTypeListRet
+    {
+        public int UserTypeId { get; set; }
+        public string UserTypeName { get; set; }
+        public string Description { get; set; }
+        public int TotalCount { get; set; }
+    }
+
     public class UserTypeListDto
     {
         public int inUserTypeID { get; set; }

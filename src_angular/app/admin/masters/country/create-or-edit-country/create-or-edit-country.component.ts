@@ -6,6 +6,7 @@ import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateOrUpdateCountryInput, CommonServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ValidationServiceService } from '@app/admin/validation-service.service';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-create-or-edit-country',
   templateUrl: './create-or-edit-country.component.html',
@@ -16,7 +17,7 @@ export class CreateOrEditCountryComponent  extends AppComponentBase {
   @ViewChild('permissionTree') permissionTree: PermissionTreeComponent;
   @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
   @Input() Country: CountryDto[];
-  createCountry:CreateOrUpdateCountryInput = new CreateOrUpdateCountryInput()
+  createCountry:CreateOrUpdateCountryInput;
   //createCountry:CreateOrUpdateCountryInput;
   active: boolean = false;
   saving: boolean = false; 
@@ -27,6 +28,7 @@ export class CreateOrEditCountryComponent  extends AppComponentBase {
   constructor(injector: Injector, private _country: CountryServiceProxy, private _common: CommonServiceProxy,
     public _validationService: ValidationServiceService) {
     super(injector)
+    this.createCountry = new CreateOrUpdateCountryInput();
   }
   currencyArray: any[] = [];
   currencyResult:any[];
@@ -65,7 +67,7 @@ classificationResult:any[];
 
       this.edit = true;
       this.active = true;
-      this._country.getCountryForEdit(e).subscribe(res => {
+      this._country.getCountryById(e).subscribe(res => {
         this.createCountry.sNo = res.table[0].sNo;
         this.createCountry.countryName = res.table[0].countryName;
         this.createCountry.countryCode = res.table[0].countryCode;
@@ -143,33 +145,48 @@ classificationResult:any[];
   }
 
   save(form: NgForm,value):void{
-    
+    let newCountry =new CreateOrUpdateCountryInput();
    
     if (value.currencyCode != undefined || value.currencyCode != null) {
-      this.createCountry.currencySNo = value.currencyCode.id;
-      this.createCountry.currencyCode = value.currencyCode.code;
+      // this.createCountry.currencySNo = value.currencyCode.id;
+      // this.createCountry.currencyCode = value.currencyCode.code;
+      newCountry.currencySNo = value.currencyCode.id;
+      newCountry.currencyCode =  value.currencyCode.code;
       
     }
     if (value.continent != undefined || value.continent != null) {
-      this.createCountry.continent = value.continent.name;
+      //this.createCountry.continent = value.continent.name;
+      newCountry.continent =  value.continent.name;
     }
     if (value.iataAreaCode != undefined || value.iataAreaCode != null) {
-      this.createCountry.iataAreaCode = value.iataAreaCode.name;
+      //this.createCountry.iataAreaCode = value.iataAreaCode.name;
+      newCountry.iataAreaCode = value.iataAreaCode.name;
     }
+    newCountry.sNo=this.createCountry.sNo;
+    newCountry.countryName=this.createCountry.countryName;
+    newCountry.countryCode=this.createCountry.countryCode;
+    newCountry.isdCode=this.createCountry.isdCode;
+    newCountry.nationality=this.createCountry.nationality
    let Duplicacy = this.Country.filter((x) => x.countryName.trim().toUpperCase() == this.createCountry.countryName.trim().toUpperCase() || x.countryCode.trim().toUpperCase() == this.createCountry.countryCode.trim().toUpperCase());
  
    if (Duplicacy != null && Duplicacy != undefined && Duplicacy.length > 0 && Duplicacy[0].sNo != this.createCountry.sNo) {
       return this.notify.warn(this.l('DuplicateCountryMessage'));
     }
      if (this.createCountry.sNo == 0 || this.createCountry.sNo == null) {
-      this._country.createorUpdateCountry(this.createCountry).subscribe(e => {
+      this.saving = true;
+      this._country.createorUpdateCountry(newCountry).
+      pipe(finalize(() => { this.saving = false; })).subscribe(e => {
+        this.saving = false;
         this.notify.info(this.l('SavedSuccessfully'));
         this.close(form);
         this.modalSave.emit(null)
       })
     }
     else {
-      this._country.createorUpdateCountry(this.createCountry).subscribe(e => {
+      this.saving = true;
+      this._country.createorUpdateCountry(newCountry).
+      pipe(finalize(() => { this.saving = false; })).subscribe(e => {
+        this.saving = false;
         this.notify.info(this.l('UpdateCountryMessage'));
         this.close(form);
         this.modalSave.emit(null)

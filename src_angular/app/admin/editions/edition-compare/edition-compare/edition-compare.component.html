@@ -5,7 +5,7 @@
 
         <div [class]="containerClass">
             <div class="card card-custom gutter-b">
-                <div class="card-body">
+                <div class="card-body1">
         <div class="col-sm" *ngIf="canBack">
             <button class="btn btn-primary btn-sm" (click)="Back()">
                 <i class="fa fa-arrow-left"></i> {{"Back" | localize}}
@@ -191,7 +191,7 @@
                                         </span>
                                     </div>
                                     <ng-container *ngIf="addon?.addonPrice?.length > 0">
-                                        <div class="card-body d-flex justify-content-center"
+                                        <div class="card-body1 d-flex justify-content-center"
                                             *ngFor="let price of addon.addonPrice; let i = index">
                                             <div *ngIf="i % 2 == 0" class="row no-gutters">
                                                 <span id="price">
@@ -208,7 +208,7 @@
                                         </div>
                                     </ng-container>
 
-                                    <div class="card-body col addon-price" *ngIf="!(addon?.addonPrice?.length > 0)">
+                                    <div class="card-body1 col addon-price" *ngIf="!(addon?.addonPrice?.length > 0)">
                                         {{"Free" | localize}}
                                     </div>
                                 </div>

@@ -15,11 +15,10 @@ namespace CF.Octogo.Master.Services
 {
     public interface IServicesAppService : IApplicationService
     {
-        Task<PagedResultDto<ServicesListDto>> GetService(PagedAndSortedInputDto input, string filter);
+        Task<PagedResultDto<ServicesListDto>> GetServiceList(PagedAndSortedInputDto input, string filter);
         Task<int> CreateorUpdateService(CreateOrUpdateServiceInput inp);
         Task DeleteService(EntityDto input);
-        Task<DataSet> GetServiceForEdit(GetEditServiceinput input);
-        Task<DataSet> GetServiceByServiceId(int? inServiceID, string vcServiceName);
+        Task<DataSet> GetServiceById(GetEditServiceinput input);
 
     }
 }

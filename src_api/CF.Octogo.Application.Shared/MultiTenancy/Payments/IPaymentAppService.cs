@@ -4,6 +4,7 @@ using Abp.Application.Services;
 using CF.Octogo.MultiTenancy.Dto;
 using CF.Octogo.MultiTenancy.Payments.Dto;
 using Abp.Application.Services.Dto;
+using CF.Octogo.Dto;
 
 namespace CF.Octogo.MultiTenancy.Payments
 {
@@ -39,6 +40,6 @@ namespace CF.Octogo.MultiTenancy.Payments
 
         Task<bool> HasAnyPayment();
         Task<long> CreatePaymentNew(CreatePaymentNewDto input);
-        Task<PagedResultDto<SubscriptionPaymentListDto>> GetPaymentHistoryNew(GetPaymentHistoryInput input, int tenantId = 0);
+        Task<PagedResultDto<SubscriptionPaymentListNewDto>> GetPaymentHistoryNew(PagedAndSortedInputDto input, int tenantId = 0);
     }
 }

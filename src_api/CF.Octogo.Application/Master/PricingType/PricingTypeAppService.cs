@@ -30,37 +30,41 @@ namespace CF.Octogo.Master.PricingType
         List<PricingTypeListDto> list = new List<PricingTypeListDto>();
 
 
-        public async Task<PagedResultDto<PricingTypeListDto>> GetPricingType(PricingListInputDto inp)
+        public async Task<PagedResultDto<PricingTypeListDto>> GetPricingType(PricingListInputDto input)
         {
 
             SqlParameter[] parameters = new SqlParameter[4];
 
-            parameters[0] = new SqlParameter("MaxResultCount", inp.MaxResultCount);
-            parameters[1] = new SqlParameter("SkipCount", inp.SkipCount);
-            parameters[2] = new SqlParameter("Sort", inp.Sorting);
-            parameters[3] = new SqlParameter("Filter", inp.filter);
+            parameters[0] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[1] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
+            parameters[2] = new SqlParameter("Sorting", input.Sorting);
+            parameters[3] = new SqlParameter("Filter", input.filter);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetPricingTypes", parameters
-            );
+            "USP_GetPricingTypesListOrPricingTypeForEdit", parameters ); // Change procedure name "USP_GetPricingTypebyId" to "USP_GetPricingTypesListOrPricingTypeForEdit"
             if (ds.Tables.Count > 0)
             {
-                int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                var totalCount = v;
 
+                var totalCount = 0;
 
-                DataTable dt = ds.Tables[0];
+                var pricingTypeListDto = SqlHelper.ConvertDataTable<PricingTypeListRet>(ds.Tables[0]);
 
+                var pricingTypeList = new List<PricingTypeListDto>();
+                pricingTypeList = pricingTypeListDto.Select(rw => new PricingTypeListDto
+                {
+                    inPricingTypeId = rw.PricingTypeId,
+                    inNoOfDays = rw.NoOfDays,
+                    vcTypeName = rw.TypeName
+                }).ToList();
+                if (pricingTypeList != null && pricingTypeList.Count > 0)
+                {
+                    totalCount = pricingTypeListDto.FirstOrDefault().TotalCount;
 
-                list = (from DataRow dr in dt.Rows
-                        select new PricingTypeListDto()
-                        {
-                            inPricingTypeId = Convert.ToInt32(dr["PricingTypeId"]),
-                            vcTypeName = dr["TypeName"].ToString(),
-                            inNoOfDays = Convert.ToInt32(dr["NoOfDays"])
-                        }).ToList();
+                }
+
+                return new PagedResultDto<PricingTypeListDto>(totalCount, pricingTypeList);
 
 
 
@@ -73,32 +77,63 @@ namespace CF.Octogo.Master.PricingType
         }
 
 
+        //[AbpAuthorize(AppPermissions.Pages_Administration_CreatePricingType, AppPermissions.Pages_Administration_EditPricingType)]
+        //public async Task<int> InsertUpdatePricingType(CreateorUpdatePricingType inp)
+        //{
+
+
+        //    var duplicateList = GetPricingTypeByPricingId(inp.inPricingTypeId, inp.vcTypeName, inp.inNoOfDays);
+
+        //    if (duplicateList.Result != null)
+        //    {
+        //        throw new UserFriendlyException(L("DuplicateRecord"));
+        //    }
+
+
+        //    SqlParameter[] parameters = new SqlParameter[4];
+        //    parameters[0] = new SqlParameter("PricingTypeId", inp.inPricingTypeId);
+        //    parameters[1] = new SqlParameter("TypeName", inp.vcTypeName.Trim());
+        //    parameters[2] = new SqlParameter("NoOfDays", inp.inNoOfDays);
+        //    parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
+
+
+
+
+        //    var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+        //    System.Data.CommandType.StoredProcedure,
+        //    "USP_CreateUpdatePricingType", parameters);
+        //    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        //    {
+        //        await ClearCache();
+        //        return (int)ds.Tables[0].Rows[0]["Id"];
+        //    }
+        //    else
+        //    {
+        //        return 0;
+        //    }
+
+
+        //}
+
+
         [AbpAuthorize(AppPermissions.Pages_Administration_CreatePricingType, AppPermissions.Pages_Administration_EditPricingType)]
         public async Task<int> InsertUpdatePricingType(CreateorUpdatePricingType inp)
         {
-
-
-            var duplicateList = GetPricingTypeByPricingId(inp.inPricingTypeId, inp.vcTypeName, inp.inNoOfDays);
-
-            if (duplicateList.Result != null)
-            {
-                throw new UserFriendlyException(L("DuplicateRecord"));
-            }
-
-
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("PricingTypeId", inp.inPricingTypeId);
             parameters[1] = new SqlParameter("TypeName", inp.vcTypeName.Trim());
             parameters[2] = new SqlParameter("NoOfDays", inp.inNoOfDays);
             parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
-
-
-
-
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_CreateUpdatePricingType", parameters);
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            "USP_CreateOrUpdateOrDeletePricingType", parameters);// Change procedure name "USP_CreateUpdatePricingType" to "USP_CreateOrUpdateOrDeletePricingType"
+
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "DuplicateRecord" && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
+
+                throw new UserFriendlyException(L("DuplicateRecord"));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
@@ -107,8 +142,6 @@ namespace CF.Octogo.Master.PricingType
             {
                 return 0;
             }
-
-
         }
 
 
@@ -116,27 +149,31 @@ namespace CF.Octogo.Master.PricingType
 
         public async Task DeletePricingType(EntityDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
+            SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("PricingTypeId", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[2] = new SqlParameter("IsDelete", true);
+
 
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_DeletePricingType", parameters);
+           "USP_CreateOrUpdateOrDeletePricingType", parameters); // Change procedure name "USP_DeletePricingType" to "USP_CreateOrUpdateOrDeletePricingType"
             await ClearCache();
         }
 
 
 
-        public async Task<DataSet> GetPricingTypeForEdit(int inPricingTypeId)
+        public async Task<DataSet> GetPricingTypeById(int inPricingTypeId)
         {
-            SqlParameter[] parameters = new SqlParameter[1];
+            SqlParameter[] parameters = new SqlParameter[2];
+
             parameters[0] = new SqlParameter("PricingTypeId", inPricingTypeId);
+            parameters[1] = new SqlParameter("IsEdit", true);
+
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetPricingTypebyId", parameters
-            );
+            "USP_GetPricingTypesListOrPricingTypeForEdit", parameters); // Change procedure name "USP_GetPricingTypebyId" to "USP_GetPricingTypesListOrPricingTypeForEdit"
             if (ds.Tables.Count > 0)
             {
                 return ds;
@@ -147,27 +184,26 @@ namespace CF.Octogo.Master.PricingType
             }
         }
 
-        public async Task<DataSet> GetPricingTypeByPricingId(int? inPricingTypeId, string vcTypeName, int inNoOfDays)
-        {
-            SqlParameter[] parameters = new SqlParameter[3];
-            parameters[0] = new SqlParameter("PricingTypeId", inPricingTypeId);
-            parameters[1] = new SqlParameter("TypeName", vcTypeName);
-            parameters[2] = new SqlParameter("NoOfDays", inNoOfDays);
+        //public async Task<DataSet> GetPricingTypeByPricingId(int? inPricingTypeId, string vcTypeName, int inNoOfDays)
+        //{
+        //    SqlParameter[] parameters = new SqlParameter[3];
+        //    parameters[0] = new SqlParameter("PricingTypeId", inPricingTypeId);
+        //    parameters[1] = new SqlParameter("TypeName", vcTypeName);
+        //    parameters[2] = new SqlParameter("NoOfDays", inNoOfDays);
 
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicacyRecord", parameters
-            );
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
-        }
+        //    var ds = await SqlHelper.ExecuteDatasetAsync(
+        //    Connection.GetSqlConnection("DefaultOctoGo"),
+        //    System.Data.CommandType.StoredProcedure,
+        //    "USP_CheckDuplicacyRecord", parameters ); 
+        //    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        //    {
+        //        return ds;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
         public async Task ClearCache()
         {
             var allMasterCache = _cacheManager.GetCache(masterCacheKey);

@@ -10,4 +10,11 @@ namespace CF.Octogo.Master.Industry.Dto
         public string vcIndustryName { get; set; }
         public string vcDescription { get; set; }
     }
+    public class IndustryListRet
+    {
+        public int inIndustryID { get; set; }
+        public string vcIndustryName { get; set; }
+        public string vcDescription { get; set; }
+        public int TotalCount { get; set; }
+    }
 }

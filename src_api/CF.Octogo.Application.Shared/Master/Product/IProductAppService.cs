@@ -18,8 +18,7 @@ namespace CF.Octogo.Master.Product
         //Task<int> CreateorUpdateProduct(CreateOrUpdateProductInput inp);
         Task<int> CreateorUpdateProduct(CreateOrUpdateProductInput inp);
         Task DeleteProduct(EntityDto input);
-        Task<ProductandUserEdit> GetProductForEdit(GetEditProductinput input);
-        Task<DataSet> GetProductByProductId(int? inProductID, string vcProductName);
+        Task<ProductandUserEdit> GetProductById(GetEditProductinput input);
         Task<List<ProductModulesDto>> GetProductModuleList(int InProductID);
     }
 }

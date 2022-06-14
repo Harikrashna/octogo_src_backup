@@ -12,7 +12,7 @@
                     <p-sortIcon field="creationTime"></p-sortIcon>
                 </th>
                 <th style="width: 150px" pSortableColumn="editionDisplayName">
-                    {{'Edition' | localize}}
+                    {{'Edition' | localize}}/{{'Addon' | localize}}
                     <p-sortIcon field="editionDisplayName"></p-sortIcon>
                 </th>
                 <th style="width: 150px" pSortableColumn="gateway">
@@ -32,18 +32,19 @@
                     <p-sortIcon field="paymentPeriodType"></p-sortIcon>
                 </th>
                 <th style="width: 100px">{{'DayCount' | localize}}</th>
-                <th style="width: 250px;">{{'PaymentId' | localize}}</th>
+                <th style="width: 150px;">{{'PaymentId' | localize}}</th>
                 <th style="width: 150px" pSortableColumn="invoiceNo">
                     {{'InvoiceNo' | localize}}
                     <p-sortIcon field="invoiceNo"></p-sortIcon>
                 </th>
+                <th style="width: 250px;">{{'Description' | localize}}</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-record="$implicit">
             <tr>
                 <td style="width: 130px">
                     <button type="button" class="btn btn-sm btn-primary"
-                        (click)="createOrShowInvoice(record.id, record.invoiceNo)">{{'ShowInvoice' | localize}}</button>
+                        (click)="createOrShowInvoice(record.paymentId, record.invoiceNo)">{{'ShowInvoice' | localize}}</button>
                 </td>
                 <td style="width: 150px">
                     <span class="p-column-title">{{'ProcessTime' | localize}}</span>
@@ -52,12 +53,13 @@
                     <span *ngIf="!record.creationTime">-</span>
                 </td>
                 <td style="width: 150px">
-                    <span class="p-column-title">{{'Edition' | localize}}</span>
-                    {{record.editionDisplayName}}
+                    <span class="p-column-title">{{'Edition' | localize}}/{{'Addon' | localize}}</span>
+                    {{record.editionName}}
+                    <span *ngIf="record.addonName != null">/{{record.addonName}}</span>
                 </td>
                 <td style="width: 150px">
                     <span class="p-column-title">{{'Gateway' | localize}}</span>
-                    {{'SubscriptionPaymentGatewayType_' + record.gateway | localize}}
+                    {{ record.gateway | localize}}
                 </td>
                 <td style="width: 100px">
                     <span class="p-column-title">{{'Amount' | localize}}</span>
@@ -66,23 +68,27 @@
                 </td>
                 <td style="width: 150px">
                     <span class="p-column-title">{{'Status' | localize}}</span>
-                    {{'SubscriptionPaymentStatus_' + record.status | localize}}
+                    {{ record.status | localize}}
                 </td>
                 <td style="width: 150px">
                     <span class="p-column-title">{{'Period' | localize}}</span>
-                    {{'PaymentPeriodType_' + record.paymentPeriodType | localize}}
+                    {{ record.paymentPeriodType | localize}}
                 </td>
                 <td style="width: 100px">
                     <span class="p-column-title">{{'DayCount' | localize}}</span>
                     {{record.dayCount}}
                 </td>
-                <td style="width: 250px;">
+                <td style="width: 150px;">
                     <span class="p-column-title">{{'PaymentId' | localize}}</span>
-                    {{record.paymentId}}
+                    #{{record.paymentId}}
                 </td>
                 <td style="width: 150px">
                     <span class="p-column-title">{{'InvoiceNo' | localize}}</span>
                     {{record.invoiceNo}}
+                </td>
+                <td style="width: 250px;">
+                    <span class="p-column-title">{{'Description' | localize}}</span>
+                    {{record.description}}
                 </td>
             </tr>
         </ng-template>

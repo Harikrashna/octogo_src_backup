@@ -31,22 +31,30 @@ namespace CF.Octogo.Master.AwbPricingApproach
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("Sorting", input.Sorting);
-            parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[1] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[2] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[3] = new SqlParameter("Filter", Filter);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetPerAWBCostApproach", parameters
+            "USP_GetPerAWBCostApproachList", parameters
             );
             var totalCount = 0;
             var awbList = new List<AwbCostApproachListDto>();
             if (ds.Tables.Count > 0)
             {
-                awbList = SqlHelper.ConvertDataTable<AwbCostApproachListDto>(ds.Tables[0]);
-                DataRow row = ds.Tables[1].Rows[0];
-                totalCount = Convert.ToInt32(row["totalCount"]);
+                var awbRet = SqlHelper.ConvertDataTable<AwbCostApproachListRet>(ds.Tables[0]);
+                awbList = awbRet.Select(rw => new AwbCostApproachListDto
+                {
+                    inApproachID = rw.inApproachID,
+                    vcApproachName = rw.vcApproachName,
+                    vcDescription = rw.vcDescription,
+                }).ToList();
+                if (awbRet != null && awbRet.Count > 0)
+                {
+                    totalCount = awbRet.FirstOrDefault().TotalCount;
+                }
             }
             return new PagedResultDto<AwbCostApproachListDto>(
                 totalCount,
@@ -57,6 +65,7 @@ namespace CF.Octogo.Master.AwbPricingApproach
 
         [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Create, AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
         public async Task<int> CreateOrUpdateAwbCostType(CreateOrUpdateAwbCostApproachInput input)
+
         {
             var x = JsonConvert.SerializeObject(input.AWBCostAppraochData);
             SqlParameter[] parameters = new SqlParameter[5];
@@ -78,17 +87,17 @@ namespace CF.Octogo.Master.AwbPricingApproach
             {
                 return 0;
             }
+
         }
 
-        // [AbpAuthorize(AppPermissions.Pages_Administration_AwbCostApproach_Edit)]
-        public async Task<CreateOrUpdateAwbCostApproachInput> GetPerAwbCostApproachForEdit(GetEditAwbCostApproachInput input)
+        public async Task<CreateOrUpdateAwbCostApproachInput> GetPerAwbCostApproachById(GetEditAwbCostApproachInput input)
         {
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetPerAWBCostApproach", parameters //USP_GetAwbCostApproachId
+            "USP_GetPerAWBCostApproachList", parameters //USP_GetAwbCostApproachId
             );
             if (ds.Tables.Count > 0)
             {

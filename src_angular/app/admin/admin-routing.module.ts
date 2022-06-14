@@ -65,7 +65,7 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
                     {
                         path: 'invoice/:paymentId',
                         loadChildren: () => import('./subscription-management/invoice/invoice.module').then(m => m.InvoiceModule),
-                        data: { permission: 'Pages.Administration.Tenant.SubscriptionManagement' }
+                        // data: { permission: 'Pages.Administration.Tenant.SubscriptionManagement' }
                     },
                     {
                         path: 'tenantSettings',

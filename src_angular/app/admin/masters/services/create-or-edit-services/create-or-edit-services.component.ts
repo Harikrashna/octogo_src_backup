@@ -5,6 +5,7 @@ import { AppComponentBase } from '@shared/common/app-component-base';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NgForm, PatternValidator } from '@angular/forms';
 import { ValidationServiceService } from '@app/admin/validation-service.service';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-create-or-edit-services',
   templateUrl: './create-or-edit-services.component.html',
@@ -41,7 +42,7 @@ export class CreateOrEditServicesComponent extends AppComponentBase {
     }
     else {
       this.active = true;
-      this._services.getServiceForEdit(e).subscribe(res => {
+      this._services.getServiceById(e).subscribe(res => {
         this.createServices.inServiceID = res.table[0].inServiceID;
         this.createServices.vcServiceName = res.table[0].vcServiceName;
         this.createServices.vcDescription = res.table[0].vcDescription;
@@ -62,7 +63,8 @@ export class CreateOrEditServicesComponent extends AppComponentBase {
     }
     else if (this.createServices.inServiceID == 0 || this.createServices.inServiceID == null) {
       this.saving = true;
-      this._services.createorUpdateService(this.createServices).subscribe(e => {
+      this._services.createorUpdateService(this.createServices)
+      .pipe(finalize(() => this.saving = false)).subscribe(e => {
         this.saving = false
         this.notify.info(this.l('SavedSuccessfully'));
         this.close(form);

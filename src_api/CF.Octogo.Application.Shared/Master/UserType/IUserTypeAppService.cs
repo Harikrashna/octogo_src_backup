@@ -14,11 +14,10 @@ namespace CF.Octogo.Master.UserType
 {
     public interface IUserTypeAppService : IApplicationService
     {
-        Task<PagedResultDto<UserTypeListDto>> GetUserType(PagedAndSortedInputDto input, string filter);
+        Task<PagedResultDto<UserTypeListDto>> GetUserTypeList(PagedAndSortedInputDto input, string filter);
         Task<int> CreateorUpdateUserType(CreateOrUpdateUserTypeInputDto inp);
         Task DeleteUserType(EntityDto input);
-        Task<DataSet> GetUserTypeForEdit(GetEditUserTypeinput input);
-        Task<DataSet> GetUserTypeByUserTypeId(int? inUserTypeID, string vcUserTypeName);
+        Task<DataSet> GetUserTypeById(GetEditUserTypeinput input);
 
     }
 }

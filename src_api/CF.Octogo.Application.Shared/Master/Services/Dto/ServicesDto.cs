@@ -8,11 +8,19 @@ namespace CF.Octogo.Master.Services.Dto
 {
     public class ServicesDto
     {
+        public class ServicesListRet
+        {
+            public int ServiceId { get; set; }
+            public string ServiceName{ get; set; }
+            public string Description { get; set; }
+            public int TotalCount { get; set; }
+        }
         public class ServicesListDto
         {
-            public int inServiceID { get; set; }
-            public string vcServiceName { get; set; }
-            public string vcDescription { get; set; }
+            public int InServiceID { get; set; }
+            public string VcServiceName { get; set; }
+            public string VcDescription { get; set; }
+
         }
 
     }

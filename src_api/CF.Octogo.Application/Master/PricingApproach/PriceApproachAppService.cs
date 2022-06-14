@@ -30,23 +30,31 @@ namespace CF.Octogo.Master.PricingApproach
         public async Task<PagedResultDto<PriceApproachListDto>> GetPricingApproach(GetPriceApproachInput input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[0] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[1] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[2] = new SqlParameter("Sorting", input.Sorting);
             parameters[3] = new SqlParameter("Filter", input.filter);
 
             DataSet ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetPricingApproach", parameters
+            "USP_GetPricingApproachList", parameters
             );
             var totalCount = 0;
             var pricingApproachList = new List<PriceApproachListDto>();
             if (ds.Tables.Count > 0)
             {
-                pricingApproachList = SqlHelper.ConvertDataTable<PriceApproachListDto>(ds.Tables[0]);
-                DataRow row = ds.Tables[1].Rows[0];
-                totalCount = Convert.ToInt32(row["totalCount"]);
+                var pricingApproachRet = SqlHelper.ConvertDataTable<PriceApproachListRet>(ds.Tables[0]);
+                pricingApproachList = pricingApproachRet.Select(rw => new PriceApproachListDto
+                {
+                    Id = rw.Id,
+                    ApproachName = rw.ApproachName,
+                    Description = rw.Description
+                }).ToList();
+                if (pricingApproachRet != null && pricingApproachRet.Count > 0)
+                {
+                    totalCount = pricingApproachRet.FirstOrDefault().TotalCount;
+                }
             }
             return new PagedResultDto<PriceApproachListDto>(
                 totalCount,
@@ -73,7 +81,7 @@ namespace CF.Octogo.Master.PricingApproach
             parameters[0] = new SqlParameter("ApproachId", input.ApproachId);
             parameters[1] = new SqlParameter("ApproachName", input.ApproachName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
-            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
@@ -100,7 +108,7 @@ namespace CF.Octogo.Master.PricingApproach
             parameters[0] = new SqlParameter("ApproachId", input.ApproachId);
             parameters[1] = new SqlParameter("ApproachName", input.ApproachName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
-            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
@@ -126,9 +134,9 @@ namespace CF.Octogo.Master.PricingApproach
         {
             {
                 SqlParameter[] parameters ={
-                     new SqlParameter("@ApproachId",(ApproachId)),
-                     new SqlParameter("@UserId",  AbpSession.UserId),
-                     new SqlParameter("@IsDelete",  true)
+                     new SqlParameter("ApproachId",(ApproachId)),
+                     new SqlParameter("LoginUserId",  AbpSession.UserId),
+                     new SqlParameter("IsDelete",  true)
                 };
                 await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,

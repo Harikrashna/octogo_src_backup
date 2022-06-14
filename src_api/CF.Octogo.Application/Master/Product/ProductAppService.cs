@@ -32,31 +32,37 @@ namespace CF.Octogo.Master.Product
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("Sorting", input.Sorting);
-            parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[1] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[2] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[3] = new SqlParameter("Filter", filter);
             List<ProductListDto> ProductList = new List<ProductListDto>();
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetProducts", parameters
+            "USP_GetProductsListOrProductForEdit", parameters
             );
 
             if (ds.Tables.Count > 0)
             {
-                int v = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                var totalCount = v;
-                DataTable dt = ds.Tables[0];
+              
+                var totalCount = 0;
 
-                ProductList = (from DataRow dr in dt.Rows
-                               select new ProductListDto()
-                               {
-                                   inProductID = Convert.ToInt32(dr["ProductId"]),
-                                   vcProductName = dr["ProductName"].ToString(),
-                                   vcDescription = dr["Description"].ToString(),
+                var ProductListDto = SqlHelper.ConvertDataTable<ProductListRet>(ds.Tables[0]);
+                var productList = new List<ProductListDto>();
+                productList = ProductListDto.Select(rw => new ProductListDto
+                {
+                    InProductID = rw.ProductId,
+                    VcDescription = rw.Description,
+                    VcProductName = rw.ProductName
+                }).ToList();
 
-                               }).ToList();
-                return new PagedResultDto<ProductListDto>(totalCount, ProductList);
+                if (ProductListDto != null && ProductListDto.Count > 0)
+                {
+                    totalCount = ProductListDto.FirstOrDefault().TotalCount;
+
+                }
+
+                return new PagedResultDto<ProductListDto>(totalCount, productList);
             }
             else
             {
@@ -70,12 +76,6 @@ namespace CF.Octogo.Master.Product
         public async Task<int> CreateorUpdateProduct(CreateOrUpdateProductInput inp)
         {
 
-            var dup_data = GetProductByProductId(inp.inProductID, inp.vcProductName);
-
-            if (dup_data.Result != null)
-            {
-                throw new UserFriendlyException(L("DuplicateRecord"));
-            }
             SqlParameter[] parameters = new SqlParameter[6];
             parameters[0] = new SqlParameter("inProductID", inp.inProductID);
             parameters[1] = new SqlParameter("vcProductName", inp.vcProductName.Trim());
@@ -86,9 +86,13 @@ namespace CF.Octogo.Master.Product
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
-           "USP_CreateOrUpdateProduct", parameters);
+           "USP_CreateOrUpdateOrDeleteProduct", parameters); // Change procedure name "USP_CreateOrUpdateProduct" to "USP_CreateOrUpdateOrDeleteProduct"
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "DuplicateRecord" && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
 
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                throw new UserFriendlyException(L("DuplicateRecord"));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
@@ -102,27 +106,29 @@ namespace CF.Octogo.Master.Product
         [AbpAuthorize(AppPermissions.Pages_Administration_Product_Delete)]
         public async Task DeleteProduct(EntityDto input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("ProductId", input.Id);
+            SqlParameter[] parameters = new SqlParameter[3];
+            parameters[0] = new SqlParameter("inProductID", input.Id);
             parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[2] = new SqlParameter("IsDelete", true);
 
-                await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+            await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                System.Data.CommandType.StoredProcedure,
-               "USP_DeleteProduct", parameters);
-                await ClearCache();
+               "USP_CreateOrUpdateOrDeleteProduct", parameters); // Change procedure name "USP_DeleteProduct" to "USP_CreateOrUpdateOrDeleteProduct"
+            await ClearCache();
 
         }
 
 
 
-        public async Task<ProductandUserEdit> GetProductForEdit(GetEditProductinput input)
+        public async Task<ProductandUserEdit> GetProductById(GetEditProductinput input)
         {
-            SqlParameter[] parameters = new SqlParameter[1];
+            SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("ProductID", input.inProductID);
-            var ds = await SqlHelper.ExecuteDatasetAsync(
+            parameters[1] = new SqlParameter("IsEdit", true); 
+             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetPoductForEdit", parameters
+            "USP_GetProductsListOrProductForEdit", parameters
             );
             if (ds.Tables.Count > 0)
             {
@@ -144,26 +150,6 @@ namespace CF.Octogo.Master.Product
         }
 
 
-        public async Task<DataSet> GetProductByProductId(int? inProductID, string vcProductName)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("ProductId", inProductID);
-            parameters[1] = new SqlParameter("ProductName", vcProductName);
-
-            var ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_CheckDuplicateProduct", parameters
-            );
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-            {
-                return ds;
-            }
-            else
-            {
-                return null;
-            }
-        }
         public async Task ClearCache()
         {
             var allMasterCache = _cacheManager.GetCache(masterCacheKey);

@@ -13,4 +13,14 @@ namespace CF.Octogo.Master.Country.Dto
         public string Continent { get; set; }
 
     }
+    public class CountryListRet
+    {
+        public int SNo { get; set; }
+        public string CountryCode { get; set; }
+        public string CountryName { get; set; }
+        public string CurrencyCode { get; set; }
+        public string Continent { get; set; }
+        public int TotalCount { get; set; }
+
+    }
 }

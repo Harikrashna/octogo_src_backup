@@ -11,7 +11,7 @@ namespace CF.Octogo.Master.AwbPricingAppoach
     {
         Task<PagedResultDto<AwbCostApproachListDto>> GetPerAWBCostApproach(PagedAndSortedInputDto input, string Filter);
         Task<int> CreateOrUpdateAwbCostType(CreateOrUpdateAwbCostApproachInput input);
-        Task<CreateOrUpdateAwbCostApproachInput> GetPerAwbCostApproachForEdit(GetEditAwbCostApproachInput input);
+        Task<CreateOrUpdateAwbCostApproachInput> GetPerAwbCostApproachById(GetEditAwbCostApproachInput input);
         Task DeleteAwbCostApproach(EntityDto input);
 
     }

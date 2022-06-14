@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -9,6 +10,7 @@ using Abp.Runtime.Session;
 using Abp.Timing;
 using Abp.UI;
 using CF.Octogo.Configuration;
+using CF.Octogo.Data;
 using CF.Octogo.Editions;
 using CF.Octogo.MultiTenancy.Accounting.Dto;
 using CF.Octogo.MultiTenancy.Payments;
@@ -71,6 +73,21 @@ namespace CF.Octogo.MultiTenancy.Accounting
                 TenantLegalName = invoice.TenantLegalName,
                 TenantTaxNo = invoice.TenantTaxNo
             };
+        }
+        public async Task<InvoiceNewDto> GetInvoiceInfoNew(EntityDto<long> input)
+        {
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("PaymentId", input.Id);
+                var ds = await SqlHelper.ExecuteDatasetAsync(
+                Connection.GetSqlConnection("DefaultOctoGo"),
+                System.Data.CommandType.StoredProcedure,
+                "USP_GetInvoiceDetailsByPaymentId", parameters
+                );
+                if (ds.Tables.Count > 0)
+                {
+                    return SqlHelper.ConvertDataTable<InvoiceNewDto>(ds.Tables[0]).FirstOrDefault();
+                }
+            return null;
         }
 
         [UnitOfWork(IsolationLevel.ReadUncommitted)]

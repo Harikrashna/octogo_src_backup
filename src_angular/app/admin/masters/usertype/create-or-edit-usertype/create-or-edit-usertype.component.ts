@@ -5,6 +5,7 @@ import { ValidationServiceService } from '@app/admin/validation-service.service'
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateOrUpdateUserTypeInputDto, UserTypeServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-or-edit-usertype',
@@ -43,7 +44,7 @@ export class CreateOrEditUsertypeComponent extends AppComponentBase {
     }
     else {
       this.active = true;
-      this._UserType.getUserTypeForEdit(e).subscribe(res => {
+      this._UserType.getUserTypeById(e).subscribe(res => {
         this.createUserType.inUserTypeID = res.table[0].inUserTypeID;
         this.createUserType.vcUserTypeName = res.table[0].vcUserTypeName;
         this.createUserType.vcDescription = res.table[0].vcDescription;
@@ -64,7 +65,7 @@ export class CreateOrEditUsertypeComponent extends AppComponentBase {
     }
     else if (this.createUserType.inUserTypeID == 0 || this.createUserType.inUserTypeID == null) {
       this.saving = true;
-      this._UserType.createorUpdateUserType(this.createUserType).subscribe(e => {
+      this._UserType.createorUpdateUserType(this.createUserType).pipe(finalize(() => this.saving = false)).subscribe(e => {
         this.notify.info(this.l('SavedSuccessfully'));
         this.saving = false;
         this.close(form);

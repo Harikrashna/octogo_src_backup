@@ -19,6 +19,6 @@ namespace CF.Octogo.Master.PricingType
 
         Task DeletePricingType(EntityDto input);
 
-        Task<DataSet> GetPricingTypeForEdit(int input);
+        Task<DataSet> GetPricingTypeById(int input);
     }
 }

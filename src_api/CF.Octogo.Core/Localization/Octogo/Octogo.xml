@@ -643,7 +643,7 @@
 		<text name="Period">Period</text>
 		<text name="DayCount">Day count</text>
 		<text name="LastModificationTime">Last modification time</text>
-		<text name="PaymentId">Payment id</text>
+		<text name="PaymentId">Payment Id</text>
 		<text name="SubscriptionPaymentGatewayType_Paypal">Paypal</text>
 		<text name="SubscriptionPaymentGatewayType_Stripe">Stripe</text>
 		<text name="SubscriptionPaymentStatus_Completed">Completed</text>
@@ -1180,7 +1180,7 @@
 		<text name="PricingTypeHeaderInfo">Manage Pricing Types </text>
 		<text name="PricingTypeDeleteWarningMessage">Pricing-Type {0} will be deleted.</text>
 		<text name="UpdatePricingTypeMessage">Updated Successfully.</text>
-		<text name="DuplicatePricingTypeMessage">Duplicate Record.</text>
+		<text name="DuplicatePricingTypeMessage">Duplicate PricingType</text>
 		<text name="OnlyNumericCharacters">Only Numeric Characters Not allowed</text>
 		<text name="PricingApproach">Pricing Approach</text>
 		<text name="ApproachName">Approach Name</text>
@@ -1251,7 +1251,7 @@
 		<text name="UserTypeName">User Type Name</text>
 		<text name="EditUserType">Edit UserType</text>
 		<text name="CreateNewUserType">Create New User Type</text>
-		<text name="DuplicateUserTypeMessage">Duplicate User Type </text>
+		<text name="DuplicateUserTypeMessage">Duplicate UserType </text>
 		<text name="CreatingNewUserType">Create User Type </text>
 		<text name="DeletingUserType">Delete User Type </text>
 		<text name="UpdateUserTypeMessage">Updated Successfully</text>
@@ -1481,6 +1481,7 @@
 		<text name="TenantDetails">Client Details</text>
 		<text name="OctogenProduct">Octogen Products</text>
 		<text name="PayableAmount">Payable Amount</text>
+		<text name="Addon">Addon</text>
 	</texts>
 </localizationDictionary>
 

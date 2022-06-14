@@ -17,8 +17,8 @@ namespace CF.Octogo.Master.Airline
         Task<PagedResultDto<AirlineListDto>> GetAirline(PagedAndSortedInputDto input, string filter);
         Task<int> CreateorUpdateAirline(CreateOrUpdateAirlineInput inp);
         Task DeleteAirline(EntityDto input);
-        Task<DataSet> GetAirlineForEdit(GetEditAirlineinput input);
-        Task<DataSet> GetAirlineByAirlineId(int? inAirlineID, string vcAirlineName);
+        Task<DataSet> GetAirlineById(GetEditAirlineinput input);
+        //Task<DataSet> GetAirlineByAirlineId(int? inAirlineID, string vcAirlineName);
 
     }
 }

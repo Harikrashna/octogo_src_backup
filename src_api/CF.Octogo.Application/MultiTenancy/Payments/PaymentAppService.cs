@@ -19,6 +19,9 @@ using Abp.Linq.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using CF.Octogo.Configuration.Tenants.Dto;
 using CF.Octogo.Configuration;
+using CF.Octogo.Data;
+using System.Data.SqlClient;
+using CF.Octogo.Dto;
 
 namespace CF.Octogo.MultiTenancy.Payments
 {
@@ -148,7 +151,7 @@ namespace CF.Octogo.MultiTenancy.Payments
 
         public async Task<SubscriptionPaymentDto> GetPaymentAsync(long paymentId)
         {
-               return ObjectMapper.Map<SubscriptionPaymentDto>(await _subscriptionPaymentRepository.GetAsync(paymentId));
+            return ObjectMapper.Map<SubscriptionPaymentDto>(await _subscriptionPaymentRepository.GetAsync(paymentId));
         }
 
         public async Task<SubscriptionPaymentDto> GetLastCompletedPayment()
@@ -401,17 +404,52 @@ namespace CF.Octogo.MultiTenancy.Payments
 
             return await _subscriptionPaymentRepository.InsertAndGetIdAsync(payment);
         }
-        public async Task<PagedResultDto<SubscriptionPaymentListDto>> GetPaymentHistoryNew(GetPaymentHistoryInput input, int tenantId = 0)
+        public async Task<PagedResultDto<SubscriptionPaymentListNewDto>> GetPaymentHistoryNew(PagedAndSortedInputDto input, int tenantId = 0)
         {
-            var query = _subscriptionPaymentRepository.GetAll()
-                .Include(sp => sp.Edition)
-                .Where(sp => sp.TenantId == (tenantId > 0 ? tenantId : AbpSession.TenantId))
-                .OrderBy(input.Sorting);
-
-            var payments = await query.OrderBy(input.Sorting).PageBy(input).ToListAsync();
-            var paymentsCount = query.Count();
-
-            return new PagedResultDto<SubscriptionPaymentListDto>(paymentsCount, ObjectMapper.Map<List<SubscriptionPaymentListDto>>(payments));
+            SqlParameter[] parameters = new SqlParameter[4];
+            parameters[0] = new SqlParameter("TenantId", tenantId);
+            parameters[1] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[2] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
+            parameters[3] = new SqlParameter("Sorting", input.Sorting);
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+            Connection.GetSqlConnection("DefaultOctoGo"),
+            System.Data.CommandType.StoredProcedure,
+            "USP_GetTenantPaymentHistory", parameters
+            );
+            List<SubscriptionPaymentListNewDto> payments = new List<SubscriptionPaymentListNewDto>();
+            int totalCount = 0;
+            if (ds.Tables.Count > 0)
+            {
+                var res = SqlHelper.ConvertDataTable<SubscriptionPaymentListNewRet>(ds.Tables[0]);
+                payments = res.Select(rw => new SubscriptionPaymentListNewDto
+                {
+                    PaymentId = rw.PaymentId,
+                    Gateway = ConvertPaymentGatewayEnum(rw.Gateway),
+                    Amount = rw.Amount,
+                    EditionId = rw.EditionId,
+                    DayCount = rw.DayCount,
+                    PaymentPeriodType = rw.PaymentPeriodType,
+                    Status = ConvertPaymentStatusEnum(rw.Status),
+                    EditionName = rw.EditionName,
+                    AddonName = rw.AddonName,
+                    TenantId = rw.TenantId,
+                    InvoiceNo = rw.InvoiceNo,
+                    Description = rw.Description
+                }).ToList();
+                if (res != null && res.Count > 0)
+                {
+                    totalCount = res.FirstOrDefault().TotalCount;
+                }
+            }
+            return new PagedResultDto<SubscriptionPaymentListNewDto>(totalCount, payments);
+        }
+        private string ConvertPaymentGatewayEnum(int value)
+        {
+            return ((SubscriptionPaymentGatewayType)Enum.ToObject(typeof(SubscriptionPaymentGatewayType), value)).ToString();
+        }
+        private string ConvertPaymentStatusEnum(int value)
+        {
+            return ((SubscriptionPaymentStatus)Enum.ToObject(typeof(SubscriptionPaymentStatus), value)).ToString();
         }
         public async Task UpdateInvoiceSettings(TenantInvoiceSettingsEditDto input)
         {

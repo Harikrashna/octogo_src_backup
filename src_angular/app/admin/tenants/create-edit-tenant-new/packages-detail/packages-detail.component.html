@@ -77,8 +77,8 @@
                             <div class="card">
                                 <div class="row">
                                     <div class="addon-card col-sm-2 ml-5 mt-2" *ngFor="let addons of package.AddonList ;let i = index;" [hidden]="addons?.hideAddon && !addons?.selected">
-                                        <i *ngIf="addons?.selected == true && viewForm != true" class=" fa fa-check selected-check addon-check" (click)="removeSelectedAddon(i,addons.addonId,prodIndex)"></i>
-                                        <div (click)="selectAddons(i,addons.addonId,prodIndex)">                                        
+                                        <i *ngIf="addons?.selected == true" class=" fa fa-check selected-check addon-check" (click)="viewForm != true && removeSelectedAddon(i,addons.addonId,prodIndex)"></i>
+                                        <div (click)="viewForm != true && selectAddons(i,addons.addonId,prodIndex)">                                        
                                         <div class="bold text-primary ">{{addons.addonName}}</div>
                                         <span *ngIf="addons.pricingData == null" class="text-success mt-2">{{'Free' |
                                             localize}}</span>

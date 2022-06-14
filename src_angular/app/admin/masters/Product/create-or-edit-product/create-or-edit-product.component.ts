@@ -61,7 +61,7 @@ export class CreateOrEditProductComponent extends AppComponentBase {
     }
     else {
       this.active = true;
-      this._product.getProductForEdit(e).subscribe(res => {
+      this._product.getProductById(e).subscribe(res => {
         this.createProduct.inProductID = res.inProductID;
         this.createProduct.vcProductName = res.vcProductName;
         this.createProduct.vcDescription = res.vcDescription;
@@ -91,11 +91,7 @@ export class CreateOrEditProductComponent extends AppComponentBase {
       this.notify.warn(this.l('PleaseSelectuserType'));
       this.selectTab(1);
     } else {
-      let Duplicacy = this.Product.filter((x) => x.vcProductName.trim().toUpperCase() == this.createProduct.vcProductName.trim().toUpperCase());
-      if (Duplicacy != null && Duplicacy != undefined && Duplicacy.length > 0 && Duplicacy[0].inProductID != this.createProduct.inProductID) {
-        return this.notify.warn(this.l('DuplicateProductMessage'));
-      }
-      else if (this.createProduct.inProductID == 0 || this.createProduct.inProductID == null) {
+     if (this.createProduct.inProductID == 0 || this.createProduct.inProductID == null) {
         this.saving = true;
         this._product.createorUpdateProduct(this.createProduct)
         .pipe(finalize(() => this.saving = false))

@@ -4,12 +4,21 @@ using System.Collections.Generic;
 namespace CF.Octogo.Product.Dto
 {
 
+    public class ProductListRet
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public int TotalCount { get; set; }
+    }
+
     public class ProductListDto
     {
-        public int inProductID { get; set; }
-        public string vcProductName { get; set; }
-        public string vcDescription { get; set; }
+        public int InProductID { get; set; }
+        public string VcProductName { get; set; }
+        public string VcDescription { get; set; }
     }
+
     public class CreateOrUpdateProductInput
     {
         public Nullable<int> inProductID { get; set; }

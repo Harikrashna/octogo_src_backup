@@ -3,7 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { AppConsts } from '@shared/AppConsts';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/common/app-component-base';
-import { InvoiceDto, InvoiceServiceProxy } from '@shared/service-proxies/service-proxies';
+import { InvoiceNewDto, InvoiceServiceProxy } from '@shared/service-proxies/service-proxies';
 
 @Component({
     templateUrl: './invoice.component.html',
@@ -14,7 +14,7 @@ import { InvoiceDto, InvoiceServiceProxy } from '@shared/service-proxies/service
 export class InvoiceComponent extends AppComponentBase implements OnInit {
 
     paymentId = 0;
-    invoiceInfo: InvoiceDto = new InvoiceDto();
+    invoiceInfo: InvoiceNewDto = new InvoiceNewDto();
     companyLogo = AppConsts.appBaseUrl + '/assets/common/images/app-logo-on-light.svg';
 
     constructor(
@@ -35,7 +35,7 @@ export class InvoiceComponent extends AppComponentBase implements OnInit {
             this.paymentId = params['paymentId'];
         });
 
-        this._invoiceServiceProxy.getInvoiceInfo(this.paymentId).subscribe(result => {
+        this._invoiceServiceProxy.getInvoiceInfoNew(this.paymentId).subscribe(result => {
             this.invoiceInfo = result;
         });
     }

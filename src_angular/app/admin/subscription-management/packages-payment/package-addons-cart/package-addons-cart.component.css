@@ -92,8 +92,8 @@
 .ml-2{
     margin-left: 5px;
 }
-p{
-    line-height: 2px;
+.paragraph{
+    line-height: 2px !important;
 }
 .payment-card:hover{
     box-shadow: 2px 4px 7px 1px rgb(162 162 162 / 25%);

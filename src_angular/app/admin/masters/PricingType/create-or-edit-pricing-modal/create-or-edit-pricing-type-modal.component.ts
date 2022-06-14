@@ -4,6 +4,7 @@ import { ValidationServiceService } from '@app/admin/validation-service.service'
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CreateorUpdatePricingType, PricingTypeServiceProxy } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { finalize } from 'rxjs/operators';
 import { PricingTypeDto } from '../pricing-type.component';
 
 @Component({
@@ -54,7 +55,7 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
     }
     else {
       this.active = true;
-      this._pricingTypeService.getPricingTypeForEdit(i).subscribe(res => {
+      this._pricingTypeService.getPricingTypeById(i).subscribe(res => {
         this.editpricingType.inPricingTypeId = res.table[0].inPricingTypeID;
         this.editpricingType.vcTypeName = res.table[0].vcTypeName;
         this.editpricingType.inNoOfDays = res.table[0].inNoOfDays;
@@ -87,10 +88,8 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
       return;
     }
     else {
-      this.saving = true;
       if (this.editpricingType.inPricingTypeId != null) {
-        this._pricingTypeService.insertUpdatePricingType(this.editpricingType).subscribe(e => {
-          this.saving = false;
+        this._pricingTypeService.insertUpdatePricingType(this.editpricingType).pipe(finalize(() => this.saving = false)).subscribe(e => {
           this.notify.info(this.l('UpdatePricingTypeMessage'));
           this.close(form);
           this.modalSave.emit(null);
@@ -98,8 +97,7 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
         this.primengTableHelper.totalRecordsCount = this.pricingTypeList.length;
       }
       else {
-        this._pricingTypeService.insertUpdatePricingType(this.editpricingType).subscribe(e => {
-          this.saving = false;
+        this._pricingTypeService.insertUpdatePricingType(this.editpricingType).pipe(finalize(() => this.saving = false)).subscribe(e => {
           this.notify.info(this.l('SavedSuccessfully'));
           this.close(form);
           this.modalSave.emit(null);

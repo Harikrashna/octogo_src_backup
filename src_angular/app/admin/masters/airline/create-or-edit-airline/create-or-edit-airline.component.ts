@@ -188,7 +188,7 @@ debugger
       console.log(this.Airline)
       this.active = true;
       this.edit = true;
-      this._Airline.getAirlineForEdit(inAirlineID).subscribe(res => {
+      this._Airline.getAirlineById(inAirlineID).subscribe(res => {
         this.createAirline.inAirlineID = res.table[0].sNo;
         this.createAirline.vcAirlineName = res.table[0].airlineName;
        // this.createAirline.vcAWBPrifix = res.table[0].awbPrifix;

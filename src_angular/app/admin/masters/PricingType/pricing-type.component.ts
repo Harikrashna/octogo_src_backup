@@ -50,6 +50,7 @@ export class PricingTypeComponent extends AppComponentBase implements AfterViewI
         this.primengTableHelper.getSorting(this.dataTable),
         this.primengTableHelper.getMaxResultCount(this.paginator, event),
         this.primengTableHelper.getSkipCount(this.paginator, event)
+        
       )
       .pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
         this.primengTableHelper.totalRecordsCount = result.totalCount;

@@ -64,7 +64,7 @@ export class ViewAirlineComponent extends AppComponentBase {
   show(inAirlineID?: number): void {
         this.active = true;
         this.edit = true;
-        this._Airline.getAirlineForEdit(inAirlineID).subscribe(res => {
+        this._Airline.getAirlineById(inAirlineID).subscribe(res => {
           this.createAirline.inAirlineID = res.table[0].sNo;
           this.createAirline.vcAirlineName = res.table[0].airlineName;
           this.createAirline.vcCarrierCode = res.table[0].carrierCode;

@@ -94,7 +94,7 @@
                             </form> -->
                         </tab>
                         <tab class="p-5" heading="{{'PaymentHistory' | localize}}">
-                            <app-subscription-payment-history></app-subscription-payment-history>
+                            <app-subscription-payment-history [TenantId]="tenant?.id"></app-subscription-payment-history>
                         </tab>
                         <tab class="p-5" heading="{{'AvailableProducts' | localize}}">
                             <app-package-selection [OnlyAvailableProducts]="true"></app-package-selection>

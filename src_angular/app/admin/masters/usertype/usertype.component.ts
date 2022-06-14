@@ -41,7 +41,7 @@ export class UsertypeComponent extends AppComponentBase implements AfterViewInit
        return;
      }
      this.primengTableHelper.showLoadingIndicator();
-     this._UserType.getUserType(
+     this._UserType.getUserTypeList(
        this.primengTableHelper.getMaxResultCount(this.paginator, event),
        this.primengTableHelper.getSkipCount(this.paginator, event),
        this.primengTableHelper.getSorting(this.dataTable),

@@ -88,7 +88,7 @@ export class TransactionalChargesComponent extends AppComponentBase implements O
   }
   getAwbData(inApproachid){
     this.AWBData = new Array<AwbCostApproachDto>();
-    this._awbcostapproachservice.getPerAwbCostApproachForEdit(inApproachid).subscribe(response => {
+    this._awbcostapproachservice.getPerAwbCostApproachById(inApproachid).subscribe(response => {
       
       this.AWBData = response.awbCostAppraochData;
       // console.log(response);

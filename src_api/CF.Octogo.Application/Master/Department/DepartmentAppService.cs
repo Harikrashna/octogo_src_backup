@@ -28,23 +28,31 @@ namespace CF.Octogo.Master.Department
         public async Task<PagedResultDto<DepartmentListDto>> GetDepartment(DepartmentListInputDto input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
-            parameters[2] = new SqlParameter("Sort", input.Sorting);
+            parameters[0] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[1] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
+            parameters[2] = new SqlParameter("Sorting", input.Sorting);
             parameters[3] = new SqlParameter("Filter", input.filter);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetDepartment", parameters
+            "USP_GetDepartmentList", parameters
             );
 
             var totalCount = 0;
             var departmentList = new List<DepartmentListDto>();
             if (ds.Tables.Count > 0)
             {
-                departmentList = SqlHelper.ConvertDataTable<DepartmentListDto>(ds.Tables[0]);
-                DataRow row = ds.Tables[1].Rows[0];
-                totalCount = Convert.ToInt32(row["totalCount"]);
+                var departmentRet = SqlHelper.ConvertDataTable<DepartmentListRet>(ds.Tables[0]);
+                departmentList = departmentRet.Select(rw => new DepartmentListDto
+                {
+                    inDepartmentID = rw.inDepartmentID,
+                    vcDepartmentName = rw.vcDepartmentName,
+                    vcDescription = rw.vcDescription
+                }).ToList();
+                if (departmentRet != null && departmentRet.Count > 0)
+                {
+                    totalCount = departmentRet.FirstOrDefault().TotalCount;
+                }
             }
             return new PagedResultDto<DepartmentListDto>(
                 totalCount,
@@ -57,7 +65,7 @@ namespace CF.Octogo.Master.Department
             parameters[0] = new SqlParameter("inDepartmentID", inp.inDepartmentID);
             parameters[1] = new SqlParameter("vcDepartmentName", inp.vcDepartmentName.Trim());
             parameters[2] = new SqlParameter("vcDescription", inp.vcDescription);
-            parameters[3] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateOrDeleteDepartment", parameters);
@@ -82,7 +90,7 @@ namespace CF.Octogo.Master.Department
         {
             SqlParameter[] parameters = new SqlParameter[3];
             parameters[0] = new SqlParameter("inDepartmentID", input.Id);
-            parameters[1] = new SqlParameter("UserId", AbpSession.UserId);
+            parameters[1] = new SqlParameter("LoginUserId", AbpSession.UserId);
             parameters[2] = new SqlParameter("IsDelete", true);
             await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
@@ -96,7 +104,7 @@ namespace CF.Octogo.Master.Department
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetDepartment", parameters
+            "USP_GetDepartmentList", parameters
             );
             if (ds.Tables.Count > 0)
             {

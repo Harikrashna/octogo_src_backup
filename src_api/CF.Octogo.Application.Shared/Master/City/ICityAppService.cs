@@ -12,7 +12,7 @@ namespace CF.Octogo.Master.City.Dto
     {
         Task<PagedResultDto<CityListDto>> GetCityList(PagedAndSortedInputDto input, string Filter);
         Task<int> CreateOrUpdateCity(CreateOrUpdateCityInput input);
-        Task<DataSet> GetCityForEdit(GetEditCityInput input);
+        Task<DataSet> GetCityById(GetEditCityInput input);
         Task DeleteCity(EntityDto input);
     }
 }

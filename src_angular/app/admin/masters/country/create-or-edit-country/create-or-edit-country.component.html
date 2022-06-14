@@ -2,7 +2,7 @@
     aria-labelledby="createOrEditCountry" aria-hidden="true" [config]="{backdrop: 'static', keyboard: !saving}">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            
+
             <form *ngIf="active" #CountryForm="ngForm" novalidate (keyup.enter)="save(CountryForm,CountryForm.value)"
                 autocomplete="new-password">
                 <div class="modal-header">
@@ -17,14 +17,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    
-                <div class="form-group">
+
+                    <div class="form-group">
                         <span class="p-float-label">
                             <input id="CountryCode" #CountryCodeInput="ngModel"
                                 [ngClass]="{'p-filled':createCountry.countryCode?.length > 0}" class="form-control"
                                 type="text" name="CountryCode" (keypress)="_validationService.NameValidation($event)"
-                                [(ngModel)]="createCountry.countryCode"  required
-                                maxlength="3">
+                                [(ngModel)]="createCountry.countryCode" required maxlength="2">
                             <label for="CountryCode">{{"CountryCode" | localize}}<span class="text-danger"
                                     id="req">*</span></label>
                         </span>
@@ -35,82 +34,76 @@
                             <input id="CountryName" #CountryNameInput="ngModel"
                                 [ngClass]="{'p-filled':createCountry.countryName?.length > 0}" class="form-control"
                                 type="text" name="CountryName" (keypress)="_validationService.NameValidation($event)"
-                                [(ngModel)]="createCountry.countryName"  required
-                                maxlength="100">
+                                [(ngModel)]="createCountry.countryName" required maxlength="100">
                             <label for="CountryName">{{"CountryName" | localize}}<span class="text-danger"
                                     id="req">*</span></label>
                         </span>
                         <validation-messages [formCtrl]="CountryNameInput"></validation-messages>
                     </div>
-                   
-                         <div class="form-group">
-                            <span class="p-float-label">
-                         <p-autoComplete #currencyCode="ngModel"  [(ngModel)]="createCountry.currencyCode " [suggestions]="currencyResult"
-                         inputStyleClass="form-control" (completeMethod)="getCurrency($event)"
-                         styleClass="width-percent-100" name="currencyCode" field="code" required
-                         value="this.currencyResult.name" [forceSelection]="true">
-                     </p-autoComplete><label for="currencyCode">{{"CurrencyCode" | localize}}<span
-                        class="text-danger" id="req">*</span></label>
-            </span>
-            <validation-messages [formCtrl]="currencyCode"></validation-messages>
-        </div>
-                   
+
                     <div class="form-group">
                         <span class="p-float-label">
-                     <p-autoComplete #continent="ngModel" [(ngModel)]="createCountry.continent" [suggestions]="continentResult"
-                     inputStyleClass="form-control" (completeMethod)="getContinent($event)"
-                     styleClass="width-percent-100" name="continent" field="name" required
-                     value="this.continentResult.name" [forceSelection]="true">
-                 </p-autoComplete><label for="continent">{{"Continent" | localize}}<span
-                    class="text-danger" id="req">*</span></label>
-        </span>
-        <validation-messages [formCtrl]="continent"></validation-messages>
-    </div>
-                   
+                            <p-autoComplete #currencyCode="ngModel" [(ngModel)]="createCountry.currencyCode "
+                                [suggestions]="currencyResult" inputStyleClass="form-control"
+                                (completeMethod)="getCurrency($event)" styleClass="width-percent-100"
+                                name="currencyCode" field="code" required value="this.currencyResult.name"
+                                [forceSelection]="true">
+                            </p-autoComplete><label for="currencyCode">{{"CurrencyCode" | localize}}<span
+                                    class="text-danger" id="req">*</span></label>
+                        </span>
+                        <validation-messages [formCtrl]="currencyCode"></validation-messages>
+                    </div>
+
                     <div class="form-group">
                         <span class="p-float-label">
-                     <p-autoComplete #iataAreaCode="ngModel" [(ngModel)]="createCountry.iataAreaCode" [suggestions]="iataareacodeResult"
-                     inputStyleClass="form-control" (completeMethod)="getiataareacode($event)"
-                     styleClass="width-percent-100" name="iataAreaCode" field="name"  required
-                     value="this.iataareacodeResult.name" [forceSelection]="true">
-                 </p-autoComplete><label for="iataareaCode">{{"IataAreaCode" | localize}}<span
-                    class="text-danger" id="req">*</span></label>
-        </span>
-        <validation-messages [formCtrl]="iataAreaCode"></validation-messages>
-    </div>
+                            <p-autoComplete #continent="ngModel" [(ngModel)]="createCountry.continent"
+                                [suggestions]="continentResult" inputStyleClass="form-control"
+                                (completeMethod)="getContinent($event)" styleClass="width-percent-100" name="continent"
+                                field="name" required value="this.continentResult.name" [forceSelection]="true">
+                            </p-autoComplete><label for="continent">{{"Continent" | localize}}<span class="text-danger"
+                                    id="req">*</span></label>
+                        </span>
+                        <validation-messages [formCtrl]="continent"></validation-messages>
+                    </div>
 
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <p-autoComplete #iataAreaCode="ngModel" [(ngModel)]="createCountry.iataAreaCode"
+                                [suggestions]="iataareacodeResult" inputStyleClass="form-control"
+                                (completeMethod)="getiataareacode($event)" styleClass="width-percent-100"
+                                name="iataAreaCode" field="name" required value="this.iataareacodeResult.name"
+                                [forceSelection]="true">
+                            </p-autoComplete><label for="iataareaCode">{{"IataAreaCode" | localize}}<span
+                                    class="text-danger" id="req">*</span></label>
+                        </span>
+                        <validation-messages [formCtrl]="iataAreaCode"></validation-messages>
+                    </div>
 
-    <div class="form-group">
-        <span class="p-float-label">
-            <input id="isdCode" #isdCodeInput="ngModel" class="form-control" type="text"
-                [ngClass]="{'p-filled':createCountry.isdCode > 0}" name="isdCode"
-                 [(ngModel)]="createCountry.isdCode" 
-                maxlength="3">
-            <label for="isdCode">{{"IsdCode" | localize}}<span class="text-danger"
-                    ></span></label>
-        </span>
-        
-    </div>      
-    <div class="form-group">
-        <span class="p-float-label">
-            <input id="Nationality" #NationalityInput="ngModel"
-                [ngClass]="{'p-filled':createCountry.nationality?.length > 0}" class="form-control"
-                type="text" name="Nationality" (keypress)="_validationService.NameValidation($event)"
-                [(ngModel)]="createCountry.nationality"  
-                maxlength="100">
-            <label for="Nationality">{{"Nationality" | localize}}<span class="text-danger"
-                    ></span></label>
-        </span>
-        
-    </div>
-
-                   
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <input id="isdCode" #isdCodeInput="ngModel" class="form-control" type="text"
+                                [ngClass]="{'p-filled':createCountry.isdCode != null}" name="isdCode"
+                                [(ngModel)]="createCountry.isdCode" maxlength="3">
+                            <label for="isdCode">{{"IsdCode" | localize}}<span class="text-danger"></span></label>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="p-float-label">
+                            <input id="Nationality" #NationalityInput="ngModel"
+                                [ngClass]="{'p-filled':createCountry.nationality?.length > 0}" class="form-control"
+                                type="text" name="Nationality" (keypress)="_validationService.NameValidation($event)"
+                                [(ngModel)]="createCountry.nationality" maxlength="100">
+                            <label for="Nationality">{{"Nationality" | localize}}<span
+                                    class="text-danger"></span></label>
+                        </span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button [disabled]="saving" type="button" class="btn btn-light-primary font-weight-bold"
                         (click)="close(CountryForm)">{{"Cancel" | localize}}</button>
                     <button type="submit" class="btn btn-primary font-weight-bold" [disabled]="!CountryForm.form.valid"
-                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')" (click)="save(CountryForm,CountryForm.value)"><i class="fa fa-save"></i>
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"
+                        (click)="save(CountryForm,CountryForm.value)"><i class="fa fa-save"></i>
                         <span>{{"Save" | localize}}</span></button>
                 </div>
             </form>

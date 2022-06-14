@@ -35,7 +35,7 @@ export class SubscriptionPaymentHistoryComponent  extends AppComponentBase imple
         this.primengTableHelper.getSorting(this.dataTable),
         this.primengTableHelper.getMaxResultCount(this.paginator, event),
         this.primengTableHelper.getSkipCount(this.paginator, event),
-        this.TenantId
+        this.TenantId > 0 ? this.TenantId : this.appSession.tenant.id 
     ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
         this.primengTableHelper.totalRecordsCount = result.totalCount;
         this.primengTableHelper.records = result.items;

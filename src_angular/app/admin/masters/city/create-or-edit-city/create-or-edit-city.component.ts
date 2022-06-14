@@ -98,7 +98,7 @@ export class CreateOrEditCityComponent extends AppComponentBase implements OnIni
     else {
       this.active = true;
       this.isEdit = true;
-      this._cityService.getCityForEdit(sNo).subscribe(response => {
+      this._cityService.getCityById(sNo).subscribe(response => {
         this.createCity.sNo = response.table[0].sNo;
         this.createCity.cityCode = response.table[0].cityCode;
         this.createCity.cityName = response.table[0].cityName;

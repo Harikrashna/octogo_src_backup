@@ -30,8 +30,8 @@ namespace CF.Octogo.Master
 
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("Sorting", input.Sorting);
-            parameters[1] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[2] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[1] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[2] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[3] = new SqlParameter("Filter", Filter);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(
@@ -43,18 +43,32 @@ namespace CF.Octogo.Master
             var cityList = new List<CityListDto>();
             if (ds.Tables.Count > 0)
             {
-                cityList = SqlHelper.ConvertDataTable<CityListDto>(ds.Tables[0]);
-                DataRow row = ds.Tables[1].Rows[0];
-                totalCount = Convert.ToInt32(row["totalCount"]);
+                var cityRet = SqlHelper.ConvertDataTable<CityListRet>(ds.Tables[0]);
+                cityList = cityRet.Select(rw => new CityListDto
+                {
+                    SNo = rw.SNo,
+                    CityCode = rw.CityCode,
+                    CityName = rw.CityName,
+                    StateName = rw.StateName,
+                    CountryName = rw.CountryName,
+                    PriorApproval = rw.PriorApproval,
+                    IsDayLightSaving = rw.IsDayLightSaving,
+                    IsActive = rw.IsActive
+                }).ToList();
+                if (cityRet != null && cityRet.Count > 0)
+                {
+                    totalCount = cityRet.FirstOrDefault().TotalCount;
+                }
             }
             return new PagedResultDto<CityListDto>(
-                totalCount,
-                cityList
-            );
+                    totalCount,
+                    cityList
+                );
 
         }
 
         [AbpAuthorize(AppPermissions.Pages_Administration_City_Create, AppPermissions.Pages_Administration_City_Edit)]
+
         public async Task<int> CreateOrUpdateCity(CreateOrUpdateCityInput input)
         {
             SqlParameter[] parameters = new SqlParameter[18];
@@ -96,9 +110,10 @@ namespace CF.Octogo.Master
             }
         }
 
-        //[AbpAuthorize(AppPermissions.Pages_Administration_City_Edit)]
-        public async Task<DataSet> GetCityForEdit(GetEditCityInput input)
+       
+        public async Task<DataSet> GetCityById(GetEditCityInput input)
         {
+
             SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("SNo", input.SNo);
             var ds = await SqlHelper.ExecuteDatasetAsync(
@@ -114,6 +129,8 @@ namespace CF.Octogo.Master
             {
                 return null;
             }
+
+
         }
         [AbpAuthorize(AppPermissions.Pages_Administration_City_Delete)]
         public async Task DeleteCity(EntityDto input)

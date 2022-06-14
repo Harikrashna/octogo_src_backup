@@ -55,8 +55,8 @@
                                     <thead>
                                         <tr>
                                             <th class="pl-0 font-weight-bold text-muted text-uppercase">#</th>
-                                            <th class="text-right font-weight-bold text-muted text-uppercase">
-                                                {{"Edition" | localize}}</th>
+                                            <th class="text-center font-weight-bold text-muted text-uppercase">
+                                                {{"Edition" | localize}}/{{"Addon" | localize}}</th>
                                             <th class="text-right font-weight-bold text-muted text-uppercase">
                                                 {{"Amount" | localize}}</th>
                                         </tr>
@@ -64,7 +64,11 @@
                                     <tbody>
                                         <tr>
                                             <td class="pl-0 pt-7">1</td>
-                                            <td class="pl-0 pt-7">{{invoiceInfo.editionDisplayName}}</td>
+                                            <td class="pl-0 pt-7 text-center">
+                                                {{invoiceInfo.editionName}}
+                                                <span *ngIf="invoiceInfo.addonName != null">/{{invoiceInfo.addonName}}</span>
+                                                <b>&nbsp;-&nbsp;{{invoiceInfo.productName}}</b>
+                                            </td>
                                             <td class="text-right pl-0 pt-7">
                                                 {{appSession.application.currencySign}}{{invoiceInfo.amount | number: '1.2-2'}}
                                             </td>

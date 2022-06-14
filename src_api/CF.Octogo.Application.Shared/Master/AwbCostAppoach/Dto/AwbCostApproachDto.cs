@@ -31,6 +31,14 @@ namespace CF.Octogo.Master.AwbPricingAppoach.Dto
         public string vcApproachName { get; set; }
         public string vcDescription { get; set; }
     }
+    public class AwbCostApproachListRet
+    {
+        public int inApproachID { get; set; }
+        public string vcApproachName { get; set; }
+        public string vcDescription { get; set; }
+        public int TotalCount { get; set; }
+    }
+
     public class CreateOrUpdateAwbCostApproachInputRet
     {
         public Nullable<int> inApproachID { get; set; }

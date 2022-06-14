@@ -49,7 +49,7 @@ export class CreateOrEditAwbCostApproachComponent extends AppComponentBase {
       debugger
       this.active = true;
       this.isEdit = true;
-      this._awbcostapproachservice.getPerAwbCostApproachForEdit(inApproachid).subscribe(response => {
+      this._awbcostapproachservice.getPerAwbCostApproachById(inApproachid).subscribe(response => {
         this.createAwbApproach.inApproachID = response.inApproachID;
         this.createAwbApproach.vcApproachName = response.vcApproachName;
         this.createAwbApproach.vcDescription = response.vcDescription;

@@ -28,37 +28,37 @@ namespace CF.Octogo.Master.Designation
         public async Task<PagedResultDto<DesignationListDto>> GetDesignation(GetDesignationInput input)
         {
             SqlParameter[] parameters = new SqlParameter[4];
-            parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[0] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[1] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[2] = new SqlParameter("Sorting", input.Sorting);
             parameters[3] = new SqlParameter("Filter", input.filter);
 
             DataSet ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetDesignation", parameters
+            "USP_GetDesignationList", parameters
             );
+
+            var totalCount = 0;
+            var designationList = new List<DesignationListDto>();
             if (ds.Tables.Count > 0)
             {
-
-                var totalCount = Convert.ToInt32(ds.Tables[1].Rows[0]["totalCount"]);
-                DataTable dt = ds.Tables[0];
-                List<DesignationListDto> DesignationList = new List<DesignationListDto>();
-
-                DesignationList = (from DataRow dr in dt.Rows
-                                   select new DesignationListDto()
-                                   {
-                                       Id = Convert.ToInt32(dr["id"]),
-                                       DesignationName = dr["DesignationName"].ToString(),
-                                       Description = dr["Description"].ToString(),
-                                   }).ToList();
-                return new PagedResultDto<DesignationListDto>(totalCount, DesignationList);
+                var ret = SqlHelper.ConvertDataTable<DesignationListRet>(ds.Tables[0]);
+                designationList = ret.Select(rw => new DesignationListDto
+                {
+                    Id = rw.Id,
+                    DesignationName = rw.DesignationName,
+                    Description = rw.Description
+                }).ToList();
+                if (ret != null && ret.Count > 0)
+                {
+                    totalCount = ret.FirstOrDefault().TotalCount;
+                }
             }
-
-            else
-            {
-                return null;
-            }
+            return new PagedResultDto<DesignationListDto>(
+                totalCount,
+                designationList
+                );
 
         }
 
@@ -66,37 +66,12 @@ namespace CF.Octogo.Master.Designation
         {
             if (input.DesignationId != 0)
             {
-                var designation = GetDesignationDuplicacyCheck(input.DesignationId, input.DesignationName);
-
-                if (designation.Result.Rows.Count > 0)
-                {
-
-                    throw new UserFriendlyException(L("DuplicateDesignationName"));
-
-                }
-
-                else
-                {
-                    await UpdateDesignationAsync(input);
-                }
+                await UpdateDesignationAsync(input);
 
             }
-
             else
             {
-
-                var designation = GetDesignationDuplicacyCheck(input.DesignationId, input.DesignationName);
-                if (designation.Result.Rows.Count > 0)
-                {
-                    throw new UserFriendlyException(L("DuplicateDesignationName"));
-                }
-
-                else
-                {
-
-                    await CreateDesignationAsync(input);
-                }
-
+                await CreateDesignationAsync(input);
             }
         }
 
@@ -108,13 +83,17 @@ namespace CF.Octogo.Master.Designation
             parameters[0] = new SqlParameter("DesignationId", input.DesignationId);
             parameters[1] = new SqlParameter("DesignationName", input.DesignationName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
-            parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                     System.Data.CommandType.StoredProcedure,
-                    "USP_InsertUpdateDesignation", parameters);
+                    "USP_InsertOrUpdateOrDeleteDesignation", parameters);
 
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
@@ -126,23 +105,6 @@ namespace CF.Octogo.Master.Designation
 
         }
 
-        public async Task<DataTable> GetDesignationDuplicacyCheck(int? designationId, string designationName)
-        {
-            SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("DesignationId", designationId);
-            parameters[1] = new SqlParameter("DesignationName", designationName);
-
-
-            DataSet ds = await SqlHelper.ExecuteDatasetAsync(
-            Connection.GetSqlConnection("DefaultOctoGo"),
-            System.Data.CommandType.StoredProcedure,
-            "USP_GetDesignationDuplicacyCheck", parameters
-            );
-            return ds.Tables[0];
-        }
-
-
-
         [AbpAuthorize(AppPermissions.Pages_Administration_Designation_Edit)]
         protected virtual async Task<int> UpdateDesignationAsync(CreateOrUpdateDesignationDto input)
         {
@@ -150,12 +112,16 @@ namespace CF.Octogo.Master.Designation
             parameters[0] = new SqlParameter("DesignationId", input.DesignationId);
             parameters[1] = new SqlParameter("DesignationName", input.DesignationName.Trim());
             parameters[2] = new SqlParameter("Description", input.Description);
-            parameters[3] = new SqlParameter("LoginBy", AbpSession.UserId);
+            parameters[3] = new SqlParameter("LoginUserId", AbpSession.UserId);
 
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                    System.Data.CommandType.StoredProcedure, "USP_InsertUpdateDesignation", parameters);
+                    System.Data.CommandType.StoredProcedure, "USP_InsertOrUpdateOrDeleteDesignation", parameters);
 
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            {
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+            }
+            else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
                 await ClearCache();
                 return (int)ds.Tables[0].Rows[0]["Id"];
@@ -173,12 +139,13 @@ namespace CF.Octogo.Master.Designation
         {
             {
                 SqlParameter[] parameters ={
-                     new SqlParameter("@DesignationId", designationId),
-                     new SqlParameter("@LoginBy", AbpSession.UserId)
+                     new SqlParameter("DesignationId", designationId),
+                     new SqlParameter("LoginUserId", AbpSession.UserId),
+                     new SqlParameter("IsDelete", true)
                 };
                 await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
                 System.Data.CommandType.StoredProcedure,
-                "USP_DeleteDesignation", parameters);
+                "USP_InsertOrUpdateOrDeleteDesignation", parameters);
                 await ClearCache();
                 return "Success";
             }

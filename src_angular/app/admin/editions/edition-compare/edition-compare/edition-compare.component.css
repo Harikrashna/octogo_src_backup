@@ -17,11 +17,7 @@ th ,td {
   text-align: center;
   width: 17%;
 }
-p{
-    font-size: 10px;
-    color: rgb(68, 129, 53);
-    margin-bottom: 0px;
-}
+
 h2{
     color: brown;
 }
@@ -48,7 +44,7 @@ i {
     color: rgb(68, 129, 53)
   }
 
-  .card-body {
+  .card-body1 {
     flex: 1 1 auto;
     min-height: 1px;
     padding: 1px;

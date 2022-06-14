@@ -37,7 +37,7 @@ export class ServicesComponent extends AppComponentBase implements AfterViewInit
       return;
     }
     this.primengTableHelper.showLoadingIndicator();
-    this._services.getService(
+    this._services.getServiceList(
       this.primengTableHelper.getMaxResultCount(this.paginator, event),
       this.primengTableHelper.getSkipCount(this.paginator, event),
       this.primengTableHelper.getSorting(this.dataTable),
