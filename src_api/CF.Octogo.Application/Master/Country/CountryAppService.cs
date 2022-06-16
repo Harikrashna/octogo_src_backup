@@ -43,18 +43,10 @@ namespace CF.Octogo.Master.Country
             var countryList = new List<CountryListDto>();
             if (ds.Tables.Count > 0)
             {
-                var countryRet = SqlHelper.ConvertDataTable<CountryListRet>(ds.Tables[0]);
-                countryList = countryRet.Select(rw => new CountryListDto
+                countryList = SqlHelper.ConvertDataTable<CountryListDto>(ds.Tables[0]);
+                if (countryList != null && countryList.Count > 0)
                 {
-                    SNo = rw.SNo,
-                    CountryCode = rw.CountryCode,
-                    CountryName = rw.CountryName,
-                    CurrencyCode = rw.CurrencyCode,
-                    Continent = rw.Continent
-                }).ToList();
-                if (countryRet != null && countryRet.Count > 0)
-                {
-                    totalCount = countryRet.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
             }
             return new PagedResultDto<CountryListDto>(

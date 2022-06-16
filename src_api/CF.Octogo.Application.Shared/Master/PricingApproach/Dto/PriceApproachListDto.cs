@@ -12,13 +12,4 @@ namespace CF.Octogo.Master.PricingApproach.Dto
         public string Description { get; set; }
 
     }
-    public class PriceApproachListRet
-    {
-        public int Id { get; set; }
-        public string ApproachName { get; set; }
-
-        public string Description { get; set; }
-
-        public int TotalCount { get; set; }
-    }
 }

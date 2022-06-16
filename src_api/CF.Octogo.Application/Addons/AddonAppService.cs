@@ -40,26 +40,30 @@ namespace CF.Octogo.Editions
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("PageSize", input.MaxResultCount);
-            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[1] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[2] = new SqlParameter("Sorting", input.Sorting);
             parameters[3] = new SqlParameter("Filter", input.Filter);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
             "USP_GetAddonsList", parameters
-        );
+                    );
             var totalCount = 0;
-            var addonList = new List<AddonListDto>();
             if (ds.Tables.Count > 0)
             {
-                addonList = SqlHelper.ConvertDataTable<AddonListDto>(ds.Tables[0]);
-                DataRow row = ds.Tables[1].Rows[0];
-                totalCount = Convert.ToInt32(row["totalCount"]);
+                var addonList = SqlHelper.ConvertDataTable<AddonListDto>(ds.Tables[0]);
+                if (addonList != null && addonList.Count > 0)
+                {
+
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
+                }
+
+                return new PagedResultDto<AddonListDto>(
+                        totalCount,
+                        addonList
+                    );
             }
-            return new PagedResultDto<AddonListDto>(
-                totalCount,
-                addonList
-            );
+            return null;
         }
         public async Task<ListResultDto<EditionListByProductForAddonDto>> GetEditionListForAddon(int ProductId)
         {

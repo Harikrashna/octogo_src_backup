@@ -15,8 +15,8 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
     @ViewChildren(EditionModulesComponent) editionModule: QueryList<EditionModulesComponent>;
     @Output() SelectedPackagesData = new EventEmitter();
     @Input() TenantId = 0;
-    @Input() viewForm :boolean =false;
-    
+    @Input() viewForm: boolean = false;
+
     ProductList = [];
     ApproachList = [];
     EditionList = [];
@@ -32,7 +32,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
     scrollLength = 500;
     SelectedProductIndex = -1;
     filterAddonList: AvailableAddonModulesDto[];
-    UserTypeId:number;
+    UserTypeId: number;
     constructor(
         injector: Injector, private _router: Router, private _editionService: EditionServiceProxy,
         private addonServiceProxy: AddonServiceProxy, private _commonServiceProxy: CommonServiceProxy,
@@ -101,7 +101,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
             IsSubscribed: true
         })
         this.SelectedProductIndex = this.SelctedPackagesDetail.length - 1;
-        this.GetEditionModulesData(pagData.editionId, pagData.productId, this.SelectedProductIndex, pagData.addonSubscription)
+        this.GetEditionModulesData(pagData.editionId, pagData.productId, this.SelectedProductIndex, pagData.addonSubscription, this.TenantId)
         this.PushDataOnPaymentPage();
     }
     addEditionProductData() {
@@ -191,7 +191,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
             this.SelectedProductIndex = this.SelctedPackagesDetail.length - 1;
         }
     }
-    GetEditionModulesData(EditionId, ProductId, prodIndex, subscribedAddons?) {
+    GetEditionModulesData(EditionId, ProductId, prodIndex, subscribedAddons?, tenantId = 0) {
         if (this.SelctedPackagesDetail[prodIndex].ModulesFetched == false
             || (this.SelctedPackagesDetail[prodIndex].EditionId != EditionId && this.SelctedPackagesDetail[prodIndex].ProductId != ProductId)) {
             let timer = setInterval(() => {
@@ -205,7 +205,7 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
                     this.editionModule.get(prodIndex).SelectedIndex = -1;
                     this.editionModule.get(prodIndex).DependEditionData = [];
                     if (EditionId > 0) {
-                        this._editionService.getEditionModules(EditionId, this.TenantId).subscribe(async result => {
+                        this._editionService.getEditionModules(EditionId, tenantId).subscribe(async result => {
                             this.editionModule.get(prodIndex).ModuleDataFetched = true;
                             if (result != null) {
                                 this.SelctedPackagesDetail[prodIndex].ModulesFetched = true;
@@ -452,12 +452,12 @@ export class PackagesDetailComponent extends AppComponentBase implements OnInit 
         return InValidModulesProductIndex;
     }
     //Added by: Merajuddin 
-    GetProduclistByUserTypeId(userTypeId:number){
+    GetProduclistByUserTypeId(userTypeId: number) {
         this.ProductId = null;
         this.EditionID = null;
         this.ProductList = [];
         this.EditionList = [];
-        this._product.getProduclistByUsertypeId(userTypeId,"ProductWithUserType").subscribe(result => {
+        this._product.getProduclistByUsertypeId(userTypeId, "ProductWithUserType").subscribe(result => {
             if (result != null) {
                 this.ProductList = result;
             }

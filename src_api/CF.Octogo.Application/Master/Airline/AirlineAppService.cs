@@ -41,18 +41,10 @@ namespace CF.Octogo.Master.Airline
             var airlineList = new List<AirlineListDto>();
             if (ds.Tables.Count > 0)
             {
-                var airlineRet = SqlHelper.ConvertDataTable<AirlineListRet>(ds.Tables[0]);
-                airlineList = airlineRet.Select(rw => new AirlineListDto
+                airlineList = SqlHelper.ConvertDataTable<AirlineListDto>(ds.Tables[0]);
+                if (airlineList != null && airlineList.Count > 0)
                 {
-                    AirlineId = rw.AirlineId,
-                    CarrierCode = rw.CarrierCode,
-                    AirlineName = rw.AirlineName,
-                    IsInterline = rw.IsInterline,
-                    Active = rw.Active
-                }).ToList();
-                if (airlineRet != null && airlineRet.Count > 0)
-                {
-                    totalCount = airlineRet.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
             }
             return new PagedResultDto<AirlineListDto>(

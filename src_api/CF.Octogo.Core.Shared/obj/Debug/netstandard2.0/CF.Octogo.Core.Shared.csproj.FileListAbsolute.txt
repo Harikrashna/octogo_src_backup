@@ -1,9 +1,10 @@
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\bin\Debug\netstandard2.0\CF.Octogo.Core.Shared.deps.json
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\bin\Debug\netstandard2.0\CF.Octogo.Core.Shared.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\bin\Debug\netstandard2.0\CF.Octogo.Core.Shared.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.AssemblyInfoInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.AssemblyInfo.cs
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.csproj.CoreCompileInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.csproj.AssemblyReference.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\bin\Debug\netstandard2.0\CF.Octogo.Core.Shared.deps.json
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\bin\Debug\netstandard2.0\CF.Octogo.Core.Shared.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\bin\Debug\netstandard2.0\CF.Octogo.Core.Shared.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.csproj.AssemblyReference.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.AssemblyInfoInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.AssemblyInfo.cs
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.csproj.CoreCompileInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Core.Shared\obj\Debug\netstandard2.0\CF.Octogo.Core.Shared.pdb

@@ -42,16 +42,10 @@ namespace CF.Octogo.Master.Department
             var departmentList = new List<DepartmentListDto>();
             if (ds.Tables.Count > 0)
             {
-                var departmentRet = SqlHelper.ConvertDataTable<DepartmentListRet>(ds.Tables[0]);
-                departmentList = departmentRet.Select(rw => new DepartmentListDto
+                departmentList = SqlHelper.ConvertDataTable<DepartmentListDto>(ds.Tables[0]);
+                if (departmentList != null && departmentList.Count > 0)
                 {
-                    inDepartmentID = rw.inDepartmentID,
-                    vcDepartmentName = rw.vcDepartmentName,
-                    vcDescription = rw.vcDescription
-                }).ToList();
-                if (departmentRet != null && departmentRet.Count > 0)
-                {
-                    totalCount = departmentRet.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
             }
             return new PagedResultDto<DepartmentListDto>(

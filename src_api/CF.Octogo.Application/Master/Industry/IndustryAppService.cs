@@ -43,16 +43,10 @@ namespace CF.Octogo.Master.Industry
             var industryList = new List<IndustryListDto>();
             if (ds.Tables.Count > 0)
             {
-                var industryRet = SqlHelper.ConvertDataTable<IndustryListRet>(ds.Tables[0]);
-                industryList = industryRet.Select(rw => new IndustryListDto
+                industryList = SqlHelper.ConvertDataTable<IndustryListDto>(ds.Tables[0]);
+                if (industryList != null && industryList.Count > 0)
                 {
-                    inIndustryID = rw.inIndustryID,
-                    vcIndustryName = rw.vcIndustryName,
-                    vcDescription = rw.vcDescription
-                }).ToList();
-                if (industryRet != null && industryRet.Count > 0)
-                {
-                    totalCount = industryRet.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
             }
             return new PagedResultDto<IndustryListDto>(

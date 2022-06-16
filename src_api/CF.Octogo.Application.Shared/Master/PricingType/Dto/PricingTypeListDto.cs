@@ -24,14 +24,6 @@ namespace CF.Octogo.Master.PricingType.Dto
         public int inPricingTypeId { get; set; }
     }
 
-    public class PricingTypeListRet
-    {
-        public int PricingTypeId { get; set; }
-        public string TypeName { get; set; }
-
-        public int NoOfDays { get; set; }
-        public int TotalCount { get; set; }
-    }
     public class PricingTypeListDto
     {
         public int inPricingTypeId { get; set; }

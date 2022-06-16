@@ -461,7 +461,7 @@ namespace CF.Octogo.Editions
         {
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("PageSize", input.MaxResultCount);
-            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[1] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[2] = new SqlParameter("Sorting", input.Sorting);
             parameters[3] = new SqlParameter("Filter", input.Filter);
             var ds = await SqlHelper.ExecuteDatasetAsync(
@@ -474,8 +474,7 @@ namespace CF.Octogo.Editions
             if (ds.Tables.Count > 0)
             {
                 editionList = SqlHelper.ConvertDataTable<EditionListDtoNew>(ds.Tables[0]);
-                DataRow row = ds.Tables[1].Rows[0];
-                totalCount = Convert.ToInt32(row["totalCount"]);
+                totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
             }
             return new PagedResultDto<EditionListDtoNew>(
                 totalCount,

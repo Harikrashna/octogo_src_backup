@@ -39,36 +39,18 @@ namespace CF.Octogo.Master.UserType
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetUserTypeListOrUserTypeForEdit", parameters); // Change procedure name "USP_GetUserType" to "USP_GetUserTypeListOrUserTypeForEdit"
-
-            if (ds.Tables.Count > 0)
+            "USP_GetUserTypeList", parameters); 
+            if (ds.Tables.Count > 0)   
             {
-
                 var totalCount = 0;
-
-                var userTypeListDto = SqlHelper.ConvertDataTable<UserTypeListRet>(ds.Tables[0]);
-
-                var userTypeList = new List<UserTypeListDto>();
-                userTypeList = userTypeListDto.Select(rw => new UserTypeListDto
-                {
-                    inUserTypeID = rw.UserTypeId,
-                    vcDescription = rw.Description,
-                    vcUserTypeName = rw.UserTypeName
-                }).ToList();
-
+                var userTypeList = SqlHelper.ConvertDataTable<UserTypeListDto>(ds.Tables[0]);
                 if (userTypeList != null && userTypeList.Count > 0)
                 {
-                    totalCount = userTypeListDto.FirstOrDefault().TotalCount;
-
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
-
                 return new PagedResultDto<UserTypeListDto>(totalCount, userTypeList);
             }
-            else
-            {
-                return null;
-            }
-
+            return null;
         }
 
 
@@ -125,10 +107,9 @@ namespace CF.Octogo.Master.UserType
            "USP_CreateOrUpdateOrDeleteUserType", parameters); // Change procedure name "USP_CreateOrUpdateUserType" to "USP_CreateOrUpdateOrDeleteUserType"
 
 
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "DuplicateRecord" && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
             {
-
-                throw new UserFriendlyException(L("DuplicateRecord"));
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
             }
             else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
@@ -159,13 +140,12 @@ namespace CF.Octogo.Master.UserType
 
         public async Task<DataSet> GetUserTypeById(GetEditUserTypeinput input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
+            SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("UserTypeID", input.inUserTypeID);
-            parameters[1] = new SqlParameter("IsEdit", true);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetUserTypeListOrUserTypeForEdit", parameters);  // Change procedure name "USP_GetUserTypeById" to "USP_GetUserTypeListOrUserTypeForEdit"
+            "USP_GetUserTypeList", parameters); 
             if (ds.Tables.Count > 0)
             {
                 return ds;

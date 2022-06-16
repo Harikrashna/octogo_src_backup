@@ -43,21 +43,10 @@ namespace CF.Octogo.Master
             var cityList = new List<CityListDto>();
             if (ds.Tables.Count > 0)
             {
-                var cityRet = SqlHelper.ConvertDataTable<CityListRet>(ds.Tables[0]);
-                cityList = cityRet.Select(rw => new CityListDto
+                cityList = SqlHelper.ConvertDataTable<CityListDto>(ds.Tables[0]);
+                if (cityList != null && cityList.Count > 0)
                 {
-                    SNo = rw.SNo,
-                    CityCode = rw.CityCode,
-                    CityName = rw.CityName,
-                    StateName = rw.StateName,
-                    CountryName = rw.CountryName,
-                    PriorApproval = rw.PriorApproval,
-                    IsDayLightSaving = rw.IsDayLightSaving,
-                    IsActive = rw.IsActive
-                }).ToList();
-                if (cityRet != null && cityRet.Count > 0)
-                {
-                    totalCount = cityRet.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
             }
             return new PagedResultDto<CityListDto>(

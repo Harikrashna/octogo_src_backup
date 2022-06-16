@@ -67,7 +67,7 @@ export class DesignationComponent extends AppComponentBase implements OnInit {
             if (isConfirmed) {
               this._designation.deleteDesignation(data.id).subscribe(() => {
                 this.getDesignation();
-                abp.notify.success(this.l('SuccessfullyDeleted'));
+                  abp.notify.info(this.l('SuccessfullyDeleted'));
             });
       
             }

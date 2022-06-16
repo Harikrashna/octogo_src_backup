@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app",
+    "\\app\\admin",
+    "\\app\\admin\\masters",
+    "\\app\\admin\\masters\\AwbPricingApproach\\awb-cost-approach",
+    "\\app\\admin\\masters\\country\\create-or-edit-country",
+    "\\app\\admin\\masters\\PricingApproach",
+    "\\app\\admin\\masters\\PricingApproach\\create-or-edit-pricing-approach-modal",
+    "\\app\\admin\\masters\\PricingType",
+    "\\app\\admin\\tenants\\create-edit-tenant-new",
+    "\\app\\admin\\tenants\\create-edit-tenant-new\\payment-details"
+  ],
+  "SelectedNode": "\\app\\admin\\masters\\PricingApproach\\create-or-edit-pricing-approach-modal\\create-or-edit-pricing-approach-modal.component.ts",
+  "PreviewInSolutionExplorer": false
+}

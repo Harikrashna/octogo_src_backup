@@ -1,9 +1,10 @@
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\bin\Debug\netcoreapp3.1\CF.Octogo.Data.deps.json
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\bin\Debug\netcoreapp3.1\CF.Octogo.Data.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\bin\Debug\netcoreapp3.1\CF.Octogo.Data.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.AssemblyInfoInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.AssemblyInfo.cs
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.csproj.CoreCompileInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.csproj.AssemblyReference.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\bin\Debug\netcoreapp3.1\CF.Octogo.Data.deps.json
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\bin\Debug\netcoreapp3.1\CF.Octogo.Data.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\bin\Debug\netcoreapp3.1\CF.Octogo.Data.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.csproj.AssemblyReference.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.AssemblyInfoInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.AssemblyInfo.cs
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.csproj.CoreCompileInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Data\obj\Debug\netcoreapp3.1\CF.Octogo.Data.pdb

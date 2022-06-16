@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj": {}
+    "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj": {}
   },
   "projects": {
-    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
+    "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
       "version": "10.4.0",
       "restore": {
-        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj",
+        "projectUniqueName": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj",
         "projectName": "CF.Octogo.Application.Shared",
-        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj",
-        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
-        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\obj\\",
+        "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj",
+        "packagesPath": "C:\\Users\\hari.krashna\\.nuget\\packages\\",
+        "outputPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hari.krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -31,8 +31,8 @@
           "netstandard2.0": {
             "targetAlias": "netstandard2.0",
             "projectReferences": {
-              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
-                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj"
+              "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
+                "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj"
               }
             }
           }
@@ -72,24 +72,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
+    "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
       "version": "10.4.0",
       "restore": {
-        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj",
+        "projectUniqueName": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj",
         "projectName": "CF.Octogo.Core.Shared",
-        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj",
-        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
-        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\obj\\",
+        "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj",
+        "packagesPath": "C:\\Users\\hari.krashna\\.nuget\\packages\\",
+        "outputPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hari.krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -140,24 +140,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
+    "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
       "version": "10.4.0",
       "restore": {
-        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj",
+        "projectUniqueName": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj",
         "projectName": "CF.Octogo.Core",
-        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj",
-        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
-        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\obj\\",
+        "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj",
+        "packagesPath": "C:\\Users\\hari.krashna\\.nuget\\packages\\",
+        "outputPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hari.krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -171,14 +171,14 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
-                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj"
+              "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj": {
+                "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Application.Shared\\CF.Octogo.Application.Shared.csproj"
               },
-              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
-                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj"
+              "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj": {
+                "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core.Shared\\CF.Octogo.Core.Shared.csproj"
               },
-              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj": {
-                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj"
+              "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj": {
+                "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj"
               }
             }
           }
@@ -274,24 +274,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj": {
+    "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj",
+        "projectUniqueName": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj",
         "projectName": "CF.Octogo.Data",
-        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj",
-        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
-        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\obj\\",
+        "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\CF.Octogo.Data.csproj",
+        "packagesPath": "C:\\Users\\hari.krashna\\.nuget\\packages\\",
+        "outputPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hari.krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -349,24 +349,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj": {
+    "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj": {
       "version": "10.4.0",
       "restore": {
-        "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
+        "projectUniqueName": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
         "projectName": "CF.Octogo.EntityFrameworkCore",
-        "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
-        "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
-        "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\obj\\",
+        "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
+        "packagesPath": "C:\\Users\\hari.krashna\\.nuget\\packages\\",
+        "outputPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hari.krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -380,8 +380,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
-                "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj"
+              "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
+                "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj"
               }
             }
           }
@@ -429,7 +429,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     }

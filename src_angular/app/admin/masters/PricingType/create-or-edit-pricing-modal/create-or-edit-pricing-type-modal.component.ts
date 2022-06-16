@@ -80,15 +80,17 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
       return
     }
     //it checks the duplicate condition
-    this.exist = this.pricingTypeList.some((x) => x.vcTypeName.trim().toUpperCase() == this.editpricingType.vcTypeName.trim().toUpperCase() && x.inNoOfDays == this.editpricingType.inNoOfDays && x.inPricingTypeId != this.editpricingType.inPricingTypeId || (x.vcTypeName.trim().toUpperCase() == this.editpricingType.vcTypeName.trim().toUpperCase() || x.inNoOfDays == this.editpricingType.inNoOfDays) && x.inPricingTypeId != this.editpricingType.inPricingTypeId);
+    // this.exist = this.pricingTypeList.some((x) => x.vcTypeName.trim().toUpperCase() == this.editpricingType.vcTypeName.trim().toUpperCase() && x.inNoOfDays == this.editpricingType.inNoOfDays && x.inPricingTypeId != this.editpricingType.inPricingTypeId || (x.vcTypeName.trim().toUpperCase() == this.editpricingType.vcTypeName.trim().toUpperCase() || x.inNoOfDays == this.editpricingType.inNoOfDays) && x.inPricingTypeId != this.editpricingType.inPricingTypeId);
     //if condition is true , it shows a duplicate warning message
     //otherwise it emit the current object into parent component
-    if (this.exist) {
-      this.notify.warn(this.l('DuplicatePricingTypeMessage'));
-      return;
-    }
-    else {
+    //if (this.exist) {
+    //  this.notify.warn(this.l('DuplicatePricingTypeMessage'));
+    //  return;
+    //}
+      //else {
+      debugger
       if (this.editpricingType.inPricingTypeId != null) {
+         this.saving = true;
         this._pricingTypeService.insertUpdatePricingType(this.editpricingType).pipe(finalize(() => this.saving = false)).subscribe(e => {
           this.notify.info(this.l('UpdatePricingTypeMessage'));
           this.close(form);
@@ -97,6 +99,7 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
         this.primengTableHelper.totalRecordsCount = this.pricingTypeList.length;
       }
       else {
+         this.saving = true;
         this._pricingTypeService.insertUpdatePricingType(this.editpricingType).pipe(finalize(() => this.saving = false)).subscribe(e => {
           this.notify.info(this.l('SavedSuccessfully'));
           this.close(form);
@@ -104,7 +107,7 @@ export class CreateOrEditPricingTypeModalComponent extends AppComponentBase {
         })
         this.primengTableHelper.totalRecordsCount = this.pricingTypeList.length;
       }
-    }
+    // }
   }
 
 

@@ -39,35 +39,20 @@ namespace CF.Octogo.Master.Product
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetProductsListOrProductForEdit", parameters
+            "USP_GetProductsList", parameters
             );
 
             if (ds.Tables.Count > 0)
             {
-              
                 var totalCount = 0;
-
-                var ProductListDto = SqlHelper.ConvertDataTable<ProductListRet>(ds.Tables[0]);
-                var productList = new List<ProductListDto>();
-                productList = ProductListDto.Select(rw => new ProductListDto
+                var productList = SqlHelper.ConvertDataTable<ProductListDto>(ds.Tables[0]);
+                if (productList != null && productList.Count > 0)
                 {
-                    InProductID = rw.ProductId,
-                    VcDescription = rw.Description,
-                    VcProductName = rw.ProductName
-                }).ToList();
-
-                if (ProductListDto != null && ProductListDto.Count > 0)
-                {
-                    totalCount = ProductListDto.FirstOrDefault().TotalCount;
-
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
-
                 return new PagedResultDto<ProductListDto>(totalCount, productList);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
 
@@ -87,10 +72,11 @@ namespace CF.Octogo.Master.Product
             var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateOrDeleteProduct", parameters); // Change procedure name "USP_CreateOrUpdateProduct" to "USP_CreateOrUpdateOrDeleteProduct"
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "DuplicateRecord" && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
             {
 
-                throw new UserFriendlyException(L("DuplicateRecord"));
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
+
             }
             else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
             {
@@ -122,13 +108,12 @@ namespace CF.Octogo.Master.Product
 
         public async Task<ProductandUserEdit> GetProductById(GetEditProductinput input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
+            SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("ProductID", input.inProductID);
-            parameters[1] = new SqlParameter("IsEdit", true); 
              var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetProductsListOrProductForEdit", parameters
+            "USP_GetProductsList", parameters
             );
             if (ds.Tables.Count > 0)
             {

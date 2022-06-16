@@ -12,13 +12,6 @@ namespace CF.Octogo.Master.Department.Dto
         public string vcDepartmentName { get; set; }
         public string vcDescription { get; set; }
     }
-    public class DepartmentListRet
-    {
-        public int inDepartmentID { get; set; }
-        public string vcDepartmentName { get; set; }
-        public string vcDescription { get; set; }
-        public int TotalCount { get; set; }
-    }
     public class DepartmentListInputDto : PagedAndSortedInputDto, IShouldNormalize
     {
         public string filter { get; set; }

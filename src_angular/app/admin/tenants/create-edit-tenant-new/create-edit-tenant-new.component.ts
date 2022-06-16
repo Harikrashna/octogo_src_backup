@@ -8,6 +8,7 @@ import { TenantDetailsComponent } from './tenant-details/tenant-details.componen
 import { PackagesDetailComponent } from './packages-detail/packages-detail.component';
 import { PaymentDetailsComponent } from './payment-details/payment-details.component';
 import { finalize } from 'rxjs/operators';
+import { ValidationServiceService } from '@app/admin/validation-service.service';
 
 @Component({
   selector: 'app-create-edit-tenant-new',
@@ -38,7 +39,8 @@ export class CreateEditTenantNewComponent extends AppComponentBase {
   SelectedPackagesData = [];
   constructor(
     injector: Injector,
-    private _tenantAppService: TenantServiceProxy
+    private _tenantAppService: TenantServiceProxy,
+    public _validationService: ValidationServiceService
   ) {
     super(injector);
   }

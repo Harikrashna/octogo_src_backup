@@ -33,37 +33,25 @@ namespace CF.Octogo.Master.Services
             SqlParameter[] parameters = new SqlParameter[4];
             parameters[0] = new SqlParameter("Sorting", input.Sorting);
             parameters[1] = new SqlParameter("PageSize", input.MaxResultCount);
-            parameters[2] = new SqlParameter("PageNo", (input.SkipCount/ input.MaxResultCount) + 1);
+            parameters[2] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[3] = new SqlParameter("Filter", filter);
             List<ServicesListDto> ServiceList = new List<ServicesListDto>();
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetServicesListOrServiceForEdit", parameters
+            "USP_GetServicesList", parameters
             );
             var totalCount = 0;
             if (ds.Tables.Count > 0)
             {
-                var serviceList = new List<ServicesListDto>();
-                var serviceListRet = SqlHelper.ConvertDataTable<ServicesListRet>(ds.Tables[0]);
-                serviceList = serviceListRet.Select(rw => new ServicesListDto
+                var serviceList = SqlHelper.ConvertDataTable<ServicesListDto>(ds.Tables[0]);
+                if (serviceList != null && serviceList.Count > 0)
                 {
-                    InServiceID = rw.ServiceId,
-                    VcServiceName = rw.ServiceName,
-                    VcDescription = rw.Description
-                }).ToList();
-
-                if (serviceListRet != null && serviceListRet.Count > 0)
-                {
-                    totalCount = serviceListRet.FirstOrDefault().TotalCount;
-
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
                 return new PagedResultDto<ServicesListDto>(totalCount, serviceList);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
 
@@ -116,9 +104,10 @@ namespace CF.Octogo.Master.Services
            System.Data.CommandType.StoredProcedure,
            "USP_CreateOrUpdateOrDeleteService", parameters);
 
-            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "DuplicateRecord" && (int)ds.Tables[0].Rows[0]["Id"] == 0)
-            {
-                throw new UserFriendlyException(L("DuplicateRecord"));
+            if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (int)ds.Tables[0].Rows[0]["Id"] == 0)
+            { 
+         
+                throw new UserFriendlyException(L((string)ds.Tables[0].Rows[0]["Message"]));
                 return 0;
             }
             else if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && (string)ds.Tables[0].Rows[0]["Message"] == "Success" && (int)ds.Tables[0].Rows[0]["Id"] > 0)
@@ -151,13 +140,12 @@ namespace CF.Octogo.Master.Services
 
         public async Task<DataSet> GetServiceById(GetEditServiceinput input)
         {
-            SqlParameter[] parameters = new SqlParameter[2];
+            SqlParameter[] parameters = new SqlParameter[1];
             parameters[0] = new SqlParameter("ServiceID", input.inServiceID);
-            parameters[1] = new SqlParameter("IsEdit", true);
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
             System.Data.CommandType.StoredProcedure,
-            "USP_GetServicesListOrServiceForEdit", parameters
+            "USP_GetServicesList", parameters
             );
             if (ds.Tables.Count > 0)
             {

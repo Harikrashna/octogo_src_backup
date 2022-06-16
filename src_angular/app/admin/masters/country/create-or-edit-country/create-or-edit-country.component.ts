@@ -54,7 +54,8 @@ classificationResult:any[];
     this.edit = !this.edit;
     form.resetForm();
   }
-  show(e?: number): void {
+    show(e?: number): void {
+      debugger
     this.createCountry = new CreateOrUpdateCountryInput;
     if (e == undefined) {
       this.active = true;

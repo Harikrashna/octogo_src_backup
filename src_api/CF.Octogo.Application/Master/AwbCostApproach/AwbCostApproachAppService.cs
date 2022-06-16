@@ -44,16 +44,10 @@ namespace CF.Octogo.Master.AwbPricingApproach
             var awbList = new List<AwbCostApproachListDto>();
             if (ds.Tables.Count > 0)
             {
-                var awbRet = SqlHelper.ConvertDataTable<AwbCostApproachListRet>(ds.Tables[0]);
-                awbList = awbRet.Select(rw => new AwbCostApproachListDto
+                awbList = SqlHelper.ConvertDataTable<AwbCostApproachListDto>(ds.Tables[0]);
+                if (awbList != null && awbList.Count > 0)
                 {
-                    inApproachID = rw.inApproachID,
-                    vcApproachName = rw.vcApproachName,
-                    vcDescription = rw.vcDescription,
-                }).ToList();
-                if (awbRet != null && awbRet.Count > 0)
-                {
-                    totalCount = awbRet.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
             }
             return new PagedResultDto<AwbCostApproachListDto>(
@@ -67,7 +61,7 @@ namespace CF.Octogo.Master.AwbPricingApproach
         public async Task<int> CreateOrUpdateAwbCostType(CreateOrUpdateAwbCostApproachInput input)
 
         {
-            var x = JsonConvert.SerializeObject(input.AWBCostAppraochData);
+            // var x = JsonConvert.SerializeObject(input.AWBCostAppraochData);
             SqlParameter[] parameters = new SqlParameter[5];
             parameters[0] = new SqlParameter("inApproachID", input.inApproachID);
             parameters[1] = new SqlParameter("vcApproachName", input.vcApproachName);

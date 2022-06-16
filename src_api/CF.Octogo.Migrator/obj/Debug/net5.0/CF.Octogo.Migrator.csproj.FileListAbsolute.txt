@@ -1,120 +1,130 @@
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\appsettings.json
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\log4net.config
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.exe
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.dll.config
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.deps.json
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.runtimeconfig.json
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.runtimeconfig.dev.json
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\ref\CF.Octogo.Migrator.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.AspNetZeroCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.AutoMapper.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Castle.Log4Net.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.EntityFramework.Common.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.EntityFrameworkCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.MailKit.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Web.Common.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Zero.Common.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Zero.Ldap.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.EntityFrameworkCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.IdentityServer4.vNext.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\AutoMapper.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\AutoMapper.Collection.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Core.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Core.AsyncInterceptor.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Facilities.Logging.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Windsor.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Windsor.MsDependencyInjection.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityModel.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityServer4.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityServer4.AspNetIdentity.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityServer4.Storage.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\JetBrains.Annotations.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\log4net.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\MailKit.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Azure.KeyVault.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Azure.KeyVault.WebKey.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Azure.Services.AppAuthentication.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Data.SqlClient.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Relational.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.SqlServer.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Extensions.Configuration.AzureKeyVault.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Identity.Client.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Rest.ClientRuntime.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Rest.ClientRuntime.Azure.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\MimeKit.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Newtonsoft.Json.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.AsyncEx.Context.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.AsyncEx.Coordination.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.AsyncEx.Tasks.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.Collections.Deque.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.Disposables.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\NUglify.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\PayPalCheckoutSdk.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\PayPalHttp-Dotnet.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\BouncyCastle.Crypto.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Stripe.net.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.DirectoryServices.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.DirectoryServices.AccountManagement.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.DirectoryServices.Protocols.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Linq.Dynamic.Core.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Runtime.Caching.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Xml.XPath.XmlDocument.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\TimeZoneConverter.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Twilio.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.AccountManagement.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\linux\lib\netcoreapp2.0\System.DirectoryServices.Protocols.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\osx\lib\netcoreapp2.0\System.DirectoryServices.Protocols.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.Protocols.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.Shared.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll.config
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.Shared.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.csproj.AssemblyReference.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.dll.config
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.GeneratedMSBuildEditorConfig.editorconfig
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.AssemblyInfoInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.AssemblyInfo.cs
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.csproj.CoreCompileInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.csproj.CopyComplete
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\ref\CF.Octogo.Migrator.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.genruntimeconfig.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\appsettings.json
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\log4net.config
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.exe
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.dll.config
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.deps.json
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.runtimeconfig.json
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.runtimeconfig.dev.json
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\ref\CF.Octogo.Migrator.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Migrator.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.AspNetZeroCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.AutoMapper.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Castle.Log4Net.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.EntityFramework.Common.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.EntityFrameworkCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.MailKit.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Web.Common.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Zero.Common.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.Zero.Ldap.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.EntityFrameworkCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.IdentityServer4.vNext.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\AutoMapper.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\AutoMapper.Collection.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Core.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Core.AsyncInterceptor.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Facilities.Logging.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Windsor.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Castle.Windsor.MsDependencyInjection.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityModel.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityServer4.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityServer4.AspNetIdentity.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\IdentityServer4.Storage.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\JetBrains.Annotations.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\log4net.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\MailKit.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Azure.KeyVault.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Azure.KeyVault.WebKey.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Azure.Services.AppAuthentication.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Data.SqlClient.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Extensions.Configuration.AzureKeyVault.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Identity.Client.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Rest.ClientRuntime.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Microsoft.Rest.ClientRuntime.Azure.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\MimeKit.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.AsyncEx.Context.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.AsyncEx.Coordination.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.AsyncEx.Tasks.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.Collections.Deque.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Nito.Disposables.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\NUglify.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\PayPalCheckoutSdk.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\PayPalHttp-Dotnet.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Stripe.net.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Data.SqlClient.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Diagnostics.DiagnosticSource.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.DirectoryServices.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.DirectoryServices.AccountManagement.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.DirectoryServices.Protocols.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Linq.Dynamic.Core.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Runtime.Caching.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\System.Xml.XPath.XmlDocument.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\TimeZoneConverter.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\Twilio.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-arm64\native\sni.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x64\native\sni.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win-x86\native\sni.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.AccountManagement.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\linux\lib\netcoreapp2.0\System.DirectoryServices.Protocols.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\osx\lib\netcoreapp2.0\System.DirectoryServices.Protocols.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.Protocols.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Application.Shared.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.Shared.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Data.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll.config
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Application.Shared.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Core.Shared.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\bin\Debug\net5.0\CF.Octogo.Data.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.csproj.AssemblyReference.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.dll.config
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.AssemblyInfoInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.AssemblyInfo.cs
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.csproj.CoreCompileInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.csproj.CopyComplete
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\ref\CF.Octogo.Migrator.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Migrator\obj\Debug\net5.0\CF.Octogo.Migrator.genruntimeconfig.cache

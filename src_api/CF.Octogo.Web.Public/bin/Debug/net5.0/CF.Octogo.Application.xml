@@ -4,6 +4,42 @@
         <name>CF.Octogo.Application</name>
     </assembly>
     <members>
+        <member name="M:CF.Octogo.Editions.AddonAppService.GetModuleListByEditionForAddon(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="editionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Editions.AddonAppService.DeleteAddon(Abp.Application.Services.Dto.EntityDto)">
+            <summary>
+            
+            </summary>
+            <param name="editionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Editions.AddonAppService.GetStandaloneAddonFeaturesById(System.Nullable{System.Int32})">
+            <summary>
+            Desc:Get addon feature tree and feature list
+            created by : Merajuddin khan
+            created on :10-03-22
+            </summary>
+            <param name="addOnId"></param>
+            <returns></returns>
+            
+        </member>
+        <member name="M:CF.Octogo.Editions.EditionAppService.GetModuleList(System.Int32)">
+            <summary>
+            to get Page module data
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Editions.EditionAppService.GetEditionDeatilsByEditionIdForCompare(System.String)">
+            <summary>
+            Get Edition details by comma seperated Edition Ids for compare editions
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:CF.Octogo.Editions.MoveTenantsToAnotherEditionJobArgs.SourceEditionId">
             <summary>
             Id of the source edition to move tenants from
@@ -34,6 +70,15 @@
             Set this const field to true if you want to enable ExpiredAuditLogDeleterWorker.
             Be careful, If you enable this, all expired logs will be permanently deleted.
             </summary>
+        </member>
+        <member name="M:CF.Octogo.Authorization.Accounts.AccountAppService.CheckPaymentAndAvailibility(CF.Octogo.Authorization.Accounts.Dto.IsTenantAvailableInput)">
+            <summary>
+            desc:This service is used to find payment deatils and availibility of tenant
+            created by:Merajuddin khan
+            created on:03-01-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
         </member>
         <member name="M:CF.Octogo.Authorization.Permissions.PermissionManagerExtensions.GetPermissionsFromNamesByValidating(Abp.Authorization.IPermissionManager,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
@@ -87,10 +132,95 @@
             <param name="str"></param>
             <returns></returns>
         </member>
+        <member name="M:CF.Octogo.DashboardCustomization.DashboardCustomizationAppService.GetProductAndEditionDetailByUserId(System.Int32)">
+            <summary>
+            Description:get produclist and editionlist by userId
+            Created by:Merajuddin khan
+            Created on:20-12-2021
+            </summary>
+            <param name="userId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.DashboardCustomization.DashboardCustomizationAppService.GetTenantEditionAddonDetailsByTenantId(System.Int32)">
+            <summary>
+            Get Subscribed Product details
+            </summary>
+            <param name="TenantId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.DashboardCustomization.DashboardCustomizationAppService.GetTotalOctoCostWidget(System.Collections.Generic.List{System.String},System.Int32,CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
+            <summary>
+            Created by:Deepak
+            Created On: 06-may-2022
+            </summary>
+            <param name="filters"></param>
+            <param name="tenantId"></param>
+            <param name="Dateinput"></param>
+            <returns></returns>
+        </member>
         <member name="T:CF.Octogo.DashboardCustomization.Dto.DashboardOutput">
             <summary>
             This class stores filtered dashboard information by user
             </summary>
+        </member>
+        <member name="M:CF.Octogo.Master.Product.ProductAppService.GetProduclistByUsertypeId(System.Nullable{System.Int32},System.String)">
+            <summary>
+            Desc:Get product list by UserTypeId
+            Author:Merajuddin
+            Date:11-04-2022
+            </summary>
+            <param name="UserTypeId"></param>
+            <param name="QueryFor"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalClientWithFilterForWidget(System.Collections.Generic.List{System.String},CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
+            <summary>
+            DESC:Get total client data for column chart widget
+            Created by: Merajuddin khan
+            Created on: 26-04-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetTotalRevenueForWidget(System.Collections.Generic.List{System.String},CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
+            <summary>
+            DESC:Get total revenue for column chart widget
+            Created by: Merajuddin khan
+            Created on: 29-04-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.HostDashboard.HostDashboardAppService.GetClientPendingPaymentForWidget(CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
+            <summary>
+            Get pending payment details of client
+            Created by: Merajuddin khan
+            Created on: 29-04-2022
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.SubscriptionAppService.GetClientSubscriptionExpirationAndProductForWidget(CF.Octogo.MultiTenancy.HostDashboard.Dto.DashboardInputBase)">
+            <summary>
+            DESC:Get Plan expiration list
+            Created by: Merajuddin khan
+            Created on: 29-04-2022
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.TenantAppService.DeactivateTenantUsers(System.Int32)">
+            <summary>
+            Deactivate all users of tenant after Tenant decativation
+            </summary>
+            <param name="tenantId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.MultiTenancy.TenantAppService.CreateUpdateTenantNew(CF.Octogo.MultiTenancy.Dto.CreateEditTenantInputDto)">
+            <summary>
+            Create Tenant by Host Admin user with Subscription and Transactional(AWB) charges
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
         </member>
         <member name="T:CF.Octogo.OctogoApplicationModule">
             <summary>
@@ -106,8 +236,56 @@
             <summary>
             CREATED BY: HARI KRASHNA
             CREATED ON: 16/12/2021
+            MODIFIED BY:MERAJUDDIN (06-MAY-2022)
             Add some additional information of user in existing user detail service 
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.CreateAdminUserOnTenantDB(System.Nullable{System.Int32})">
+            <summary>
+            
+            Desc:Get Tenant database details
+            Created by: Merajuddin khan
+            Created on:21-01-22
+            </summary>
+            <param name="tenantId"></param>
+            <returns></returns>
+            
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.InsertAdminDetailsOnTenantDataBase(CF.Octogo.Tenants.Dto.TenantDbAndUserDetailsDto)">
+            <summary>
+            
+            Desc:Insert Tenant admin details on their respective database connection
+            Created by: Merajuddin khan
+            Created on:21-01-22
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSetUpProcess(System.Int64)">
+            <summary>
+            Desc:Update tenant admin setup proccess completed
+            Created by: Merajuddin khan
+            Created on:24-01-22
+            </summary>
+            <param name="setupId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.UpdateTenantSyetemSettingForEditionUpdate(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Update SystemSettings for Package Update status after Tenant edition update or Edition update
+            </summary>
+            <param name="editionId"></param>
+            <param name="tenantId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CF.Octogo.Tenants.TenantDetailsAppService.TenantAdminSetupProcessCompleteStatus(CF.Octogo.Tenants.Dto.TenantSummaryInputDto)">
+            <summary>
+            Desc:Get tenant proccess completion status
+            created by : Merajuddin khan
+            created on :08-02-22
+            Modified on:04-04-22(Merajuddin khan)
+            </summary>
+            <param name="setUpId"></param>
             <returns></returns>
         </member>
     </members>

@@ -10530,23 +10530,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Hari Krashna\\.nuget\\packages\\": {},
+    "C:\\Users\\hari.krashna\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "10.4.0",
     "restore": {
-      "projectUniqueName": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
+      "projectUniqueName": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
       "projectName": "CF.Octogo.EntityFrameworkCore",
-      "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
-      "packagesPath": "C:\\Users\\Hari Krashna\\.nuget\\packages\\",
-      "outputPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\obj\\",
+      "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\CF.Octogo.EntityFrameworkCore.csproj",
+      "packagesPath": "C:\\Users\\hari.krashna\\.nuget\\packages\\",
+      "outputPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.EntityFrameworkCore\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Hari Krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\hari.krashna\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -10560,8 +10560,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
-              "projectPath": "D:\\CF\\TFS\\OctoGen\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj"
+            "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj": {
+              "projectPath": "C:\\Office Work\\TFS\\Dev\\aspnet-core\\src\\CF.Octogo.Core\\CF.Octogo.Core.csproj"
             }
           }
         }
@@ -10609,7 +10609,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
       }
     }
   }

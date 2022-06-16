@@ -49,7 +49,7 @@
       },
       "Abp.AspNetZeroCore/3.0.0": {
         "dependencies": {
-          "Abp.Web.Common": "6.0.0",
+          "Abp.Web.Common": "6.4.0",
           "Abp.ZeroCore": "6.4.0"
         },
         "runtime": {
@@ -121,15 +121,15 @@
           }
         }
       },
-      "Abp.Web.Common/6.0.0": {
+      "Abp.Web.Common/6.4.0": {
         "dependencies": {
           "Abp": "6.4.0",
-          "NUglify": "1.9.11"
+          "NUglify": "1.13.12"
         },
         "runtime": {
           "lib/netstandard2.0/Abp.Web.Common.dll": {
-            "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.0.0"
+            "assemblyVersion": "6.4.0.0",
+            "fileVersion": "6.4.0.0"
           }
         }
       },
@@ -977,11 +977,11 @@
           }
         }
       },
-      "NUglify/1.9.11": {
+      "NUglify/1.13.12": {
         "runtime": {
           "lib/netstandard2.0/NUglify.dll": {
-            "assemblyVersion": "1.9.11.0",
-            "fileVersion": "1.9.11.0"
+            "assemblyVersion": "1.13.12.0",
+            "fileVersion": "1.13.12.0"
           }
         }
       },
@@ -1016,6 +1016,13 @@
         "dependencies": {
           "Microsoft.NETCore.Platforms": "5.0.0",
           "Microsoft.NETCore.Targets": "1.1.3"
+        }
+      },
+      "runtime.native.System.Data.SqlClient.sni/4.7.0": {
+        "dependencies": {
+          "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni": "4.4.0",
+          "runtime.win-x64.runtime.native.System.Data.SqlClient.sni": "4.4.0",
+          "runtime.win-x86.runtime.native.System.Data.SqlClient.sni": "4.4.0"
         }
       },
       "runtime.native.System.IO.Compression/4.3.0": {
@@ -1057,6 +1064,33 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
+      "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/sni.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "4.6.25512.1"
+          }
+        }
+      },
+      "runtime.win-x64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "runtimeTargets": {
+          "runtimes/win-x64/native/sni.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "4.6.25512.1"
+          }
+        }
+      },
+      "runtime.win-x86.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "runtimeTargets": {
+          "runtimes/win-x86/native/sni.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "4.6.25512.1"
+          }
+        }
+      },
       "Stripe.net/39.59.0": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
@@ -1181,6 +1215,33 @@
           "System.Runtime.Extensions": "4.3.0",
           "System.Text.RegularExpressions": "4.3.0",
           "System.Threading.Tasks": "4.3.0"
+        }
+      },
+      "System.Data.SqlClient/4.8.2": {
+        "dependencies": {
+          "Microsoft.Win32.Registry": "4.7.0",
+          "System.Security.Principal.Windows": "5.0.0",
+          "runtime.native.System.Data.SqlClient.sni": "4.7.0"
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "assemblyVersion": "4.6.1.2",
+            "fileVersion": "4.700.20.37001"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "4.6.1.2",
+            "fileVersion": "4.700.20.37001"
+          },
+          "runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.6.1.2",
+            "fileVersion": "4.700.20.37001"
+          }
         }
       },
       "System.Diagnostics.Debug/4.3.0": {
@@ -2127,6 +2188,16 @@
           }
         }
       },
+      "CF.Octogo.Application.Shared/10.4.0": {
+        "dependencies": {
+          "Abp.Web.Common": "6.4.0",
+          "CF.Octogo.Core.Shared": "10.4.0",
+          "System.ComponentModel.Annotations": "5.0.0"
+        },
+        "runtime": {
+          "CF.Octogo.Application.Shared.dll": {}
+        }
+      },
       "CF.Octogo.Core/10.4.0": {
         "dependencies": {
           "Abp.AspNetZeroCore": "3.0.0",
@@ -2134,7 +2205,9 @@
           "Abp.MailKit": "6.4.0",
           "Abp.Zero.Ldap": "6.4.0",
           "Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore": "6.4.0",
+          "CF.Octogo.Application.Shared": "10.4.0",
           "CF.Octogo.Core.Shared": "10.4.0",
+          "CF.Octogo.Data": "1.0.0",
           "Castle.Windsor.MsDependencyInjection": "3.4.0",
           "Microsoft.Extensions.Configuration.AzureKeyVault": "3.1.17",
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "5.0.0",
@@ -2143,6 +2216,7 @@
           "PayPalCheckoutSdk": "1.0.3",
           "PayPalHttp": "1.0.0",
           "Stripe.net": "39.59.0",
+          "System.Data.SqlClient": "4.8.2",
           "TimeZoneConverter": "3.5.0",
           "Twilio": "5.64.0"
         },
@@ -2157,6 +2231,17 @@
         },
         "runtime": {
           "CF.Octogo.Core.Shared.dll": {}
+        }
+      },
+      "CF.Octogo.Data/1.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.Configuration.FileExtensions": "5.0.0",
+          "Microsoft.Extensions.Configuration.Json": "5.0.0",
+          "System.Data.SqlClient": "4.8.2"
+        },
+        "runtime": {
+          "CF.Octogo.Data.dll": {}
         }
       },
       "CF.Octogo.EntityFrameworkCore/10.4.0": {
@@ -2225,12 +2310,12 @@
       "path": "abp.mailkit/6.4.0",
       "hashPath": "abp.mailkit.6.4.0.nupkg.sha512"
     },
-    "Abp.Web.Common/6.0.0": {
+    "Abp.Web.Common/6.4.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-GcR44uU5L9C65aFUDZJUpifEp6wXKnMr4lJn/hxeRTbwc3jEcX9rj0vRjMzJbmNJCW7vHkJ3VXmdKZq3mQJ6qQ==",
-      "path": "abp.web.common/6.0.0",
-      "hashPath": "abp.web.common.6.0.0.nupkg.sha512"
+      "sha512": "sha512-oXA69YX1uNt4ibl91Gld7X0/SKufs6uMxjgWgzQcIsI+9GzswyPxW07fNqMfxf0b8BDp0RnuBK2uFxPFo4j5mg==",
+      "path": "abp.web.common/6.4.0",
+      "hashPath": "abp.web.common.6.4.0.nupkg.sha512"
     },
     "Abp.Zero.Common/6.4.0": {
       "type": "package",
@@ -2757,12 +2842,12 @@
       "path": "nito.disposables/2.2.0",
       "hashPath": "nito.disposables.2.2.0.nupkg.sha512"
     },
-    "NUglify/1.9.11": {
+    "NUglify/1.13.12": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-p/TNPrStsZgbvB0iFxoLhRVkzUtbbkvySwncVDy214oZvwoiteU32uBd6tHfv8r7VRBDgK/roa6h8GpiVb+V9g==",
-      "path": "nuglify/1.9.11",
-      "hashPath": "nuglify.1.9.11.nupkg.sha512"
+      "sha512": "sha512-+13YE9UjnXx4+NKP+j1Axiz/QAMtK++ZtG61u9iiR2/WzPzr7EfBDOwj+xHNyTEMS9Emq/mCyWaBGjCABhC0HQ==",
+      "path": "nuglify/1.13.12",
+      "hashPath": "nuglify.1.13.12.nupkg.sha512"
     },
     "PayPalCheckoutSdk/1.0.3": {
       "type": "package",
@@ -2812,6 +2897,13 @@
       "sha512": "sha512-c/qWt2LieNZIj1jGnVNsE2Kl23Ya2aSTBuXMD6V7k9KWr6l16Tqdwq+hJScEpWER9753NWC8h96PaVNY5Ld7Jw==",
       "path": "runtime.native.system/4.3.0",
       "hashPath": "runtime.native.system.4.3.0.nupkg.sha512"
+    },
+    "runtime.native.System.Data.SqlClient.sni/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9kyFSIdN3T0qjDQ2R0HRXYIhS3l5psBzQi6qqhdLz+SzFyEy4sVxNOke+yyYv8Cu8rPER12c3RDjLT8wF3WBYQ==",
+      "path": "runtime.native.system.data.sqlclient.sni/4.7.0",
+      "hashPath": "runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512"
     },
     "runtime.native.System.IO.Compression/4.3.0": {
       "type": "package",
@@ -2896,6 +2988,27 @@
       "sha512": "sha512-VB5cn/7OzUfzdnC8tqAIMQciVLiq2epm2NrAm1E9OjNRyG4lVhfR61SMcLizejzQP8R8Uf/0l5qOIbUEi+RdEg==",
       "path": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0",
       "hashPath": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512"
+    },
+    "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LbrynESTp3bm5O/+jGL8v0Qg5SJlTV08lpIpFesXjF6uGNMWqFnUQbYBJwZTeua6E/Y7FIM1C54Ey1btLWupdg==",
+      "path": "runtime.win-arm64.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "hashPath": "runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
+    },
+    "runtime.win-x64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-38ugOfkYJqJoX9g6EYRlZB5U2ZJH51UP8ptxZgdpS07FgOEToV+lS11ouNK2PM12Pr6X/PpT5jK82G3DwH/SxQ==",
+      "path": "runtime.win-x64.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "hashPath": "runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
+    },
+    "runtime.win-x86.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YhEdSQUsTx+C8m8Bw7ar5/VesXvCFMItyZF7G1AUY+OM0VPZUOeAVpJ4Wl6fydBGUYZxojTDR3I6Bj/+BPkJNA==",
+      "path": "runtime.win-x86.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "hashPath": "runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
     },
     "Stripe.net/39.59.0": {
       "type": "package",
@@ -3001,6 +3114,13 @@
       "sha512": "sha512-lm6E3T5u7BOuEH0u18JpbJHxBfOJPuCyl4Kg1RH10ktYLp5uEEE1xKrHW56/We4SnZpGAuCc9N0MJpSDhTHZGQ==",
       "path": "system.data.common/4.3.0",
       "hashPath": "system.data.common.4.3.0.nupkg.sha512"
+    },
+    "System.Data.SqlClient/4.8.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-80vGtW6uLB4AkyrdVuKTXYUyuXDPAsSKbTVfvjndZaRAYxzFzWhJbvUfeAKrN+128ycWZjLIAl61dFUwWHOOTw==",
+      "path": "system.data.sqlclient/4.8.2",
+      "hashPath": "system.data.sqlclient.4.8.2.nupkg.sha512"
     },
     "System.Diagnostics.Debug/4.3.0": {
       "type": "package",
@@ -3604,12 +3724,22 @@
       "path": "twilio/5.64.0",
       "hashPath": "twilio.5.64.0.nupkg.sha512"
     },
+    "CF.Octogo.Application.Shared/10.4.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
     "CF.Octogo.Core/10.4.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
     "CF.Octogo.Core.Shared/10.4.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CF.Octogo.Data/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

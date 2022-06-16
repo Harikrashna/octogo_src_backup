@@ -59,14 +59,14 @@ export class IndustryComponent extends AppComponentBase implements AfterViewInit
      this.createOrEditIndustry.show();
    }
  
-   deleteIndustry(Industry) {
+   deleteIndustry(industry) {
      this.message.confirm
        (
-         this.l('IndustryDeleteWarningMessage', Industry.vcIndustryName),
+           this.l('IndustryDeleteWarningMessage', industry.vcIndustryName),
          this.l('AreYouSure'),
          (isConfirmed) => {
            if (isConfirmed) {
-             this._Industry.deleteIndustry(Industry.inIndustryID).subscribe(() => {
+             this._Industry.deleteIndustry(industry.inIndustryID).subscribe(() => {
                this.notify.info(this.l('SuccessfullyDeleted'));
                this.getallIndustryList();
              });
@@ -75,5 +75,4 @@ export class IndustryComponent extends AppComponentBase implements AfterViewInit
        )
    }
  }
- 
  

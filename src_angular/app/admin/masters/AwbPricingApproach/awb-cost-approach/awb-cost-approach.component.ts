@@ -66,7 +66,7 @@ export class AwbCostApproachComponent extends AppComponentBase implements AfterV
       isConfirmed => {
         if (isConfirmed) {
           this._awbcostapproachservice.deleteAwbCostApproach(AwbCostApproach.inApproachID).subscribe(() => {
-            abp.notify.success(this.l('SuccessfullyDeleted'));
+              abp.notify.info(this.l('SuccessfullyDeleted'));
             this.GetPerAWBCostApproachList();
           });
         }

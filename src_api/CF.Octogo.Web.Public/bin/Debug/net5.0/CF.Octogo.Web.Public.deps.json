@@ -2768,11 +2768,7 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.Collections.Immutable/5.0.0": {
-        "compile": {
-          "lib/netstandard2.0/System.Collections.Immutable.dll": {}
-        }
-      },
+      "System.Collections.Immutable/5.0.0": {},
       "System.Collections.NonGeneric/4.3.0": {
         "dependencies": {
           "System.Diagnostics.Debug": "4.3.0",
@@ -2799,11 +2795,7 @@
           "System.Runtime": "4.3.1"
         }
       },
-      "System.ComponentModel.Annotations/5.0.0": {
-        "compile": {
-          "ref/netstandard2.1/System.ComponentModel.Annotations.dll": {}
-        }
-      },
+      "System.ComponentModel.Annotations/5.0.0": {},
       "System.ComponentModel.Primitives/4.3.0": {
         "dependencies": {
           "System.ComponentModel": "4.3.0",
@@ -3406,11 +3398,7 @@
           "System.Runtime": "4.3.1"
         }
       },
-      "System.Reflection.Metadata/5.0.0": {
-        "compile": {
-          "lib/netstandard2.0/System.Reflection.Metadata.dll": {}
-        }
-      },
+      "System.Reflection.Metadata/5.0.0": {},
       "System.Reflection.Primitives/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "5.0.1",
@@ -4064,7 +4052,9 @@
           "Abp.MailKit": "6.4.0",
           "Abp.Zero.Ldap": "6.4.0",
           "Abp.ZeroCore.IdentityServer4.vNext.EntityFrameworkCore": "6.4.0",
+          "CF.Octogo.Application.Shared": "10.4.0",
           "CF.Octogo.Core.Shared": "10.4.0",
+          "CF.Octogo.Data": "1.0.0",
           "Castle.Windsor.MsDependencyInjection": "3.4.0",
           "Microsoft.Extensions.Configuration.AzureKeyVault": "3.1.17",
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "5.0.0",
@@ -4073,6 +4063,7 @@
           "PayPalCheckoutSdk": "1.0.3",
           "PayPalHttp": "1.0.0",
           "Stripe.net": "39.59.0",
+          "System.Data.SqlClient": "4.8.2",
           "TimeZoneConverter": "3.5.0",
           "Twilio": "5.64.0"
         },

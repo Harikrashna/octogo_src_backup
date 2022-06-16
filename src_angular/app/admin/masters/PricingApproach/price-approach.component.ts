@@ -67,7 +67,7 @@ export class PriceApproachComponent extends AppComponentBase implements OnInit {
             if (isConfirmed) {
               this._priceApproachService.deletePricingApproach(data.id).subscribe(() => {
                 this.getPricingApproach();
-                abp.notify.success(this.l('SuccessfullyDeleted'));
+                  abp.notify.info(this.l('SuccessfullyDeleted'));
             });
       
             }

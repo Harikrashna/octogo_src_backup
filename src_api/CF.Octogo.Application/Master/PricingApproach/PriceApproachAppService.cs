@@ -44,16 +44,11 @@ namespace CF.Octogo.Master.PricingApproach
             var pricingApproachList = new List<PriceApproachListDto>();
             if (ds.Tables.Count > 0)
             {
-                var pricingApproachRet = SqlHelper.ConvertDataTable<PriceApproachListRet>(ds.Tables[0]);
-                pricingApproachList = pricingApproachRet.Select(rw => new PriceApproachListDto
+                pricingApproachList = SqlHelper.ConvertDataTable<PriceApproachListDto>(ds.Tables[0]);
+                if (pricingApproachList != null && pricingApproachList.Count > 0)
                 {
-                    Id = rw.Id,
-                    ApproachName = rw.ApproachName,
-                    Description = rw.Description
-                }).ToList();
-                if (pricingApproachRet != null && pricingApproachRet.Count > 0)
-                {
-                    totalCount = pricingApproachRet.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
+
                 }
             }
             return new PagedResultDto<PriceApproachListDto>(

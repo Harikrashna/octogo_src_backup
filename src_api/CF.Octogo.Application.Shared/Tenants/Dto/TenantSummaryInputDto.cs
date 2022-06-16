@@ -48,7 +48,6 @@ namespace CF.Octogo.Tenants.Dto
         public string ProductName { get; set; }
         public int    TenantId { get; set; }
         public string TenantName { get; set; }
-        public int    TotalCount { get; set; }
         public DateTime WsSetupCompleteDt { get; set; }
     }
 }

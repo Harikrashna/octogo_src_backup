@@ -5387,67 +5387,6 @@ export class DesignationServiceProxy {
 
     /**
      * @param designationId (optional) 
-     * @param designationName (optional) 
-     * @return Success
-     */
-    getDesignationDuplicacyCheck(designationId: number | undefined, designationName: string | undefined): Observable<any> {
-        let url_ = this.baseUrl + "/api/services/app/Designation/GetDesignationDuplicacyCheck?";
-        if (designationId === null)
-            throw new Error("The parameter 'designationId' cannot be null.");
-        else if (designationId !== undefined)
-            url_ += "designationId=" + encodeURIComponent("" + designationId) + "&";
-        if (designationName === null)
-            throw new Error("The parameter 'designationName' cannot be null.");
-        else if (designationName !== undefined)
-            url_ += "designationName=" + encodeURIComponent("" + designationName) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetDesignationDuplicacyCheck(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetDesignationDuplicacyCheck(<any>response_);
-                } catch (e) {
-                    return <Observable<any>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<any>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetDesignationDuplicacyCheck(response: HttpResponseBase): Observable<any> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<any>(<any>null);
-    }
-
-    /**
-     * @param designationId (optional) 
      * @return Success
      */
     deleteDesignation(designationId: number | undefined): Observable<string> {
@@ -12642,18 +12581,14 @@ export class PaymentServiceProxy {
     }
 
     /**
-     * @param sorting (optional) 
      * @param maxResultCount (optional) 
      * @param skipCount (optional) 
+     * @param sorting (optional) 
      * @param tenantId (optional) 
      * @return Success
      */
-    getPaymentHistoryNew(sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, tenantId: number | undefined): Observable<PagedResultDtoOfSubscriptionPaymentListNewDto> {
+    getPaymentHistoryNew(maxResultCount: number | undefined, skipCount: number | undefined, sorting: string | undefined, tenantId: number | undefined): Observable<PagedResultDtoOfSubscriptionPaymentListNewDto> {
         let url_ = this.baseUrl + "/api/services/app/Payment/GetPaymentHistoryNew?";
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
         if (maxResultCount === null)
             throw new Error("The parameter 'maxResultCount' cannot be null.");
         else if (maxResultCount !== undefined)
@@ -12662,6 +12597,10 @@ export class PaymentServiceProxy {
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
             url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&";
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "Sorting=" + encodeURIComponent("" + sorting) + "&";
         if (tenantId === null)
             throw new Error("The parameter 'tenantId' cannot be null.");
         else if (tenantId !== undefined)
@@ -41260,7 +41199,6 @@ export class TenantProcessLogsList implements ITenantProcessLogsList {
     productName!: string | undefined;
     tenantId!: number;
     tenantName!: string | undefined;
-    totalCount!: number;
     wsSetupCompleteDt!: DateTime;
 
     constructor(data?: ITenantProcessLogsList) {
@@ -41295,7 +41233,6 @@ export class TenantProcessLogsList implements ITenantProcessLogsList {
             this.productName = _data["productName"];
             this.tenantId = _data["tenantId"];
             this.tenantName = _data["tenantName"];
-            this.totalCount = _data["totalCount"];
             this.wsSetupCompleteDt = _data["wsSetupCompleteDt"] ? DateTime.fromISO(_data["wsSetupCompleteDt"].toString()) : <any>undefined;
         }
     }
@@ -41330,7 +41267,6 @@ export class TenantProcessLogsList implements ITenantProcessLogsList {
         data["productName"] = this.productName;
         data["tenantId"] = this.tenantId;
         data["tenantName"] = this.tenantName;
-        data["totalCount"] = this.totalCount;
         data["wsSetupCompleteDt"] = this.wsSetupCompleteDt ? this.wsSetupCompleteDt.toString() : <any>undefined;
         return data; 
     }
@@ -41358,7 +41294,6 @@ export interface ITenantProcessLogsList {
     productName: string | undefined;
     tenantId: number;
     tenantName: string | undefined;
-    totalCount: number;
     wsSetupCompleteDt: DateTime;
 }
 

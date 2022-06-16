@@ -1,26 +1,26 @@
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.deps.json
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\ref\CF.Octogo.Application.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.xml
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.Shared.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.Shared.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.Shared.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll.config
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.Shared.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.csproj.AssemblyReference.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.GeneratedMSBuildEditorConfig.editorconfig
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.AssemblyInfoInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.AssemblyInfo.cs
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.csproj.CoreCompileInputs.cache
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.csproj.CopyComplete
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\ref\CF.Octogo.Application.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.xml
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.pdb
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Data.dll
-D:\CF\TFS\OctoGen\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Data.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.deps.json
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\ref\CF.Octogo.Application.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.xml
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.Shared.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.Shared.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Data.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Application.Shared.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Data.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.EntityFrameworkCore.dll.config
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\bin\Debug\net5.0\CF.Octogo.Core.Shared.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.csproj.AssemblyReference.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.AssemblyInfoInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.AssemblyInfo.cs
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.csproj.CoreCompileInputs.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.csproj.CopyComplete
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\ref\CF.Octogo.Application.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.xml
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application\obj\Debug\net5.0\CF.Octogo.Application.pdb

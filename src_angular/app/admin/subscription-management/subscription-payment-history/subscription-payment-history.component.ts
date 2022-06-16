@@ -7,49 +7,49 @@ import { Table } from 'primeng/table';
 import { finalize } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-subscription-payment-history',
-  templateUrl: './subscription-payment-history.component.html',
-  styleUrls: ['./subscription-payment-history.component.css']
+    selector: 'app-subscription-payment-history',
+    templateUrl: './subscription-payment-history.component.html',
+    styleUrls: ['./subscription-payment-history.component.css']
 })
-export class SubscriptionPaymentHistoryComponent  extends AppComponentBase implements OnInit {
+export class SubscriptionPaymentHistoryComponent extends AppComponentBase implements OnInit {
 
-  @ViewChild('dataTable', { static: true }) dataTable: Table;
-  @ViewChild('paginator', { static: true }) paginator: Paginator;
-  @Input() TenantId = 0;
-  constructor(injector: Injector,private _paymentServiceProxy: PaymentServiceProxy,private _invoiceServiceProxy: InvoiceServiceProxy) {
-    super(injector);
-   }
-
-  ngOnInit(): void {
-  }
-  getPaymentHistory(event?: LazyLoadEvent) {
-    if (this.primengTableHelper.shouldResetPaging(event)) {
-        this.paginator.changePage(0);
-
-        return;
+    @ViewChild('dataTable', { static: true }) dataTable: Table;
+    @ViewChild('paginator', { static: true }) paginator: Paginator;
+    @Input() TenantId = 0;
+    constructor(injector: Injector, private _paymentServiceProxy: PaymentServiceProxy, private _invoiceServiceProxy: InvoiceServiceProxy) {
+        super(injector);
     }
 
-    this.primengTableHelper.showLoadingIndicator();
+    ngOnInit(): void {
+    }
+    getPaymentHistory(event?: LazyLoadEvent) {
+        if (this.primengTableHelper.shouldResetPaging(event)) {
+            this.paginator.changePage(0);
 
-    this._paymentServiceProxy.getPaymentHistoryNew(
-        this.primengTableHelper.getSorting(this.dataTable),
-        this.primengTableHelper.getMaxResultCount(this.paginator, event),
-        this.primengTableHelper.getSkipCount(this.paginator, event),
-        this.TenantId > 0 ? this.TenantId : this.appSession.tenant.id 
-    ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
-        this.primengTableHelper.totalRecordsCount = result.totalCount;
-        this.primengTableHelper.records = result.items;
-        this.primengTableHelper.hideLoadingIndicator();
-    });
-}
-createOrShowInvoice(paymentId: number, invoiceNo: string): void {
-  if (invoiceNo) {
-      window.open('/app/admin/invoice/' + paymentId, '_blank');
-  } else {
-      this._invoiceServiceProxy.createInvoice(new CreateInvoiceDto({ subscriptionPaymentId: paymentId })).subscribe(() => {
-          this.getPaymentHistory();
-          window.open('/app/admin/invoice/' + paymentId, '_blank');
-      });
-  }
-}
+            return;
+        }
+
+        this.primengTableHelper.showLoadingIndicator();
+
+        this._paymentServiceProxy.getPaymentHistoryNew(
+            this.primengTableHelper.getMaxResultCount(this.paginator, event),
+            this.primengTableHelper.getSkipCount(this.paginator, event),
+            this.primengTableHelper.getSorting(this.dataTable),
+            this.TenantId > 0 ? this.TenantId : this.appSession.tenant.id
+        ).pipe(finalize(() => this.primengTableHelper.hideLoadingIndicator())).subscribe(result => {
+            this.primengTableHelper.totalRecordsCount = result.totalCount;
+            this.primengTableHelper.records = result.items;
+            this.primengTableHelper.hideLoadingIndicator();
+        });
+    }
+    createOrShowInvoice(paymentId: number, invoiceNo: string): void {
+        if (invoiceNo) {
+            window.open('/app/admin/invoice/' + paymentId, '_blank');
+        } else {
+            this._invoiceServiceProxy.createInvoice(new CreateInvoiceDto({ subscriptionPaymentId: paymentId })).subscribe(() => {
+                this.getPaymentHistory();
+                window.open('/app/admin/invoice/' + paymentId, '_blank');
+            });
+        }
+    }
 }

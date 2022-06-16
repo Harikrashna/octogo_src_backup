@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = CF.Octogo
+build_property.ProjectDir = C:\Office Work\TFS\Dev\aspnet-core\src\CF.Octogo.Application.Shared\

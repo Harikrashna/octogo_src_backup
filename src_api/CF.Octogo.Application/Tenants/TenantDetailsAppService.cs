@@ -53,11 +53,11 @@ namespace CF.Octogo.Tenants
                 PageDetailsWithProduct pageDetailsWithProduct = new PageDetailsWithProduct();
                 pageDetailsWithProduct.TenantID = input.TenantId;
                 pageDetailsWithProduct.PackageID = Convert.ToInt32(ds.Tables[0].Rows[0]["EditionId"]);
-                    //var pageList = ds.Tables[0].AsEnumerable().Select(e => new PageDetails
-                    //{
-                    //    PageSno = Convert.ToInt32(e["pageSno"])
-                    //});
-                    pageDetailsWithProduct.PageDetails = JsonConvert.DeserializeObject<List<PageDetails>>(ds.Tables[0].Rows[0]["Pages"].ToString()).ToList();
+                //var pageList = ds.Tables[0].AsEnumerable().Select(e => new PageDetails
+                //{
+                //    PageSno = Convert.ToInt32(e["pageSno"])
+                //});
+                pageDetailsWithProduct.PageDetails = JsonConvert.DeserializeObject<List<PageDetails>>(ds.Tables[0].Rows[0]["Pages"].ToString()).ToList();
                 return pageDetailsWithProduct;
             }
             else
@@ -112,8 +112,8 @@ namespace CF.Octogo.Tenants
                 var result = SqlHelper.ConvertDataTable<TenantDBDetailsDto>(ds.Tables[0]);
                 if (result.Count > 0)
                 {
-                   foreach (var tenantDetails in result)
-                   {
+                    foreach (var tenantDetails in result)
+                    {
                         using (_unitOfWorkManager.Current.SetTenantId(tenantDetails.TenantId))
                         {
                             //var userData = _userRolesRepository.GetAll().Where(obj => obj.);
@@ -145,7 +145,7 @@ namespace CF.Octogo.Tenants
                                     Message = ret_str
                                 });
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
                                 response.Add(new TenantAdminCreationStatusDto
                                 {
@@ -186,19 +186,19 @@ namespace CF.Octogo.Tenants
             parameters[1] = new SqlParameter("@NewPwd", admindata.Password);
             var jasonFormatData = Newtonsoft.Json.JsonConvert.SerializeObject(users);
 
-                var ds = await SqlHelper.ExecuteDatasetAsync(admindata.ConnectionString.Trim(),
-                            System.Data.CommandType.StoredProcedure,
-                            "CreateUsersFromSubscription", parameters);
+            var ds = await SqlHelper.ExecuteDatasetAsync(admindata.ConnectionString.Trim(),
+                        System.Data.CommandType.StoredProcedure,
+                        "CreateUsersFromSubscription", parameters);
 
-                if (ds.Tables[0].Rows[0][0].ToString() == "0")
-                {
-                    return "Success";
-                }
-                else
-                {
-                    return "failed to insert admin data. Response code is: " + ds.Tables[0].Rows[0][0].ToString();
-                }
-            
+            if (ds.Tables[0].Rows[0][0].ToString() == "0")
+            {
+                return "Success";
+            }
+            else
+            {
+                return "failed to insert admin data. Response code is: " + ds.Tables[0].Rows[0][0].ToString();
+            }
+
         }
 
         /// <summary>
@@ -210,13 +210,13 @@ namespace CF.Octogo.Tenants
         /// <returns></returns>
         private async Task UpdateTenantSetUpProcess(long setupId)
         {
-                SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("SetupId", setupId);
-                parameters[1] = new SqlParameter("AdminCreationCompleted", true);
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("SetupId", setupId);
+            parameters[1] = new SqlParameter("AdminCreationCompleted", true);
 
-                var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
-                        System.Data.CommandType.StoredProcedure,
-                        "USP_UpdateTenantSetupProcess", parameters);
+            var ds = await SqlHelper.ExecuteDatasetAsync(Connection.GetSqlConnection("DefaultOctoGo"),
+                    System.Data.CommandType.StoredProcedure,
+                    "USP_UpdateTenantSetupProcess", parameters);
         }
         /// <summary>
         /// Update SystemSettings for Package Update status after Tenant edition update or Edition update
@@ -270,9 +270,9 @@ namespace CF.Octogo.Tenants
         }
         private async Task<List<TenantDetailResultDto>> GetTenantLinkedWithEdition(int editionId, int? addonId)
         {
-                SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("EditionId", editionId);;
-                parameters[1] = new SqlParameter("AddonId", addonId); ;
+            SqlParameter[] parameters = new SqlParameter[2];
+            parameters[0] = new SqlParameter("EditionId", editionId); ;
+            parameters[1] = new SqlParameter("AddonId", addonId); ;
             var ds = await SqlHelper.ExecuteDatasetAsync(
                         Connection.GetSqlConnection("DefaultOctoGo"),
                         System.Data.CommandType.StoredProcedure,
@@ -298,8 +298,8 @@ namespace CF.Octogo.Tenants
         public async Task<PagedResultDto<TenantProcessLogsList>> TenantAdminSetupProcessCompleteStatus(TenantSummaryInputDto input)
         {
             SqlParameter[] parameters = new SqlParameter[14];
-            parameters[0] = new SqlParameter("MaxResultCount", input.MaxResultCount);
-            parameters[1] = new SqlParameter("SkipCount", input.SkipCount);
+            parameters[0] = new SqlParameter("PageSize", input.MaxResultCount);
+            parameters[1] = new SqlParameter("PageNo", (input.SkipCount / input.MaxResultCount) + 1);
             parameters[2] = new SqlParameter("TenantName", input.TenantName);
             parameters[3] = new SqlParameter("TenantId", input.TenantId);
             parameters[4] = new SqlParameter("ProductId", input.ProductId);
@@ -321,79 +321,52 @@ namespace CF.Octogo.Tenants
             var tenantSetUpProcess = new List<TenantProcessLogsList>();
             if (ds.Tables[0].Rows.Count > 0)
             {
-                var tenantSetUpProcessRet = SqlHelper.ConvertDataTable<TenantProcessLogsList>(ds.Tables[0]);
-                tenantSetUpProcess = tenantSetUpProcessRet.Select(rw => new TenantProcessLogsList
-                {
-                    TenantId = rw.TenantId,
-                    ProductId = rw.ProductId,
-                    TenantName = rw.TenantName,
-                    ProductName = rw.ProductName,
-                    AdminName = rw.AdminName,
-                    AdminEmail = rw.AdminEmail,
-                    DBName = rw.DBName,
-                    AppURAL = rw.AppURAL,
-                    ApiURL = rw.ApiURL,
-                    AdminCreationCompleteDt = rw.AdminCreationCompleteDt,
-                    ApiurlSetupCompleteDt = rw.ApiurlSetupCompleteDt,
-                    AppURLSetupCompleteDt = rw.AppURLSetupCompleteDt,
-                    ApplicationHostDt = rw.ApplicationHostDt,
-                    DbSetupCompleteDt = rw.DbSetupCompleteDt,
-                    WsSetupCompleteDt = rw.WsSetupCompleteDt,
-                    ErrorMessage = rw.ErrorMessage,
-                    IsAPIURLSetup = rw.IsAPIURLSetup,
-                    IsAdminCreationCompleted = rw.IsAdminCreationCompleted,
-                    IsAppURLSetup = rw.IsAppURLSetup,
-                    IsApplicationHost = rw.IsApplicationHost,
-                    IsDBSetup = rw.IsDBSetup,
-                    IsWSSetup = rw.IsWSSetup,
-                    TotalCount = rw.TotalCount,
-                }).ToList();
+                tenantSetUpProcess = SqlHelper.ConvertDataTable<TenantProcessLogsList>(ds.Tables[0]);
 
-                if (tenantSetUpProcessRet != null && tenantSetUpProcessRet.Count > 0)
+                if (tenantSetUpProcess != null && tenantSetUpProcess.Count > 0)
                 {
-                    tenantCount = tenantSetUpProcessRet.FirstOrDefault().TotalCount;
-
+                    tenantCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]); ;
                 }
             }
             return new PagedResultDto<TenantProcessLogsList>
-            (
-              tenantCount,
-              tenantSetUpProcess
-            );
+                        (
+                            tenantCount,
+                            tenantSetUpProcess
+                        );
         }
 
         public async Task<string> CheckTeanantSetUpProcessAndErrorMessage()
         {
-                var ds = await SqlHelper.ExecuteDatasetAsync(
-                   Connection.GetSqlConnection("DefaultOctoGo"),
-                   System.Data.CommandType.StoredProcedure,
-                   "USP_CheckTeanantErrorMessage"
-                   );
-                if (ds.Tables[0].Rows.Count > 0)
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+               Connection.GetSqlConnection("DefaultOctoGo"),
+               System.Data.CommandType.StoredProcedure,
+               "USP_CheckTeanantErrorMessage"
+               );
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                var tenantDetails = SqlHelper.ConvertDataTable<TenantErrorMessage>(ds.Tables[0]);
+                foreach (var result in tenantDetails)
                 {
-                    var tenantDetails = SqlHelper.ConvertDataTable<TenantErrorMessage>(ds.Tables[0]);
-                    foreach (var result in tenantDetails)
+                    if (result.ErrorMessage != null)
                     {
-                        if (result.ErrorMessage != null)
-                        {
-                            TenantErrorMessage tenantErrorMessagelist = new TenantErrorMessage();
-                            tenantErrorMessagelist.TenantId = result.TenantId;
-                            tenantErrorMessagelist.TenantName = result.TenantName;
-                            tenantErrorMessagelist.LastName = result.LastName;
-                            tenantErrorMessagelist.Name = result.Name;
-                            tenantErrorMessagelist.AdminEmail = result.AdminEmail;
-                            tenantErrorMessagelist.UserEmail = result.UserEmail;
-                            tenantErrorMessagelist.ErrorMessage = result.ErrorMessage;
-                            tenantErrorMessagelist.ErrorLogProcess = result.ErrorLogProcess;
-                            tenantErrorMessagelist.StackTrace = result.StackTrace;
-                            await _userEmailer.SendAdminSetUpFailedEmailAsync(tenantErrorMessagelist);
-                            await UpdateErrorMailFlag(result.SetupId);
-                        }
+                        TenantErrorMessage tenantErrorMessagelist = new TenantErrorMessage();
+                        tenantErrorMessagelist.TenantId = result.TenantId;
+                        tenantErrorMessagelist.TenantName = result.TenantName;
+                        tenantErrorMessagelist.LastName = result.LastName;
+                        tenantErrorMessagelist.Name = result.Name;
+                        tenantErrorMessagelist.AdminEmail = result.AdminEmail;
+                        tenantErrorMessagelist.UserEmail = result.UserEmail;
+                        tenantErrorMessagelist.ErrorMessage = result.ErrorMessage;
+                        tenantErrorMessagelist.ErrorLogProcess = result.ErrorLogProcess;
+                        tenantErrorMessagelist.StackTrace = result.StackTrace;
+                        await _userEmailer.SendAdminSetUpFailedEmailAsync(tenantErrorMessagelist);
+                        await UpdateErrorMailFlag(result.SetupId);
                     }
-                    return "suceess";
                 }
-                else
-                    return null;
+                return "suceess";
+            }
+            else
+                return null;
         }
         private async Task<string> UpdateErrorMailFlag(long setUpId)
         {
@@ -404,47 +377,47 @@ namespace CF.Octogo.Tenants
                         Connection.GetSqlConnection("DefaultOctoGo"),
                         System.Data.CommandType.StoredProcedure,
                         "USP_UpdateErrorEmailFlag", parameters);
-            return ds.Tables.Count > 0? "success": null;
-           
+            return ds.Tables.Count > 0 ? "success" : null;
+
         }
         private async Task<string> UpdateTenantEmailSendFlag(long setUpId)
         {
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("EmailSendFlag", "EmailSended"); ;
             parameters[1] = new SqlParameter("SetupId", setUpId); ;
-          
+
             var ds = await SqlHelper.ExecuteDatasetAsync(
             Connection.GetSqlConnection("DefaultOctoGo"),
-            CommandType.StoredProcedure,"USP_UpdateTenantSetupProcess", parameters);
-            return ds.Tables.Count > 0?"success":null;
-               
+            CommandType.StoredProcedure, "USP_UpdateTenantSetupProcess", parameters);
+            return ds.Tables.Count > 0 ? "success" : null;
+
         }
         public async Task<string> CheckTeanantSetUpProcessAndSuccessMail()
+        {
+
+            var ds = await SqlHelper.ExecuteDatasetAsync(
+               Connection.GetSqlConnection("DefaultOctoGo"),
+               System.Data.CommandType.StoredProcedure,
+               "USP_CheckTenantSetUpProcessAndEmailFlag"
+               );
+            if (ds.Tables[0].Rows.Count > 0)
             {
-                
-                    var ds = await SqlHelper.ExecuteDatasetAsync(
-                       Connection.GetSqlConnection("DefaultOctoGo"),
-                       System.Data.CommandType.StoredProcedure,
-                       "USP_CheckTenantSetUpProcessAndEmailFlag"
-                       );
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        var result = SqlHelper.ConvertDataTable<TenantSuccesMailDto>(ds.Tables[0]);
-                        foreach (var tenantDetails in result)
-                        {
-                            TenantSuccessMail tenantSuccessMessageList = new TenantSuccessMail();
-                            tenantSuccessMessageList.EmailAddress = tenantDetails.EmailAddress;
-                            tenantSuccessMessageList.ProductName = tenantDetails.ProductName;
-                            tenantSuccessMessageList.ProductLink = tenantDetails.ProductLink;
-                            await _userEmailer.SendAdminSetUpCompleteEmailAsync(tenantSuccessMessageList);
-                            await UpdateTenantEmailSendFlag(tenantDetails.SetupId);
-                        }
-                    
-                            return "success";
-                        }
-                    else
-                        return null;
-                
+                var result = SqlHelper.ConvertDataTable<TenantSuccesMailDto>(ds.Tables[0]);
+                foreach (var tenantDetails in result)
+                {
+                    TenantSuccessMail tenantSuccessMessageList = new TenantSuccessMail();
+                    tenantSuccessMessageList.EmailAddress = tenantDetails.EmailAddress;
+                    tenantSuccessMessageList.ProductName = tenantDetails.ProductName;
+                    tenantSuccessMessageList.ProductLink = tenantDetails.ProductLink;
+                    await _userEmailer.SendAdminSetUpCompleteEmailAsync(tenantSuccessMessageList);
+                    await UpdateTenantEmailSendFlag(tenantDetails.SetupId);
+                }
+
+                return "success";
             }
+            else
+                return null;
+
         }
     }
+}

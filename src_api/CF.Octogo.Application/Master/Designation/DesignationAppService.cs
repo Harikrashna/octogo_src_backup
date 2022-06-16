@@ -43,16 +43,10 @@ namespace CF.Octogo.Master.Designation
             var designationList = new List<DesignationListDto>();
             if (ds.Tables.Count > 0)
             {
-                var ret = SqlHelper.ConvertDataTable<DesignationListRet>(ds.Tables[0]);
-                designationList = ret.Select(rw => new DesignationListDto
+                designationList = SqlHelper.ConvertDataTable<DesignationListDto>(ds.Tables[0]);
+                if (designationList != null && designationList.Count > 0)
                 {
-                    Id = rw.Id,
-                    DesignationName = rw.DesignationName,
-                    Description = rw.Description
-                }).ToList();
-                if (ret != null && ret.Count > 0)
-                {
-                    totalCount = ret.FirstOrDefault().TotalCount;
+                    totalCount = Convert.ToInt32(ds.Tables[0].Rows[0]["TotalCount"]);
                 }
             }
             return new PagedResultDto<DesignationListDto>(

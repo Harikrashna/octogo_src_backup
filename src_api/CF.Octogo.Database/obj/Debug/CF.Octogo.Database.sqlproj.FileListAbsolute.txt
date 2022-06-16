@@ -1,0 +1,10 @@
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\bin\Debug\CF.Octogo.Database.dacpac
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\bin\Debug\CF.OctoGo.Database.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\bin\Debug\CF.OctoGo.Database.pdb
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\obj\Debug\CF.Octogo.Database.sqlproj.AssemblyReference.cache
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\obj\Debug\Model.xml
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\obj\Debug\refactor.xml
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\obj\Debug\postdeploy.sql
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\obj\Debug\predeploy.sql
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\obj\Debug\CF.OctoGo.Database.dll
+C:\Office Work\TFS\Dev\aspnet-core\src\CF.OctoGo.Database\obj\Debug\CF.OctoGo.Database.pdb
